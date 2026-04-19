@@ -29,7 +29,7 @@ import {
   useWebsiteBuilderStore,
   useWebsiteBuilderStoreApi,
   websiteBuilderRichTextContentClassName
-} from "./chunk-UUIRBOPU.js";
+} from "./chunk-EMKHOUM6.js";
 import {
   normalizeWebsiteBuilderSelectionForMode,
   resolveWebsiteBuilderAccess,
