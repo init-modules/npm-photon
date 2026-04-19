@@ -10,7 +10,7 @@ import {
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-2NBCYAY5.js";
+} from "./chunk-RIBOMHDR.js";
 import {
   WEBSITE_BUILDER_EMPTY_TEXT,
   canEditWebsiteBuilderWorkspace,
@@ -323,6 +323,8 @@ var createWebsiteBuilderStore = ({
   searchSite,
   requestAuth,
   linkComponent,
+  siteFrameExtensions = [],
+  accountTabs = [],
   i18n
 }) => {
   const initialSurfaceDocument = composeWebsiteBuilderSurfaceDocument(
@@ -357,6 +359,8 @@ var createWebsiteBuilderStore = ({
     searchSite,
     requestAuth,
     linkComponent,
+    siteFrameExtensions: cloneWebsiteBuilderValue(siteFrameExtensions),
+    accountTabs: cloneWebsiteBuilderValue(accountTabs),
     contentLocale,
     defaultLocale,
     contentRevision: 0,
@@ -747,7 +751,9 @@ var WebsiteBuilderProvider = ({
   uploadMedia,
   searchSite,
   requestAuth,
-  linkComponent = DefaultWebsiteBuilderLinkComponent
+  linkComponent = DefaultWebsiteBuilderLinkComponent,
+  siteFrameExtensions = [],
+  accountTabs = []
 }) => {
   const storeRef = useRef(null);
   const externalStateFingerprint = useMemo2(
@@ -782,6 +788,8 @@ var WebsiteBuilderProvider = ({
       searchSite,
       requestAuth,
       linkComponent,
+      siteFrameExtensions,
+      accountTabs,
       i18n: i18n ? {
         contentLocale: i18n.contentLocale,
         defaultLocale: i18n.defaultLocale
@@ -815,7 +823,7 @@ var WebsiteBuilderProvider = ({
         normalizedWorkspace,
         normalizedCapabilities
       );
-      if (state.isAdmin === isAdmin && state.uploadMedia === uploadMedia && state.searchSite === searchSite && state.requestAuth === requestAuth && state.linkComponent === linkComponent && state.contentLocale === (i18n?.contentLocale ?? state.contentLocale) && state.defaultLocale === (i18n?.defaultLocale ?? state.defaultLocale) && state.mode === nextMode && JSON.stringify(state.capabilities) === JSON.stringify(normalizedCapabilities) && JSON.stringify(state.workspace) === JSON.stringify(normalizedWorkspace)) {
+      if (state.isAdmin === isAdmin && state.uploadMedia === uploadMedia && state.searchSite === searchSite && state.requestAuth === requestAuth && state.linkComponent === linkComponent && JSON.stringify(state.siteFrameExtensions) === JSON.stringify(siteFrameExtensions) && JSON.stringify(state.accountTabs) === JSON.stringify(accountTabs) && state.contentLocale === (i18n?.contentLocale ?? state.contentLocale) && state.defaultLocale === (i18n?.defaultLocale ?? state.defaultLocale) && state.mode === nextMode && JSON.stringify(state.capabilities) === JSON.stringify(normalizedCapabilities) && JSON.stringify(state.workspace) === JSON.stringify(normalizedWorkspace)) {
         return state;
       }
       return {
@@ -827,6 +835,8 @@ var WebsiteBuilderProvider = ({
         searchSite,
         requestAuth,
         linkComponent,
+        siteFrameExtensions: cloneWebsiteBuilderValue(siteFrameExtensions),
+        accountTabs: cloneWebsiteBuilderValue(accountTabs),
         contentLocale: i18n?.contentLocale ?? state.contentLocale,
         defaultLocale: i18n?.defaultLocale ?? state.defaultLocale,
         mode: nextEditable || nextMode === "preview" ? nextMode : "preview"
@@ -838,6 +848,8 @@ var WebsiteBuilderProvider = ({
     i18n?.defaultLocale,
     isAdmin,
     linkComponent,
+    siteFrameExtensions,
+    accountTabs,
     requestAuth,
     searchSite,
     uploadMedia,
@@ -9386,6 +9398,8 @@ var WebsiteBuilderStudio = ({
   onSearch,
   activeSearchHighlight,
   linkComponent,
+  siteFrameExtensions,
+  accountTabs,
   i18n,
   hydrateModePreference = true,
   showInterfaceLocaleControl = true,
@@ -9411,6 +9425,8 @@ var WebsiteBuilderStudio = ({
       searchSite: onSearch,
       requestAuth: onRequestAuth,
       linkComponent,
+      siteFrameExtensions,
+      accountTabs,
       i18n,
       children: /* @__PURE__ */ jsx54(
         WebsiteBuilderStudioInner,

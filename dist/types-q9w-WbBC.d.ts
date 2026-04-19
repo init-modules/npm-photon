@@ -183,6 +183,49 @@ type WebsiteBuilderSite = {
     settings: WebsiteBuilderSiteSettings;
     regions: Record<string, WebsiteBuilderSiteRegion>;
 };
+type WebsiteBuilderSiteFrameLinkItem = {
+    id?: string;
+    label: string;
+    href: string;
+    target?: string;
+    rel?: string;
+    order?: number;
+    enabled?: boolean;
+};
+type WebsiteBuilderSiteFrameActionKind = "link" | "auth";
+type WebsiteBuilderSiteFrameActionItem = WebsiteBuilderSiteFrameLinkItem & {
+    kind?: WebsiteBuilderSiteFrameActionKind;
+    appearance?: "primary" | "secondary" | "ghost";
+};
+type WebsiteBuilderSiteFrameNavigationColumn = {
+    id?: string;
+    title: string;
+    links: WebsiteBuilderSiteFrameLinkItem[];
+    order?: number;
+    enabled?: boolean;
+};
+type WebsiteBuilderSiteFrameExtension = {
+    id: string;
+    label?: string;
+    enabled?: boolean;
+    order?: number;
+    header?: {
+        utilityLinks?: WebsiteBuilderSiteFrameLinkItem[];
+        categoryLinks?: WebsiteBuilderSiteFrameLinkItem[];
+        actions?: WebsiteBuilderSiteFrameActionItem[];
+    };
+    footer?: {
+        navigationColumns?: WebsiteBuilderSiteFrameNavigationColumn[];
+        legalLinks?: WebsiteBuilderSiteFrameLinkItem[];
+    };
+};
+type WebsiteBuilderAccountTabExtension = {
+    id: string;
+    label: string;
+    href?: string;
+    order?: number;
+    enabled?: boolean;
+};
 type WebsiteBuilderWorkspaceRef = {
     profileId: string;
     branch: string;
@@ -362,6 +405,8 @@ type WebsiteBuilderInstallableKit = {
     label: string;
     modules: WebsiteBuilderModule[];
     documents?: WebsiteBuilderDocumentsMap;
+    siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
+    accountTabs?: WebsiteBuilderAccountTabExtension[];
 };
 type WebsiteBuilderRegistryEntry = WebsiteBuilderModule | WebsiteBuilderInstallableKit;
 type WebsiteBuilderLocaleStatus = "active" | "draft" | "inactive";
@@ -411,6 +456,8 @@ type WebsiteBuilderRuntime = {
     entries: WebsiteBuilderRegistryEntry[];
     registry: WebsiteBuilderRegistry;
     documents: WebsiteBuilderDocumentsMap;
+    siteFrameExtensions: WebsiteBuilderSiteFrameExtension[];
+    accountTabs: WebsiteBuilderAccountTabExtension[];
 };
 type WebsiteBuilderPageCatalogItem = {
     key: string;
@@ -447,4 +494,4 @@ type WebsiteBuilderMediaUploadInput = {
 };
 type WebsiteBuilderMediaUploadHandler = (input: WebsiteBuilderMediaUploadInput) => Promise<WebsiteBuilderMediaValue>;
 
-export type { WebsiteBuilderFieldKind as $, WebsiteBuilderMediaUploadHandler as A, WebsiteBuilderSearchHandler as B, WebsiteBuilderLinkComponent as C, WebsiteBuilderI18nValue as D, WebsiteBuilderField as E, WebsiteBuilderPageSettingsPanelDefinition as F, WebsiteBuilderSiteSettingsPanelDefinition as G, WebsiteBuilderSiteDesignSettings as H, WebsiteBuilderResolvedSiteDesignSettings as I, WebsiteBuilderSiteComponentVariants as J, WebsiteBuilderWorkspaceRef as K, WebsiteBuilderSelectedField as L, WebsiteBuilderLinkComponentProps as M, WebsiteBuilderBindingAdapter as N, WebsiteBuilderInstallableKit as O, WebsiteBuilderModule as P, WebsiteBuilderActorSummary as Q, WebsiteBuilderAnyBlockDefinition as R, WebsiteBuilderBindingMode as S, WebsiteBuilderBlockComponent as T, WebsiteBuilderBlockComponentProps as U, WebsiteBuilderBlockDefaults as V, WebsiteBuilderArea as W, WebsiteBuilderBlockDefinition as X, WebsiteBuilderBlockLocalizationSchema as Y, WebsiteBuilderBlockProps as Z, WebsiteBuilderDefaultable as _, WebsiteBuilderBlock as a, WebsiteBuilderFieldLocalization as a0, WebsiteBuilderFieldOption as a1, WebsiteBuilderInterfaceLocaleOption as a2, WebsiteBuilderLocalizedDefaultValue as a3, WebsiteBuilderMergeConflict as a4, WebsiteBuilderMergeDiffItem as a5, WebsiteBuilderMergeResolutionStrategy as a6, WebsiteBuilderNestedField as a7, WebsiteBuilderPageSettingsPanelProps as a8, WebsiteBuilderPageSettingsScope as a9, WebsiteBuilderRegistryEntry as aa, WebsiteBuilderRevisionChangeSummaryItem as ab, WebsiteBuilderRuntime as ac, WebsiteBuilderSearchInput as ad, WebsiteBuilderSiteColorSchemeDefinition as ae, WebsiteBuilderSiteDesignAppearance as af, WebsiteBuilderSiteDesignColorTokens as ag, WebsiteBuilderSiteDesignPresetDefinition as ah, WebsiteBuilderSiteDesignValue as ai, WebsiteBuilderSiteSettingsPanelProps as aj, WebsiteBuilderDocument as b, WebsiteBuilderDocumentsMap as c, WebsiteBuilderFieldBinding as d, WebsiteBuilderLocaleDescriptor as e, WebsiteBuilderLocaleStatus as f, WebsiteBuilderMediaUploadInput as g, WebsiteBuilderMediaValue as h, WebsiteBuilderPageCatalogItem as i, WebsiteBuilderPageRuntimeData as j, WebsiteBuilderPageSettings as k, WebsiteBuilderResolvedPage as l, WebsiteBuilderResources as m, WebsiteBuilderSearchHighlight as n, WebsiteBuilderSearchResult as o, WebsiteBuilderSite as p, WebsiteBuilderSiteRegion as q, WebsiteBuilderSiteSettings as r, WebsiteBuilderWorkspaceCapabilities as s, WebsiteBuilderWorkspaceDescriptor as t, WebsiteBuilderSurfaceMode as u, WebsiteBuilderRegistry as v, WebsiteBuilderRevisionDescriptor as w, WebsiteBuilderBranchPolicyState as x, WebsiteBuilderMergePreview as y, WebsiteBuilderMode as z };
+export type { WebsiteBuilderBlockDefaults as $, WebsiteBuilderRegistry as A, WebsiteBuilderRevisionDescriptor as B, WebsiteBuilderBranchPolicyState as C, WebsiteBuilderMergePreview as D, WebsiteBuilderMode as E, WebsiteBuilderMediaUploadHandler as F, WebsiteBuilderSearchHandler as G, WebsiteBuilderLinkComponent as H, WebsiteBuilderI18nValue as I, WebsiteBuilderField as J, WebsiteBuilderPageSettingsPanelDefinition as K, WebsiteBuilderSiteSettingsPanelDefinition as L, WebsiteBuilderSiteDesignSettings as M, WebsiteBuilderResolvedSiteDesignSettings as N, WebsiteBuilderSiteComponentVariants as O, WebsiteBuilderWorkspaceRef as P, WebsiteBuilderSelectedField as Q, WebsiteBuilderLinkComponentProps as R, WebsiteBuilderBindingAdapter as S, WebsiteBuilderInstallableKit as T, WebsiteBuilderModule as U, WebsiteBuilderActorSummary as V, WebsiteBuilderArea as W, WebsiteBuilderAnyBlockDefinition as X, WebsiteBuilderBindingMode as Y, WebsiteBuilderBlockComponent as Z, WebsiteBuilderBlockComponentProps as _, WebsiteBuilderBlock as a, WebsiteBuilderBlockDefinition as a0, WebsiteBuilderBlockLocalizationSchema as a1, WebsiteBuilderBlockProps as a2, WebsiteBuilderDefaultable as a3, WebsiteBuilderFieldKind as a4, WebsiteBuilderFieldLocalization as a5, WebsiteBuilderFieldOption as a6, WebsiteBuilderInterfaceLocaleOption as a7, WebsiteBuilderLocalizedDefaultValue as a8, WebsiteBuilderMergeConflict as a9, WebsiteBuilderMergeDiffItem as aa, WebsiteBuilderMergeResolutionStrategy as ab, WebsiteBuilderNestedField as ac, WebsiteBuilderPageSettingsPanelProps as ad, WebsiteBuilderPageSettingsScope as ae, WebsiteBuilderRegistryEntry as af, WebsiteBuilderRevisionChangeSummaryItem as ag, WebsiteBuilderRuntime as ah, WebsiteBuilderSearchInput as ai, WebsiteBuilderSiteColorSchemeDefinition as aj, WebsiteBuilderSiteDesignAppearance as ak, WebsiteBuilderSiteDesignColorTokens as al, WebsiteBuilderSiteDesignPresetDefinition as am, WebsiteBuilderSiteDesignValue as an, WebsiteBuilderSiteFrameActionKind as ao, WebsiteBuilderSiteSettingsPanelProps as ap, WebsiteBuilderDocument as b, WebsiteBuilderDocumentsMap as c, WebsiteBuilderFieldBinding as d, WebsiteBuilderLocaleDescriptor as e, WebsiteBuilderLocaleStatus as f, WebsiteBuilderMediaUploadInput as g, WebsiteBuilderMediaValue as h, WebsiteBuilderPageCatalogItem as i, WebsiteBuilderPageRuntimeData as j, WebsiteBuilderPageSettings as k, WebsiteBuilderResolvedPage as l, WebsiteBuilderResources as m, WebsiteBuilderSearchHighlight as n, WebsiteBuilderSearchResult as o, WebsiteBuilderSite as p, WebsiteBuilderSiteRegion as q, WebsiteBuilderSiteSettings as r, WebsiteBuilderWorkspaceCapabilities as s, WebsiteBuilderWorkspaceDescriptor as t, WebsiteBuilderSiteFrameExtension as u, WebsiteBuilderSiteFrameNavigationColumn as v, WebsiteBuilderSiteFrameLinkItem as w, WebsiteBuilderSiteFrameActionItem as x, WebsiteBuilderAccountTabExtension as y, WebsiteBuilderSurfaceMode as z };

@@ -238,6 +238,12 @@ var collectWebsiteBuilderDocuments = (entries) => {
   }
   return documents;
 };
+var collectWebsiteBuilderSiteFrameExtensions = (entries) => entries.flatMap(
+  (entry) => isWebsiteBuilderInstallableKit(entry) ? entry.siteFrameExtensions ?? [] : []
+);
+var collectWebsiteBuilderAccountTabs = (entries) => entries.flatMap(
+  (entry) => isWebsiteBuilderInstallableKit(entry) ? entry.accountTabs ?? [] : []
+);
 
 // src/helpers/document.ts
 var getWebsiteBuilderDefinitionKey = (moduleName, blockType) => `${moduleName}::${blockType}`;
@@ -465,6 +471,8 @@ export {
   isWebsiteBuilderInstallableKit,
   resolveWebsiteBuilderModules,
   collectWebsiteBuilderDocuments,
+  collectWebsiteBuilderSiteFrameExtensions,
+  collectWebsiteBuilderAccountTabs,
   getWebsiteBuilderDefinitionKey,
   createWebsiteBuilderRegistry,
   createWebsiteBuilderLocalizedDefault,

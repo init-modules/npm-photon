@@ -30,6 +30,7 @@ import {
 import { collectBlockIds } from "../studio/shared/constants";
 import type {
 	WebsiteBuilderBlock,
+	WebsiteBuilderAccountTabExtension,
 	WebsiteBuilderDocument,
 	WebsiteBuilderFieldBinding,
 	WebsiteBuilderLinkComponent,
@@ -41,6 +42,7 @@ import type {
 	WebsiteBuilderSearchHandler,
 	WebsiteBuilderSelectedField,
 	WebsiteBuilderSite,
+	WebsiteBuilderSiteFrameExtension,
 	WebsiteBuilderWorkspaceCapabilities,
 	WebsiteBuilderWorkspaceDescriptor,
 } from "../types";
@@ -74,6 +76,8 @@ export type WebsiteBuilderStoreState = {
 	searchSite?: WebsiteBuilderSearchHandler;
 	requestAuth?: () => void;
 	linkComponent: WebsiteBuilderLinkComponent;
+	siteFrameExtensions: WebsiteBuilderSiteFrameExtension[];
+	accountTabs: WebsiteBuilderAccountTabExtension[];
 	contentLocale: string;
 	defaultLocale: string;
 	contentRevision: number;
@@ -142,6 +146,8 @@ export type WebsiteBuilderStoreInit = {
 	searchSite?: WebsiteBuilderSearchHandler;
 	requestAuth?: () => void;
 	linkComponent: WebsiteBuilderLinkComponent;
+	siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
+	accountTabs?: WebsiteBuilderAccountTabExtension[];
 	i18n?: {
 		contentLocale?: string;
 		defaultLocale?: string;
@@ -291,6 +297,8 @@ export const createWebsiteBuilderStore = ({
 	searchSite,
 	requestAuth,
 	linkComponent,
+	siteFrameExtensions = [],
+	accountTabs = [],
 	i18n,
 }: WebsiteBuilderStoreInit): WebsiteBuilderStore => {
 	const initialSurfaceDocument = composeWebsiteBuilderSurfaceDocument(
@@ -329,6 +337,8 @@ export const createWebsiteBuilderStore = ({
 		searchSite,
 		requestAuth,
 		linkComponent,
+		siteFrameExtensions: cloneWebsiteBuilderValue(siteFrameExtensions),
+		accountTabs: cloneWebsiteBuilderValue(accountTabs),
 		contentLocale,
 		defaultLocale,
 		contentRevision: 0,

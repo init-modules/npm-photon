@@ -29,7 +29,7 @@ import {
   useWebsiteBuilderStore,
   useWebsiteBuilderStoreApi,
   websiteBuilderRichTextContentClassName
-} from "./chunk-EMKHOUM6.js";
+} from "./chunk-AQTNQXFB.js";
 import {
   normalizeWebsiteBuilderSelectionForMode,
   resolveWebsiteBuilderAccess,
@@ -39,10 +39,12 @@ import {
 } from "./chunk-NIL7BFDU.js";
 import {
   createWebsiteBuilderRuntime
-} from "./chunk-ITVMIT6B.js";
+} from "./chunk-FAN4Y46R.js";
 import {
   WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
+  collectWebsiteBuilderAccountTabs,
   collectWebsiteBuilderDocuments,
+  collectWebsiteBuilderSiteFrameExtensions,
   composeWebsiteBuilderSurfaceDocument,
   createWebsiteBuilderBlock,
   createWebsiteBuilderBlockLocalizationSchema,
@@ -63,7 +65,15 @@ import {
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-2NBCYAY5.js";
+} from "./chunk-RIBOMHDR.js";
+import {
+  collectWebsiteBuilderFooterExtensionItems,
+  collectWebsiteBuilderHeaderExtensionItems,
+  createWebsiteBuilderAccountTabExtension,
+  createWebsiteBuilderSiteFrameExtension,
+  resolveWebsiteBuilderAccountTabs,
+  resolveWebsiteBuilderSiteFrameExtensions
+} from "./chunk-4N2K54N2.js";
 import {
   getWebsiteBuilderSurfaceModeStyle
 } from "./chunk-75KJ6L3N.js";
@@ -1670,8 +1680,11 @@ var normalizeString = (value) => typeof value === "string" ? value : "";
 var normalizeWebsiteBuilderSiteLinkItems = (value) => Array.isArray(value) ? value.flatMap(
   (candidate) => typeof candidate === "object" && candidate !== null && typeof candidate.label === "string" && typeof candidate.href === "string" ? [
     {
+      id: typeof candidate.id === "string" ? candidate.id : void 0,
       label: normalizeString(candidate.label),
-      href: normalizeString(candidate.href)
+      href: normalizeString(candidate.href),
+      target: typeof candidate.target === "string" ? candidate.target : void 0,
+      rel: typeof candidate.rel === "string" ? candidate.rel : void 0
     }
   ] : []
 ) : [];
@@ -1790,6 +1803,20 @@ var siteFooterFields = [
     kind: "url",
     group: "content",
     localization: "shared"
+  },
+  {
+    path: "disabledExtensionIds",
+    label: "Disabled package extensions",
+    kind: "tags",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "disabledExtensionItemIds",
+    label: "Disabled package extension items",
+    kind: "tags",
+    group: "layout",
+    localization: "shared"
   }
 ];
 var footerVariantStyles = {
@@ -1816,12 +1843,36 @@ var SiteFooterShell = ({
   block
 }) => {
   const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
+  const siteFrameExtensions = useWebsiteBuilderStore(
+    (state) => state.siteFrameExtensions
+  );
   const framelessSite = isWebsiteBuilderFramelessSiteDesign(siteDesign);
   const footerVariant = framelessSite ? "minimal-air" : block.props.variant;
   const variant = footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"];
   const isSoftCardsVariant = footerVariant === "soft-cards" && !framelessSite;
-  const navigationColumns = normalizeWebsiteBuilderSiteNavigationColumns(
-    block.props.navigationColumns
+  const disabledExtensionIds = normalizeWebsiteBuilderSiteStringItems(
+    block.props.disabledExtensionIds
+  );
+  const disabledExtensionItemIds = normalizeWebsiteBuilderSiteStringItems(
+    block.props.disabledExtensionItemIds
+  );
+  const footerExtensionItems = collectWebsiteBuilderFooterExtensionItems(
+    resolveWebsiteBuilderSiteFrameExtensions(
+      siteFrameExtensions,
+      disabledExtensionIds
+    ),
+    disabledExtensionItemIds
+  );
+  const navigationColumns = [
+    ...normalizeWebsiteBuilderSiteNavigationColumns(
+      block.props.navigationColumns
+    ),
+    ...normalizeWebsiteBuilderSiteNavigationColumns(
+      footerExtensionItems.navigationColumns
+    )
+  ];
+  const legalLinks = normalizeWebsiteBuilderSiteLinkItems(
+    footerExtensionItems.legalLinks
   );
   const contactItems = normalizeWebsiteBuilderSiteStringItems(block.props.contactItems);
   return /* @__PURE__ */ jsx12(
@@ -2032,6 +2083,23 @@ var SiteFooterShell = ({
                     ]
                   }
                 ),
+                legalLinks.map((link) => /* @__PURE__ */ jsxs7(
+                  WebsiteBuilderLink,
+                  {
+                    href: link.href,
+                    target: link.target,
+                    rel: link.rel,
+                    className: clsx7(
+                      "inline-flex items-center gap-2 transition hover:text-[var(--wb-site-accent)]",
+                      (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).muted
+                    ),
+                    children: [
+                      link.label,
+                      /* @__PURE__ */ jsx12(ArrowRight, { className: "h-4 w-4" })
+                    ]
+                  },
+                  `${link.label}:${link.href}`
+                )),
                 /* @__PURE__ */ jsx12(
                   WebsiteBuilderLink,
                   {
@@ -2149,7 +2217,9 @@ var siteFooterShellDefinition = defineWebsiteBuilderBlockDefinition({
       en: "Built by init",
       ru: "\u0421\u0434\u0435\u043B\u0430\u043D\u043E init"
     }),
-    developerHref: "https://init.kz"
+    developerHref: "https://init.kz",
+    disabledExtensionIds: [],
+    disabledExtensionItemIds: []
   },
   fields: siteFooterFields,
   component: SiteFooterShell
@@ -2636,6 +2706,20 @@ var siteHeaderFields = [
       { path: "label", label: "Label", kind: "text" },
       { path: "href", label: "Href", kind: "url", localization: "shared" }
     ]
+  },
+  {
+    path: "disabledExtensionIds",
+    label: "Disabled package extensions",
+    kind: "tags",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "disabledExtensionItemIds",
+    label: "Disabled package extension items",
+    kind: "tags",
+    group: "layout",
+    localization: "shared"
   }
 ];
 var SiteHeaderShell = ({
@@ -2646,14 +2730,36 @@ var SiteHeaderShell = ({
   const currentRoute = useWebsiteBuilderStore((state) => state.document.route);
   const requestAuth = useWebsiteBuilderStore((state) => state.requestAuth);
   const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
+  const siteFrameExtensions = useWebsiteBuilderStore(
+    (state) => state.siteFrameExtensions
+  );
   const { locale, publicLocales, translate } = useWebsiteBuilderI18n();
   const [isCompact, setIsCompact] = useState4(false);
   const headerRef = useRef4(null);
-  const utilityLinks = normalizeWebsiteBuilderSiteLinkItems(
-    block.props.utilityLinks
+  const disabledExtensionIds = normalizeWebsiteBuilderSiteStringItems(
+    block.props.disabledExtensionIds
   );
-  const categoryLinks = normalizeWebsiteBuilderSiteLinkItems(
-    block.props.categoryLinks
+  const disabledExtensionItemIds = normalizeWebsiteBuilderSiteStringItems(
+    block.props.disabledExtensionItemIds
+  );
+  const headerExtensionItems = collectWebsiteBuilderHeaderExtensionItems(
+    resolveWebsiteBuilderSiteFrameExtensions(
+      siteFrameExtensions,
+      disabledExtensionIds
+    ),
+    disabledExtensionItemIds
+  );
+  const utilityLinks = [
+    ...normalizeWebsiteBuilderSiteLinkItems(block.props.utilityLinks),
+    ...normalizeWebsiteBuilderSiteLinkItems(headerExtensionItems.utilityLinks)
+  ];
+  const categoryLinks = [
+    ...normalizeWebsiteBuilderSiteLinkItems(block.props.categoryLinks),
+    ...normalizeWebsiteBuilderSiteLinkItems(headerExtensionItems.categoryLinks)
+  ];
+  const extensionActions = headerExtensionItems.actions;
+  const hasExtensionAuthAction = extensionActions.some(
+    (action) => (action.kind ?? "link") === "auth"
   );
   const variant = block.props.variant ?? "commerce-inline";
   const liveSurfaceMode = mode !== "builder";
@@ -2661,6 +2767,36 @@ var SiteHeaderShell = ({
   const framelessSite = isWebsiteBuilderFramelessSiteDesign(siteDesign);
   const isShowcaseCard = variant === "showcase-card" && !framelessSite;
   const localeSwitcherVisible = block.props.showLocaleSwitcher !== false && publicLocales.length > 1;
+  const renderExtensionAction = (action) => {
+    const appearance = action.appearance ?? "secondary";
+    const className = clsx9(
+      "inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition",
+      appearance === "primary" ? "bg-[var(--wb-site-accent)] text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] hover:translate-y-[-1px]" : appearance === "ghost" ? "text-[var(--wb-site-text)] hover:text-[var(--wb-site-accent)]" : "border border-[var(--wb-site-border)] text-[var(--wb-site-text)] hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
+    );
+    if ((action.kind ?? "link") === "auth") {
+      return /* @__PURE__ */ jsx14(
+        "button",
+        {
+          type: "button",
+          onClick: requestAuth,
+          className: clsx9(className, "cursor-pointer"),
+          children: action.label
+        },
+        action.id ?? `${action.label}:${action.href}`
+      );
+    }
+    return /* @__PURE__ */ jsx14(
+      WebsiteBuilderLink,
+      {
+        href: action.href,
+        target: action.target,
+        rel: action.rel,
+        className,
+        children: action.label
+      },
+      action.id ?? `${action.label}:${action.href}`
+    );
+  };
   useEffect5(() => {
     if (typeof window === "undefined" || !block.props.compactOnScroll || !liveSurfaceMode) {
       setIsCompact(false);
@@ -2879,7 +3015,8 @@ var SiteHeaderShell = ({
                           ]
                         }
                       ),
-                      block.props.showLoginAction && !isAdmin ? /* @__PURE__ */ jsxs9(
+                      extensionActions.map(renderExtensionAction),
+                      block.props.showLoginAction && !isAdmin && !hasExtensionAuthAction ? /* @__PURE__ */ jsxs9(
                         "button",
                         {
                           type: "button",
@@ -2989,6 +3126,8 @@ var siteHeaderShellDefinition = defineWebsiteBuilderBlockDefinition({
     sticky: true,
     compactOnScroll: true,
     showLocaleSwitcher: true,
+    disabledExtensionIds: [],
+    disabledExtensionItemIds: [],
     categoryLinks: createWebsiteBuilderLocalizedDefault({
       en: [
         { label: "Infrastructure", href: "/infrastructure" },
@@ -3338,8 +3477,13 @@ export {
   canSaveWebsiteBuilderWorkspace,
   cloneWebsiteBuilderBlockTreeWithNewIds,
   cloneWebsiteBuilderValue,
+  collectWebsiteBuilderAccountTabs,
   collectWebsiteBuilderDocuments,
+  collectWebsiteBuilderFooterExtensionItems,
+  collectWebsiteBuilderHeaderExtensionItems,
+  collectWebsiteBuilderSiteFrameExtensions,
   composeWebsiteBuilderSurfaceDocument,
+  createWebsiteBuilderAccountTabExtension,
   createWebsiteBuilderAreaListId,
   createWebsiteBuilderBlock,
   createWebsiteBuilderBlockLocalizationSchema,
@@ -3350,6 +3494,7 @@ export {
   createWebsiteBuilderRegistry,
   createWebsiteBuilderRuntime,
   createWebsiteBuilderSiteDesignSettings,
+  createWebsiteBuilderSiteFrameExtension,
   createWebsiteBuilderTiptapJsonBindingAdapter,
   decomposeWebsiteBuilderSurfaceDocument,
   defineWebsiteBuilderBlockDefinition,
@@ -3384,12 +3529,14 @@ export {
   removeWebsiteBuilderBlockFromDocument,
   renderWebsiteBuilderRichTextHtml,
   resolveWebsiteBuilderAccess,
+  resolveWebsiteBuilderAccountTabs,
   resolveWebsiteBuilderMediaPreviewUrl,
   resolveWebsiteBuilderMediaUrl,
   resolveWebsiteBuilderMode,
   resolveWebsiteBuilderModules,
   resolveWebsiteBuilderRequestHeaders,
   resolveWebsiteBuilderSiteDesignSettings,
+  resolveWebsiteBuilderSiteFrameExtensions,
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId,

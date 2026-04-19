@@ -34,6 +34,8 @@ export const WebsiteBuilderStudio = ({
 	onSearch,
 	activeSearchHighlight,
 	linkComponent,
+	siteFrameExtensions,
+	accountTabs,
 	i18n,
 	hydrateModePreference = true,
 	showInterfaceLocaleControl = true,
@@ -58,6 +60,8 @@ export const WebsiteBuilderStudio = ({
 			searchSite={onSearch}
 			requestAuth={onRequestAuth}
 			linkComponent={linkComponent}
+			siteFrameExtensions={siteFrameExtensions}
+			accountTabs={accountTabs}
 			i18n={i18n}
 		>
 			<WebsiteBuilderStudioInner

@@ -22,6 +22,7 @@ import {
 import { decomposeWebsiteBuilderSurfaceDocument } from "../helpers/site";
 import type {
 	WebsiteBuilderI18nValue,
+	WebsiteBuilderAccountTabExtension,
 	WebsiteBuilderLinkComponent,
 	WebsiteBuilderLinkComponentProps,
 	WebsiteBuilderMediaUploadHandler,
@@ -31,6 +32,7 @@ import type {
 	WebsiteBuilderResources,
 	WebsiteBuilderSearchHandler,
 	WebsiteBuilderSite,
+	WebsiteBuilderSiteFrameExtension,
 	WebsiteBuilderWorkspaceCapabilities,
 	WebsiteBuilderWorkspaceDescriptor,
 } from "../types";
@@ -61,6 +63,8 @@ type WebsiteBuilderProviderProps = {
 	searchSite?: WebsiteBuilderSearchHandler;
 	requestAuth?: () => void;
 	linkComponent?: WebsiteBuilderLinkComponent;
+	siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
+	accountTabs?: WebsiteBuilderAccountTabExtension[];
 };
 
 const DefaultWebsiteBuilderLinkComponent: WebsiteBuilderLinkComponent = ({
@@ -97,6 +101,8 @@ export const WebsiteBuilderProvider = ({
 	searchSite,
 	requestAuth,
 	linkComponent = DefaultWebsiteBuilderLinkComponent,
+	siteFrameExtensions = [],
+	accountTabs = [],
 }: WebsiteBuilderProviderProps) => {
 	const storeRef = useRef<WebsiteBuilderStore | null>(null);
 	const externalStateFingerprint = useMemo(
@@ -133,6 +139,8 @@ export const WebsiteBuilderProvider = ({
 			searchSite,
 			requestAuth,
 			linkComponent,
+			siteFrameExtensions,
+			accountTabs,
 			i18n: i18n
 				? {
 						contentLocale: i18n.contentLocale,
@@ -182,6 +190,9 @@ export const WebsiteBuilderProvider = ({
 				state.searchSite === searchSite &&
 				state.requestAuth === requestAuth &&
 				state.linkComponent === linkComponent &&
+				JSON.stringify(state.siteFrameExtensions) ===
+					JSON.stringify(siteFrameExtensions) &&
+				JSON.stringify(state.accountTabs) === JSON.stringify(accountTabs) &&
 				state.contentLocale === (i18n?.contentLocale ?? state.contentLocale) &&
 				state.defaultLocale === (i18n?.defaultLocale ?? state.defaultLocale) &&
 				state.mode === nextMode &&
@@ -201,6 +212,8 @@ export const WebsiteBuilderProvider = ({
 				searchSite,
 				requestAuth,
 				linkComponent,
+				siteFrameExtensions: cloneWebsiteBuilderValue(siteFrameExtensions),
+				accountTabs: cloneWebsiteBuilderValue(accountTabs),
 				contentLocale: i18n?.contentLocale ?? state.contentLocale,
 				defaultLocale: i18n?.defaultLocale ?? state.defaultLocale,
 				mode:
@@ -213,6 +226,8 @@ export const WebsiteBuilderProvider = ({
 		i18n?.defaultLocale,
 		isAdmin,
 		linkComponent,
+		siteFrameExtensions,
+		accountTabs,
 		requestAuth,
 		searchSite,
 		uploadMedia,

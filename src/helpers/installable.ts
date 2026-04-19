@@ -1,8 +1,10 @@
 import type {
+	WebsiteBuilderAccountTabExtension,
 	WebsiteBuilderDocumentsMap,
 	WebsiteBuilderInstallableKit,
 	WebsiteBuilderModule,
 	WebsiteBuilderRegistryEntry,
+	WebsiteBuilderSiteFrameExtension,
 } from "../types";
 
 export const createWebsiteBuilderKit = (
@@ -35,3 +37,19 @@ export const collectWebsiteBuilderDocuments = (
 
 	return documents;
 };
+
+export const collectWebsiteBuilderSiteFrameExtensions = (
+	entries: WebsiteBuilderRegistryEntry[],
+): WebsiteBuilderSiteFrameExtension[] =>
+	entries.flatMap((entry) =>
+		isWebsiteBuilderInstallableKit(entry)
+			? entry.siteFrameExtensions ?? []
+			: [],
+	);
+
+export const collectWebsiteBuilderAccountTabs = (
+	entries: WebsiteBuilderRegistryEntry[],
+): WebsiteBuilderAccountTabExtension[] =>
+	entries.flatMap((entry) =>
+		isWebsiteBuilderInstallableKit(entry) ? entry.accountTabs ?? [] : [],
+	);

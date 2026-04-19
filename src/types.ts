@@ -259,6 +259,56 @@ export type WebsiteBuilderSite = {
 	regions: Record<string, WebsiteBuilderSiteRegion>;
 };
 
+export type WebsiteBuilderSiteFrameLinkItem = {
+	id?: string;
+	label: string;
+	href: string;
+	target?: string;
+	rel?: string;
+	order?: number;
+	enabled?: boolean;
+};
+
+export type WebsiteBuilderSiteFrameActionKind = "link" | "auth";
+
+export type WebsiteBuilderSiteFrameActionItem =
+	WebsiteBuilderSiteFrameLinkItem & {
+		kind?: WebsiteBuilderSiteFrameActionKind;
+		appearance?: "primary" | "secondary" | "ghost";
+	};
+
+export type WebsiteBuilderSiteFrameNavigationColumn = {
+	id?: string;
+	title: string;
+	links: WebsiteBuilderSiteFrameLinkItem[];
+	order?: number;
+	enabled?: boolean;
+};
+
+export type WebsiteBuilderSiteFrameExtension = {
+	id: string;
+	label?: string;
+	enabled?: boolean;
+	order?: number;
+	header?: {
+		utilityLinks?: WebsiteBuilderSiteFrameLinkItem[];
+		categoryLinks?: WebsiteBuilderSiteFrameLinkItem[];
+		actions?: WebsiteBuilderSiteFrameActionItem[];
+	};
+	footer?: {
+		navigationColumns?: WebsiteBuilderSiteFrameNavigationColumn[];
+		legalLinks?: WebsiteBuilderSiteFrameLinkItem[];
+	};
+};
+
+export type WebsiteBuilderAccountTabExtension = {
+	id: string;
+	label: string;
+	href?: string;
+	order?: number;
+	enabled?: boolean;
+};
+
 export type WebsiteBuilderWorkspaceRef = {
 	profileId: string;
 	branch: string;
@@ -480,6 +530,8 @@ export type WebsiteBuilderInstallableKit = {
 	label: string;
 	modules: WebsiteBuilderModule[];
 	documents?: WebsiteBuilderDocumentsMap;
+	siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
+	accountTabs?: WebsiteBuilderAccountTabExtension[];
 };
 
 export type WebsiteBuilderRegistryEntry =
@@ -546,6 +598,8 @@ export type WebsiteBuilderRuntime = {
 	entries: WebsiteBuilderRegistryEntry[];
 	registry: WebsiteBuilderRegistry;
 	documents: WebsiteBuilderDocumentsMap;
+	siteFrameExtensions: WebsiteBuilderSiteFrameExtension[];
+	accountTabs: WebsiteBuilderAccountTabExtension[];
 };
 
 export type WebsiteBuilderPageCatalogItem = {

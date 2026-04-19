@@ -1,6 +1,6 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
-import { b as WebsiteBuilderDocument, m as WebsiteBuilderResources, k as WebsiteBuilderPageSettings, p as WebsiteBuilderSite, v as WebsiteBuilderRegistry, t as WebsiteBuilderWorkspaceDescriptor, s as WebsiteBuilderWorkspaceCapabilities, w as WebsiteBuilderRevisionDescriptor, x as WebsiteBuilderBranchPolicyState, y as WebsiteBuilderMergePreview, z as WebsiteBuilderMode, i as WebsiteBuilderPageCatalogItem, A as WebsiteBuilderMediaUploadHandler, B as WebsiteBuilderSearchHandler, n as WebsiteBuilderSearchHighlight, C as WebsiteBuilderLinkComponent, D as WebsiteBuilderI18nValue, E as WebsiteBuilderField, F as WebsiteBuilderPageSettingsPanelDefinition, G as WebsiteBuilderSiteSettingsPanelDefinition } from './types-HUrNYqTk.js';
+import { b as WebsiteBuilderDocument, m as WebsiteBuilderResources, k as WebsiteBuilderPageSettings, p as WebsiteBuilderSite, A as WebsiteBuilderRegistry, t as WebsiteBuilderWorkspaceDescriptor, s as WebsiteBuilderWorkspaceCapabilities, B as WebsiteBuilderRevisionDescriptor, C as WebsiteBuilderBranchPolicyState, D as WebsiteBuilderMergePreview, E as WebsiteBuilderMode, i as WebsiteBuilderPageCatalogItem, F as WebsiteBuilderMediaUploadHandler, G as WebsiteBuilderSearchHandler, n as WebsiteBuilderSearchHighlight, H as WebsiteBuilderLinkComponent, u as WebsiteBuilderSiteFrameExtension, y as WebsiteBuilderAccountTabExtension, I as WebsiteBuilderI18nValue, J as WebsiteBuilderField, K as WebsiteBuilderPageSettingsPanelDefinition, L as WebsiteBuilderSiteSettingsPanelDefinition } from './types-q9w-WbBC.js';
 
 type InsertTarget = {
     listId: string;
@@ -69,6 +69,8 @@ type WebsiteBuilderStudioProps = {
     onSearch?: WebsiteBuilderSearchHandler;
     activeSearchHighlight?: WebsiteBuilderSearchHighlight | null;
     linkComponent?: WebsiteBuilderLinkComponent;
+    siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
+    accountTabs?: WebsiteBuilderAccountTabExtension[];
     i18n?: WebsiteBuilderI18nValue | null;
     hydrateModePreference?: boolean;
     showInterfaceLocaleControl?: boolean;
@@ -114,6 +116,6 @@ type SiteSettingsSubtabDefinition = {
     component: () => ReactNode;
 };
 
-declare const WebsiteBuilderStudio: ({ initialDocument, initialResources, initialPageSettings, initialSite, registry, workspace, capabilities, history, branchPolicy, mergePreview, canManage, initialMode, draftStorageKey, autosaveStorageKey, currentPage, pages, onRequestAuth, onLogout, onContentLocaleChange, onInterfaceLocaleChange, onModeChange, onSiteSettingChange, onSaveDocument, onOpenPage, onCreatePage, onUploadMedia, onSearch, activeSearchHighlight, linkComponent, i18n, hydrateModePreference, showInterfaceLocaleControl, workspaceControl, title, description, renderContentNotice, siteSettingsSubtabs, }: WebsiteBuilderStudioProps) => react_jsx_runtime.JSX.Element;
+declare const WebsiteBuilderStudio: ({ initialDocument, initialResources, initialPageSettings, initialSite, registry, workspace, capabilities, history, branchPolicy, mergePreview, canManage, initialMode, draftStorageKey, autosaveStorageKey, currentPage, pages, onRequestAuth, onLogout, onContentLocaleChange, onInterfaceLocaleChange, onModeChange, onSiteSettingChange, onSaveDocument, onOpenPage, onCreatePage, onUploadMedia, onSearch, activeSearchHighlight, linkComponent, siteFrameExtensions, accountTabs, i18n, hydrateModePreference, showInterfaceLocaleControl, workspaceControl, title, description, renderContentNotice, siteSettingsSubtabs, }: WebsiteBuilderStudioProps) => react_jsx_runtime.JSX.Element;
 
 export { type InsertTarget as I, type PageSettingsPanelDefinition as P, type SiteSettingsPanelDefinition as S, WebsiteBuilderStudio as W, type InspectorDefinitionMeta as a, type InspectorGroups as b, type PaletteDefinition as c, type PaletteFamilyGroup as d, type SiteSettingsSubtabDefinition as e, type WebsiteBuilderStudioProps as f, type WebsiteBuilderStudioSavePayload as g, type WebsiteBuilderStudioSaveReason as h, type WebsiteBuilderStudioSiteSettingChangeContext as i };

@@ -1,3 +1,7 @@
+export { c as collectWebsiteBuilderFooterExtensionItems, a as collectWebsiteBuilderHeaderExtensionItems, b as createWebsiteBuilderAccountTabExtension, d as createWebsiteBuilderSiteFrameExtension, r as resolveWebsiteBuilderAccountTabs, e as resolveWebsiteBuilderSiteFrameExtensions } from './site-frame-extensions-zYe8rj84.js';
+import './types-q9w-WbBC.js';
+import 'react';
+
 type WebsiteBuilderAccessAuthStateLike = {
     user?: {
         permissions?: string[] | null;

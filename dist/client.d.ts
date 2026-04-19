@@ -1,8 +1,8 @@
-export { W as WebsiteBuilderStudio } from './website-builder-studio-BxJBDREm.js';
+export { W as WebsiteBuilderStudio } from './website-builder-studio-C6CAL69K.js';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
-export { g as getWebsiteBuilderSurfaceModeStyle } from './surface-layout-Dg7kPXS2.js';
-import './types-HUrNYqTk.js';
+export { g as getWebsiteBuilderSurfaceModeStyle } from './surface-layout-BupNtOm_.js';
+import './types-q9w-WbBC.js';
 
 type WebsiteBuilderSurfaceLayoutMetrics = {
     builderEnabled: boolean;

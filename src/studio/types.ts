@@ -17,6 +17,8 @@ import type {
 	WebsiteBuilderMergePreview,
 	WebsiteBuilderBranchPolicyState,
 	WebsiteBuilderSite,
+	WebsiteBuilderSiteFrameExtension,
+	WebsiteBuilderAccountTabExtension,
 	WebsiteBuilderSiteSettingsPanelDefinition,
 	WebsiteBuilderWorkspaceCapabilities,
 	WebsiteBuilderWorkspaceDescriptor,
@@ -105,6 +107,8 @@ export type WebsiteBuilderStudioProps = {
 	onSearch?: WebsiteBuilderSearchHandler;
 	activeSearchHighlight?: WebsiteBuilderSearchHighlight | null;
 	linkComponent?: WebsiteBuilderLinkComponent;
+	siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
+	accountTabs?: WebsiteBuilderAccountTabExtension[];
 	i18n?: WebsiteBuilderI18nValue | null;
 	hydrateModePreference?: boolean;
 	showInterfaceLocaleControl?: boolean;

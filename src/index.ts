@@ -13,6 +13,7 @@ export * from "./helpers/installable";
 export * from "./helpers/media";
 export * from "./helpers/path";
 export * from "./helpers/runtime";
+export * from "./helpers/site-frame-extensions";
 export * from "./helpers/site-design";
 export * from "./helpers/surface-layout";
 export * from "./helpers/site";

@@ -1,8 +1,11 @@
 "use client";
 
 export type WebsiteBuilderSiteLinkItem = {
+	id?: string;
 	label: string;
 	href: string;
+	target?: string;
+	rel?: string;
 };
 
 export type WebsiteBuilderSiteNavigationColumn = {
@@ -24,8 +27,20 @@ export const normalizeWebsiteBuilderSiteLinkItems = (
 				typeof (candidate as { href?: unknown }).href === "string"
 					? [
 							{
+								id:
+									typeof (candidate as { id?: unknown }).id === "string"
+										? (candidate as { id: string }).id
+										: undefined,
 								label: normalizeString((candidate as { label: unknown }).label),
 								href: normalizeString((candidate as { href: unknown }).href),
+								target:
+									typeof (candidate as { target?: unknown }).target === "string"
+										? (candidate as { target: string }).target
+										: undefined,
+								rel:
+									typeof (candidate as { rel?: unknown }).rel === "string"
+										? (candidate as { rel: string }).rel
+										: undefined,
 							},
 						]
 					: [],

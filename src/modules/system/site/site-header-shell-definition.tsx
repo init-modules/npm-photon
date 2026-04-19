@@ -14,14 +14,22 @@ import {
 	defineWebsiteBuilderBlockDefinition,
 } from "../../../helpers/document";
 import {
+	collectWebsiteBuilderHeaderExtensionItems,
+	resolveWebsiteBuilderSiteFrameExtensions,
+} from "../../../helpers/site-frame-extensions";
+import {
 	isWebsiteBuilderFramelessSiteDesign,
 } from "../../../helpers/site-design";
 import { WebsiteBuilderSiteSearch } from "../../../search/website-builder-site-search";
 import type {
 	WebsiteBuilderBlockComponentProps,
 	WebsiteBuilderField,
+	WebsiteBuilderSiteFrameActionItem,
 } from "../../../types";
-import { normalizeWebsiteBuilderSiteLinkItems } from "./helpers";
+import {
+	normalizeWebsiteBuilderSiteLinkItems,
+	normalizeWebsiteBuilderSiteStringItems,
+} from "./helpers";
 
 type SiteHeaderProps = {
 	variant?: "commerce-inline" | "showcase-card";
@@ -43,6 +51,8 @@ type SiteHeaderProps = {
 	compactOnScroll: boolean;
 	showLocaleSwitcher?: boolean;
 	categoryLinks: Array<{ label: string; href: string }>;
+	disabledExtensionIds?: string[];
+	disabledExtensionItemIds?: string[];
 };
 
 const siteHeaderFields: WebsiteBuilderField[] = [
@@ -178,6 +188,20 @@ const siteHeaderFields: WebsiteBuilderField[] = [
 			{ path: "href", label: "Href", kind: "url", localization: "shared" },
 		],
 	},
+	{
+		path: "disabledExtensionIds",
+		label: "Disabled package extensions",
+		kind: "tags",
+		group: "layout",
+		localization: "shared",
+	},
+	{
+		path: "disabledExtensionItemIds",
+		label: "Disabled package extension items",
+		kind: "tags",
+		group: "layout",
+		localization: "shared",
+	},
 ];
 
 const SiteHeaderShell = ({
@@ -188,14 +212,36 @@ const SiteHeaderShell = ({
 	const currentRoute = useWebsiteBuilderStore((state) => state.document.route);
 	const requestAuth = useWebsiteBuilderStore((state) => state.requestAuth);
 	const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
+	const siteFrameExtensions = useWebsiteBuilderStore(
+		(state) => state.siteFrameExtensions,
+	);
 	const { locale, publicLocales, translate } = useWebsiteBuilderI18n();
 	const [isCompact, setIsCompact] = useState(false);
 	const headerRef = useRef<HTMLElement | null>(null);
-	const utilityLinks = normalizeWebsiteBuilderSiteLinkItems(
-		block.props.utilityLinks,
+	const disabledExtensionIds = normalizeWebsiteBuilderSiteStringItems(
+		block.props.disabledExtensionIds,
 	);
-	const categoryLinks = normalizeWebsiteBuilderSiteLinkItems(
-		block.props.categoryLinks,
+	const disabledExtensionItemIds = normalizeWebsiteBuilderSiteStringItems(
+		block.props.disabledExtensionItemIds,
+	);
+	const headerExtensionItems = collectWebsiteBuilderHeaderExtensionItems(
+		resolveWebsiteBuilderSiteFrameExtensions(
+			siteFrameExtensions,
+			disabledExtensionIds,
+		),
+		disabledExtensionItemIds,
+	);
+	const utilityLinks = [
+		...normalizeWebsiteBuilderSiteLinkItems(block.props.utilityLinks),
+		...normalizeWebsiteBuilderSiteLinkItems(headerExtensionItems.utilityLinks),
+	];
+	const categoryLinks = [
+		...normalizeWebsiteBuilderSiteLinkItems(block.props.categoryLinks),
+		...normalizeWebsiteBuilderSiteLinkItems(headerExtensionItems.categoryLinks),
+	];
+	const extensionActions = headerExtensionItems.actions;
+	const hasExtensionAuthAction = extensionActions.some(
+		(action) => (action.kind ?? "link") === "auth",
 	);
 	const variant = block.props.variant ?? "commerce-inline";
 	const liveSurfaceMode = mode !== "builder";
@@ -204,6 +250,43 @@ const SiteHeaderShell = ({
 	const isShowcaseCard = variant === "showcase-card" && !framelessSite;
 	const localeSwitcherVisible =
 		block.props.showLocaleSwitcher !== false && publicLocales.length > 1;
+
+	const renderExtensionAction = (action: WebsiteBuilderSiteFrameActionItem) => {
+		const appearance = action.appearance ?? "secondary";
+		const className = clsx(
+			"inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition",
+			appearance === "primary"
+				? "bg-[var(--wb-site-accent)] text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] hover:translate-y-[-1px]"
+				: appearance === "ghost"
+					? "text-[var(--wb-site-text)] hover:text-[var(--wb-site-accent)]"
+					: "border border-[var(--wb-site-border)] text-[var(--wb-site-text)] hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
+		);
+
+		if ((action.kind ?? "link") === "auth") {
+			return (
+				<button
+					key={action.id ?? `${action.label}:${action.href}`}
+					type="button"
+					onClick={requestAuth}
+					className={clsx(className, "cursor-pointer")}
+				>
+					{action.label}
+				</button>
+			);
+		}
+
+		return (
+			<WebsiteBuilderLink
+				key={action.id ?? `${action.label}:${action.href}`}
+				href={action.href}
+				target={action.target}
+				rel={action.rel}
+				className={className}
+			>
+				{action.label}
+			</WebsiteBuilderLink>
+		);
+	};
 
 	useEffect(() => {
 		if (
@@ -441,7 +524,8 @@ const SiteHeaderShell = ({
 									/>
 									<ArrowRight className="h-4 w-4" />
 								</WebsiteBuilderLink>
-								{block.props.showLoginAction && !isAdmin ? (
+								{extensionActions.map(renderExtensionAction)}
+								{block.props.showLoginAction && !isAdmin && !hasExtensionAuthAction ? (
 									<button
 										type="button"
 										onClick={requestAuth}
@@ -553,6 +637,8 @@ export const siteHeaderShellDefinition = defineWebsiteBuilderBlockDefinition({
 		sticky: true,
 		compactOnScroll: true,
 		showLocaleSwitcher: true,
+		disabledExtensionIds: [],
+		disabledExtensionItemIds: [],
 		categoryLinks: createWebsiteBuilderLocalizedDefault({
 			en: [
 				{ label: "Infrastructure", href: "/infrastructure" },

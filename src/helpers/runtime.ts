@@ -3,7 +3,11 @@ import type {
 	WebsiteBuilderRuntime,
 } from "../types";
 import { createWebsiteBuilderRegistry } from "./document";
-import { collectWebsiteBuilderDocuments } from "./installable";
+import {
+	collectWebsiteBuilderAccountTabs,
+	collectWebsiteBuilderDocuments,
+	collectWebsiteBuilderSiteFrameExtensions,
+} from "./installable";
 
 export const createWebsiteBuilderRuntime = (
 	entries: WebsiteBuilderRegistryEntry[],
@@ -11,4 +15,6 @@ export const createWebsiteBuilderRuntime = (
 	entries,
 	registry: createWebsiteBuilderRegistry(entries),
 	documents: collectWebsiteBuilderDocuments(entries),
+	siteFrameExtensions: collectWebsiteBuilderSiteFrameExtensions(entries),
+	accountTabs: collectWebsiteBuilderAccountTabs(entries),
 });

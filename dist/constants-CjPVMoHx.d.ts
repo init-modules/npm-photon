@@ -1,4 +1,4 @@
-import { H as WebsiteBuilderSiteDesignSettings, I as WebsiteBuilderResolvedSiteDesignSettings, J as WebsiteBuilderSiteComponentVariants, a as WebsiteBuilderBlock, b as WebsiteBuilderDocument, s as WebsiteBuilderWorkspaceCapabilities, K as WebsiteBuilderWorkspaceRef, t as WebsiteBuilderWorkspaceDescriptor } from './types-HUrNYqTk.js';
+import { M as WebsiteBuilderSiteDesignSettings, N as WebsiteBuilderResolvedSiteDesignSettings, O as WebsiteBuilderSiteComponentVariants, a as WebsiteBuilderBlock, b as WebsiteBuilderDocument, s as WebsiteBuilderWorkspaceCapabilities, P as WebsiteBuilderWorkspaceRef, t as WebsiteBuilderWorkspaceDescriptor } from './types-q9w-WbBC.js';
 
 declare const WEBSITE_BUILDER_EMPTY_TEXT = "Untitled";
 declare const cloneWebsiteBuilderValue: <T>(value: T) => T;

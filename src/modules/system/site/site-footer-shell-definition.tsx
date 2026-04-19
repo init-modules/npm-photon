@@ -11,12 +11,17 @@ import {
 	createWebsiteBuilderLocalizedDefault,
 	defineWebsiteBuilderBlockDefinition,
 } from "../../../helpers/document";
+import {
+	collectWebsiteBuilderFooterExtensionItems,
+	resolveWebsiteBuilderSiteFrameExtensions,
+} from "../../../helpers/site-frame-extensions";
 import { isWebsiteBuilderFramelessSiteDesign } from "../../../helpers/site-design";
 import type {
 	WebsiteBuilderBlockComponentProps,
 	WebsiteBuilderField,
 } from "../../../types";
 import {
+	normalizeWebsiteBuilderSiteLinkItems,
 	normalizeWebsiteBuilderSiteNavigationColumns,
 	normalizeWebsiteBuilderSiteStringItems,
 } from "./helpers";
@@ -37,6 +42,8 @@ type SiteFooterProps = {
 	copyrightLabel: string;
 	developerLabel: string;
 	developerHref: string;
+	disabledExtensionIds?: string[];
+	disabledExtensionItemIds?: string[];
 };
 
 const siteFooterFields: WebsiteBuilderField[] = [
@@ -139,6 +146,20 @@ const siteFooterFields: WebsiteBuilderField[] = [
 		group: "content",
 		localization: "shared",
 	},
+	{
+		path: "disabledExtensionIds",
+		label: "Disabled package extensions",
+		kind: "tags",
+		group: "layout",
+		localization: "shared",
+	},
+	{
+		path: "disabledExtensionItemIds",
+		label: "Disabled package extension items",
+		kind: "tags",
+		group: "layout",
+		localization: "shared",
+	},
 ];
 
 const footerVariantStyles: Record<
@@ -177,14 +198,38 @@ const SiteFooterShell = ({
 	block,
 }: WebsiteBuilderBlockComponentProps<SiteFooterProps>) => {
 	const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
+	const siteFrameExtensions = useWebsiteBuilderStore(
+		(state) => state.siteFrameExtensions,
+	);
 	const framelessSite = isWebsiteBuilderFramelessSiteDesign(siteDesign);
 	const footerVariant = framelessSite ? "minimal-air" : block.props.variant;
 	const variant =
 		footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"];
 	const isSoftCardsVariant =
 		footerVariant === "soft-cards" && !framelessSite;
-	const navigationColumns = normalizeWebsiteBuilderSiteNavigationColumns(
-		block.props.navigationColumns,
+	const disabledExtensionIds = normalizeWebsiteBuilderSiteStringItems(
+		block.props.disabledExtensionIds,
+	);
+	const disabledExtensionItemIds = normalizeWebsiteBuilderSiteStringItems(
+		block.props.disabledExtensionItemIds,
+	);
+	const footerExtensionItems = collectWebsiteBuilderFooterExtensionItems(
+		resolveWebsiteBuilderSiteFrameExtensions(
+			siteFrameExtensions,
+			disabledExtensionIds,
+		),
+		disabledExtensionItemIds,
+	);
+	const navigationColumns = [
+		...normalizeWebsiteBuilderSiteNavigationColumns(
+			block.props.navigationColumns,
+		),
+		...normalizeWebsiteBuilderSiteNavigationColumns(
+			footerExtensionItems.navigationColumns,
+		),
+	];
+	const legalLinks = normalizeWebsiteBuilderSiteLinkItems(
+		footerExtensionItems.legalLinks,
 	);
 	const contactItems = normalizeWebsiteBuilderSiteStringItems(block.props.contactItems);
 
@@ -404,6 +449,22 @@ const SiteFooterShell = ({
 								<EditableText blockId={block.id} path="legalLabel" />
 								<ArrowRight className="h-4 w-4" />
 							</WebsiteBuilderLink>
+							{legalLinks.map((link) => (
+								<WebsiteBuilderLink
+									key={`${link.label}:${link.href}`}
+									href={link.href}
+									target={link.target}
+									rel={link.rel}
+									className={clsx(
+										"inline-flex items-center gap-2 transition hover:text-[var(--wb-site-accent)]",
+										(footerVariantStyles[footerVariant] ??
+											footerVariantStyles["classic-dark"]).muted,
+									)}
+								>
+									{link.label}
+									<ArrowRight className="h-4 w-4" />
+								</WebsiteBuilderLink>
+							))}
 							<WebsiteBuilderLink
 								href={block.props.developerHref}
 								className={clsx(
@@ -521,6 +582,8 @@ export const siteFooterShellDefinition = defineWebsiteBuilderBlockDefinition({
 			ru: "Сделано init",
 		}),
 		developerHref: "https://init.kz",
+		disabledExtensionIds: [],
+		disabledExtensionItemIds: [],
 	},
 	fields: siteFooterFields,
 	component: SiteFooterShell,

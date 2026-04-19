@@ -1,9 +1,11 @@
 import {
   createWebsiteBuilderRuntime
-} from "./chunk-ITVMIT6B.js";
+} from "./chunk-FAN4Y46R.js";
 import {
   WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
+  collectWebsiteBuilderAccountTabs,
   collectWebsiteBuilderDocuments,
+  collectWebsiteBuilderSiteFrameExtensions,
   composeWebsiteBuilderSurfaceDocument,
   createWebsiteBuilderBlock,
   createWebsiteBuilderBlockLocalizationSchema,
@@ -24,7 +26,15 @@ import {
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-2NBCYAY5.js";
+} from "./chunk-RIBOMHDR.js";
+import {
+  collectWebsiteBuilderFooterExtensionItems,
+  collectWebsiteBuilderHeaderExtensionItems,
+  createWebsiteBuilderAccountTabExtension,
+  createWebsiteBuilderSiteFrameExtension,
+  resolveWebsiteBuilderAccountTabs,
+  resolveWebsiteBuilderSiteFrameExtensions
+} from "./chunk-4N2K54N2.js";
 import {
   WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
   WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
@@ -90,8 +100,13 @@ export {
   canSaveWebsiteBuilderWorkspace,
   cloneWebsiteBuilderBlockTreeWithNewIds,
   cloneWebsiteBuilderValue,
+  collectWebsiteBuilderAccountTabs,
   collectWebsiteBuilderDocuments,
+  collectWebsiteBuilderFooterExtensionItems,
+  collectWebsiteBuilderHeaderExtensionItems,
+  collectWebsiteBuilderSiteFrameExtensions,
   composeWebsiteBuilderSurfaceDocument,
+  createWebsiteBuilderAccountTabExtension,
   createWebsiteBuilderAreaListId,
   createWebsiteBuilderBlock,
   createWebsiteBuilderBlockLocalizationSchema,
@@ -102,6 +117,7 @@ export {
   createWebsiteBuilderRegistry,
   createWebsiteBuilderRuntime,
   createWebsiteBuilderSiteDesignSettings,
+  createWebsiteBuilderSiteFrameExtension,
   decomposeWebsiteBuilderSurfaceDocument,
   defineWebsiteBuilderBlockDefinition,
   duplicateWebsiteBuilderBlockInDocument,
@@ -130,8 +146,10 @@ export {
   normalizeWebsiteBuilderWorkspaceDescriptor,
   normalizeWebsiteBuilderWorkspaceRef,
   removeWebsiteBuilderBlockFromDocument,
+  resolveWebsiteBuilderAccountTabs,
   resolveWebsiteBuilderModules,
   resolveWebsiteBuilderSiteDesignSettings,
+  resolveWebsiteBuilderSiteFrameExtensions,
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId,
