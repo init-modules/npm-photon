@@ -22,6 +22,7 @@ import {
 } from "../../../helpers/site-design";
 import { WebsiteBuilderSiteSearch } from "../../../search/website-builder-site-search";
 import type {
+	WebsiteBuilderBlock,
 	WebsiteBuilderBlockComponentProps,
 	WebsiteBuilderField,
 	WebsiteBuilderResources,
@@ -90,6 +91,28 @@ const hasAuthenticatedUser = (resources: WebsiteBuilderResources) => {
 
 	return Boolean(auth?.user);
 };
+
+const hasCommerceBlock = (blocks: readonly WebsiteBuilderBlock[] | undefined): boolean =>
+	(blocks ?? []).some((item) => {
+		if (item.module === "commerce-website-builder") {
+			return true;
+		}
+
+		return (item.areas ?? []).some((area) => hasCommerceBlock(area.blocks));
+	});
+
+const hasCommerceRuntimeResource = (resources: WebsiteBuilderResources) =>
+	[
+		"commerceCatalog",
+		"commerceCatalogItem",
+		"commerceProduct",
+		"commerceCheckout",
+		"commerceOrder",
+	].some((key) => resources[key] !== undefined) ||
+	getHeaderCartQuantity(resources) > 0;
+
+const isCommerceExtensionId = (id: string | undefined) =>
+	typeof id === "string" && id.startsWith("commerce");
 
 const siteHeaderFields: WebsiteBuilderField[] = [
 	{
@@ -246,8 +269,10 @@ const SiteHeaderShell = ({
 	const isAdmin = useWebsiteBuilderStore((state) => state.isAdmin);
 	const mode = useWebsiteBuilderStore((state) => state.mode);
 	const currentRoute = useWebsiteBuilderStore((state) => state.document.route);
+	const currentBlocks = useWebsiteBuilderStore((state) => state.document.blocks);
 	const requestAuth = useWebsiteBuilderStore((state) => state.requestAuth);
 	const resources = useWebsiteBuilderStore((state) => state.resources);
+	const siteRegions = useWebsiteBuilderStore((state) => state.site.regions);
 	const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
 	const siteFrameExtensions = useWebsiteBuilderStore(
 		(state) => state.siteFrameExtensions,
@@ -265,6 +290,14 @@ const SiteHeaderShell = ({
 		resolveWebsiteBuilderSiteFrameExtensions(
 			siteFrameExtensions,
 			disabledExtensionIds,
+		).filter(
+			(extension) =>
+				!isCommerceExtensionId(extension.id) ||
+				hasCommerceBlock(currentBlocks) ||
+				Object.values(siteRegions).some((region) =>
+					hasCommerceBlock(region.document.blocks),
+				) ||
+				hasCommerceRuntimeResource(resources),
 		),
 		disabledExtensionItemIds,
 	);
@@ -272,9 +305,18 @@ const SiteHeaderShell = ({
 		...normalizeWebsiteBuilderSiteLinkItems(block.props.utilityLinks),
 		...normalizeWebsiteBuilderSiteLinkItems(headerExtensionItems.utilityLinks),
 	];
+	const extensionCategoryLinks = normalizeWebsiteBuilderSiteLinkItems(
+		headerExtensionItems.categoryLinks,
+	);
+	const commerceCatalogLink =
+		extensionCategoryLinks.find(
+			(link) =>
+				link.id === "commerce:catalog-link" ||
+				getHeaderLinkPathname(link.href) === "/catalog",
+		) ?? null;
 	const categoryLinks = [
 		...normalizeWebsiteBuilderSiteLinkItems(block.props.categoryLinks),
-		...normalizeWebsiteBuilderSiteLinkItems(headerExtensionItems.categoryLinks),
+		...extensionCategoryLinks.filter((link) => link !== commerceCatalogLink),
 	];
 	const extensionActions = headerExtensionItems.actions;
 	const hasExtensionAuthAction = extensionActions.some(
@@ -327,16 +369,7 @@ const SiteHeaderShell = ({
 		}
 
 		if (!authenticatedUser && isProtectedAccountHref(link.href)) {
-			return (
-				<button
-					key={key}
-					type="button"
-					onClick={requestAuth}
-					className={clsx(className, "cursor-pointer")}
-				>
-					{link.label}
-				</button>
-			);
+			return null;
 		}
 
 		return (
@@ -519,36 +552,16 @@ const SiteHeaderShell = ({
 					<div className="flex flex-col gap-4">
 						<div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 							<div className="flex flex-wrap items-center gap-3 text-sm text-[var(--wb-site-muted)]">
-								{utilityLinks.map((link) => (
-									isCartLinkHref(link.href) ? (
-										renderCartLink(
-											link.href,
-											link.label,
-											"h-8 w-8 border-transparent",
-											`${link.label}:${link.href}`,
-										)
-									) : !authenticatedUser &&
-										isProtectedAccountHref(link.href) ? (
-										<button
-											key={`${link.label}:${link.href}`}
-											type="button"
-											onClick={requestAuth}
-											data-wb-header-utility-link={link.href}
-											className="cursor-pointer transition hover:text-[var(--wb-site-text)]"
-										>
-											{link.label}
-										</button>
-									) : (
-										<WebsiteBuilderLink
-											key={`${link.label}:${link.href}`}
-											href={link.href}
-											data-wb-header-utility-link={link.href}
-											className="transition hover:text-[var(--wb-site-text)]"
-										>
-											{link.label}
-										</WebsiteBuilderLink>
-									)
-								))}
+								{utilityLinks.map((link) =>
+									renderSmartLink(
+										link,
+										clsx(
+											"transition hover:text-[var(--wb-site-text)]",
+											isCartLinkHref(link.href) && "h-8 w-8 border-transparent",
+										),
+										`${link.label}:${link.href}`,
+									),
+								)}
 							</div>
 							<div className="flex flex-wrap items-center gap-3 text-sm">
 								{localeSwitcherVisible ? (
@@ -593,7 +606,14 @@ const SiteHeaderShell = ({
 							</div>
 						</div>
 
-						<div className="grid gap-4 lg:grid-cols-[auto_auto_minmax(280px,1fr)_auto] lg:items-center">
+						<div
+							className={clsx(
+								"grid gap-4 lg:items-center",
+								commerceCatalogLink
+									? "lg:grid-cols-[auto_auto_minmax(280px,1fr)_auto]"
+									: "lg:grid-cols-[auto_minmax(280px,1fr)_auto]",
+							)}
+						>
 							<WebsiteBuilderLink
 								href={block.props.brandHref}
 								className="flex min-w-0 items-center gap-3"
@@ -632,14 +652,19 @@ const SiteHeaderShell = ({
 								</div>
 							</WebsiteBuilderLink>
 
-							<div className="inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
-								<div className="h-2.5 w-2.5 rounded-full bg-[var(--wb-site-accent)]" />
-								<EditableText
-									blockId={block.id}
-									path="catalogLabel"
-									className="font-semibold text-[var(--wb-site-text)]"
-								/>
-							</div>
+							{commerceCatalogLink ? (
+								<WebsiteBuilderLink
+									href={commerceCatalogLink.href}
+									className="inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
+								>
+									<div className="h-2.5 w-2.5 rounded-full bg-[var(--wb-site-accent)]" />
+									<EditableText
+										blockId={block.id}
+										path="catalogLabel"
+										className="font-semibold"
+									/>
+								</WebsiteBuilderLink>
+							) : null}
 
 							<WebsiteBuilderSiteSearch
 								blockId={block.id}
@@ -655,19 +680,7 @@ const SiteHeaderShell = ({
 										"secondary-cart",
 									)
 								) : !authenticatedUser &&
-									isProtectedAccountHref(block.props.secondaryCtaHref) ? (
-									<button
-										type="button"
-										onClick={requestAuth}
-										className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
-									>
-										<EditableText
-											blockId={block.id}
-											path="secondaryCtaLabel"
-											className="font-semibold"
-										/>
-									</button>
-								) : (
+									isProtectedAccountHref(block.props.secondaryCtaHref) ? null : (
 									<WebsiteBuilderLink
 										href={block.props.secondaryCtaHref}
 										className="inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"

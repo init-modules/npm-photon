@@ -225,7 +225,7 @@ export const WebsiteBuilderSiteSearch = ({
 		return (
 			<div
 				className={clsx(
-					"flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]",
+					"flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4",
 					className,
 				)}
 			>
@@ -243,7 +243,7 @@ export const WebsiteBuilderSiteSearch = ({
 		<>
 			<div
 				className={clsx(
-					"flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]",
+					"flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4",
 					className,
 				)}
 			>
@@ -278,7 +278,7 @@ export const WebsiteBuilderSiteSearch = ({
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent
 					onOpenAutoFocus={handleDialogOpenAutoFocus}
-					className="w-[min(44rem,calc(100%-1.5rem))] gap-0 overflow-hidden rounded-[32px] border border-[var(--wb-site-border)] bg-[color-mix(in_srgb,var(--wb-site-surface)_98%,white)] p-0 text-[var(--wb-site-text)] shadow-[0_40px_140px_rgba(32,22,18,0.18)]"
+					className="w-[min(44rem,calc(100%-1.5rem))] gap-0 overflow-hidden rounded-[32px] border border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_96%,var(--wb-site-background))] p-0 text-[var(--wb-site-text)] shadow-[0_40px_140px_rgba(0,0,0,0.28)]"
 				>
 					<div className="sr-only">
 						<DialogTitle>
@@ -313,7 +313,7 @@ export const WebsiteBuilderSiteSearch = ({
 						<button
 							type="button"
 							onClick={() => setOpen(false)}
-							className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--wb-site-muted-text)] transition hover:bg-[color-mix(in_srgb,var(--wb-site-border)_34%,white)] hover:text-[var(--wb-site-text)]"
+							className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--wb-site-muted-text)] transition hover:bg-[color-mix(in_oklab,var(--wb-site-border)_38%,transparent)] hover:text-[var(--wb-site-text)]"
 							aria-label="Close search"
 						>
 							<X className="h-4 w-4" />
@@ -326,7 +326,7 @@ export const WebsiteBuilderSiteSearch = ({
 
 					<div className="max-h-[24rem] overflow-y-auto px-3 py-3">
 						{loading ? (
-							<div className="flex items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[color-mix(in_srgb,var(--wb-site-surface)_96%,white)] px-4 py-4 text-sm text-[var(--wb-site-muted-text)]">
+							<div className="flex items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] px-4 py-4 text-sm text-[var(--wb-site-muted-text)]">
 								<Loader2 className="h-4 w-4 animate-spin text-[var(--wb-site-accent)]" />
 								<span>Searching the live site surface…</span>
 							</div>
@@ -338,7 +338,7 @@ export const WebsiteBuilderSiteSearch = ({
 								listLabel="Website search results"
 								className="space-y-2"
 								emptyState={
-									<div className="rounded-[24px] border border-dashed border-[var(--wb-site-border)] bg-[color-mix(in_srgb,var(--wb-site-surface)_96%,white)] px-4 py-8 text-center text-sm leading-7 text-[var(--wb-site-muted-text)]">
+									<div className="rounded-[24px] border border-dashed border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] px-4 py-8 text-center text-sm leading-7 text-[var(--wb-site-muted-text)]">
 										{hasQuery
 											? "No blocks matched this query yet."
 											: "Search static page copy and publication content from the live site shell."}
@@ -380,8 +380,8 @@ export const WebsiteBuilderSiteSearch = ({
 												className={clsx(
 													"block rounded-[24px] border px-4 py-4 transition",
 													isActive
-														? "border-[var(--wb-site-accent)] bg-[color-mix(in_srgb,var(--wb-site-accent)_8%,white)]"
-														: "border-[var(--wb-site-border)] bg-[color-mix(in_srgb,var(--wb-site-surface)_96%,white)] hover:border-[color-mix(in_srgb,var(--wb-site-accent)_38%,var(--wb-site-border))] hover:bg-[color-mix(in_srgb,var(--wb-site-accent)_6%,white)]",
+														? "border-[var(--wb-site-accent)] bg-[color-mix(in_oklab,var(--wb-site-accent)_14%,var(--wb-site-surface))]"
+														: "border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] hover:border-[color-mix(in_oklab,var(--wb-site-accent)_46%,var(--wb-site-border))] hover:bg-[color-mix(in_oklab,var(--wb-site-accent)_10%,var(--wb-site-surface))]",
 												)}
 											>
 												<div className="flex items-start justify-between gap-4">
@@ -400,7 +400,7 @@ export const WebsiteBuilderSiteSearch = ({
 												<div className="mt-3 text-sm leading-7 text-[var(--wb-site-muted-text)]">
 													{snippetParts[0]}
 													{snippetParts[1] ? (
-														<mark className="rounded-full bg-[color-mix(in_srgb,var(--wb-site-accent)_16%,white)] px-1.5 py-0.5 text-[var(--wb-site-text)]">
+														<mark className="rounded-full bg-[color-mix(in_oklab,var(--wb-site-accent)_24%,var(--wb-site-surface))] px-1.5 py-0.5 text-[var(--wb-site-text)]">
 															{snippetParts[1]}
 														</mark>
 													) : null}

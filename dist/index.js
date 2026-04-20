@@ -2401,7 +2401,7 @@ var WebsiteBuilderSiteSearch = ({
       "div",
       {
         className: clsx8(
-          "flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]",
+          "flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4",
           className
         ),
         children: [
@@ -2423,7 +2423,7 @@ var WebsiteBuilderSiteSearch = ({
       "div",
       {
         className: clsx8(
-          "flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]",
+          "flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4",
           className
         ),
         children: [
@@ -2463,7 +2463,7 @@ var WebsiteBuilderSiteSearch = ({
       DialogContent,
       {
         onOpenAutoFocus: handleDialogOpenAutoFocus,
-        className: "w-[min(44rem,calc(100%-1.5rem))] gap-0 overflow-hidden rounded-[32px] border border-[var(--wb-site-border)] bg-[color-mix(in_srgb,var(--wb-site-surface)_98%,white)] p-0 text-[var(--wb-site-text)] shadow-[0_40px_140px_rgba(32,22,18,0.18)]",
+        className: "w-[min(44rem,calc(100%-1.5rem))] gap-0 overflow-hidden rounded-[32px] border border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_96%,var(--wb-site-background))] p-0 text-[var(--wb-site-text)] shadow-[0_40px_140px_rgba(0,0,0,0.28)]",
         children: [
           /* @__PURE__ */ jsxs8("div", { className: "sr-only", children: [
             /* @__PURE__ */ jsx13(DialogTitle, { children: translate(
@@ -2498,14 +2498,14 @@ var WebsiteBuilderSiteSearch = ({
               {
                 type: "button",
                 onClick: () => setOpen(false),
-                className: "inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--wb-site-muted-text)] transition hover:bg-[color-mix(in_srgb,var(--wb-site-border)_34%,white)] hover:text-[var(--wb-site-text)]",
+                className: "inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--wb-site-muted-text)] transition hover:bg-[color-mix(in_oklab,var(--wb-site-border)_38%,transparent)] hover:text-[var(--wb-site-text)]",
                 "aria-label": "Close search",
                 children: /* @__PURE__ */ jsx13(X, { className: "h-4 w-4" })
               }
             )
           ] }),
           /* @__PURE__ */ jsx13("div", { className: "border-b border-[var(--wb-site-border)] px-5 py-3 text-sm text-[var(--wb-site-muted-text)]", children: summaryText }),
-          /* @__PURE__ */ jsx13("div", { className: "max-h-[24rem] overflow-y-auto px-3 py-3", children: loading ? /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[color-mix(in_srgb,var(--wb-site-surface)_96%,white)] px-4 py-4 text-sm text-[var(--wb-site-muted-text)]", children: [
+          /* @__PURE__ */ jsx13("div", { className: "max-h-[24rem] overflow-y-auto px-3 py-3", children: loading ? /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] px-4 py-4 text-sm text-[var(--wb-site-muted-text)]", children: [
             /* @__PURE__ */ jsx13(Loader2, { className: "h-4 w-4 animate-spin text-[var(--wb-site-accent)]" }),
             /* @__PURE__ */ jsx13("span", { children: "Searching the live site surface\u2026" })
           ] }) : /* @__PURE__ */ jsx13(
@@ -2516,7 +2516,7 @@ var WebsiteBuilderSiteSearch = ({
               getItemId: (result) => result.id,
               listLabel: "Website search results",
               className: "space-y-2",
-              emptyState: /* @__PURE__ */ jsx13("div", { className: "rounded-[24px] border border-dashed border-[var(--wb-site-border)] bg-[color-mix(in_srgb,var(--wb-site-surface)_96%,white)] px-4 py-8 text-center text-sm leading-7 text-[var(--wb-site-muted-text)]", children: hasQuery ? "No blocks matched this query yet." : "Search static page copy and publication content from the live site shell." }),
+              emptyState: /* @__PURE__ */ jsx13("div", { className: "rounded-[24px] border border-dashed border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] px-4 py-8 text-center text-sm leading-7 text-[var(--wb-site-muted-text)]", children: hasQuery ? "No blocks matched this query yet." : "Search static page copy and publication content from the live site shell." }),
               renderItem: (result, { isActive }) => {
                 const snippetParts = renderSnippetParts(
                   result.snippet,
@@ -2545,7 +2545,7 @@ var WebsiteBuilderSiteSearch = ({
                     onClick: () => setOpen(false),
                     className: clsx8(
                       "block rounded-[24px] border px-4 py-4 transition",
-                      isActive ? "border-[var(--wb-site-accent)] bg-[color-mix(in_srgb,var(--wb-site-accent)_8%,white)]" : "border-[var(--wb-site-border)] bg-[color-mix(in_srgb,var(--wb-site-surface)_96%,white)] hover:border-[color-mix(in_srgb,var(--wb-site-accent)_38%,var(--wb-site-border))] hover:bg-[color-mix(in_srgb,var(--wb-site-accent)_6%,white)]"
+                      isActive ? "border-[var(--wb-site-accent)] bg-[color-mix(in_oklab,var(--wb-site-accent)_14%,var(--wb-site-surface))]" : "border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] hover:border-[color-mix(in_oklab,var(--wb-site-accent)_46%,var(--wb-site-border))] hover:bg-[color-mix(in_oklab,var(--wb-site-accent)_10%,var(--wb-site-surface))]"
                     ),
                     children: [
                       /* @__PURE__ */ jsxs8("div", { className: "flex items-start justify-between gap-4", children: [
@@ -2557,7 +2557,7 @@ var WebsiteBuilderSiteSearch = ({
                       ] }),
                       /* @__PURE__ */ jsxs8("div", { className: "mt-3 text-sm leading-7 text-[var(--wb-site-muted-text)]", children: [
                         snippetParts[0],
-                        snippetParts[1] ? /* @__PURE__ */ jsx13("mark", { className: "rounded-full bg-[color-mix(in_srgb,var(--wb-site-accent)_16%,white)] px-1.5 py-0.5 text-[var(--wb-site-text)]", children: snippetParts[1] }) : null,
+                        snippetParts[1] ? /* @__PURE__ */ jsx13("mark", { className: "rounded-full bg-[color-mix(in_oklab,var(--wb-site-accent)_24%,var(--wb-site-surface))] px-1.5 py-0.5 text-[var(--wb-site-text)]", children: snippetParts[1] }) : null,
                         snippetParts[2] ?? ""
                       ] })
                     ]
@@ -2595,6 +2595,20 @@ var hasAuthenticatedUser = (resources) => {
   const auth = resources.auth;
   return Boolean(auth?.user);
 };
+var hasCommerceBlock = (blocks) => (blocks ?? []).some((item) => {
+  if (item.module === "commerce-website-builder") {
+    return true;
+  }
+  return (item.areas ?? []).some((area) => hasCommerceBlock(area.blocks));
+});
+var hasCommerceRuntimeResource = (resources) => [
+  "commerceCatalog",
+  "commerceCatalogItem",
+  "commerceProduct",
+  "commerceCheckout",
+  "commerceOrder"
+].some((key) => resources[key] !== void 0) || getHeaderCartQuantity(resources) > 0;
+var isCommerceExtensionId = (id) => typeof id === "string" && id.startsWith("commerce");
 var siteHeaderFields = [
   {
     path: "variant",
@@ -2749,8 +2763,10 @@ var SiteHeaderShell = ({
   const isAdmin = useWebsiteBuilderStore((state) => state.isAdmin);
   const mode = useWebsiteBuilderStore((state) => state.mode);
   const currentRoute = useWebsiteBuilderStore((state) => state.document.route);
+  const currentBlocks = useWebsiteBuilderStore((state) => state.document.blocks);
   const requestAuth = useWebsiteBuilderStore((state) => state.requestAuth);
   const resources = useWebsiteBuilderStore((state) => state.resources);
+  const siteRegions = useWebsiteBuilderStore((state) => state.site.regions);
   const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
   const siteFrameExtensions = useWebsiteBuilderStore(
     (state) => state.siteFrameExtensions
@@ -2768,6 +2784,10 @@ var SiteHeaderShell = ({
     resolveWebsiteBuilderSiteFrameExtensions(
       siteFrameExtensions,
       disabledExtensionIds
+    ).filter(
+      (extension) => !isCommerceExtensionId(extension.id) || hasCommerceBlock(currentBlocks) || Object.values(siteRegions).some(
+        (region) => hasCommerceBlock(region.document.blocks)
+      ) || hasCommerceRuntimeResource(resources)
     ),
     disabledExtensionItemIds
   );
@@ -2775,9 +2795,15 @@ var SiteHeaderShell = ({
     ...normalizeWebsiteBuilderSiteLinkItems(block.props.utilityLinks),
     ...normalizeWebsiteBuilderSiteLinkItems(headerExtensionItems.utilityLinks)
   ];
+  const extensionCategoryLinks = normalizeWebsiteBuilderSiteLinkItems(
+    headerExtensionItems.categoryLinks
+  );
+  const commerceCatalogLink = extensionCategoryLinks.find(
+    (link) => link.id === "commerce:catalog-link" || getHeaderLinkPathname(link.href) === "/catalog"
+  ) ?? null;
   const categoryLinks = [
     ...normalizeWebsiteBuilderSiteLinkItems(block.props.categoryLinks),
-    ...normalizeWebsiteBuilderSiteLinkItems(headerExtensionItems.categoryLinks)
+    ...extensionCategoryLinks.filter((link) => link !== commerceCatalogLink)
   ];
   const extensionActions = headerExtensionItems.actions;
   const hasExtensionAuthAction = extensionActions.some(
@@ -2815,16 +2841,7 @@ var SiteHeaderShell = ({
       return renderCartLink(link.href, link.label, className, key);
     }
     if (!authenticatedUser && isProtectedAccountHref(link.href)) {
-      return /* @__PURE__ */ jsx14(
-        "button",
-        {
-          type: "button",
-          onClick: requestAuth,
-          className: clsx9(className, "cursor-pointer"),
-          children: link.label
-        },
-        key
-      );
+      return null;
     }
     return /* @__PURE__ */ jsx14(
       WebsiteBuilderLink,
@@ -2953,31 +2970,16 @@ var SiteHeaderShell = ({
                 ),
                 children: /* @__PURE__ */ jsxs9("div", { className: "flex flex-col gap-4", children: [
                   /* @__PURE__ */ jsxs9("div", { className: "flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between", children: [
-                    /* @__PURE__ */ jsx14("div", { className: "flex flex-wrap items-center gap-3 text-sm text-[var(--wb-site-muted)]", children: utilityLinks.map((link) => isCartLinkHref(link.href) ? renderCartLink(
-                      link.href,
-                      link.label,
-                      "h-8 w-8 border-transparent",
-                      `${link.label}:${link.href}`
-                    ) : !authenticatedUser && isProtectedAccountHref(link.href) ? /* @__PURE__ */ jsx14(
-                      "button",
-                      {
-                        type: "button",
-                        onClick: requestAuth,
-                        "data-wb-header-utility-link": link.href,
-                        className: "cursor-pointer transition hover:text-[var(--wb-site-text)]",
-                        children: link.label
-                      },
-                      `${link.label}:${link.href}`
-                    ) : /* @__PURE__ */ jsx14(
-                      WebsiteBuilderLink,
-                      {
-                        href: link.href,
-                        "data-wb-header-utility-link": link.href,
-                        className: "transition hover:text-[var(--wb-site-text)]",
-                        children: link.label
-                      },
-                      `${link.label}:${link.href}`
-                    )) }),
+                    /* @__PURE__ */ jsx14("div", { className: "flex flex-wrap items-center gap-3 text-sm text-[var(--wb-site-muted)]", children: utilityLinks.map(
+                      (link) => renderSmartLink(
+                        link,
+                        clsx9(
+                          "transition hover:text-[var(--wb-site-text)]",
+                          isCartLinkHref(link.href) && "h-8 w-8 border-transparent"
+                        ),
+                        `${link.label}:${link.href}`
+                      )
+                    ) }),
                     /* @__PURE__ */ jsxs9("div", { className: "flex flex-wrap items-center gap-3 text-sm", children: [
                       localeSwitcherVisible ? /* @__PURE__ */ jsxs9(
                         "div",
@@ -3024,139 +3026,140 @@ var SiteHeaderShell = ({
                       )
                     ] })
                   ] }),
-                  /* @__PURE__ */ jsxs9("div", { className: "grid gap-4 lg:grid-cols-[auto_auto_minmax(280px,1fr)_auto] lg:items-center", children: [
-                    /* @__PURE__ */ jsxs9(
-                      WebsiteBuilderLink,
-                      {
-                        href: block.props.brandHref,
-                        className: "flex min-w-0 items-center gap-3",
-                        children: [
-                          /* @__PURE__ */ jsx14("div", { className: "relative h-16 w-16 overflow-hidden rounded-[22px] border border-[var(--wb-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]", children: block.props.logoImage ? /* @__PURE__ */ jsx14(
-                            EditableImage,
-                            {
-                              blockId: block.id,
-                              path: "logoImage",
-                              className: "h-full w-full rounded-[22px]",
-                              imageClassName: "h-full w-full object-contain p-2",
-                              fallbackAlt: block.props.brandLabel
-                            }
-                          ) : /* @__PURE__ */ jsx14("div", { className: "flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--wb-site-accent)]", children: /* @__PURE__ */ jsx14(
-                            EditableText,
-                            {
-                              blockId: block.id,
-                              path: "brandLabel",
-                              className: "text-[var(--wb-site-accent)]"
-                            }
-                          ) }) }),
-                          /* @__PURE__ */ jsxs9("div", { className: "min-w-0", children: [
-                            /* @__PURE__ */ jsx14(
-                              EditableText,
-                              {
-                                blockId: block.id,
-                                path: "brandLabel",
-                                as: "div",
-                                className: "[font-family:var(--wb-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
-                              }
-                            ),
-                            isShowcaseCard ? /* @__PURE__ */ jsx14("div", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--wb-site-muted)]", children: "Live site frame" }) : null
-                          ] })
-                        ]
-                      }
-                    ),
-                    /* @__PURE__ */ jsxs9("div", { className: "inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]", children: [
-                      /* @__PURE__ */ jsx14("div", { className: "h-2.5 w-2.5 rounded-full bg-[var(--wb-site-accent)]" }),
-                      /* @__PURE__ */ jsx14(
-                        EditableText,
-                        {
-                          blockId: block.id,
-                          path: "catalogLabel",
-                          className: "font-semibold text-[var(--wb-site-text)]"
-                        }
-                      )
-                    ] }),
-                    /* @__PURE__ */ jsx14(
-                      WebsiteBuilderSiteSearch,
-                      {
-                        blockId: block.id,
-                        placeholderPath: "searchPlaceholder"
-                      }
-                    ),
-                    /* @__PURE__ */ jsxs9("div", { className: "flex flex-wrap items-center justify-start gap-2 lg:justify-end", children: [
-                      isCartLinkHref(block.props.secondaryCtaHref) ? renderCartLink(
-                        block.props.secondaryCtaHref,
-                        block.props.secondaryCtaLabel,
-                        void 0,
-                        "secondary-cart"
-                      ) : !authenticatedUser && isProtectedAccountHref(block.props.secondaryCtaHref) ? /* @__PURE__ */ jsx14(
-                        "button",
-                        {
-                          type: "button",
-                          onClick: requestAuth,
-                          className: "inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
-                          children: /* @__PURE__ */ jsx14(
-                            EditableText,
-                            {
-                              blockId: block.id,
-                              path: "secondaryCtaLabel",
-                              className: "font-semibold"
-                            }
-                          )
-                        }
-                      ) : /* @__PURE__ */ jsx14(
-                        WebsiteBuilderLink,
-                        {
-                          href: block.props.secondaryCtaHref,
-                          className: "inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
-                          children: /* @__PURE__ */ jsx14(
-                            EditableText,
-                            {
-                              blockId: block.id,
-                              path: "secondaryCtaLabel",
-                              className: "font-semibold"
-                            }
-                          )
-                        }
+                  /* @__PURE__ */ jsxs9(
+                    "div",
+                    {
+                      className: clsx9(
+                        "grid gap-4 lg:items-center",
+                        commerceCatalogLink ? "lg:grid-cols-[auto_auto_minmax(280px,1fr)_auto]" : "lg:grid-cols-[auto_minmax(280px,1fr)_auto]"
                       ),
-                      /* @__PURE__ */ jsxs9(
-                        WebsiteBuilderLink,
-                        {
-                          href: block.props.primaryCtaHref,
-                          className: "inline-flex items-center gap-2 rounded-full bg-[var(--wb-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] transition hover:translate-y-[-1px]",
-                          children: [
-                            /* @__PURE__ */ jsx14(
-                              EditableText,
-                              {
-                                blockId: block.id,
-                                path: "primaryCtaLabel",
-                                className: "font-semibold text-white"
-                              }
-                            ),
-                            /* @__PURE__ */ jsx14(ArrowRight2, { className: "h-4 w-4" })
-                          ]
-                        }
-                      ),
-                      extensionActions.map(renderExtensionAction),
-                      block.props.showLoginAction && !isAdmin && !hasExtensionAuthAction ? /* @__PURE__ */ jsxs9(
-                        "button",
-                        {
-                          type: "button",
-                          onClick: requestAuth,
-                          className: "inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--wb-site-border)] bg-[var(--wb-site-surface)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
-                          children: [
-                            /* @__PURE__ */ jsx14(LogIn, { className: "h-4 w-4" }),
-                            /* @__PURE__ */ jsx14(
-                              EditableText,
-                              {
-                                blockId: block.id,
-                                path: "loginLabel",
-                                className: "font-semibold"
-                              }
-                            )
-                          ]
-                        }
-                      ) : null
-                    ] })
-                  ] })
+                      children: [
+                        /* @__PURE__ */ jsxs9(
+                          WebsiteBuilderLink,
+                          {
+                            href: block.props.brandHref,
+                            className: "flex min-w-0 items-center gap-3",
+                            children: [
+                              /* @__PURE__ */ jsx14("div", { className: "relative h-16 w-16 overflow-hidden rounded-[22px] border border-[var(--wb-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]", children: block.props.logoImage ? /* @__PURE__ */ jsx14(
+                                EditableImage,
+                                {
+                                  blockId: block.id,
+                                  path: "logoImage",
+                                  className: "h-full w-full rounded-[22px]",
+                                  imageClassName: "h-full w-full object-contain p-2",
+                                  fallbackAlt: block.props.brandLabel
+                                }
+                              ) : /* @__PURE__ */ jsx14("div", { className: "flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--wb-site-accent)]", children: /* @__PURE__ */ jsx14(
+                                EditableText,
+                                {
+                                  blockId: block.id,
+                                  path: "brandLabel",
+                                  className: "text-[var(--wb-site-accent)]"
+                                }
+                              ) }) }),
+                              /* @__PURE__ */ jsxs9("div", { className: "min-w-0", children: [
+                                /* @__PURE__ */ jsx14(
+                                  EditableText,
+                                  {
+                                    blockId: block.id,
+                                    path: "brandLabel",
+                                    as: "div",
+                                    className: "[font-family:var(--wb-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
+                                  }
+                                ),
+                                isShowcaseCard ? /* @__PURE__ */ jsx14("div", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--wb-site-muted)]", children: "Live site frame" }) : null
+                              ] })
+                            ]
+                          }
+                        ),
+                        commerceCatalogLink ? /* @__PURE__ */ jsxs9(
+                          WebsiteBuilderLink,
+                          {
+                            href: commerceCatalogLink.href,
+                            className: "inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
+                            children: [
+                              /* @__PURE__ */ jsx14("div", { className: "h-2.5 w-2.5 rounded-full bg-[var(--wb-site-accent)]" }),
+                              /* @__PURE__ */ jsx14(
+                                EditableText,
+                                {
+                                  blockId: block.id,
+                                  path: "catalogLabel",
+                                  className: "font-semibold"
+                                }
+                              )
+                            ]
+                          }
+                        ) : null,
+                        /* @__PURE__ */ jsx14(
+                          WebsiteBuilderSiteSearch,
+                          {
+                            blockId: block.id,
+                            placeholderPath: "searchPlaceholder"
+                          }
+                        ),
+                        /* @__PURE__ */ jsxs9("div", { className: "flex flex-wrap items-center justify-start gap-2 lg:justify-end", children: [
+                          isCartLinkHref(block.props.secondaryCtaHref) ? renderCartLink(
+                            block.props.secondaryCtaHref,
+                            block.props.secondaryCtaLabel,
+                            void 0,
+                            "secondary-cart"
+                          ) : !authenticatedUser && isProtectedAccountHref(block.props.secondaryCtaHref) ? null : /* @__PURE__ */ jsx14(
+                            WebsiteBuilderLink,
+                            {
+                              href: block.props.secondaryCtaHref,
+                              className: "inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
+                              children: /* @__PURE__ */ jsx14(
+                                EditableText,
+                                {
+                                  blockId: block.id,
+                                  path: "secondaryCtaLabel",
+                                  className: "font-semibold"
+                                }
+                              )
+                            }
+                          ),
+                          /* @__PURE__ */ jsxs9(
+                            WebsiteBuilderLink,
+                            {
+                              href: block.props.primaryCtaHref,
+                              className: "inline-flex items-center gap-2 rounded-full bg-[var(--wb-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] transition hover:translate-y-[-1px]",
+                              children: [
+                                /* @__PURE__ */ jsx14(
+                                  EditableText,
+                                  {
+                                    blockId: block.id,
+                                    path: "primaryCtaLabel",
+                                    className: "font-semibold text-white"
+                                  }
+                                ),
+                                /* @__PURE__ */ jsx14(ArrowRight2, { className: "h-4 w-4" })
+                              ]
+                            }
+                          ),
+                          extensionActions.map(renderExtensionAction),
+                          block.props.showLoginAction && !isAdmin && !hasExtensionAuthAction ? /* @__PURE__ */ jsxs9(
+                            "button",
+                            {
+                              type: "button",
+                              onClick: requestAuth,
+                              className: "inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--wb-site-border)] bg-[var(--wb-site-surface)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
+                              children: [
+                                /* @__PURE__ */ jsx14(LogIn, { className: "h-4 w-4" }),
+                                /* @__PURE__ */ jsx14(
+                                  EditableText,
+                                  {
+                                    blockId: block.id,
+                                    path: "loginLabel",
+                                    className: "font-semibold"
+                                  }
+                                )
+                              ]
+                            }
+                          ) : null
+                        ] })
+                      ]
+                    }
+                  )
                 ] })
               }
             ),
