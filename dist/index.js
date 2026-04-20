@@ -6,9 +6,6 @@ import {
   Root,
   WebsiteBuilderBlockRenderer,
   WebsiteBuilderFieldEditorList,
-  WebsiteBuilderI18nProvider,
-  WebsiteBuilderLink,
-  WebsiteBuilderProvider,
   WebsiteBuilderRenderDepthProvider,
   WebsiteBuilderRichTextEditor,
   WebsiteBuilderSearchHighlightEffect,
@@ -17,19 +14,34 @@ import {
   renderWebsiteBuilderRichTextHtml,
   resolveWebsiteBuilderMediaPreviewUrl,
   resolveWebsiteBuilderMediaUrl,
-  resolveWebsiteBuilderText,
   updateWebsiteBuilderMediaUrl,
   useKeyboardMenuController,
+  useWebsiteBuilderRenderDepth,
+  websiteBuilderRichTextContentClassName
+} from "./chunk-I5JDDS76.js";
+import {
+  EditableRepeaterValue,
+  EditableText,
+  buildWebsiteBuilderSearchResultHref,
+  buildWebsiteBuilderSearchTargetId,
+  builderInputClassName,
+  createActivationProps,
+  editableFrameClassName,
+  formatMediaFileSize
+} from "./chunk-Q5G72OKO.js";
+import {
+  WebsiteBuilderI18nProvider,
+  WebsiteBuilderLink,
+  WebsiteBuilderProvider,
+  resolveWebsiteBuilderText,
   useWebsiteBuilder,
   useWebsiteBuilderCanEdit,
   useWebsiteBuilderFieldValue,
   useWebsiteBuilderI18n,
   useWebsiteBuilderPersistedState,
-  useWebsiteBuilderRenderDepth,
   useWebsiteBuilderStore,
-  useWebsiteBuilderStoreApi,
-  websiteBuilderRichTextContentClassName
-} from "./chunk-SKKKSM7X.js";
+  useWebsiteBuilderStoreApi
+} from "./chunk-HCA5T4KG.js";
 import {
   normalizeWebsiteBuilderSelectionForMode,
   resolveWebsiteBuilderAccess,
@@ -39,7 +51,7 @@ import {
 } from "./chunk-NIL7BFDU.js";
 import {
   createWebsiteBuilderRuntime
-} from "./chunk-FAN4Y46R.js";
+} from "./chunk-MD5WPJ72.js";
 import {
   WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
   collectWebsiteBuilderAccountTabs,
@@ -65,7 +77,7 @@ import {
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-RIBOMHDR.js";
+} from "./chunk-PD2EQKYT.js";
 import {
   collectWebsiteBuilderFooterExtensionItems,
   collectWebsiteBuilderHeaderExtensionItems,
@@ -78,6 +90,23 @@ import {
   getWebsiteBuilderSurfaceModeStyle
 } from "./chunk-75KJ6L3N.js";
 import {
+  WEBSITE_BUILDER_DEFAULT_SITE_DESIGN_PRESET_ID,
+  WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS,
+  WEBSITE_BUILDER_SITE_DESIGN_FALLBACK_DEFAULTS,
+  applyWebsiteBuilderSiteColorScheme,
+  applyWebsiteBuilderSiteDesignPreset,
+  createWebsiteBuilderSiteDesignSettings,
+  getWebsiteBuilderSiteColorScheme,
+  getWebsiteBuilderSiteDesignPreset,
+  hasWebsiteBuilderSiteDesignPresetCustomization,
+  isWebsiteBuilderFramelessPreset,
+  isWebsiteBuilderFramelessSiteDesign,
+  isWebsiteBuilderSiteDesignPresetApplied,
+  resolveWebsiteBuilderSiteDesignSettings,
+  websiteBuilderSiteColorSchemes,
+  websiteBuilderSiteDesignPresets
+} from "./chunk-7A32BINR.js";
+import {
   WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
   WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
   WEBSITE_BUILDER_SEARCH_TARGET_PARAM
@@ -85,48 +114,33 @@ import {
 import {
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
-  WEBSITE_BUILDER_DEFAULT_SITE_DESIGN_PRESET_ID,
   WEBSITE_BUILDER_EMPTY_TEXT,
   WEBSITE_BUILDER_ROOT_LIST_ID,
-  WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS,
-  WEBSITE_BUILDER_SITE_DESIGN_FALLBACK_DEFAULTS,
-  applyWebsiteBuilderSiteColorScheme,
-  applyWebsiteBuilderSiteDesignPreset,
   canEditWebsiteBuilderWorkspace,
   canSaveWebsiteBuilderWorkspace,
   cloneWebsiteBuilderBlockTreeWithNewIds,
   cloneWebsiteBuilderValue,
   createWebsiteBuilderAreaListId,
   createWebsiteBuilderNodeId,
-  createWebsiteBuilderSiteDesignSettings,
   duplicateWebsiteBuilderBlockInDocument,
   findWebsiteBuilderBlock,
   getFirstWebsiteBuilderBlockId,
   getValueAtPath,
-  getWebsiteBuilderSiteColorScheme,
-  getWebsiteBuilderSiteDesignPreset,
   getWebsiteBuilderWorkspaceIdentityKey,
   getWebsiteBuilderWorkspaceKey,
-  hasWebsiteBuilderSiteDesignPresetCustomization,
   insertWebsiteBuilderBlockInDocument,
-  isWebsiteBuilderFramelessPreset,
-  isWebsiteBuilderFramelessSiteDesign,
-  isWebsiteBuilderSiteDesignPresetApplied,
   isWebsiteBuilderWorkspaceReadonly,
   moveWebsiteBuilderBlockInDocument,
   normalizeWebsiteBuilderWorkspaceCapabilities,
   normalizeWebsiteBuilderWorkspaceDescriptor,
   normalizeWebsiteBuilderWorkspaceRef,
   removeWebsiteBuilderBlockFromDocument,
-  resolveWebsiteBuilderSiteDesignSettings,
   setValueAtPath,
-  updateWebsiteBuilderBlockInDocument,
-  websiteBuilderSiteColorSchemes,
-  websiteBuilderSiteDesignPresets
-} from "./chunk-RVPYKYSQ.js";
+  updateWebsiteBuilderBlockInDocument
+} from "./chunk-IEZXES2I.js";
 
 // src/components/editable/editable-gallery.tsx
-import clsx4 from "clsx";
+import clsx3 from "clsx";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -267,7 +281,7 @@ var EditableGalleryEmptyState = ({
 };
 
 // src/components/editable/editable-gallery-item-card.tsx
-import clsx3 from "clsx";
+import clsx2 from "clsx";
 
 // src/components/editable/media-state-chip.tsx
 import clsx from "clsx";
@@ -295,44 +309,6 @@ var MediaStateChip = ({
   }
 );
 
-// src/components/editable/shared.ts
-import clsx2 from "clsx";
-var editableFrameClassName = ({
-  isActive,
-  isEditable,
-  className
-}) => clsx2(
-  className,
-  isEditable && "rounded-[1.5rem] transition-[background-color,box-shadow,transform,border-color] duration-200",
-  isEditable && !isActive && "cursor-text shadow-[0_0_0_1px_transparent] hover:bg-white/[0.03] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.14)]",
-  isEditable && isActive && "bg-cyan-300/[0.07] shadow-[0_0_0_1px_rgba(34,211,238,0.52)]"
-);
-var createActivationProps = (isEditable, activate) => isEditable ? {
-  role: "button",
-  tabIndex: 0,
-  onClick: (event) => {
-    event.stopPropagation();
-    activate();
-  },
-  onKeyDown: (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      event.stopPropagation();
-      activate();
-    }
-  }
-} : {};
-var builderInputClassName = "w-full rounded-[24px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] px-4 py-3 text-sm text-[color:var(--wb-builder-text)] outline-none ring-0 transition placeholder:text-[color:var(--wb-builder-text-ghost)] focus:border-[color:var(--wb-builder-border-strong)]";
-var formatMediaFileSize = (size) => {
-  if (!size || size <= 0) {
-    return null;
-  }
-  if (size < 1024 * 1024) {
-    return `${Math.round(size / 1024)} KB`;
-  }
-  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
-};
-
 // src/components/editable/editable-gallery-item-card.tsx
 import { Fragment, jsx as jsx4, jsxs as jsxs3 } from "react/jsx-runtime";
 var EditableGalleryItemCard = ({
@@ -357,7 +333,7 @@ var EditableGalleryItemCard = ({
     "article",
     {
       "data-testid": "wb-editable-gallery-item",
-      className: clsx3(
+      className: clsx2(
         "overflow-hidden rounded-[34px] border",
         className,
         isHeroItem && "md:col-span-2"
@@ -371,7 +347,7 @@ var EditableGalleryItemCard = ({
         /* @__PURE__ */ jsxs3(
           "div",
           {
-            className: clsx3(
+            className: clsx2(
               "relative overflow-hidden",
               isHeroItem ? "aspect-[16/10]" : "aspect-[4/3]"
             ),
@@ -386,7 +362,7 @@ var EditableGalleryItemCard = ({
               ) : /* @__PURE__ */ jsx4(
                 "div",
                 {
-                  className: clsx3(
+                  className: clsx2(
                     "flex h-full w-full items-center justify-center text-center text-sm",
                     fallbackClassName
                   ),
@@ -508,7 +484,7 @@ var EditableGalleryItemCard = ({
                 )
               ),
               placeholder: "Caption",
-              className: clsx3(builderInputClassName, "min-h-[96px] resize-y")
+              className: clsx2(builderInputClassName, "min-h-[96px] resize-y")
             }
           )
         ] }) : /* @__PURE__ */ jsxs3("div", { className: "space-y-3", children: [
@@ -516,7 +492,7 @@ var EditableGalleryItemCard = ({
             "div",
             {
               "data-testid": "wb-editable-gallery-item-label",
-              className: clsx3(
+              className: clsx2(
                 "text-[11px] font-semibold uppercase tracking-[0.26em]",
                 labelClassName
               ),
@@ -530,7 +506,7 @@ var EditableGalleryItemCard = ({
             "div",
             {
               "data-testid": "wb-editable-gallery-item-caption",
-              className: clsx3(
+              className: clsx2(
                 "text-sm leading-7",
                 captionClassName
               ),
@@ -544,7 +520,7 @@ var EditableGalleryItemCard = ({
             "div",
             {
               "data-testid": "wb-editable-gallery-item-file-name",
-              className: clsx3(
+              className: clsx2(
                 "inline-flex rounded-full border px-3 py-1.5 text-[10px] uppercase tracking-[0.22em]",
                 fileNameClassName
               ),
@@ -650,7 +626,7 @@ var EditableGallery = ({
       children: /* @__PURE__ */ jsx5(
         "div",
         {
-          className: clsx4(columnsClassName, items.length === 0 && "grid-cols-1"),
+          className: clsx3(columnsClassName, items.length === 0 && "grid-cols-1"),
           children: items.length === 0 ? /* @__PURE__ */ jsx5(
             EditableGalleryEmptyState,
             {
@@ -702,7 +678,7 @@ var EditableGallery = ({
 };
 
 // src/components/editable/editable-image.tsx
-import clsx5 from "clsx";
+import clsx4 from "clsx";
 import { useEffect, useState as useState2 } from "react";
 import { toast as toast2 } from "sonner";
 import { jsx as jsx6, jsxs as jsxs5 } from "react/jsx-runtime";
@@ -797,7 +773,7 @@ var EditableImage = ({
           {
             src: source,
             alt,
-            className: clsx5("h-full w-full object-cover", imageClassName)
+            className: clsx4("h-full w-full object-cover", imageClassName)
           }
         ) : /* @__PURE__ */ jsx6("div", { className: "flex h-full min-h-[14rem] w-full items-center justify-center bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.14),transparent_28%),linear-gradient(180deg,rgba(9,18,31,0.92),rgba(5,11,20,0.98))] text-center text-white/48", children: /* @__PURE__ */ jsxs5("div", { className: "px-6", children: [
           /* @__PURE__ */ jsx6("div", { className: "text-[11px] font-semibold uppercase tracking-[0.3em] text-cyan-100/66", children: "Media slot" }),
@@ -806,7 +782,7 @@ var EditableImage = ({
         isEditable ? /* @__PURE__ */ jsxs5(
           "div",
           {
-            className: clsx5(
+            className: clsx4(
               "pointer-events-none absolute inset-x-4 bottom-4 rounded-[30px] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_58%),linear-gradient(180deg,rgba(7,17,31,0.94),rgba(6,13,24,0.98))] px-4 py-4 text-xs text-white/70 opacity-0 shadow-[0_20px_48px_rgba(0,0,0,0.3)] backdrop-blur-xl transition duration-200 ease-out",
               isActive && "pointer-events-auto opacity-100"
             ),
@@ -832,7 +808,7 @@ var EditableImage = ({
                     )
                   ),
                   placeholder: "https://...",
-                  className: clsx5("mb-3", builderInputClassName)
+                  className: clsx4("mb-3", builderInputClassName)
                 }
               ),
               altPath ? /* @__PURE__ */ jsx6(
@@ -841,7 +817,7 @@ var EditableImage = ({
                   value: alt,
                   onChange: (event) => updateFieldValue(blockId, altPath, event.currentTarget.value),
                   placeholder: "Alt text",
-                  className: clsx5("mb-3", builderInputClassName)
+                  className: clsx4("mb-3", builderInputClassName)
                 }
               ) : null,
               /* @__PURE__ */ jsxs5("div", { className: "flex flex-wrap items-center gap-2", children: [
@@ -881,62 +857,14 @@ var EditableImage = ({
   );
 };
 
-// src/components/editable/editable-text.tsx
-import { useEffect as useEffect2, useRef } from "react";
-
-// src/search/helpers.ts
-var buildWebsiteBuilderSearchTargetId = (blockId, path) => `${blockId}::${path}`;
-var buildWebsiteBuilderSearchResultHref = (result, query, mode, isAdmin, options) => {
-  const localePrefix = options?.locale === "en" && !result.route.startsWith("/en") ? "/en" : "";
-  const url = new URL(
-    `${localePrefix}${result.route}`,
-    "https://website-builder.local"
-  );
-  const searchParams = new URLSearchParams(
-    options?.currentSearchParams?.toString() ?? ""
-  );
-  if (isAdmin && mode !== "preview") {
-    searchParams.set("mode", mode);
-  } else {
-    searchParams.delete("mode");
-  }
-  if (options?.contentLocale && options.contentLocale !== options.locale) {
-    searchParams.set("contentLocale", options.contentLocale);
-  } else {
-    searchParams.delete("contentLocale");
-  }
-  if (options?.workspaceSelection?.profileId) {
-    searchParams.set("wbProfile", options.workspaceSelection.profileId);
-    searchParams.set("wbBranch", options.workspaceSelection.branch);
-    if (options.workspaceSelection.revisionId) {
-      searchParams.set("wbRevision", options.workspaceSelection.revisionId);
-    } else {
-      searchParams.delete("wbRevision");
-    }
-  } else {
-    searchParams.delete("wbProfile");
-    searchParams.delete("wbBranch");
-    searchParams.delete("wbRevision");
-  }
-  searchParams.set(WEBSITE_BUILDER_SEARCH_QUERY_PARAM, query);
-  searchParams.set(WEBSITE_BUILDER_SEARCH_TARGET_PARAM, result.targetId);
-  searchParams.set(
-    WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
-    String(result.occurrence)
-  );
-  const serializedSearch = searchParams.toString();
-  return serializedSearch ? `${url.pathname}?${serializedSearch}` : url.pathname;
-};
-
-// src/components/editable/editable-text.tsx
+// src/components/editable/editable-rich-text.tsx
+import clsx5 from "clsx";
 import { jsx as jsx7 } from "react/jsx-runtime";
-var EditableText = ({
+var EditableRichText = ({
   blockId,
   path,
-  as: Tag = "span",
   className,
-  placeholder = WEBSITE_BUILDER_EMPTY_TEXT,
-  ...rest
+  placeholder = WEBSITE_BUILDER_EMPTY_TEXT
 }) => {
   const selectedField = useWebsiteBuilderStore((state) => state.selectedField);
   const selectField = useWebsiteBuilderStore((state) => state.selectField);
@@ -946,7 +874,72 @@ var EditableText = ({
   const updateFieldValue = useWebsiteBuilderStore(
     (state) => state.updateFieldValue
   );
-  const inputRef = useRef(null);
+  const value = String(useWebsiteBuilderFieldValue(blockId, path) ?? "");
+  const isEditable = useWebsiteBuilderCanEdit();
+  const isActive = selectedField?.blockId === blockId && selectedField.path === path;
+  const searchTargetId = buildWebsiteBuilderSearchTargetId(blockId, path);
+  if (isEditable && isActive) {
+    return /* @__PURE__ */ jsx7(
+      "div",
+      {
+        "data-wb-search-target": searchTargetId,
+        className: editableFrameClassName({ isActive, isEditable }),
+        children: /* @__PURE__ */ jsx7(
+          WebsiteBuilderRichTextEditor,
+          {
+            value,
+            placeholder,
+            className,
+            onFocus: () => selectField(blockId, path),
+            onBlur: () => clearSelectedField(),
+            onEscape: () => clearSelectedField(),
+            onChange: (nextValue) => updateFieldValue(blockId, path, nextValue)
+          }
+        )
+      }
+    );
+  }
+  return /* @__PURE__ */ jsx7(
+    "div",
+    {
+      ...createActivationProps(isEditable, () => selectField(blockId, path)),
+      "data-wb-search-target": searchTargetId,
+      className: editableFrameClassName({ isActive, isEditable }),
+      children: /* @__PURE__ */ jsx7(
+        "div",
+        {
+          className: clsx5(
+            websiteBuilderRichTextContentClassName,
+            className,
+            !value && "text-[color:var(--wb-site-muted)] opacity-60"
+          ),
+          dangerouslySetInnerHTML: {
+            __html: renderWebsiteBuilderRichTextHtml(value, placeholder)
+          }
+        }
+      )
+    }
+  );
+};
+
+// src/components/editable/editable-textarea.tsx
+import { useEffect as useEffect2, useRef } from "react";
+import { jsx as jsx8 } from "react/jsx-runtime";
+var EditableTextarea = ({
+  blockId,
+  path,
+  className,
+  placeholder = WEBSITE_BUILDER_EMPTY_TEXT
+}) => {
+  const selectedField = useWebsiteBuilderStore((state) => state.selectedField);
+  const selectField = useWebsiteBuilderStore((state) => state.selectField);
+  const clearSelectedField = useWebsiteBuilderStore(
+    (state) => state.clearSelectedField
+  );
+  const updateFieldValue = useWebsiteBuilderStore(
+    (state) => state.updateFieldValue
+  );
+  const textareaRef = useRef(null);
   const value = String(useWebsiteBuilderFieldValue(blockId, path) ?? "");
   const isEditable = useWebsiteBuilderCanEdit();
   const isActive = selectedField?.blockId === blockId && selectedField.path === path;
@@ -971,192 +964,16 @@ var EditableText = ({
   };
   useEffect2(() => {
     if (isEditable && isActive) {
-      const input = inputRef.current;
-      if (!input) {
-        return;
-      }
-      input.focus();
-      const caretPosition = input.value.length;
-      input.setSelectionRange(caretPosition, caretPosition);
-    }
-  }, [isActive, isEditable]);
-  if (isEditable && isActive) {
-    return /* @__PURE__ */ jsx7(
-      Tag,
-      {
-        ...rest,
-        "data-wb-search-target": searchTargetId,
-        onClick: (event) => event.stopPropagation(),
-        className: editableFrameClassName({ isActive, isEditable, className }),
-        children: /* @__PURE__ */ jsx7(
-          "input",
-          {
-            ref: inputRef,
-            value,
-            placeholder,
-            onChange: handleChange,
-            onBlur: handleBlur,
-            onKeyDown: handleKeyDown,
-            onClick: (event) => event.stopPropagation(),
-            className: "m-0 block w-full min-w-0 appearance-none border-0 bg-transparent p-0 font-inherit leading-inherit tracking-inherit text-inherit outline-none ring-0 shadow-none placeholder:text-white/28 focus:outline-none"
-          }
-        )
-      }
-    );
-  }
-  return /* @__PURE__ */ jsx7(
-    Tag,
-    {
-      ...rest,
-      "data-wb-search-target": searchTargetId,
-      onClick: isEditable ? (event) => {
-        event.stopPropagation();
-        selectField(blockId, path);
-      } : rest.onClick,
-      className: editableFrameClassName({ isActive, isEditable, className }),
-      children: value || placeholder
-    }
-  );
-};
-
-// src/components/editable/editable-repeater-value.tsx
-import { jsx as jsx8 } from "react/jsx-runtime";
-var EditableRepeaterValue = ({
-  blockId,
-  path,
-  fallback,
-  className,
-  as
-}) => {
-  return /* @__PURE__ */ jsx8(
-    EditableText,
-    {
-      blockId,
-      path,
-      placeholder: fallback,
-      className,
-      as
-    }
-  );
-};
-
-// src/components/editable/editable-rich-text.tsx
-import clsx6 from "clsx";
-import { jsx as jsx9 } from "react/jsx-runtime";
-var EditableRichText = ({
-  blockId,
-  path,
-  className,
-  placeholder = WEBSITE_BUILDER_EMPTY_TEXT
-}) => {
-  const selectedField = useWebsiteBuilderStore((state) => state.selectedField);
-  const selectField = useWebsiteBuilderStore((state) => state.selectField);
-  const clearSelectedField = useWebsiteBuilderStore(
-    (state) => state.clearSelectedField
-  );
-  const updateFieldValue = useWebsiteBuilderStore(
-    (state) => state.updateFieldValue
-  );
-  const value = String(useWebsiteBuilderFieldValue(blockId, path) ?? "");
-  const isEditable = useWebsiteBuilderCanEdit();
-  const isActive = selectedField?.blockId === blockId && selectedField.path === path;
-  const searchTargetId = buildWebsiteBuilderSearchTargetId(blockId, path);
-  if (isEditable && isActive) {
-    return /* @__PURE__ */ jsx9(
-      "div",
-      {
-        "data-wb-search-target": searchTargetId,
-        className: editableFrameClassName({ isActive, isEditable }),
-        children: /* @__PURE__ */ jsx9(
-          WebsiteBuilderRichTextEditor,
-          {
-            value,
-            placeholder,
-            className,
-            onFocus: () => selectField(blockId, path),
-            onBlur: () => clearSelectedField(),
-            onEscape: () => clearSelectedField(),
-            onChange: (nextValue) => updateFieldValue(blockId, path, nextValue)
-          }
-        )
-      }
-    );
-  }
-  return /* @__PURE__ */ jsx9(
-    "div",
-    {
-      ...createActivationProps(isEditable, () => selectField(blockId, path)),
-      "data-wb-search-target": searchTargetId,
-      className: editableFrameClassName({ isActive, isEditable }),
-      children: /* @__PURE__ */ jsx9(
-        "div",
-        {
-          className: clsx6(
-            websiteBuilderRichTextContentClassName,
-            className,
-            !value && "text-[color:var(--wb-site-muted)] opacity-60"
-          ),
-          dangerouslySetInnerHTML: {
-            __html: renderWebsiteBuilderRichTextHtml(value, placeholder)
-          }
-        }
-      )
-    }
-  );
-};
-
-// src/components/editable/editable-textarea.tsx
-import { useEffect as useEffect3, useRef as useRef2 } from "react";
-import { jsx as jsx10 } from "react/jsx-runtime";
-var EditableTextarea = ({
-  blockId,
-  path,
-  className,
-  placeholder = WEBSITE_BUILDER_EMPTY_TEXT
-}) => {
-  const selectedField = useWebsiteBuilderStore((state) => state.selectedField);
-  const selectField = useWebsiteBuilderStore((state) => state.selectField);
-  const clearSelectedField = useWebsiteBuilderStore(
-    (state) => state.clearSelectedField
-  );
-  const updateFieldValue = useWebsiteBuilderStore(
-    (state) => state.updateFieldValue
-  );
-  const textareaRef = useRef2(null);
-  const value = String(useWebsiteBuilderFieldValue(blockId, path) ?? "");
-  const isEditable = useWebsiteBuilderCanEdit();
-  const isActive = selectedField?.blockId === blockId && selectedField.path === path;
-  const searchTargetId = buildWebsiteBuilderSearchTargetId(blockId, path);
-  const handleChange = (event) => {
-    updateFieldValue(blockId, path, event.currentTarget.value);
-  };
-  const handleBlur = (event) => {
-    if (event.currentTarget.contains(event.relatedTarget)) {
-      return;
-    }
-    clearSelectedField();
-  };
-  const handleKeyDown = (event) => {
-    if (event.key !== "Escape") {
-      return;
-    }
-    event.preventDefault();
-    event.stopPropagation();
-    clearSelectedField();
-    event.currentTarget.blur();
-  };
-  useEffect3(() => {
-    if (isEditable && isActive) {
       textareaRef.current?.focus();
     }
   }, [isActive, isEditable]);
   if (isEditable && isActive) {
-    return /* @__PURE__ */ jsx10(
+    return /* @__PURE__ */ jsx8(
       "div",
       {
         "data-wb-search-target": searchTargetId,
         className: editableFrameClassName({ isActive, isEditable, className }),
-        children: /* @__PURE__ */ jsx10(
+        children: /* @__PURE__ */ jsx8(
           "textarea",
           {
             ref: textareaRef,
@@ -1173,7 +990,7 @@ var EditableTextarea = ({
       }
     );
   }
-  return /* @__PURE__ */ jsx10(
+  return /* @__PURE__ */ jsx8(
     "div",
     {
       ...createActivationProps(isEditable, () => selectField(blockId, path)),
@@ -1257,10 +1074,10 @@ var createWebsiteBuilderTiptapJsonBindingAdapter = (key) => ({
 });
 
 // src/modules/system.tsx
-import clsx10 from "clsx";
+import clsx9 from "clsx";
 
 // src/modules/system/site/site-design-settings-panel.tsx
-import { jsx as jsx11, jsxs as jsxs6 } from "react/jsx-runtime";
+import { jsx as jsx9, jsxs as jsxs6 } from "react/jsx-runtime";
 var designFields = [
   {
     path: "bodyFontFamily",
@@ -1396,7 +1213,7 @@ var tokenPreviewItems = [
     label: "Border"
   }
 ];
-var DetailBadge = ({ label }) => /* @__PURE__ */ jsx11(
+var DetailBadge = ({ label }) => /* @__PURE__ */ jsx9(
   "span",
   {
     className: "inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -1423,7 +1240,7 @@ var SiteDesignSettingsPanelBody = ({
   if (isAdvancedView) {
     return /* @__PURE__ */ jsxs6("section", { className: "space-y-4", "data-testid": "wb-design-manual-tokens", children: [
       /* @__PURE__ */ jsxs6("div", { className: "space-y-2", children: [
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx9(
           "div",
           {
             className: "text-sm font-semibold",
@@ -1434,7 +1251,7 @@ var SiteDesignSettingsPanelBody = ({
             )
           }
         ),
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx9(
           "div",
           {
             className: "text-sm leading-6",
@@ -1446,7 +1263,7 @@ var SiteDesignSettingsPanelBody = ({
           }
         )
       ] }),
-      /* @__PURE__ */ jsx11(
+      /* @__PURE__ */ jsx9(
         WebsiteBuilderFieldEditorList,
         {
           fields: designFields,
@@ -1466,7 +1283,7 @@ var SiteDesignSettingsPanelBody = ({
         style: highlightCardStyle,
         children: [
           /* @__PURE__ */ jsxs6("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsx11(
+            /* @__PURE__ */ jsx9(
               "div",
               {
                 className: "text-sm font-semibold",
@@ -1477,7 +1294,7 @@ var SiteDesignSettingsPanelBody = ({
                 )
               }
             ),
-            /* @__PURE__ */ jsx11(
+            /* @__PURE__ */ jsx9(
               "div",
               {
                 className: "text-sm leading-6",
@@ -1497,7 +1314,7 @@ var SiteDesignSettingsPanelBody = ({
                 style: summaryCardStyle,
                 "data-testid": "wb-design-source-preset",
                 children: [
-                  /* @__PURE__ */ jsx11(
+                  /* @__PURE__ */ jsx9(
                     "div",
                     {
                       className: "text-[11px] uppercase tracking-[0.28em]",
@@ -1508,7 +1325,7 @@ var SiteDesignSettingsPanelBody = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx11(
+                  /* @__PURE__ */ jsx9(
                     "div",
                     {
                       className: "mt-3 text-lg font-semibold",
@@ -1519,7 +1336,7 @@ var SiteDesignSettingsPanelBody = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx11(
+                  /* @__PURE__ */ jsx9(
                     "div",
                     {
                       className: "mt-2 text-sm leading-6",
@@ -1531,7 +1348,7 @@ var SiteDesignSettingsPanelBody = ({
                     }
                   ),
                   /* @__PURE__ */ jsxs6("div", { className: "mt-3 flex flex-wrap gap-2", children: [
-                    /* @__PURE__ */ jsx11(
+                    /* @__PURE__ */ jsx9(
                       DetailBadge,
                       {
                         label: activePreset?.appearance === "dark" ? translate(
@@ -1546,8 +1363,8 @@ var SiteDesignSettingsPanelBody = ({
                         )
                       }
                     ),
-                    /* @__PURE__ */ jsx11(DetailBadge, { label: resolvedSettings.siteMaxWidth }),
-                    /* @__PURE__ */ jsx11(DetailBadge, { label: resolvedSettings.sectionGap })
+                    /* @__PURE__ */ jsx9(DetailBadge, { label: resolvedSettings.siteMaxWidth }),
+                    /* @__PURE__ */ jsx9(DetailBadge, { label: resolvedSettings.sectionGap })
                   ] })
                 ]
               }
@@ -1559,7 +1376,7 @@ var SiteDesignSettingsPanelBody = ({
                 style: summaryCardStyle,
                 "data-testid": "wb-design-source-color-scheme",
                 children: [
-                  /* @__PURE__ */ jsx11(
+                  /* @__PURE__ */ jsx9(
                     "div",
                     {
                       className: "text-[11px] uppercase tracking-[0.28em]",
@@ -1570,7 +1387,7 @@ var SiteDesignSettingsPanelBody = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx11(
+                  /* @__PURE__ */ jsx9(
                     "div",
                     {
                       className: "mt-3 text-lg font-semibold",
@@ -1581,7 +1398,7 @@ var SiteDesignSettingsPanelBody = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx11(
+                  /* @__PURE__ */ jsx9(
                     "div",
                     {
                       className: "mt-2 text-sm leading-6",
@@ -1592,7 +1409,7 @@ var SiteDesignSettingsPanelBody = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx11(
+                  /* @__PURE__ */ jsx9(
                     "div",
                     {
                       className: "mt-4 flex flex-wrap gap-2",
@@ -1603,7 +1420,7 @@ var SiteDesignSettingsPanelBody = ({
                           className: "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs",
                           style: badgeStyle,
                           children: [
-                            /* @__PURE__ */ jsx11(
+                            /* @__PURE__ */ jsx9(
                               "span",
                               {
                                 className: "h-3 w-3 rounded-full border",
@@ -1634,7 +1451,7 @@ var SiteDesignSettingsPanelBody = ({
         style: summaryCardStyle,
         "data-testid": "wb-design-workspace-guidance",
         children: [
-          /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx9(
             "div",
             {
               className: "text-sm font-semibold",
@@ -1645,7 +1462,7 @@ var SiteDesignSettingsPanelBody = ({
               )
             }
           ),
-          /* @__PURE__ */ jsx11(
+          /* @__PURE__ */ jsx9(
             "div",
             {
               className: "mt-2 text-sm leading-6",
@@ -1668,11 +1485,11 @@ var siteDesignSettingsPanel = {
   description: "Profile source metadata and stored runtime design tokens for the current branch.",
   descriptionKey: "websiteBuilder.system.design.panel.description",
   order: 10,
-  component: (props) => /* @__PURE__ */ jsx11(SiteDesignSettingsPanelBody, { ...props })
+  component: (props) => /* @__PURE__ */ jsx9(SiteDesignSettingsPanelBody, { ...props })
 };
 
 // src/modules/system/site/site-footer-shell-definition.tsx
-import clsx7 from "clsx";
+import clsx6 from "clsx";
 import { ArrowRight, Send } from "lucide-react";
 
 // src/modules/system/site/helpers.ts
@@ -1703,7 +1520,7 @@ var normalizeWebsiteBuilderSiteStringItems = (value) => Array.isArray(value) ? v
 ) : [];
 
 // src/modules/system/site/site-footer-shell-definition.tsx
-import { jsx as jsx12, jsxs as jsxs7 } from "react/jsx-runtime";
+import { jsx as jsx10, jsxs as jsxs7 } from "react/jsx-runtime";
 var siteFooterFields = [
   {
     path: "variant",
@@ -1875,24 +1692,24 @@ var SiteFooterShell = ({
     footerExtensionItems.legalLinks
   );
   const contactItems = normalizeWebsiteBuilderSiteStringItems(block.props.contactItems);
-  return /* @__PURE__ */ jsx12(
+  return /* @__PURE__ */ jsx10(
     "footer",
     {
-      className: clsx7(
+      className: clsx6(
         "w-full transition-colors duration-300",
         (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).shell
       ),
       children: /* @__PURE__ */ jsxs7("div", { className: "mx-auto flex w-full max-w-[var(--wb-site-max-width,1280px)] flex-col gap-5 px-[var(--wb-site-gutter,24px)] py-8 pb-12 sm:py-10 sm:pb-14", children: [
         /* @__PURE__ */ jsxs7("div", { className: "grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]", children: [
-          /* @__PURE__ */ jsx12(
+          /* @__PURE__ */ jsx10(
             "div",
             {
-              className: clsx7(
+              className: clsx6(
                 footerVariant === "minimal-air" ? "rounded-none border-0 border-b border-[var(--wb-site-border)] px-0 pb-6 pt-0 sm:px-0" : "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
                 (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).card
               ),
               children: /* @__PURE__ */ jsxs7("div", { className: "grid gap-5 lg:grid-cols-[auto_minmax(0,1fr)]", children: [
-                /* @__PURE__ */ jsx12("div", { className: "relative h-24 w-24 overflow-hidden rounded-[28px] border border-[var(--wb-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.16),rgba(15,118,110,0.04))]", children: block.props.logoImage ? /* @__PURE__ */ jsx12(
+                /* @__PURE__ */ jsx10("div", { className: "relative h-24 w-24 overflow-hidden rounded-[28px] border border-[var(--wb-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.16),rgba(15,118,110,0.04))]", children: block.props.logoImage ? /* @__PURE__ */ jsx10(
                   EditableImage,
                   {
                     blockId: block.id,
@@ -1901,7 +1718,7 @@ var SiteFooterShell = ({
                     imageClassName: "h-full w-full object-contain p-3",
                     fallbackAlt: block.props.brandTitle
                   }
-                ) : /* @__PURE__ */ jsx12("div", { className: "flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--wb-site-accent)]", children: /* @__PURE__ */ jsx12(
+                ) : /* @__PURE__ */ jsx10("div", { className: "flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--wb-site-accent)]", children: /* @__PURE__ */ jsx10(
                   EditableText,
                   {
                     blockId: block.id,
@@ -1910,24 +1727,24 @@ var SiteFooterShell = ({
                   }
                 ) }) }),
                 /* @__PURE__ */ jsxs7("div", { className: "min-w-0", children: [
-                  /* @__PURE__ */ jsx12(
+                  /* @__PURE__ */ jsx10(
                     EditableText,
                     {
                       blockId: block.id,
                       path: "brandTitle",
                       as: "h2",
-                      className: clsx7(
+                      className: clsx6(
                         "[font-family:var(--wb-site-heading-font)] text-3xl font-semibold tracking-[-0.05em]",
                         variant.text
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx12(
+                  /* @__PURE__ */ jsx10(
                     EditableTextarea,
                     {
                       blockId: block.id,
                       path: "brandBody",
-                      className: clsx7("mt-4 leading-7", variant.muted)
+                      className: clsx6("mt-4 leading-7", variant.muted)
                     }
                   )
                 ] })
@@ -1937,13 +1754,13 @@ var SiteFooterShell = ({
           /* @__PURE__ */ jsxs7(
             "div",
             {
-              className: clsx7(
+              className: clsx6(
                 footerVariant === "minimal-air" ? "rounded-none border-0 px-0 py-0 sm:px-0" : "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
                 block.props.variant === "soft-cards" && !framelessSite ? "border-transparent bg-[linear-gradient(135deg,var(--wb-site-accent),color-mix(in srgb,var(--wb-site-accent) 72%, white))] text-white shadow-[0_28px_60px_rgba(15,118,110,0.24)]" : (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).card
               ),
               children: [
                 /* @__PURE__ */ jsxs7("div", { className: "max-w-xl", children: [
-                  /* @__PURE__ */ jsx12(
+                  /* @__PURE__ */ jsx10(
                     EditableText,
                     {
                       blockId: block.id,
@@ -1952,12 +1769,12 @@ var SiteFooterShell = ({
                       className: "[font-family:var(--wb-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
                     }
                   ),
-                  /* @__PURE__ */ jsx12(
+                  /* @__PURE__ */ jsx10(
                     EditableTextarea,
                     {
                       blockId: block.id,
                       path: "subscriptionBody",
-                      className: clsx7(
+                      className: clsx6(
                         "mt-3 leading-7",
                         isSoftCardsVariant ? "text-white/82" : variant.muted
                       )
@@ -1965,19 +1782,19 @@ var SiteFooterShell = ({
                   )
                 ] }),
                 /* @__PURE__ */ jsxs7("div", { className: "mt-5 flex flex-col gap-3 sm:flex-row", children: [
-                  /* @__PURE__ */ jsx12(
+                  /* @__PURE__ */ jsx10(
                     "div",
                     {
-                      className: clsx7(
+                      className: clsx6(
                         "flex min-h-14 flex-1 items-center px-4",
                         footerVariant === "minimal-air" ? "rounded-full border border-[var(--wb-site-border)] bg-white/72" : "rounded-full border border-white/20 bg-white/10 backdrop-blur-sm"
                       ),
-                      children: /* @__PURE__ */ jsx12(
+                      children: /* @__PURE__ */ jsx10(
                         EditableText,
                         {
                           blockId: block.id,
                           path: "subscriptionPlaceholder",
-                          className: clsx7(
+                          className: clsx6(
                             "text-sm",
                             isSoftCardsVariant ? "text-white/74" : variant.muted
                           )
@@ -1989,18 +1806,18 @@ var SiteFooterShell = ({
                     "button",
                     {
                       type: "button",
-                      className: clsx7(
+                      className: clsx6(
                         "inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold shadow-[0_18px_34px_rgba(15,23,42,0.12)]",
                         isSoftCardsVariant ? "bg-white text-[var(--wb-site-accent)]" : "bg-[var(--wb-site-accent)] text-white"
                       ),
                       children: [
-                        /* @__PURE__ */ jsx12(Send, { className: "h-4 w-4" }),
-                        /* @__PURE__ */ jsx12(
+                        /* @__PURE__ */ jsx10(Send, { className: "h-4 w-4" }),
+                        /* @__PURE__ */ jsx10(
                           EditableText,
                           {
                             blockId: block.id,
                             path: "subscriptionButtonLabel",
-                            className: clsx7(
+                            className: clsx6(
                               isSoftCardsVariant ? "text-[var(--wb-site-accent)]" : "text-white"
                             )
                           }
@@ -2014,20 +1831,20 @@ var SiteFooterShell = ({
           )
         ] }),
         /* @__PURE__ */ jsxs7("div", { className: "grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]", children: [
-          /* @__PURE__ */ jsx12(
+          /* @__PURE__ */ jsx10(
             "div",
             {
-              className: clsx7(
+              className: clsx6(
                 footerVariant === "minimal-air" ? "rounded-none border-0 border-b border-[var(--wb-site-border)] px-0 pb-6 pt-0 sm:px-0" : "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
                 (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).card
               ),
-              children: /* @__PURE__ */ jsx12("div", { className: "grid gap-6 md:grid-cols-2", children: navigationColumns.map((column) => /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
-                /* @__PURE__ */ jsx12("div", { className: clsx7("text-sm font-semibold", variant.text), children: column.title }),
-                /* @__PURE__ */ jsx12("div", { className: "space-y-2", children: column.links.map((link) => /* @__PURE__ */ jsx12(
+              children: /* @__PURE__ */ jsx10("div", { className: "grid gap-6 md:grid-cols-2", children: navigationColumns.map((column) => /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
+                /* @__PURE__ */ jsx10("div", { className: clsx6("text-sm font-semibold", variant.text), children: column.title }),
+                /* @__PURE__ */ jsx10("div", { className: "space-y-2", children: column.links.map((link) => /* @__PURE__ */ jsx10(
                   WebsiteBuilderLink,
                   {
                     href: link.href,
-                    className: clsx7(
+                    className: clsx6(
                       "block text-sm transition hover:text-[var(--wb-site-accent)]",
                       variant.muted
                     ),
@@ -2041,13 +1858,13 @@ var SiteFooterShell = ({
           /* @__PURE__ */ jsxs7(
             "div",
             {
-              className: clsx7(
+              className: clsx6(
                 footerVariant === "minimal-air" ? "rounded-none border-0 px-0 pt-0 sm:px-0" : "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
                 (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).card
               ),
               children: [
-                /* @__PURE__ */ jsx12("div", { className: clsx7("text-sm font-semibold", variant.text), children: "Contacts" }),
-                /* @__PURE__ */ jsx12("div", { className: "mt-4 space-y-3", children: contactItems.map((item) => /* @__PURE__ */ jsx12("div", { className: clsx7("text-sm leading-7", variant.muted), children: item }, item)) })
+                /* @__PURE__ */ jsx10("div", { className: clsx6("text-sm font-semibold", variant.text), children: "Contacts" }),
+                /* @__PURE__ */ jsx10("div", { className: "mt-4 space-y-3", children: contactItems.map((item) => /* @__PURE__ */ jsx10("div", { className: clsx6("text-sm leading-7", variant.muted), children: item }, item)) })
               ]
             }
           )
@@ -2055,12 +1872,12 @@ var SiteFooterShell = ({
         /* @__PURE__ */ jsxs7(
           "div",
           {
-            className: clsx7(
+            className: clsx6(
               "flex flex-col gap-4 border-t pt-5 text-sm md:flex-row md:items-center md:justify-between",
               footerVariant === "classic-dark" ? "border-white/10" : "border-[var(--wb-site-border)]"
             ),
             children: [
-              /* @__PURE__ */ jsx12(
+              /* @__PURE__ */ jsx10(
                 EditableText,
                 {
                   blockId: block.id,
@@ -2073,13 +1890,13 @@ var SiteFooterShell = ({
                   WebsiteBuilderLink,
                   {
                     href: block.props.legalHref,
-                    className: clsx7(
+                    className: clsx6(
                       "inline-flex items-center gap-2 transition hover:text-[var(--wb-site-accent)]",
                       (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).muted
                     ),
                     children: [
-                      /* @__PURE__ */ jsx12(EditableText, { blockId: block.id, path: "legalLabel" }),
-                      /* @__PURE__ */ jsx12(ArrowRight, { className: "h-4 w-4" })
+                      /* @__PURE__ */ jsx10(EditableText, { blockId: block.id, path: "legalLabel" }),
+                      /* @__PURE__ */ jsx10(ArrowRight, { className: "h-4 w-4" })
                     ]
                   }
                 ),
@@ -2089,26 +1906,26 @@ var SiteFooterShell = ({
                     href: link.href,
                     target: link.target,
                     rel: link.rel,
-                    className: clsx7(
+                    className: clsx6(
                       "inline-flex items-center gap-2 transition hover:text-[var(--wb-site-accent)]",
                       (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).muted
                     ),
                     children: [
                       link.label,
-                      /* @__PURE__ */ jsx12(ArrowRight, { className: "h-4 w-4" })
+                      /* @__PURE__ */ jsx10(ArrowRight, { className: "h-4 w-4" })
                     ]
                   },
                   `${link.label}:${link.href}`
                 )),
-                /* @__PURE__ */ jsx12(
+                /* @__PURE__ */ jsx10(
                   WebsiteBuilderLink,
                   {
                     href: block.props.developerHref,
-                    className: clsx7(
+                    className: clsx6(
                       "font-semibold transition hover:text-[var(--wb-site-accent)]",
                       (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).text
                     ),
-                    children: /* @__PURE__ */ jsx12(EditableText, { blockId: block.id, path: "developerLabel" })
+                    children: /* @__PURE__ */ jsx10(EditableText, { blockId: block.id, path: "developerLabel" })
                   }
                 )
               ] })
@@ -2226,22 +2043,22 @@ var siteFooterShellDefinition = defineWebsiteBuilderBlockDefinition({
 });
 
 // src/modules/system/site/site-header-shell-definition.tsx
-import clsx9 from "clsx";
+import clsx8 from "clsx";
 import { ArrowRight as ArrowRight2, LogIn, ShoppingCart } from "lucide-react";
-import { useEffect as useEffect5, useRef as useRef4, useState as useState4 } from "react";
+import { useEffect as useEffect4, useRef as useRef3, useState as useState4 } from "react";
 
 // src/search/website-builder-site-search.tsx
-import clsx8 from "clsx";
+import clsx7 from "clsx";
 import { Loader2, Search, X } from "lucide-react";
 import {
   startTransition,
   useDeferredValue,
-  useEffect as useEffect4,
+  useEffect as useEffect3,
   useMemo,
-  useRef as useRef3,
+  useRef as useRef2,
   useState as useState3
 } from "react";
-import { Fragment as Fragment3, jsx as jsx13, jsxs as jsxs8 } from "react/jsx-runtime";
+import { Fragment as Fragment3, jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
 var renderSnippetParts = (snippet, query) => {
   if (!query) {
     return [snippet];
@@ -2278,8 +2095,8 @@ var WebsiteBuilderSiteSearch = ({
   const [results, setResults] = useState3([]);
   const [loading, setLoading] = useState3(false);
   const [error, setError] = useState3(null);
-  const searchInputRef = useRef3(null);
-  const lastRequestId = useRef3(0);
+  const searchInputRef = useRef2(null);
+  const lastRequestId = useRef2(0);
   const handleDialogOpenAutoFocus = (event) => {
     event.preventDefault();
     searchInputRef.current?.focus();
@@ -2350,13 +2167,13 @@ var WebsiteBuilderSiteSearch = ({
     }
     return `${results.length} match${results.length === 1 ? "" : "es"} across the live site.`;
   }, [error, hasQuery, loading, results.length, translate]);
-  useEffect4(() => {
+  useEffect3(() => {
     if (!open) {
       return;
     }
     searchInputRef.current?.focus();
   }, [open]);
-  useEffect4(() => {
+  useEffect3(() => {
     if (!open || !canSearch) {
       return;
     }
@@ -2400,13 +2217,13 @@ var WebsiteBuilderSiteSearch = ({
     return /* @__PURE__ */ jsxs8(
       "div",
       {
-        className: clsx8(
+        className: clsx7(
           "flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4",
           className
         ),
         children: [
-          /* @__PURE__ */ jsx13(Search, { className: "h-4 w-4 shrink-0 text-[var(--wb-site-muted)]" }),
-          /* @__PURE__ */ jsx13(
+          /* @__PURE__ */ jsx11(Search, { className: "h-4 w-4 shrink-0 text-[var(--wb-site-muted)]" }),
+          /* @__PURE__ */ jsx11(
             EditableText,
             {
               blockId,
@@ -2422,12 +2239,12 @@ var WebsiteBuilderSiteSearch = ({
     /* @__PURE__ */ jsxs8(
       "div",
       {
-        className: clsx8(
+        className: clsx7(
           "flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4",
           className
         ),
         children: [
-          /* @__PURE__ */ jsx13(
+          /* @__PURE__ */ jsx11(
             "button",
             {
               type: "button",
@@ -2437,17 +2254,17 @@ var WebsiteBuilderSiteSearch = ({
                 "websiteBuilder.search.open",
                 "Search the website"
               ),
-              children: /* @__PURE__ */ jsx13(Search, { className: "h-4 w-4" })
+              children: /* @__PURE__ */ jsx11(Search, { className: "h-4 w-4" })
             }
           ),
-          canEdit ? /* @__PURE__ */ jsx13(
+          canEdit ? /* @__PURE__ */ jsx11(
             EditableText,
             {
               blockId,
               path: placeholderPath,
               className: "flex-1 text-sm text-[var(--wb-site-muted)]"
             }
-          ) : /* @__PURE__ */ jsx13(
+          ) : /* @__PURE__ */ jsx11(
             "button",
             {
               type: "button",
@@ -2459,25 +2276,25 @@ var WebsiteBuilderSiteSearch = ({
         ]
       }
     ),
-    /* @__PURE__ */ jsx13(Root, { open, onOpenChange: setOpen, children: /* @__PURE__ */ jsxs8(
+    /* @__PURE__ */ jsx11(Root, { open, onOpenChange: setOpen, children: /* @__PURE__ */ jsxs8(
       DialogContent,
       {
         onOpenAutoFocus: handleDialogOpenAutoFocus,
         className: "w-[min(44rem,calc(100%-1.5rem))] gap-0 overflow-hidden rounded-[32px] border border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_96%,var(--wb-site-background))] p-0 text-[var(--wb-site-text)] shadow-[0_40px_140px_rgba(0,0,0,0.28)]",
         children: [
           /* @__PURE__ */ jsxs8("div", { className: "sr-only", children: [
-            /* @__PURE__ */ jsx13(DialogTitle, { children: translate(
+            /* @__PURE__ */ jsx11(DialogTitle, { children: translate(
               "websiteBuilder.search.dialogTitle",
               "Search the website"
             ) }),
-            /* @__PURE__ */ jsx13(DialogDescription, { children: translate(
+            /* @__PURE__ */ jsx11(DialogDescription, { children: translate(
               "websiteBuilder.search.dialogDescription",
               "Find exact matches across static pages and publication pages."
             ) })
           ] }),
           /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-3 border-b border-[var(--wb-site-border)] px-5 py-4", children: [
-            /* @__PURE__ */ jsx13(Search, { className: "h-5 w-5 shrink-0 text-[var(--wb-site-muted-text)]" }),
-            /* @__PURE__ */ jsx13(
+            /* @__PURE__ */ jsx11(Search, { className: "h-5 w-5 shrink-0 text-[var(--wb-site-muted-text)]" }),
+            /* @__PURE__ */ jsx11(
               "input",
               {
                 ref: searchInputRef,
@@ -2493,22 +2310,22 @@ var WebsiteBuilderSiteSearch = ({
                 className: "min-w-0 flex-1 border-0 bg-transparent text-base text-[var(--wb-site-text)] outline-none placeholder:text-[color-mix(in_srgb,var(--wb-site-muted-text)_72%,transparent)]"
               }
             ),
-            /* @__PURE__ */ jsx13(
+            /* @__PURE__ */ jsx11(
               "button",
               {
                 type: "button",
                 onClick: () => setOpen(false),
                 className: "inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--wb-site-muted-text)] transition hover:bg-[color-mix(in_oklab,var(--wb-site-border)_38%,transparent)] hover:text-[var(--wb-site-text)]",
                 "aria-label": "Close search",
-                children: /* @__PURE__ */ jsx13(X, { className: "h-4 w-4" })
+                children: /* @__PURE__ */ jsx11(X, { className: "h-4 w-4" })
               }
             )
           ] }),
-          /* @__PURE__ */ jsx13("div", { className: "border-b border-[var(--wb-site-border)] px-5 py-3 text-sm text-[var(--wb-site-muted-text)]", children: summaryText }),
-          /* @__PURE__ */ jsx13("div", { className: "max-h-[24rem] overflow-y-auto px-3 py-3", children: loading ? /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] px-4 py-4 text-sm text-[var(--wb-site-muted-text)]", children: [
-            /* @__PURE__ */ jsx13(Loader2, { className: "h-4 w-4 animate-spin text-[var(--wb-site-accent)]" }),
-            /* @__PURE__ */ jsx13("span", { children: "Searching the live site surface\u2026" })
-          ] }) : /* @__PURE__ */ jsx13(
+          /* @__PURE__ */ jsx11("div", { className: "border-b border-[var(--wb-site-border)] px-5 py-3 text-sm text-[var(--wb-site-muted-text)]", children: summaryText }),
+          /* @__PURE__ */ jsx11("div", { className: "max-h-[24rem] overflow-y-auto px-3 py-3", children: loading ? /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] px-4 py-4 text-sm text-[var(--wb-site-muted-text)]", children: [
+            /* @__PURE__ */ jsx11(Loader2, { className: "h-4 w-4 animate-spin text-[var(--wb-site-accent)]" }),
+            /* @__PURE__ */ jsx11("span", { children: "Searching the live site surface\u2026" })
+          ] }) : /* @__PURE__ */ jsx11(
             KeyboardMenuList,
             {
               controller: searchMenu,
@@ -2516,13 +2333,13 @@ var WebsiteBuilderSiteSearch = ({
               getItemId: (result) => result.id,
               listLabel: "Website search results",
               className: "space-y-2",
-              emptyState: /* @__PURE__ */ jsx13("div", { className: "rounded-[24px] border border-dashed border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] px-4 py-8 text-center text-sm leading-7 text-[var(--wb-site-muted-text)]", children: hasQuery ? "No blocks matched this query yet." : "Search static page copy and publication content from the live site shell." }),
+              emptyState: /* @__PURE__ */ jsx11("div", { className: "rounded-[24px] border border-dashed border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] px-4 py-8 text-center text-sm leading-7 text-[var(--wb-site-muted-text)]", children: hasQuery ? "No blocks matched this query yet." : "Search static page copy and publication content from the live site shell." }),
               renderItem: (result, { isActive }) => {
                 const snippetParts = renderSnippetParts(
                   result.snippet,
                   deferredQuery || query.trim()
                 );
-                return /* @__PURE__ */ jsx13("div", { "data-wb-search-result-id": result.id, children: /* @__PURE__ */ jsxs8(
+                return /* @__PURE__ */ jsx11("div", { "data-wb-search-result-id": result.id, children: /* @__PURE__ */ jsxs8(
                   WebsiteBuilderLink,
                   {
                     navigateInPreviewOnly: false,
@@ -2543,21 +2360,21 @@ var WebsiteBuilderSiteSearch = ({
                       }
                     ),
                     onClick: () => setOpen(false),
-                    className: clsx8(
+                    className: clsx7(
                       "block rounded-[24px] border px-4 py-4 transition",
                       isActive ? "border-[var(--wb-site-accent)] bg-[color-mix(in_oklab,var(--wb-site-accent)_14%,var(--wb-site-surface))]" : "border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] hover:border-[color-mix(in_oklab,var(--wb-site-accent)_46%,var(--wb-site-border))] hover:bg-[color-mix(in_oklab,var(--wb-site-accent)_10%,var(--wb-site-surface))]"
                     ),
                     children: [
                       /* @__PURE__ */ jsxs8("div", { className: "flex items-start justify-between gap-4", children: [
                         /* @__PURE__ */ jsxs8("div", { className: "min-w-0", children: [
-                          /* @__PURE__ */ jsx13("div", { className: "text-sm font-semibold text-[var(--wb-site-text)]", children: result.pageName }),
-                          /* @__PURE__ */ jsx13("div", { className: "mt-1 text-[11px] uppercase tracking-[0.24em] text-[var(--wb-site-muted-text)]", children: result.route })
+                          /* @__PURE__ */ jsx11("div", { className: "text-sm font-semibold text-[var(--wb-site-text)]", children: result.pageName }),
+                          /* @__PURE__ */ jsx11("div", { className: "mt-1 text-[11px] uppercase tracking-[0.24em] text-[var(--wb-site-muted-text)]", children: result.route })
                         ] }),
-                        /* @__PURE__ */ jsx13("div", { className: "shrink-0 rounded-full border border-[var(--wb-site-border)] px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-[var(--wb-site-muted-text)]", children: result.pageKind })
+                        /* @__PURE__ */ jsx11("div", { className: "shrink-0 rounded-full border border-[var(--wb-site-border)] px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-[var(--wb-site-muted-text)]", children: result.pageKind })
                       ] }),
                       /* @__PURE__ */ jsxs8("div", { className: "mt-3 text-sm leading-7 text-[var(--wb-site-muted-text)]", children: [
                         snippetParts[0],
-                        snippetParts[1] ? /* @__PURE__ */ jsx13("mark", { className: "rounded-full bg-[color-mix(in_oklab,var(--wb-site-accent)_24%,var(--wb-site-surface))] px-1.5 py-0.5 text-[var(--wb-site-text)]", children: snippetParts[1] }) : null,
+                        snippetParts[1] ? /* @__PURE__ */ jsx11("mark", { className: "rounded-full bg-[color-mix(in_oklab,var(--wb-site-accent)_24%,var(--wb-site-surface))] px-1.5 py-0.5 text-[var(--wb-site-text)]", children: snippetParts[1] }) : null,
                         snippetParts[2] ?? ""
                       ] })
                     ]
@@ -2573,7 +2390,7 @@ var WebsiteBuilderSiteSearch = ({
 };
 
 // src/modules/system/site/site-header-shell-definition.tsx
-import { jsx as jsx14, jsxs as jsxs9 } from "react/jsx-runtime";
+import { jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
 var getHeaderLinkPathname = (href) => {
   const cleanHref = href.trim();
   if (!cleanHref.startsWith("/") || cleanHref.startsWith("//")) {
@@ -2773,7 +2590,7 @@ var SiteHeaderShell = ({
   );
   const { locale, publicLocales, translate } = useWebsiteBuilderI18n();
   const [isCompact, setIsCompact] = useState4(false);
-  const headerRef = useRef4(null);
+  const headerRef = useRef3(null);
   const disabledExtensionIds = normalizeWebsiteBuilderSiteStringItems(
     block.props.disabledExtensionIds
   );
@@ -2825,13 +2642,13 @@ var SiteHeaderShell = ({
       href,
       "aria-label": label,
       "data-wb-header-cart-link": "true",
-      className: clsx9(
+      className: clsx8(
         "relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--wb-site-border)] text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
         className
       ),
       children: [
-        /* @__PURE__ */ jsx14(ShoppingCart, { className: "h-5 w-5" }),
-        cartQuantity > 0 ? /* @__PURE__ */ jsx14("span", { className: "absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--wb-site-accent)] px-1 text-[10px] font-bold leading-none text-white", children: cartQuantity > 99 ? "99+" : cartQuantity }) : null
+        /* @__PURE__ */ jsx12(ShoppingCart, { className: "h-5 w-5" }),
+        cartQuantity > 0 ? /* @__PURE__ */ jsx12("span", { className: "absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--wb-site-accent)] px-1 text-[10px] font-bold leading-none text-white", children: cartQuantity > 99 ? "99+" : cartQuantity }) : null
       ]
     },
     key ?? `cart:${href}`
@@ -2843,7 +2660,7 @@ var SiteHeaderShell = ({
     if (!authenticatedUser && isProtectedAccountHref(link.href)) {
       return null;
     }
-    return /* @__PURE__ */ jsx14(
+    return /* @__PURE__ */ jsx12(
       WebsiteBuilderLink,
       {
         href: link.href,
@@ -2857,17 +2674,17 @@ var SiteHeaderShell = ({
   };
   const renderExtensionAction = (action) => {
     const appearance = action.appearance ?? "secondary";
-    const className = clsx9(
+    const className = clsx8(
       "inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition",
       appearance === "primary" ? "bg-[var(--wb-site-accent)] text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] hover:translate-y-[-1px]" : appearance === "ghost" ? "text-[var(--wb-site-text)] hover:text-[var(--wb-site-accent)]" : "border border-[var(--wb-site-border)] text-[var(--wb-site-text)] hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
     );
     if ((action.kind ?? "link") === "auth") {
-      return /* @__PURE__ */ jsx14(
+      return /* @__PURE__ */ jsx12(
         "button",
         {
           type: "button",
           onClick: requestAuth,
-          className: clsx9(className, "cursor-pointer"),
+          className: clsx8(className, "cursor-pointer"),
           children: action.label
         },
         action.id ?? `${action.label}:${action.href}`
@@ -2879,7 +2696,7 @@ var SiteHeaderShell = ({
       action.id ?? `${action.label}:${action.href}`
     );
   };
-  useEffect5(() => {
+  useEffect4(() => {
     if (typeof window === "undefined" || !block.props.compactOnScroll || !liveSurfaceMode) {
       setIsCompact(false);
       return;
@@ -2889,7 +2706,7 @@ var SiteHeaderShell = ({
     window.addEventListener("scroll", sync, { passive: true });
     return () => window.removeEventListener("scroll", sync);
   }, [block.props.compactOnScroll, liveSurfaceMode]);
-  useEffect5(() => {
+  useEffect4(() => {
     if (typeof window === "undefined") {
       return;
     }
@@ -2909,7 +2726,7 @@ var SiteHeaderShell = ({
       window.removeEventListener("commerce-cart-updated", syncCartQuantity);
     };
   }, [resources]);
-  useEffect5(() => {
+  useEffect4(() => {
     if (typeof window === "undefined") {
       return;
     }
@@ -2938,11 +2755,11 @@ var SiteHeaderShell = ({
       root.style.setProperty("--wb-site-header-height", "0px");
     };
   }, [block.props.sticky, liveSurfaceMode, compact, localeSwitcherVisible]);
-  return /* @__PURE__ */ jsx14(
+  return /* @__PURE__ */ jsx12(
     "header",
     {
       ref: headerRef,
-      className: clsx9(
+      className: clsx8(
         "relative",
         liveSurfaceMode && "z-40",
         isShowcaseCard ? "pt-[var(--wb-site-gutter,24px)]" : "pt-0"
@@ -2950,30 +2767,30 @@ var SiteHeaderShell = ({
       children: /* @__PURE__ */ jsxs9(
         "div",
         {
-          className: clsx9(
+          className: clsx8(
             "border-b border-[var(--wb-site-border)] text-[var(--wb-site-text)] transition-[box-shadow,background-color,border-radius] duration-300",
-            framelessSite ? clsx9(
+            framelessSite ? clsx8(
               "rounded-none border-x-0 border-t-0 bg-[color-mix(in_srgb,var(--wb-site-surface)_92%,white)] shadow-none",
               block.props.sticky && compact && "bg-[color-mix(in_srgb,var(--wb-site-surface)_96%,white)] shadow-[0_18px_40px_rgba(15,23,42,0.08)]"
-            ) : isShowcaseCard ? "mx-auto max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] rounded-[calc(var(--wb-site-radius,24px)+10px)] border shadow-[0_28px_70px_rgba(15,23,42,0.08)]" : clsx9(
+            ) : isShowcaseCard ? "mx-auto max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] rounded-[calc(var(--wb-site-radius,24px)+10px)] border shadow-[0_28px_70px_rgba(15,23,42,0.08)]" : clsx8(
               "rounded-none border-x-0 border-t-0 bg-[var(--wb-site-surface)] shadow-[0_18px_40px_rgba(15,23,42,0.06)]",
               block.props.sticky && compact && "shadow-[0_20px_54px_rgba(15,23,42,0.12)]"
             )
           ),
           children: [
-            /* @__PURE__ */ jsx14(
+            /* @__PURE__ */ jsx12(
               "div",
               {
-                className: clsx9(
+                className: clsx8(
                   "mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] transition-[padding,gap] duration-300",
                   framelessSite ? compact ? "px-[var(--wb-site-gutter,24px)] py-3" : "px-[var(--wb-site-gutter,24px)] py-4" : isShowcaseCard ? compact ? "px-4 py-3" : "px-5 py-4 sm:px-6" : compact ? "px-[var(--wb-site-gutter,24px)] py-3" : "px-[var(--wb-site-gutter,24px)] py-4"
                 ),
                 children: /* @__PURE__ */ jsxs9("div", { className: "flex flex-col gap-4", children: [
                   /* @__PURE__ */ jsxs9("div", { className: "flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between", children: [
-                    /* @__PURE__ */ jsx14("div", { className: "flex flex-wrap items-center gap-3 text-sm text-[var(--wb-site-muted)]", children: utilityLinks.map(
+                    /* @__PURE__ */ jsx12("div", { className: "flex flex-wrap items-center gap-3 text-sm text-[var(--wb-site-muted)]", children: utilityLinks.map(
                       (link) => renderSmartLink(
                         link,
-                        clsx9(
+                        clsx8(
                           "transition hover:text-[var(--wb-site-text)]",
                           isCartLinkHref(link.href) && "h-8 w-8 border-transparent"
                         ),
@@ -2987,17 +2804,17 @@ var SiteHeaderShell = ({
                           "data-wb-locale-switcher": "true",
                           className: "flex flex-wrap items-center gap-2 rounded-full border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-2 py-2",
                           children: [
-                            /* @__PURE__ */ jsx14("div", { className: "px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--wb-site-muted)]", children: translate(
+                            /* @__PURE__ */ jsx12("div", { className: "px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--wb-site-muted)]", children: translate(
                               "websiteBuilder.localeSwitcher.label",
                               "Language"
                             ) }),
-                            publicLocales.map((item) => /* @__PURE__ */ jsx14(
+                            publicLocales.map((item) => /* @__PURE__ */ jsx12(
                               WebsiteBuilderLink,
                               {
                                 href: currentRoute,
                                 locale: item.code,
                                 "data-wb-locale-option": item.code,
-                                className: clsx9(
+                                className: clsx8(
                                   "rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] transition",
                                   item.code === locale ? "bg-[var(--wb-site-accent)] text-white" : "text-[var(--wb-site-muted)] hover:text-[var(--wb-site-text)]"
                                 ),
@@ -3008,7 +2825,7 @@ var SiteHeaderShell = ({
                           ]
                         }
                       ) : null,
-                      /* @__PURE__ */ jsx14(
+                      /* @__PURE__ */ jsx12(
                         EditableText,
                         {
                           blockId: block.id,
@@ -3016,7 +2833,7 @@ var SiteHeaderShell = ({
                           className: "text-[var(--wb-site-muted)]"
                         }
                       ),
-                      /* @__PURE__ */ jsx14(
+                      /* @__PURE__ */ jsx12(
                         EditableText,
                         {
                           blockId: block.id,
@@ -3029,7 +2846,7 @@ var SiteHeaderShell = ({
                   /* @__PURE__ */ jsxs9(
                     "div",
                     {
-                      className: clsx9(
+                      className: clsx8(
                         "grid gap-4 lg:items-center",
                         commerceCatalogLink ? "lg:grid-cols-[auto_auto_minmax(280px,1fr)_auto]" : "lg:grid-cols-[auto_minmax(280px,1fr)_auto]"
                       ),
@@ -3040,7 +2857,7 @@ var SiteHeaderShell = ({
                             href: block.props.brandHref,
                             className: "flex min-w-0 items-center gap-3",
                             children: [
-                              /* @__PURE__ */ jsx14("div", { className: "relative h-16 w-16 overflow-hidden rounded-[22px] border border-[var(--wb-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]", children: block.props.logoImage ? /* @__PURE__ */ jsx14(
+                              /* @__PURE__ */ jsx12("div", { className: "relative h-16 w-16 overflow-hidden rounded-[22px] border border-[var(--wb-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]", children: block.props.logoImage ? /* @__PURE__ */ jsx12(
                                 EditableImage,
                                 {
                                   blockId: block.id,
@@ -3049,7 +2866,7 @@ var SiteHeaderShell = ({
                                   imageClassName: "h-full w-full object-contain p-2",
                                   fallbackAlt: block.props.brandLabel
                                 }
-                              ) : /* @__PURE__ */ jsx14("div", { className: "flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--wb-site-accent)]", children: /* @__PURE__ */ jsx14(
+                              ) : /* @__PURE__ */ jsx12("div", { className: "flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--wb-site-accent)]", children: /* @__PURE__ */ jsx12(
                                 EditableText,
                                 {
                                   blockId: block.id,
@@ -3058,7 +2875,7 @@ var SiteHeaderShell = ({
                                 }
                               ) }) }),
                               /* @__PURE__ */ jsxs9("div", { className: "min-w-0", children: [
-                                /* @__PURE__ */ jsx14(
+                                /* @__PURE__ */ jsx12(
                                   EditableText,
                                   {
                                     blockId: block.id,
@@ -3067,7 +2884,7 @@ var SiteHeaderShell = ({
                                     className: "[font-family:var(--wb-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
                                   }
                                 ),
-                                isShowcaseCard ? /* @__PURE__ */ jsx14("div", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--wb-site-muted)]", children: "Live site frame" }) : null
+                                isShowcaseCard ? /* @__PURE__ */ jsx12("div", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--wb-site-muted)]", children: "Live site frame" }) : null
                               ] })
                             ]
                           }
@@ -3078,8 +2895,8 @@ var SiteHeaderShell = ({
                             href: commerceCatalogLink.href,
                             className: "inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
                             children: [
-                              /* @__PURE__ */ jsx14("div", { className: "h-2.5 w-2.5 rounded-full bg-[var(--wb-site-accent)]" }),
-                              /* @__PURE__ */ jsx14(
+                              /* @__PURE__ */ jsx12("div", { className: "h-2.5 w-2.5 rounded-full bg-[var(--wb-site-accent)]" }),
+                              /* @__PURE__ */ jsx12(
                                 EditableText,
                                 {
                                   blockId: block.id,
@@ -3090,7 +2907,7 @@ var SiteHeaderShell = ({
                             ]
                           }
                         ) : null,
-                        /* @__PURE__ */ jsx14(
+                        /* @__PURE__ */ jsx12(
                           WebsiteBuilderSiteSearch,
                           {
                             blockId: block.id,
@@ -3103,12 +2920,12 @@ var SiteHeaderShell = ({
                             block.props.secondaryCtaLabel,
                             void 0,
                             "secondary-cart"
-                          ) : !authenticatedUser && isProtectedAccountHref(block.props.secondaryCtaHref) ? null : /* @__PURE__ */ jsx14(
+                          ) : !authenticatedUser && isProtectedAccountHref(block.props.secondaryCtaHref) ? null : /* @__PURE__ */ jsx12(
                             WebsiteBuilderLink,
                             {
                               href: block.props.secondaryCtaHref,
                               className: "inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
-                              children: /* @__PURE__ */ jsx14(
+                              children: /* @__PURE__ */ jsx12(
                                 EditableText,
                                 {
                                   blockId: block.id,
@@ -3124,7 +2941,7 @@ var SiteHeaderShell = ({
                               href: block.props.primaryCtaHref,
                               className: "inline-flex items-center gap-2 rounded-full bg-[var(--wb-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] transition hover:translate-y-[-1px]",
                               children: [
-                                /* @__PURE__ */ jsx14(
+                                /* @__PURE__ */ jsx12(
                                   EditableText,
                                   {
                                     blockId: block.id,
@@ -3132,7 +2949,7 @@ var SiteHeaderShell = ({
                                     className: "font-semibold text-white"
                                   }
                                 ),
-                                /* @__PURE__ */ jsx14(ArrowRight2, { className: "h-4 w-4" })
+                                /* @__PURE__ */ jsx12(ArrowRight2, { className: "h-4 w-4" })
                               ]
                             }
                           ),
@@ -3144,8 +2961,8 @@ var SiteHeaderShell = ({
                               onClick: requestAuth,
                               className: "inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--wb-site-border)] bg-[var(--wb-site-surface)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
                               children: [
-                                /* @__PURE__ */ jsx14(LogIn, { className: "h-4 w-4" }),
-                                /* @__PURE__ */ jsx14(
+                                /* @__PURE__ */ jsx12(LogIn, { className: "h-4 w-4" }),
+                                /* @__PURE__ */ jsx12(
                                   EditableText,
                                   {
                                     blockId: block.id,
@@ -3163,16 +2980,16 @@ var SiteHeaderShell = ({
                 ] })
               }
             ),
-            categoryLinks.length > 0 ? /* @__PURE__ */ jsx14(
+            categoryLinks.length > 0 ? /* @__PURE__ */ jsx12(
               "div",
               {
-                className: clsx9(
+                className: clsx8(
                   "border-t border-[var(--wb-site-border)]",
                   framelessSite && "bg-transparent"
                 ),
-                children: /* @__PURE__ */ jsx14("div", { className: "mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] px-[var(--wb-site-gutter,24px)] py-4", children: /* @__PURE__ */ jsx14("div", { className: "flex flex-wrap gap-2", children: categoryLinks.map((link) => renderSmartLink(
+                children: /* @__PURE__ */ jsx12("div", { className: "mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] px-[var(--wb-site-gutter,24px)] py-4", children: /* @__PURE__ */ jsx12("div", { className: "flex flex-wrap gap-2", children: categoryLinks.map((link) => renderSmartLink(
                   link,
-                  clsx9(
+                  clsx8(
                     "rounded-full border border-[var(--wb-site-border)] px-4 py-2 text-sm text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
                     framelessSite ? "bg-transparent" : isShowcaseCard ? "bg-[var(--wb-site-background)]" : "bg-white/0",
                     isCartLinkHref(link.href) && "h-10 w-10 px-0 py-0"
@@ -3266,7 +3083,7 @@ var siteHeaderShellDefinition = defineWebsiteBuilderBlockDefinition({
 });
 
 // src/modules/system.tsx
-import { jsx as jsx15, jsxs as jsxs10 } from "react/jsx-runtime";
+import { jsx as jsx13, jsxs as jsxs10 } from "react/jsx-runtime";
 var surfaceStyles = {
   glass: "border-white/10 bg-[linear-gradient(180deg,rgba(7,17,31,0.85),rgba(8,21,38,0.7))] text-white",
   bright: "border-slate-200 bg-[linear-gradient(180deg,#f7f9fc_0%,#eef3fb_100%)] text-slate-950",
@@ -3293,7 +3110,7 @@ var SplitLayout = ({
   return /* @__PURE__ */ jsxs10(
     "section",
     {
-      className: clsx10(
+      className: clsx9(
         "min-w-0 px-6 py-8 sm:px-8 sm:py-10",
         framelessSurface ? "rounded-none border-0 bg-transparent text-[var(--wb-site-text)] shadow-none" : "rounded-[38px] border shadow-[0_28px_90px_rgba(2,12,27,0.16)]",
         !framelessSurface && surface
@@ -3301,42 +3118,42 @@ var SplitLayout = ({
       style: framelessSurface ? getWebsiteBuilderSurfaceModeStyle("bleed") : void 0,
       children: [
         /* @__PURE__ */ jsxs10("div", { className: "max-w-3xl", children: [
-          /* @__PURE__ */ jsx15(
+          /* @__PURE__ */ jsx13(
             EditableText,
             {
               blockId: block.id,
               path: "eyebrow",
-              className: clsx10(
+              className: clsx9(
                 "text-[11px] font-semibold uppercase tracking-[0.3em]",
                 framelessSurface ? "text-[var(--wb-site-muted)]" : block.props.surface === "bright" ? "text-slate-500" : "text-cyan-100/70"
               )
             }
           ),
-          /* @__PURE__ */ jsx15(
+          /* @__PURE__ */ jsx13(
             EditableText,
             {
               blockId: block.id,
               path: "title",
               as: "h2",
-              className: clsx10(
+              className: clsx9(
                 "mt-4 block text-balance text-3xl font-semibold leading-[1.04] tracking-[-0.05em] sm:text-4xl xl:text-5xl",
                 framelessSurface ? "text-[var(--wb-site-text)]" : block.props.surface === "bright" ? "text-slate-950" : "text-white"
               )
             }
           ),
-          /* @__PURE__ */ jsx15(
+          /* @__PURE__ */ jsx13(
             EditableTextarea,
             {
               blockId: block.id,
               path: "body",
-              className: clsx10(
+              className: clsx9(
                 "mt-5 text-base leading-8",
                 framelessSurface ? "text-[var(--wb-site-muted)]" : block.props.surface === "bright" ? "text-slate-600" : "text-slate-300"
               )
             }
           )
         ] }),
-        /* @__PURE__ */ jsx15(
+        /* @__PURE__ */ jsx13(
           "div",
           {
             className: "mt-8 grid grid-cols-1 items-start gap-[var(--wb-layout-gap)] lg:[grid-template-columns:var(--wb-layout-columns)]",
@@ -3346,10 +3163,10 @@ var SplitLayout = ({
             },
             children: areas.map((area, index) => {
               const column = getColumnConfig(columns, area, index);
-              return /* @__PURE__ */ jsx15(
+              return /* @__PURE__ */ jsx13(
                 "div",
                 {
-                  className: clsx10(
+                  className: clsx9(
                     "min-w-0",
                     column.sticky && stickyPreviewEnabled && "lg:sticky lg:self-start"
                   ),
@@ -3359,15 +3176,15 @@ var SplitLayout = ({
                   children: /* @__PURE__ */ jsxs10(
                     "div",
                     {
-                      className: clsx10(
+                      className: clsx9(
                         "relative isolate min-w-0 px-0 py-0",
                         framelessSurface ? "rounded-none border-0 bg-transparent shadow-none" : block.props.surface === "bright" ? "border-0 bg-transparent shadow-none" : "border-0 bg-transparent shadow-none"
                       ),
                       children: [
-                        column.label?.trim() ? /* @__PURE__ */ jsx15(
+                        column.label?.trim() ? /* @__PURE__ */ jsx13(
                           "div",
                           {
-                            className: clsx10(
+                            className: clsx9(
                               "mb-4 text-[11px] font-semibold uppercase tracking-[0.28em]",
                               framelessSurface ? "text-[var(--wb-site-muted)]" : block.props.surface === "bright" ? "text-slate-500" : "text-white/40"
                             ),

@@ -3,7 +3,7 @@ import {
   collectWebsiteBuilderDocuments,
   collectWebsiteBuilderSiteFrameExtensions,
   createWebsiteBuilderRegistry
-} from "./chunk-RIBOMHDR.js";
+} from "./chunk-PD2EQKYT.js";
 
 // src/helpers/runtime.ts
 var createWebsiteBuilderRuntime = (entries) => ({

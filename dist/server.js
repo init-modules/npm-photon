@@ -1,6 +1,6 @@
 import {
   createWebsiteBuilderRuntime
-} from "./chunk-FAN4Y46R.js";
+} from "./chunk-MD5WPJ72.js";
 import {
   WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
   collectWebsiteBuilderAccountTabs,
@@ -26,7 +26,7 @@ import {
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-RIBOMHDR.js";
+} from "./chunk-PD2EQKYT.js";
 import {
   collectWebsiteBuilderFooterExtensionItems,
   collectWebsiteBuilderHeaderExtensionItems,
@@ -36,6 +36,23 @@ import {
   resolveWebsiteBuilderSiteFrameExtensions
 } from "./chunk-4N2K54N2.js";
 import {
+  WEBSITE_BUILDER_DEFAULT_SITE_DESIGN_PRESET_ID,
+  WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS,
+  WEBSITE_BUILDER_SITE_DESIGN_FALLBACK_DEFAULTS,
+  applyWebsiteBuilderSiteColorScheme,
+  applyWebsiteBuilderSiteDesignPreset,
+  createWebsiteBuilderSiteDesignSettings,
+  getWebsiteBuilderSiteColorScheme,
+  getWebsiteBuilderSiteDesignPreset,
+  hasWebsiteBuilderSiteDesignPresetCustomization,
+  isWebsiteBuilderFramelessPreset,
+  isWebsiteBuilderFramelessSiteDesign,
+  isWebsiteBuilderSiteDesignPresetApplied,
+  resolveWebsiteBuilderSiteDesignSettings,
+  websiteBuilderSiteColorSchemes,
+  websiteBuilderSiteDesignPresets
+} from "./chunk-7A32BINR.js";
+import {
   WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
   WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
   WEBSITE_BUILDER_SEARCH_TARGET_PARAM
@@ -43,45 +60,30 @@ import {
 import {
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
-  WEBSITE_BUILDER_DEFAULT_SITE_DESIGN_PRESET_ID,
   WEBSITE_BUILDER_EMPTY_TEXT,
   WEBSITE_BUILDER_ROOT_LIST_ID,
-  WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS,
-  WEBSITE_BUILDER_SITE_DESIGN_FALLBACK_DEFAULTS,
-  applyWebsiteBuilderSiteColorScheme,
-  applyWebsiteBuilderSiteDesignPreset,
   canEditWebsiteBuilderWorkspace,
   canSaveWebsiteBuilderWorkspace,
   cloneWebsiteBuilderBlockTreeWithNewIds,
   cloneWebsiteBuilderValue,
   createWebsiteBuilderAreaListId,
   createWebsiteBuilderNodeId,
-  createWebsiteBuilderSiteDesignSettings,
   duplicateWebsiteBuilderBlockInDocument,
   findWebsiteBuilderBlock,
   getFirstWebsiteBuilderBlockId,
   getValueAtPath,
-  getWebsiteBuilderSiteColorScheme,
-  getWebsiteBuilderSiteDesignPreset,
   getWebsiteBuilderWorkspaceIdentityKey,
   getWebsiteBuilderWorkspaceKey,
-  hasWebsiteBuilderSiteDesignPresetCustomization,
   insertWebsiteBuilderBlockInDocument,
-  isWebsiteBuilderFramelessPreset,
-  isWebsiteBuilderFramelessSiteDesign,
-  isWebsiteBuilderSiteDesignPresetApplied,
   isWebsiteBuilderWorkspaceReadonly,
   moveWebsiteBuilderBlockInDocument,
   normalizeWebsiteBuilderWorkspaceCapabilities,
   normalizeWebsiteBuilderWorkspaceDescriptor,
   normalizeWebsiteBuilderWorkspaceRef,
   removeWebsiteBuilderBlockFromDocument,
-  resolveWebsiteBuilderSiteDesignSettings,
   setValueAtPath,
-  updateWebsiteBuilderBlockInDocument,
-  websiteBuilderSiteColorSchemes,
-  websiteBuilderSiteDesignPresets
-} from "./chunk-RVPYKYSQ.js";
+  updateWebsiteBuilderBlockInDocument
+} from "./chunk-IEZXES2I.js";
 export {
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,

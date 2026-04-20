@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { ChevronDown, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { WebsiteBuilderRichTextEditor } from "../../components/rich-text-editor";
 import {
@@ -17,6 +17,7 @@ import {
 	getValueAtPath,
 	setValueAtPath,
 } from "../../helpers/path";
+import { moveWebsiteBuilderArrayItem } from "../../helpers/document";
 import { useWebsiteBuilderI18n } from "../../i18n/website-builder-i18n-context";
 import type {
 	WebsiteBuilderField,
@@ -267,16 +268,40 @@ const RepeaterFieldEditor = ({
 										{itemLabel}
 									</div>
 								</div>
-								<button
-									type="button"
-									onClick={() =>
-										updateItems(items.filter((_, itemIndex) => itemIndex !== index))
-									}
-									className="inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)]"
-									aria-label={`Remove ${itemLabel}`}
-								>
-									<Trash2 className="h-4 w-4" />
-								</button>
+								<div className="flex shrink-0 items-center gap-1">
+									<button
+										type="button"
+										disabled={index === 0}
+										onClick={() =>
+											updateItems(moveWebsiteBuilderArrayItem(items, index, index - 1))
+										}
+										className="inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)] disabled:cursor-not-allowed disabled:opacity-40"
+										aria-label={`Move ${itemLabel} up`}
+									>
+										<ArrowUp className="h-4 w-4" />
+									</button>
+									<button
+										type="button"
+										disabled={index === items.length - 1}
+										onClick={() =>
+											updateItems(moveWebsiteBuilderArrayItem(items, index, index + 1))
+										}
+										className="inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)] disabled:cursor-not-allowed disabled:opacity-40"
+										aria-label={`Move ${itemLabel} down`}
+									>
+										<ArrowDown className="h-4 w-4" />
+									</button>
+									<button
+										type="button"
+										onClick={() =>
+											updateItems(items.filter((_, itemIndex) => itemIndex !== index))
+										}
+										className="inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)]"
+										aria-label={`Remove ${itemLabel}`}
+									>
+										<Trash2 className="h-4 w-4" />
+									</button>
+								</div>
 							</div>
 
 							{itemField ? (
