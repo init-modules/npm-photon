@@ -286,14 +286,28 @@ var getWebsiteBuilderFieldBinding = (state, blockId, path) => {
   if (!block?.bindings) {
     return null;
   }
-  return block.bindings[path] ?? null;
+  const exactBinding = block.bindings[path];
+  if (exactBinding) {
+    return exactBinding;
+  }
+  const prefixMatch = Object.entries(block.bindings).filter(([bindingPath2]) => path.startsWith(`${bindingPath2}.`)).sort(([leftPath], [rightPath]) => rightPath.length - leftPath.length)[0];
+  if (!prefixMatch) {
+    return null;
+  }
+  const [bindingPath, binding] = prefixMatch;
+  const suffix = path.slice(bindingPath.length + 1);
+  const sourcePath = binding.path ? `${binding.path}.${suffix}` : suffix;
+  return {
+    ...binding,
+    path: sourcePath
+  };
 };
 var getWebsiteBuilderFieldValue = (state, blockId, path) => {
   const block = findWebsiteBuilderBlock(state.document.blocks, blockId);
   if (!block) {
     return null;
   }
-  const binding = block.bindings?.[path];
+  const binding = getWebsiteBuilderFieldBinding(state, blockId, path);
   if (binding && binding.source in state.resources) {
     const resourceValue = getValueAtPath(
       state.resources[binding.source] ?? {},

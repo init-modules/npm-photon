@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { ArrowRight, LogIn } from "lucide-react";
+import { ArrowRight, LogIn, ShoppingCart } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { EditableImage, EditableText } from "../../../components/editable";
 import {
@@ -24,6 +24,7 @@ import { WebsiteBuilderSiteSearch } from "../../../search/website-builder-site-s
 import type {
 	WebsiteBuilderBlockComponentProps,
 	WebsiteBuilderField,
+	WebsiteBuilderResources,
 	WebsiteBuilderSiteFrameActionItem,
 } from "../../../types";
 import {
@@ -53,6 +54,41 @@ type SiteHeaderProps = {
 	categoryLinks: Array<{ label: string; href: string }>;
 	disabledExtensionIds?: string[];
 	disabledExtensionItemIds?: string[];
+};
+
+const getHeaderLinkPathname = (href: string) => {
+	const cleanHref = href.trim();
+
+	if (!cleanHref.startsWith("/") || cleanHref.startsWith("//")) {
+		return cleanHref;
+	}
+
+	return (cleanHref.split(/[?#]/u)[0] ?? "/").replace(/\/+$/u, "") || "/";
+};
+
+const isCartLinkHref = (href: string) => getHeaderLinkPathname(href) === "/cart";
+
+const isProtectedAccountHref = (href: string) => {
+	const pathname = getHeaderLinkPathname(href);
+
+	return pathname === "/account" || pathname.startsWith("/account/");
+};
+
+const getHeaderCartQuantity = (resources: WebsiteBuilderResources) => {
+	const summary = resources.commerceCartSummary as
+		| { items_quantity?: unknown; item_count?: unknown }
+		| undefined;
+	const quantity = Number(summary?.items_quantity ?? summary?.item_count ?? 0);
+
+	return Number.isFinite(quantity) && quantity > 0 ? Math.floor(quantity) : 0;
+};
+
+const hasAuthenticatedUser = (resources: WebsiteBuilderResources) => {
+	const auth = resources.auth as
+		| { user?: null | Record<string, unknown> }
+		| undefined;
+
+	return Boolean(auth?.user);
 };
 
 const siteHeaderFields: WebsiteBuilderField[] = [
@@ -211,6 +247,7 @@ const SiteHeaderShell = ({
 	const mode = useWebsiteBuilderStore((state) => state.mode);
 	const currentRoute = useWebsiteBuilderStore((state) => state.document.route);
 	const requestAuth = useWebsiteBuilderStore((state) => state.requestAuth);
+	const resources = useWebsiteBuilderStore((state) => state.resources);
 	const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
 	const siteFrameExtensions = useWebsiteBuilderStore(
 		(state) => state.siteFrameExtensions,
@@ -250,6 +287,70 @@ const SiteHeaderShell = ({
 	const isShowcaseCard = variant === "showcase-card" && !framelessSite;
 	const localeSwitcherVisible =
 		block.props.showLocaleSwitcher !== false && publicLocales.length > 1;
+	const authenticatedUser = hasAuthenticatedUser(resources);
+	const [cartQuantity, setCartQuantity] = useState(() =>
+		getHeaderCartQuantity(resources),
+	);
+
+	const renderCartLink = (
+		href: string,
+		label: string,
+		className?: string,
+		key?: string,
+	) => (
+		<WebsiteBuilderLink
+			key={key ?? `cart:${href}`}
+			href={href}
+			aria-label={label}
+			data-wb-header-cart-link="true"
+			className={clsx(
+				"relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--wb-site-border)] text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
+				className,
+			)}
+		>
+			<ShoppingCart className="h-5 w-5" />
+			{cartQuantity > 0 ? (
+				<span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--wb-site-accent)] px-1 text-[10px] font-bold leading-none text-white">
+					{cartQuantity > 99 ? "99+" : cartQuantity}
+				</span>
+			) : null}
+		</WebsiteBuilderLink>
+	);
+
+	const renderSmartLink = (
+		link: { label: string; href: string; target?: string; rel?: string },
+		className: string,
+		key: string,
+	) => {
+		if (isCartLinkHref(link.href)) {
+			return renderCartLink(link.href, link.label, className, key);
+		}
+
+		if (!authenticatedUser && isProtectedAccountHref(link.href)) {
+			return (
+				<button
+					key={key}
+					type="button"
+					onClick={requestAuth}
+					className={clsx(className, "cursor-pointer")}
+				>
+					{link.label}
+				</button>
+			);
+		}
+
+		return (
+			<WebsiteBuilderLink
+				key={key}
+				href={link.href}
+				target={link.target}
+				rel={link.rel}
+				className={className}
+			>
+				{link.label}
+			</WebsiteBuilderLink>
+		);
+	};
 
 	const renderExtensionAction = (action: WebsiteBuilderSiteFrameActionItem) => {
 		const appearance = action.appearance ?? "secondary";
@@ -275,16 +376,10 @@ const SiteHeaderShell = ({
 			);
 		}
 
-		return (
-			<WebsiteBuilderLink
-				key={action.id ?? `${action.label}:${action.href}`}
-				href={action.href}
-				target={action.target}
-				rel={action.rel}
-				className={className}
-			>
-				{action.label}
-			</WebsiteBuilderLink>
+		return renderSmartLink(
+			action,
+			className,
+			action.id ?? `${action.label}:${action.href}`,
 		);
 	};
 
@@ -304,6 +399,35 @@ const SiteHeaderShell = ({
 
 		return () => window.removeEventListener("scroll", sync);
 	}, [block.props.compactOnScroll, liveSurfaceMode]);
+
+	useEffect(() => {
+		if (typeof window === "undefined") {
+			return;
+		}
+
+		setCartQuantity(getHeaderCartQuantity(resources));
+
+		const syncCartQuantity = (event: Event) => {
+			if (!(event instanceof CustomEvent)) {
+				return;
+			}
+
+			const cart = event.detail as
+				| { items_quantity?: unknown; item_count?: unknown }
+				| undefined;
+			const quantity = Number(cart?.items_quantity ?? cart?.item_count ?? 0);
+
+			setCartQuantity(
+				Number.isFinite(quantity) && quantity > 0 ? Math.floor(quantity) : 0,
+			);
+		};
+
+		window.addEventListener("commerce-cart-updated", syncCartQuantity);
+
+		return () => {
+			window.removeEventListener("commerce-cart-updated", syncCartQuantity);
+		};
+	}, [resources]);
 
 	useEffect(() => {
 		if (typeof window === "undefined") {
@@ -396,14 +520,34 @@ const SiteHeaderShell = ({
 						<div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 							<div className="flex flex-wrap items-center gap-3 text-sm text-[var(--wb-site-muted)]">
 								{utilityLinks.map((link) => (
-									<WebsiteBuilderLink
-										key={`${link.label}:${link.href}`}
-										href={link.href}
-										data-wb-header-utility-link={link.href}
-										className="transition hover:text-[var(--wb-site-text)]"
-									>
-										{link.label}
-									</WebsiteBuilderLink>
+									isCartLinkHref(link.href) ? (
+										renderCartLink(
+											link.href,
+											link.label,
+											"h-8 w-8 border-transparent",
+											`${link.label}:${link.href}`,
+										)
+									) : !authenticatedUser &&
+										isProtectedAccountHref(link.href) ? (
+										<button
+											key={`${link.label}:${link.href}`}
+											type="button"
+											onClick={requestAuth}
+											data-wb-header-utility-link={link.href}
+											className="cursor-pointer transition hover:text-[var(--wb-site-text)]"
+										>
+											{link.label}
+										</button>
+									) : (
+										<WebsiteBuilderLink
+											key={`${link.label}:${link.href}`}
+											href={link.href}
+											data-wb-header-utility-link={link.href}
+											className="transition hover:text-[var(--wb-site-text)]"
+										>
+											{link.label}
+										</WebsiteBuilderLink>
+									)
 								))}
 							</div>
 							<div className="flex flex-wrap items-center gap-3 text-sm">
@@ -503,16 +647,38 @@ const SiteHeaderShell = ({
 							/>
 
 							<div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
-								<WebsiteBuilderLink
-									href={block.props.secondaryCtaHref}
-									className="inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
-								>
-									<EditableText
-										blockId={block.id}
-										path="secondaryCtaLabel"
-										className="font-semibold"
-									/>
-								</WebsiteBuilderLink>
+								{isCartLinkHref(block.props.secondaryCtaHref) ? (
+									renderCartLink(
+										block.props.secondaryCtaHref,
+										block.props.secondaryCtaLabel,
+										undefined,
+										"secondary-cart",
+									)
+								) : !authenticatedUser &&
+									isProtectedAccountHref(block.props.secondaryCtaHref) ? (
+									<button
+										type="button"
+										onClick={requestAuth}
+										className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
+									>
+										<EditableText
+											blockId={block.id}
+											path="secondaryCtaLabel"
+											className="font-semibold"
+										/>
+									</button>
+								) : (
+									<WebsiteBuilderLink
+										href={block.props.secondaryCtaHref}
+										className="inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
+									>
+										<EditableText
+											blockId={block.id}
+											path="secondaryCtaLabel"
+											className="font-semibold"
+										/>
+									</WebsiteBuilderLink>
+								)}
 								<WebsiteBuilderLink
 									href={block.props.primaryCtaHref}
 									className="inline-flex items-center gap-2 rounded-full bg-[var(--wb-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] transition hover:translate-y-[-1px]"
@@ -553,20 +719,19 @@ const SiteHeaderShell = ({
 						<div className="mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] px-[var(--wb-site-gutter,24px)] py-4">
 							<div className="flex flex-wrap gap-2">
 								{categoryLinks.map((link) => (
-									<WebsiteBuilderLink
-										key={`${link.label}:${link.href}`}
-										href={link.href}
-										className={clsx(
+									renderSmartLink(
+										link,
+										clsx(
 											"rounded-full border border-[var(--wb-site-border)] px-4 py-2 text-sm text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
 											framelessSite
 												? "bg-transparent"
 												: isShowcaseCard
 													? "bg-[var(--wb-site-background)]"
 													: "bg-white/0",
-										)}
-									>
-										{link.label}
-									</WebsiteBuilderLink>
+											isCartLinkHref(link.href) && "h-10 w-10 px-0 py-0",
+										),
+										`${link.label}:${link.href}`,
+									)
 								))}
 							</div>
 						</div>

@@ -29,7 +29,7 @@ import {
   useWebsiteBuilderStore,
   useWebsiteBuilderStoreApi,
   websiteBuilderRichTextContentClassName
-} from "./chunk-AQTNQXFB.js";
+} from "./chunk-SKKKSM7X.js";
 import {
   normalizeWebsiteBuilderSelectionForMode,
   resolveWebsiteBuilderAccess,
@@ -2227,7 +2227,7 @@ var siteFooterShellDefinition = defineWebsiteBuilderBlockDefinition({
 
 // src/modules/system/site/site-header-shell-definition.tsx
 import clsx9 from "clsx";
-import { ArrowRight as ArrowRight2, LogIn } from "lucide-react";
+import { ArrowRight as ArrowRight2, LogIn, ShoppingCart } from "lucide-react";
 import { useEffect as useEffect5, useRef as useRef4, useState as useState4 } from "react";
 
 // src/search/website-builder-site-search.tsx
@@ -2574,6 +2574,27 @@ var WebsiteBuilderSiteSearch = ({
 
 // src/modules/system/site/site-header-shell-definition.tsx
 import { jsx as jsx14, jsxs as jsxs9 } from "react/jsx-runtime";
+var getHeaderLinkPathname = (href) => {
+  const cleanHref = href.trim();
+  if (!cleanHref.startsWith("/") || cleanHref.startsWith("//")) {
+    return cleanHref;
+  }
+  return (cleanHref.split(/[?#]/u)[0] ?? "/").replace(/\/+$/u, "") || "/";
+};
+var isCartLinkHref = (href) => getHeaderLinkPathname(href) === "/cart";
+var isProtectedAccountHref = (href) => {
+  const pathname = getHeaderLinkPathname(href);
+  return pathname === "/account" || pathname.startsWith("/account/");
+};
+var getHeaderCartQuantity = (resources) => {
+  const summary = resources.commerceCartSummary;
+  const quantity = Number(summary?.items_quantity ?? summary?.item_count ?? 0);
+  return Number.isFinite(quantity) && quantity > 0 ? Math.floor(quantity) : 0;
+};
+var hasAuthenticatedUser = (resources) => {
+  const auth = resources.auth;
+  return Boolean(auth?.user);
+};
 var siteHeaderFields = [
   {
     path: "variant",
@@ -2729,6 +2750,7 @@ var SiteHeaderShell = ({
   const mode = useWebsiteBuilderStore((state) => state.mode);
   const currentRoute = useWebsiteBuilderStore((state) => state.document.route);
   const requestAuth = useWebsiteBuilderStore((state) => state.requestAuth);
+  const resources = useWebsiteBuilderStore((state) => state.resources);
   const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
   const siteFrameExtensions = useWebsiteBuilderStore(
     (state) => state.siteFrameExtensions
@@ -2767,6 +2789,55 @@ var SiteHeaderShell = ({
   const framelessSite = isWebsiteBuilderFramelessSiteDesign(siteDesign);
   const isShowcaseCard = variant === "showcase-card" && !framelessSite;
   const localeSwitcherVisible = block.props.showLocaleSwitcher !== false && publicLocales.length > 1;
+  const authenticatedUser = hasAuthenticatedUser(resources);
+  const [cartQuantity, setCartQuantity] = useState4(
+    () => getHeaderCartQuantity(resources)
+  );
+  const renderCartLink = (href, label, className, key) => /* @__PURE__ */ jsxs9(
+    WebsiteBuilderLink,
+    {
+      href,
+      "aria-label": label,
+      "data-wb-header-cart-link": "true",
+      className: clsx9(
+        "relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--wb-site-border)] text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
+        className
+      ),
+      children: [
+        /* @__PURE__ */ jsx14(ShoppingCart, { className: "h-5 w-5" }),
+        cartQuantity > 0 ? /* @__PURE__ */ jsx14("span", { className: "absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--wb-site-accent)] px-1 text-[10px] font-bold leading-none text-white", children: cartQuantity > 99 ? "99+" : cartQuantity }) : null
+      ]
+    },
+    key ?? `cart:${href}`
+  );
+  const renderSmartLink = (link, className, key) => {
+    if (isCartLinkHref(link.href)) {
+      return renderCartLink(link.href, link.label, className, key);
+    }
+    if (!authenticatedUser && isProtectedAccountHref(link.href)) {
+      return /* @__PURE__ */ jsx14(
+        "button",
+        {
+          type: "button",
+          onClick: requestAuth,
+          className: clsx9(className, "cursor-pointer"),
+          children: link.label
+        },
+        key
+      );
+    }
+    return /* @__PURE__ */ jsx14(
+      WebsiteBuilderLink,
+      {
+        href: link.href,
+        target: link.target,
+        rel: link.rel,
+        className,
+        children: link.label
+      },
+      key
+    );
+  };
   const renderExtensionAction = (action) => {
     const appearance = action.appearance ?? "secondary";
     const className = clsx9(
@@ -2785,15 +2856,9 @@ var SiteHeaderShell = ({
         action.id ?? `${action.label}:${action.href}`
       );
     }
-    return /* @__PURE__ */ jsx14(
-      WebsiteBuilderLink,
-      {
-        href: action.href,
-        target: action.target,
-        rel: action.rel,
-        className,
-        children: action.label
-      },
+    return renderSmartLink(
+      action,
+      className,
       action.id ?? `${action.label}:${action.href}`
     );
   };
@@ -2807,6 +2872,26 @@ var SiteHeaderShell = ({
     window.addEventListener("scroll", sync, { passive: true });
     return () => window.removeEventListener("scroll", sync);
   }, [block.props.compactOnScroll, liveSurfaceMode]);
+  useEffect5(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    setCartQuantity(getHeaderCartQuantity(resources));
+    const syncCartQuantity = (event) => {
+      if (!(event instanceof CustomEvent)) {
+        return;
+      }
+      const cart = event.detail;
+      const quantity = Number(cart?.items_quantity ?? cart?.item_count ?? 0);
+      setCartQuantity(
+        Number.isFinite(quantity) && quantity > 0 ? Math.floor(quantity) : 0
+      );
+    };
+    window.addEventListener("commerce-cart-updated", syncCartQuantity);
+    return () => {
+      window.removeEventListener("commerce-cart-updated", syncCartQuantity);
+    };
+  }, [resources]);
   useEffect5(() => {
     if (typeof window === "undefined") {
       return;
@@ -2868,7 +2953,22 @@ var SiteHeaderShell = ({
                 ),
                 children: /* @__PURE__ */ jsxs9("div", { className: "flex flex-col gap-4", children: [
                   /* @__PURE__ */ jsxs9("div", { className: "flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between", children: [
-                    /* @__PURE__ */ jsx14("div", { className: "flex flex-wrap items-center gap-3 text-sm text-[var(--wb-site-muted)]", children: utilityLinks.map((link) => /* @__PURE__ */ jsx14(
+                    /* @__PURE__ */ jsx14("div", { className: "flex flex-wrap items-center gap-3 text-sm text-[var(--wb-site-muted)]", children: utilityLinks.map((link) => isCartLinkHref(link.href) ? renderCartLink(
+                      link.href,
+                      link.label,
+                      "h-8 w-8 border-transparent",
+                      `${link.label}:${link.href}`
+                    ) : !authenticatedUser && isProtectedAccountHref(link.href) ? /* @__PURE__ */ jsx14(
+                      "button",
+                      {
+                        type: "button",
+                        onClick: requestAuth,
+                        "data-wb-header-utility-link": link.href,
+                        className: "cursor-pointer transition hover:text-[var(--wb-site-text)]",
+                        children: link.label
+                      },
+                      `${link.label}:${link.href}`
+                    ) : /* @__PURE__ */ jsx14(
                       WebsiteBuilderLink,
                       {
                         href: link.href,
@@ -2982,7 +3082,27 @@ var SiteHeaderShell = ({
                       }
                     ),
                     /* @__PURE__ */ jsxs9("div", { className: "flex flex-wrap items-center justify-start gap-2 lg:justify-end", children: [
-                      /* @__PURE__ */ jsx14(
+                      isCartLinkHref(block.props.secondaryCtaHref) ? renderCartLink(
+                        block.props.secondaryCtaHref,
+                        block.props.secondaryCtaLabel,
+                        void 0,
+                        "secondary-cart"
+                      ) : !authenticatedUser && isProtectedAccountHref(block.props.secondaryCtaHref) ? /* @__PURE__ */ jsx14(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: requestAuth,
+                          className: "inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
+                          children: /* @__PURE__ */ jsx14(
+                            EditableText,
+                            {
+                              blockId: block.id,
+                              path: "secondaryCtaLabel",
+                              className: "font-semibold"
+                            }
+                          )
+                        }
+                      ) : /* @__PURE__ */ jsx14(
                         WebsiteBuilderLink,
                         {
                           href: block.props.secondaryCtaHref,
@@ -3047,16 +3167,13 @@ var SiteHeaderShell = ({
                   "border-t border-[var(--wb-site-border)]",
                   framelessSite && "bg-transparent"
                 ),
-                children: /* @__PURE__ */ jsx14("div", { className: "mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] px-[var(--wb-site-gutter,24px)] py-4", children: /* @__PURE__ */ jsx14("div", { className: "flex flex-wrap gap-2", children: categoryLinks.map((link) => /* @__PURE__ */ jsx14(
-                  WebsiteBuilderLink,
-                  {
-                    href: link.href,
-                    className: clsx9(
-                      "rounded-full border border-[var(--wb-site-border)] px-4 py-2 text-sm text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
-                      framelessSite ? "bg-transparent" : isShowcaseCard ? "bg-[var(--wb-site-background)]" : "bg-white/0"
-                    ),
-                    children: link.label
-                  },
+                children: /* @__PURE__ */ jsx14("div", { className: "mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] px-[var(--wb-site-gutter,24px)] py-4", children: /* @__PURE__ */ jsx14("div", { className: "flex flex-wrap gap-2", children: categoryLinks.map((link) => renderSmartLink(
+                  link,
+                  clsx9(
+                    "rounded-full border border-[var(--wb-site-border)] px-4 py-2 text-sm text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
+                    framelessSite ? "bg-transparent" : isShowcaseCard ? "bg-[var(--wb-site-background)]" : "bg-white/0",
+                    isCartLinkHref(link.href) && "h-10 w-10 px-0 py-0"
+                  ),
                   `${link.label}:${link.href}`
                 )) }) })
               }
