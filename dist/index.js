@@ -2403,20 +2403,19 @@ var WebsiteBuilderSiteSearch = ({
   ] });
 };
 
-// src/modules/system/site/site-header-shell-definition.tsx
-import { jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
+// src/modules/system/site/site-header-links.ts
 var normalizeHeaderHref = (href) => typeof href === "string" ? href.trim() : "";
-var getHeaderLinkPathname = (href) => {
+var getHeaderLinkPathname2 = (href) => {
   const cleanHref = normalizeHeaderHref(href);
   if (!cleanHref.startsWith("/") || cleanHref.startsWith("//")) {
     return cleanHref;
   }
   return (cleanHref.split(/[?#]/u)[0] ?? "/").replace(/\/+$/u, "") || "/";
 };
-var isCartLinkHref = (href) => getHeaderLinkPathname(href) === "/cart";
-var getHeaderLinkDedupeKey = (href) => `route:${getHeaderLinkPathname(href).toLowerCase()}`;
+var isCartLinkHref = (href) => getHeaderLinkPathname2(href) === "/cart";
+var getHeaderLinkDedupeKey = (href) => `route:${getHeaderLinkPathname2(href).toLowerCase()}`;
 var isProtectedAccountHref = (href) => {
-  const pathname = getHeaderLinkPathname(href);
+  const pathname = getHeaderLinkPathname2(href);
   return pathname === "/account" || pathname.startsWith("/account/");
 };
 var getHeaderCartQuantity = (resources) => {
@@ -2468,6 +2467,9 @@ var collectHeaderActionLinkKeys = (actions) => {
   }
   return keys;
 };
+
+// src/modules/system/site/site-header-shell-definition.tsx
+import { jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
 var siteHeaderFields = [
   {
     path: "variant",

@@ -63,6 +63,7 @@
   },
   "scripts": {
     "build": "tsup src/index.ts src/client.ts src/sdk.ts src/forms.ts src/server.ts src/shared.ts --format esm --dts --clean",
+    "check:dist": "npm run build && git diff --exit-code -- dist",
     "prepack": "npm run build"
   },
   "peerDependencies": {

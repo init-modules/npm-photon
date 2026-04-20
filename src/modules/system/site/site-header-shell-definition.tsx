@@ -22,16 +22,29 @@ import {
 } from "../../../helpers/site-design";
 import { WebsiteBuilderSiteSearch } from "../../../search/website-builder-site-search";
 import type {
-	WebsiteBuilderBlock,
 	WebsiteBuilderBlockComponentProps,
 	WebsiteBuilderField,
-	WebsiteBuilderResources,
 	WebsiteBuilderSiteFrameActionItem,
 } from "../../../types";
 import {
 	normalizeWebsiteBuilderSiteLinkItems,
 	normalizeWebsiteBuilderSiteStringItems,
 } from "./helpers";
+import {
+	collectHeaderActionLinkKeys,
+	collectUniqueHeaderLinks,
+	getHeaderActionVisibleHref,
+	getHeaderCartLink,
+	getHeaderCartQuantity,
+	getHeaderLinkDedupeKey,
+	hasAuthenticatedUser,
+	hasCommerceBlock,
+	hasCommerceRuntimeResource,
+	isCartLinkHref,
+	isCommerceExtensionId,
+	isProtectedAccountHref,
+	normalizeHeaderHref,
+} from "./site-header-links";
 
 type SiteHeaderProps = {
 	variant?: "commerce-inline" | "showcase-card";
@@ -55,128 +68,6 @@ type SiteHeaderProps = {
 	categoryLinks: Array<{ label: string; href: string }>;
 	disabledExtensionIds?: string[];
 	disabledExtensionItemIds?: string[];
-};
-
-const normalizeHeaderHref = (href: unknown) =>
-	typeof href === "string" ? href.trim() : "";
-
-const getHeaderLinkPathname = (href: unknown) => {
-	const cleanHref = normalizeHeaderHref(href);
-
-	if (!cleanHref.startsWith("/") || cleanHref.startsWith("//")) {
-		return cleanHref;
-	}
-
-	return (cleanHref.split(/[?#]/u)[0] ?? "/").replace(/\/+$/u, "") || "/";
-};
-
-const isCartLinkHref = (href: unknown) => getHeaderLinkPathname(href) === "/cart";
-
-const getHeaderLinkDedupeKey = (href: unknown) =>
-	`route:${getHeaderLinkPathname(href).toLowerCase()}`;
-
-const isProtectedAccountHref = (href: unknown) => {
-	const pathname = getHeaderLinkPathname(href);
-
-	return pathname === "/account" || pathname.startsWith("/account/");
-};
-
-const getHeaderCartQuantity = (resources: WebsiteBuilderResources) => {
-	const summary = resources.commerceCartSummary as
-		| { items_quantity?: unknown; item_count?: unknown }
-		| undefined;
-	const quantity = Number(summary?.items_quantity ?? summary?.item_count ?? 0);
-
-	return Number.isFinite(quantity) && quantity > 0 ? Math.floor(quantity) : 0;
-};
-
-const hasAuthenticatedUser = (resources: WebsiteBuilderResources) => {
-	const auth = resources.auth as
-		| { user?: null | Record<string, unknown> }
-		| undefined;
-
-	return Boolean(auth?.user);
-};
-
-const hasCommerceBlock = (blocks: readonly WebsiteBuilderBlock[] | undefined): boolean =>
-	(blocks ?? []).some((item) => {
-		if (item.module === "commerce-website-builder") {
-			return true;
-		}
-
-		return (item.areas ?? []).some((area) => hasCommerceBlock(area.blocks));
-	});
-
-const hasCommerceRuntimeResource = (resources: WebsiteBuilderResources) =>
-	[
-		"commerceCatalog",
-		"commerceCatalogItem",
-		"commerceProduct",
-		"commerceCheckout",
-		"commerceOrder",
-	].some((key) => resources[key] !== undefined) ||
-	getHeaderCartQuantity(resources) > 0;
-
-const isCommerceExtensionId = (id: string | undefined) =>
-	typeof id === "string" && id.startsWith("commerce");
-
-type SiteHeaderLinkItem = {
-	id?: string;
-	label: string;
-	href?: string;
-	target?: string;
-	rel?: string;
-};
-
-const collectUniqueHeaderLinks = <TLink extends SiteHeaderLinkItem>(
-	links: TLink[],
-	hiddenKeys: ReadonlySet<string> = new Set(),
-): TLink[] => {
-	const seenKeys = new Set<string>();
-
-	return links.filter((link) => {
-		const key = getHeaderLinkDedupeKey(link.href);
-
-		if (key === "route:" || hiddenKeys.has(key) || seenKeys.has(key)) {
-			return false;
-		}
-
-		seenKeys.add(key);
-
-		return true;
-	});
-};
-
-const getHeaderActionVisibleHref = (
-	action: WebsiteBuilderSiteFrameActionItem,
-	authenticatedUser: boolean,
-) =>
-	authenticatedUser && (action.kind ?? "link") === "auth"
-		? (action.authenticatedHref ?? action.href)
-		: action.href;
-
-const getHeaderCartLink = (
-	links: Array<{ label: string; href?: string }>,
-): { label: string; href: string } | null => {
-	const link = links.find((item) => isCartLinkHref(item.href));
-
-	return link?.href ? { label: link.label, href: link.href } : null;
-};
-
-const collectHeaderActionLinkKeys = (
-	actions: WebsiteBuilderSiteFrameActionItem[],
-) => {
-	const keys = new Set<string>();
-
-	for (const action of actions) {
-		keys.add(getHeaderLinkDedupeKey(action.href));
-
-		if (action.authenticatedHref) {
-			keys.add(getHeaderLinkDedupeKey(action.authenticatedHref));
-		}
-	}
-
-	return keys;
 };
 
 const siteHeaderFields: WebsiteBuilderField[] = [
