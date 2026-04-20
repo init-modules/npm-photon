@@ -27,6 +27,7 @@ import { inputClassName } from "../shared";
 import { GalleryFieldEditor } from "./gallery-field-editor";
 import { ImageFieldEditor } from "./image-field-editor";
 import { JsonFieldEditor } from "./json-field-editor";
+import { WebsiteBuilderFormFieldsEditor } from "../../forms/form-fields-editor";
 
 type FieldEditorProps = {
 	field: WebsiteBuilderField | WebsiteBuilderNestedField;
@@ -489,6 +490,15 @@ export const FieldEditor = ({
 					value={value}
 					onFocus={onFocus}
 					onChange={onChange}
+					absolutePath={path}
+				/>
+			) : null}
+
+			{field.kind === "form-fields" ? (
+				<WebsiteBuilderFormFieldsEditor
+					value={value}
+					onChange={onChange}
+					onFocus={(path) => onFocus(joinFieldPath(absolutePath ?? "", path))}
 					absolutePath={path}
 				/>
 			) : null}

@@ -18,6 +18,7 @@ export type WebsiteBuilderFieldKind =
 	| "toggle"
 	| "tags"
 	| "json"
+	| "form-fields"
 	| "object"
 	| "repeater"
 	| "image"
@@ -275,6 +276,10 @@ export type WebsiteBuilderSiteFrameActionItem =
 	WebsiteBuilderSiteFrameLinkItem & {
 		kind?: WebsiteBuilderSiteFrameActionKind;
 		appearance?: "primary" | "secondary" | "ghost";
+		authenticatedLabel?: string;
+		authenticatedHref?: string;
+		authenticatedTarget?: string;
+		authenticatedRel?: string;
 	};
 
 export type WebsiteBuilderSiteFrameNavigationColumn = {

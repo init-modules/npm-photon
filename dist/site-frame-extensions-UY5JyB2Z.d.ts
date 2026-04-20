@@ -1,4 +1,4 @@
-import { u as WebsiteBuilderSiteFrameExtension, v as WebsiteBuilderSiteFrameNavigationColumn, w as WebsiteBuilderSiteFrameLinkItem, x as WebsiteBuilderSiteFrameActionItem, y as WebsiteBuilderAccountTabExtension } from './types-q9w-WbBC.js';
+import { u as WebsiteBuilderSiteFrameExtension, v as WebsiteBuilderSiteFrameNavigationColumn, w as WebsiteBuilderSiteFrameLinkItem, x as WebsiteBuilderSiteFrameActionItem, y as WebsiteBuilderAccountTabExtension } from './types-B_tR-sKT.js';
 
 declare const createWebsiteBuilderSiteFrameExtension: (extension: WebsiteBuilderSiteFrameExtension) => WebsiteBuilderSiteFrameExtension;
 declare const createWebsiteBuilderAccountTabExtension: (tab: WebsiteBuilderAccountTabExtension) => WebsiteBuilderAccountTabExtension;

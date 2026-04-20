@@ -1,8 +1,8 @@
 import {
   EditableRepeaterValue
-} from "./chunk-Q5G72OKO.js";
-import "./chunk-HCA5T4KG.js";
-import "./chunk-PD2EQKYT.js";
+} from "./chunk-GVJ4Q7EE.js";
+import "./chunk-QQ25VPZM.js";
+import "./chunk-GBIC56HN.js";
 import "./chunk-HFEMF2E3.js";
 import "./chunk-IEZXES2I.js";
 
@@ -56,7 +56,7 @@ var createWebsiteBuilderFormFieldsField = (path = "fields", options = {}) => {
   return {
     path,
     label: options.label ?? "Form fields",
-    kind: "repeater",
+    kind: "form-fields",
     group: "content",
     localization: "shared",
     description: options.description,

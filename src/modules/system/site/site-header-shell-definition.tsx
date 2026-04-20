@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { ArrowRight, LogIn, ShoppingCart } from "lucide-react";
+import { ArrowRight, CircleUserRound, LogIn, ShoppingCart } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { EditableImage, EditableText } from "../../../components/editable";
 import {
@@ -57,8 +57,11 @@ type SiteHeaderProps = {
 	disabledExtensionItemIds?: string[];
 };
 
-const getHeaderLinkPathname = (href: string) => {
-	const cleanHref = href.trim();
+const normalizeHeaderHref = (href: unknown) =>
+	typeof href === "string" ? href.trim() : "";
+
+const getHeaderLinkPathname = (href: unknown) => {
+	const cleanHref = normalizeHeaderHref(href);
 
 	if (!cleanHref.startsWith("/") || cleanHref.startsWith("//")) {
 		return cleanHref;
@@ -67,9 +70,12 @@ const getHeaderLinkPathname = (href: string) => {
 	return (cleanHref.split(/[?#]/u)[0] ?? "/").replace(/\/+$/u, "") || "/";
 };
 
-const isCartLinkHref = (href: string) => getHeaderLinkPathname(href) === "/cart";
+const isCartLinkHref = (href: unknown) => getHeaderLinkPathname(href) === "/cart";
 
-const isProtectedAccountHref = (href: string) => {
+const getHeaderLinkDedupeKey = (href: unknown) =>
+	`route:${getHeaderLinkPathname(href).toLowerCase()}`;
+
+const isProtectedAccountHref = (href: unknown) => {
 	const pathname = getHeaderLinkPathname(href);
 
 	return pathname === "/account" || pathname.startsWith("/account/");
@@ -113,6 +119,65 @@ const hasCommerceRuntimeResource = (resources: WebsiteBuilderResources) =>
 
 const isCommerceExtensionId = (id: string | undefined) =>
 	typeof id === "string" && id.startsWith("commerce");
+
+type SiteHeaderLinkItem = {
+	id?: string;
+	label: string;
+	href?: string;
+	target?: string;
+	rel?: string;
+};
+
+const collectUniqueHeaderLinks = <TLink extends SiteHeaderLinkItem>(
+	links: TLink[],
+	hiddenKeys: ReadonlySet<string> = new Set(),
+): TLink[] => {
+	const seenKeys = new Set<string>();
+
+	return links.filter((link) => {
+		const key = getHeaderLinkDedupeKey(link.href);
+
+		if (key === "route:" || hiddenKeys.has(key) || seenKeys.has(key)) {
+			return false;
+		}
+
+		seenKeys.add(key);
+
+		return true;
+	});
+};
+
+const getHeaderActionVisibleHref = (
+	action: WebsiteBuilderSiteFrameActionItem,
+	authenticatedUser: boolean,
+) =>
+	authenticatedUser && (action.kind ?? "link") === "auth"
+		? (action.authenticatedHref ?? action.href)
+		: action.href;
+
+const getHeaderCartLink = (
+	links: Array<{ label: string; href?: string }>,
+): { label: string; href: string } | null => {
+	const link = links.find((item) => isCartLinkHref(item.href));
+
+	return link?.href ? { label: link.label, href: link.href } : null;
+};
+
+const collectHeaderActionLinkKeys = (
+	actions: WebsiteBuilderSiteFrameActionItem[],
+) => {
+	const keys = new Set<string>();
+
+	for (const action of actions) {
+		keys.add(getHeaderLinkDedupeKey(action.href));
+
+		if (action.authenticatedHref) {
+			keys.add(getHeaderLinkDedupeKey(action.authenticatedHref));
+		}
+	}
+
+	return keys;
+};
 
 const siteHeaderFields: WebsiteBuilderField[] = [
 	{
@@ -301,7 +366,7 @@ const SiteHeaderShell = ({
 		),
 		disabledExtensionItemIds,
 	);
-	const utilityLinks = [
+	const rawUtilityLinks = [
 		...normalizeWebsiteBuilderSiteLinkItems(block.props.utilityLinks),
 		...normalizeWebsiteBuilderSiteLinkItems(headerExtensionItems.utilityLinks),
 	];
@@ -314,14 +379,10 @@ const SiteHeaderShell = ({
 				link.id === "commerce:catalog-link" ||
 				getHeaderLinkPathname(link.href) === "/catalog",
 		) ?? null;
-	const categoryLinks = [
+	const rawCategoryLinks = [
 		...normalizeWebsiteBuilderSiteLinkItems(block.props.categoryLinks),
 		...extensionCategoryLinks.filter((link) => link !== commerceCatalogLink),
 	];
-	const extensionActions = headerExtensionItems.actions;
-	const hasExtensionAuthAction = extensionActions.some(
-		(action) => (action.kind ?? "link") === "auth",
-	);
 	const variant = block.props.variant ?? "commerce-inline";
 	const liveSurfaceMode = mode !== "builder";
 	const compact = liveSurfaceMode && block.props.compactOnScroll && isCompact;
@@ -332,6 +393,83 @@ const SiteHeaderShell = ({
 	const authenticatedUser = hasAuthenticatedUser(resources);
 	const [cartQuantity, setCartQuantity] = useState(() =>
 		getHeaderCartQuantity(resources),
+	);
+	const rawExtensionActions = collectUniqueHeaderLinks(
+		headerExtensionItems.actions,
+	).filter((action) => {
+		const visibleHref = getHeaderActionVisibleHref(action, authenticatedUser);
+
+		return normalizeHeaderHref(visibleHref) !== "";
+	});
+	const dedicatedCartLink =
+		getHeaderCartLink(
+			rawExtensionActions.map((action) => ({
+				label: action.label,
+				href: getHeaderActionVisibleHref(action, authenticatedUser),
+			})),
+		) ??
+		getHeaderCartLink([
+			{
+				label: block.props.secondaryCtaLabel,
+				href: block.props.secondaryCtaHref,
+			},
+			{
+				label: block.props.primaryCtaLabel,
+				href: block.props.primaryCtaHref,
+			},
+			...rawCategoryLinks,
+			...rawUtilityLinks,
+		]);
+	const extensionActions = rawExtensionActions.filter(
+		(action) => !isCartLinkHref(getHeaderActionVisibleHref(action, authenticatedUser)),
+	);
+	const hasExtensionAuthAction = extensionActions.some(
+		(action) => (action.kind ?? "link") === "auth",
+	);
+	const extensionActionLinkKeys = collectHeaderActionLinkKeys(extensionActions);
+	const secondaryCtaLinkKey = getHeaderLinkDedupeKey(
+		block.props.secondaryCtaHref,
+	);
+	const primaryCtaLinkKey = getHeaderLinkDedupeKey(block.props.primaryCtaHref);
+	const shouldRenderSecondaryCta =
+		normalizeHeaderHref(block.props.secondaryCtaHref) !== "" &&
+		!isCartLinkHref(block.props.secondaryCtaHref) &&
+		!extensionActionLinkKeys.has(secondaryCtaLinkKey) &&
+		!((hasExtensionAuthAction || !authenticatedUser) &&
+			isProtectedAccountHref(block.props.secondaryCtaHref));
+	const shouldRenderPrimaryCta =
+		normalizeHeaderHref(block.props.primaryCtaHref) !== "" &&
+		!isCartLinkHref(block.props.primaryCtaHref) &&
+		(!extensionActionLinkKeys.has(primaryCtaLinkKey) ||
+			primaryCtaLinkKey === secondaryCtaLinkKey);
+	const prominentLinkKeys = new Set(extensionActionLinkKeys);
+
+	if (dedicatedCartLink) {
+		prominentLinkKeys.add(getHeaderLinkDedupeKey(dedicatedCartLink.href));
+	}
+
+	if (commerceCatalogLink) {
+		prominentLinkKeys.add(getHeaderLinkDedupeKey(commerceCatalogLink.href));
+	}
+
+	if (shouldRenderPrimaryCta) {
+		prominentLinkKeys.add(primaryCtaLinkKey);
+	}
+
+	if (shouldRenderSecondaryCta) {
+		prominentLinkKeys.add(secondaryCtaLinkKey);
+	}
+
+	const categoryLinks = collectUniqueHeaderLinks(
+		rawCategoryLinks,
+		prominentLinkKeys,
+	);
+	const categoryLinkKeys = new Set(
+		categoryLinks.map((link) => getHeaderLinkDedupeKey(link.href)),
+	);
+	const utilityLinks = collectUniqueHeaderLinks(
+		rawUtilityLinks,
+		new Set([...prominentLinkKeys, ...categoryLinkKeys]),
 	);
 
 	const renderCartLink = (
@@ -397,6 +535,30 @@ const SiteHeaderShell = ({
 		);
 
 		if ((action.kind ?? "link") === "auth") {
+			if (authenticatedUser) {
+				const authenticatedHref = action.authenticatedHref ?? action.href;
+
+				if (!authenticatedHref) {
+					return null;
+				}
+
+				return (
+					<WebsiteBuilderLink
+						key={
+							action.id ??
+							`${action.authenticatedLabel ?? action.label}:${authenticatedHref}`
+						}
+						href={authenticatedHref}
+						target={action.authenticatedTarget}
+						rel={action.authenticatedRel}
+						className={className}
+					>
+						<CircleUserRound className="h-4 w-4" />
+						<span>{action.authenticatedLabel ?? action.label}</span>
+					</WebsiteBuilderLink>
+				);
+			}
+
 			return (
 				<button
 					key={action.id ?? `${action.label}:${action.href}`}
@@ -672,39 +834,53 @@ const SiteHeaderShell = ({
 							/>
 
 							<div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
-								{isCartLinkHref(block.props.secondaryCtaHref) ? (
-									renderCartLink(
-										block.props.secondaryCtaHref,
-										block.props.secondaryCtaLabel,
-										undefined,
-										"secondary-cart",
+								{shouldRenderSecondaryCta ? (
+									isCartLinkHref(block.props.secondaryCtaHref) ? (
+										renderCartLink(
+											block.props.secondaryCtaHref,
+											block.props.secondaryCtaLabel,
+											undefined,
+											"secondary-cart",
+										)
+									) : (
+										<WebsiteBuilderLink
+											href={block.props.secondaryCtaHref}
+											className="inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
+										>
+											<EditableText
+												blockId={block.id}
+												path="secondaryCtaLabel"
+												className="font-semibold"
+											/>
+										</WebsiteBuilderLink>
 									)
-								) : !authenticatedUser &&
-									isProtectedAccountHref(block.props.secondaryCtaHref) ? null : (
+								) : null}
+								{shouldRenderPrimaryCta ? (
 									<WebsiteBuilderLink
-										href={block.props.secondaryCtaHref}
-										className="inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
+										href={block.props.primaryCtaHref}
+										className="inline-flex items-center gap-2 rounded-full bg-[var(--wb-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] transition hover:translate-y-[-1px]"
 									>
 										<EditableText
 											blockId={block.id}
-											path="secondaryCtaLabel"
-											className="font-semibold"
+											path="primaryCtaLabel"
+											className="font-semibold text-white"
 										/>
+										<ArrowRight className="h-4 w-4" />
 									</WebsiteBuilderLink>
-								)}
-								<WebsiteBuilderLink
-									href={block.props.primaryCtaHref}
-									className="inline-flex items-center gap-2 rounded-full bg-[var(--wb-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] transition hover:translate-y-[-1px]"
-								>
-									<EditableText
-										blockId={block.id}
-										path="primaryCtaLabel"
-										className="font-semibold text-white"
-									/>
-									<ArrowRight className="h-4 w-4" />
-								</WebsiteBuilderLink>
+								) : null}
+								{dedicatedCartLink
+									? renderCartLink(
+											dedicatedCartLink.href,
+											dedicatedCartLink.label,
+											undefined,
+											"dedicated-cart",
+										)
+									: null}
 								{extensionActions.map(renderExtensionAction)}
-								{block.props.showLoginAction && !isAdmin && !hasExtensionAuthAction ? (
+								{block.props.showLoginAction &&
+								!isAdmin &&
+								!authenticatedUser &&
+								!hasExtensionAuthAction ? (
 									<button
 										type="button"
 										onClick={requestAuth}
@@ -760,7 +936,7 @@ export const siteHeaderShellDefinition = defineWebsiteBuilderBlockDefinition({
 	label: "Site Header Shell",
 	labelKey: "websiteBuilder.system.siteHeader.block.label",
 	description:
-		"Shared live-site header with utility links, search, contact actions and an admin sign-in entrypoint.",
+		"Shared live-site header with utility links, search and package-registered actions.",
 	descriptionKey: "websiteBuilder.system.siteHeader.block.description",
 	category: "Site Frame",
 	icon: "panel-top",
@@ -807,7 +983,7 @@ export const siteHeaderShellDefinition = defineWebsiteBuilderBlockDefinition({
 			ru: "WhatsApp",
 		}),
 		secondaryCtaHref: "https://wa.me/77070404343",
-		showLoginAction: true,
+		showLoginAction: false,
 		loginLabel: createWebsiteBuilderLocalizedDefault({
 			en: "Admin sign in",
 			ru: "Вход для админа",

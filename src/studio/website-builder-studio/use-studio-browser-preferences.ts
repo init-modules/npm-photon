@@ -154,11 +154,17 @@ type StudioManualSaveShortcutEvent = Pick<
 
 export const isStudioManualSaveShortcut = (
 	event: StudioManualSaveShortcutEvent,
-) =>
-	(event.code === "KeyS" || event.key.toLowerCase() === "s") &&
-	(event.ctrlKey || event.metaKey) &&
-	!event.altKey &&
-	!event.shiftKey;
+) => {
+	const key = typeof event.key === "string" ? event.key.toLowerCase() : "";
+	const code = typeof event.code === "string" ? event.code : "";
+
+	return (
+		(code === "KeyS" || key === "s") &&
+		(event.ctrlKey || event.metaKey) &&
+		!event.altKey &&
+		!event.shiftKey
+	);
+};
 
 type StudioManualSaveShortcutTarget = Pick<
 	Window,

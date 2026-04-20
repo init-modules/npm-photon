@@ -1,6 +1,6 @@
 import {
   createWebsiteBuilderRuntime
-} from "./chunk-MD5WPJ72.js";
+} from "./chunk-3KPICIZ6.js";
 import {
   WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
   collectWebsiteBuilderAccountTabs,
@@ -26,7 +26,7 @@ import {
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-PD2EQKYT.js";
+} from "./chunk-GBIC56HN.js";
 import {
   collectWebsiteBuilderFooterExtensionItems,
   collectWebsiteBuilderHeaderExtensionItems,

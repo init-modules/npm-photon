@@ -89,7 +89,7 @@ export const createWebsiteBuilderFormFieldsField = (
 	return {
 		path,
 		label: options.label ?? "Form fields",
-		kind: "repeater",
+		kind: "form-fields",
 		group: "content",
 		localization: "shared",
 		description: options.description,

@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChangeEvent, FocusEvent, KeyboardEvent } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
 	useWebsiteBuilderCanEdit,
 	useWebsiteBuilderFieldValue,
@@ -34,12 +34,18 @@ export const EditableTextarea = ({
 	);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const value = String(useWebsiteBuilderFieldValue(blockId, path) ?? "");
+	const fallbackValue =
+		value ||
+		(placeholder !== WEBSITE_BUILDER_EMPTY_TEXT ? String(placeholder) : "");
+	const [draftValue, setDraftValue] = useState(fallbackValue);
 	const isEditable = useWebsiteBuilderCanEdit();
 	const isActive =
 		selectedField?.blockId === blockId && selectedField.path === path;
 	const searchTargetId = buildWebsiteBuilderSearchTargetId(blockId, path);
 	const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-		updateFieldValue(blockId, path, event.currentTarget.value);
+		const nextValue = event.currentTarget.value;
+		setDraftValue(nextValue);
+		updateFieldValue(blockId, path, nextValue);
 	};
 	const handleBlur = (event: FocusEvent<HTMLTextAreaElement>) => {
 		if (event.currentTarget.contains(event.relatedTarget)) {
@@ -49,6 +55,8 @@ export const EditableTextarea = ({
 		clearSelectedField();
 	};
 	const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+		event.stopPropagation();
+
 		if (event.key !== "Escape") {
 			return;
 		}
@@ -61,9 +69,17 @@ export const EditableTextarea = ({
 
 	useEffect(() => {
 		if (isEditable && isActive) {
-			textareaRef.current?.focus();
+			const textarea = textareaRef.current;
+			if (!textarea) {
+				return;
+			}
+
+			setDraftValue(fallbackValue);
+			textarea.focus();
+			const caretPosition = fallbackValue.length;
+			textarea.setSelectionRange(caretPosition, caretPosition);
 		}
-	}, [isActive, isEditable]);
+	}, [fallbackValue, isActive, isEditable]);
 
 	if (isEditable && isActive) {
 		return (
@@ -74,11 +90,13 @@ export const EditableTextarea = ({
 				<textarea
 					ref={textareaRef}
 					rows={5}
-					value={value}
+					value={draftValue}
 					placeholder={placeholder}
 					onChange={handleChange}
 					onBlur={handleBlur}
 					onKeyDown={handleKeyDown}
+					onKeyUp={(event) => event.stopPropagation()}
+					onKeyPress={(event) => event.stopPropagation()}
 					onClick={(event) => event.stopPropagation()}
 					className="block w-full resize-y border-0 bg-transparent p-0 font-inherit leading-inherit tracking-inherit text-inherit outline-none ring-0 shadow-none placeholder:text-white/28 focus:outline-none"
 				/>

@@ -18,7 +18,7 @@ import {
   useKeyboardMenuController,
   useWebsiteBuilderRenderDepth,
   websiteBuilderRichTextContentClassName
-} from "./chunk-I5JDDS76.js";
+} from "./chunk-3ZLP3PVC.js";
 import {
   EditableRepeaterValue,
   EditableText,
@@ -28,7 +28,7 @@ import {
   createActivationProps,
   editableFrameClassName,
   formatMediaFileSize
-} from "./chunk-Q5G72OKO.js";
+} from "./chunk-GVJ4Q7EE.js";
 import {
   WebsiteBuilderI18nProvider,
   WebsiteBuilderLink,
@@ -41,7 +41,7 @@ import {
   useWebsiteBuilderPersistedState,
   useWebsiteBuilderStore,
   useWebsiteBuilderStoreApi
-} from "./chunk-HCA5T4KG.js";
+} from "./chunk-QQ25VPZM.js";
 import {
   normalizeWebsiteBuilderSelectionForMode,
   resolveWebsiteBuilderAccess,
@@ -51,7 +51,7 @@ import {
 } from "./chunk-NIL7BFDU.js";
 import {
   createWebsiteBuilderRuntime
-} from "./chunk-MD5WPJ72.js";
+} from "./chunk-3KPICIZ6.js";
 import {
   WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
   collectWebsiteBuilderAccountTabs,
@@ -77,7 +77,7 @@ import {
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-PD2EQKYT.js";
+} from "./chunk-GBIC56HN.js";
 import {
   collectWebsiteBuilderFooterExtensionItems,
   collectWebsiteBuilderHeaderExtensionItems,
@@ -923,7 +923,7 @@ var EditableRichText = ({
 };
 
 // src/components/editable/editable-textarea.tsx
-import { useEffect as useEffect2, useRef } from "react";
+import { useEffect as useEffect2, useRef, useState as useState3 } from "react";
 import { jsx as jsx8 } from "react/jsx-runtime";
 var EditableTextarea = ({
   blockId,
@@ -941,11 +941,15 @@ var EditableTextarea = ({
   );
   const textareaRef = useRef(null);
   const value = String(useWebsiteBuilderFieldValue(blockId, path) ?? "");
+  const fallbackValue = value || (placeholder !== WEBSITE_BUILDER_EMPTY_TEXT ? String(placeholder) : "");
+  const [draftValue, setDraftValue] = useState3(fallbackValue);
   const isEditable = useWebsiteBuilderCanEdit();
   const isActive = selectedField?.blockId === blockId && selectedField.path === path;
   const searchTargetId = buildWebsiteBuilderSearchTargetId(blockId, path);
   const handleChange = (event) => {
-    updateFieldValue(blockId, path, event.currentTarget.value);
+    const nextValue = event.currentTarget.value;
+    setDraftValue(nextValue);
+    updateFieldValue(blockId, path, nextValue);
   };
   const handleBlur = (event) => {
     if (event.currentTarget.contains(event.relatedTarget)) {
@@ -954,6 +958,7 @@ var EditableTextarea = ({
     clearSelectedField();
   };
   const handleKeyDown = (event) => {
+    event.stopPropagation();
     if (event.key !== "Escape") {
       return;
     }
@@ -964,9 +969,16 @@ var EditableTextarea = ({
   };
   useEffect2(() => {
     if (isEditable && isActive) {
-      textareaRef.current?.focus();
+      const textarea = textareaRef.current;
+      if (!textarea) {
+        return;
+      }
+      setDraftValue(fallbackValue);
+      textarea.focus();
+      const caretPosition = fallbackValue.length;
+      textarea.setSelectionRange(caretPosition, caretPosition);
     }
-  }, [isActive, isEditable]);
+  }, [fallbackValue, isActive, isEditable]);
   if (isEditable && isActive) {
     return /* @__PURE__ */ jsx8(
       "div",
@@ -978,11 +990,13 @@ var EditableTextarea = ({
           {
             ref: textareaRef,
             rows: 5,
-            value,
+            value: draftValue,
             placeholder,
             onChange: handleChange,
             onBlur: handleBlur,
             onKeyDown: handleKeyDown,
+            onKeyUp: (event) => event.stopPropagation(),
+            onKeyPress: (event) => event.stopPropagation(),
             onClick: (event) => event.stopPropagation(),
             className: "block w-full resize-y border-0 bg-transparent p-0 font-inherit leading-inherit tracking-inherit text-inherit outline-none ring-0 shadow-none placeholder:text-white/28 focus:outline-none"
           }
@@ -2044,8 +2058,8 @@ var siteFooterShellDefinition = defineWebsiteBuilderBlockDefinition({
 
 // src/modules/system/site/site-header-shell-definition.tsx
 import clsx8 from "clsx";
-import { ArrowRight as ArrowRight2, LogIn, ShoppingCart } from "lucide-react";
-import { useEffect as useEffect4, useRef as useRef3, useState as useState4 } from "react";
+import { ArrowRight as ArrowRight2, CircleUserRound, LogIn, ShoppingCart } from "lucide-react";
+import { useEffect as useEffect4, useRef as useRef3, useState as useState5 } from "react";
 
 // src/search/website-builder-site-search.tsx
 import clsx7 from "clsx";
@@ -2056,7 +2070,7 @@ import {
   useEffect as useEffect3,
   useMemo,
   useRef as useRef2,
-  useState as useState3
+  useState as useState4
 } from "react";
 import { Fragment as Fragment3, jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
 var renderSnippetParts = (snippet, query) => {
@@ -2090,11 +2104,11 @@ var WebsiteBuilderSiteSearch = ({
   const placeholder = String(
     useWebsiteBuilderFieldValue(blockId, placeholderPath) ?? "Search the website"
   );
-  const [open, setOpen] = useState3(false);
-  const [query, setQuery] = useState3("");
-  const [results, setResults] = useState3([]);
-  const [loading, setLoading] = useState3(false);
-  const [error, setError] = useState3(null);
+  const [open, setOpen] = useState4(false);
+  const [query, setQuery] = useState4("");
+  const [results, setResults] = useState4([]);
+  const [loading, setLoading] = useState4(false);
+  const [error, setError] = useState4(null);
   const searchInputRef = useRef2(null);
   const lastRequestId = useRef2(0);
   const handleDialogOpenAutoFocus = (event) => {
@@ -2391,14 +2405,16 @@ var WebsiteBuilderSiteSearch = ({
 
 // src/modules/system/site/site-header-shell-definition.tsx
 import { jsx as jsx12, jsxs as jsxs9 } from "react/jsx-runtime";
+var normalizeHeaderHref = (href) => typeof href === "string" ? href.trim() : "";
 var getHeaderLinkPathname = (href) => {
-  const cleanHref = href.trim();
+  const cleanHref = normalizeHeaderHref(href);
   if (!cleanHref.startsWith("/") || cleanHref.startsWith("//")) {
     return cleanHref;
   }
   return (cleanHref.split(/[?#]/u)[0] ?? "/").replace(/\/+$/u, "") || "/";
 };
 var isCartLinkHref = (href) => getHeaderLinkPathname(href) === "/cart";
+var getHeaderLinkDedupeKey = (href) => `route:${getHeaderLinkPathname(href).toLowerCase()}`;
 var isProtectedAccountHref = (href) => {
   const pathname = getHeaderLinkPathname(href);
   return pathname === "/account" || pathname.startsWith("/account/");
@@ -2426,6 +2442,32 @@ var hasCommerceRuntimeResource = (resources) => [
   "commerceOrder"
 ].some((key) => resources[key] !== void 0) || getHeaderCartQuantity(resources) > 0;
 var isCommerceExtensionId = (id) => typeof id === "string" && id.startsWith("commerce");
+var collectUniqueHeaderLinks = (links, hiddenKeys = /* @__PURE__ */ new Set()) => {
+  const seenKeys = /* @__PURE__ */ new Set();
+  return links.filter((link) => {
+    const key = getHeaderLinkDedupeKey(link.href);
+    if (key === "route:" || hiddenKeys.has(key) || seenKeys.has(key)) {
+      return false;
+    }
+    seenKeys.add(key);
+    return true;
+  });
+};
+var getHeaderActionVisibleHref = (action, authenticatedUser) => authenticatedUser && (action.kind ?? "link") === "auth" ? action.authenticatedHref ?? action.href : action.href;
+var getHeaderCartLink = (links) => {
+  const link = links.find((item) => isCartLinkHref(item.href));
+  return link?.href ? { label: link.label, href: link.href } : null;
+};
+var collectHeaderActionLinkKeys = (actions) => {
+  const keys = /* @__PURE__ */ new Set();
+  for (const action of actions) {
+    keys.add(getHeaderLinkDedupeKey(action.href));
+    if (action.authenticatedHref) {
+      keys.add(getHeaderLinkDedupeKey(action.authenticatedHref));
+    }
+  }
+  return keys;
+};
 var siteHeaderFields = [
   {
     path: "variant",
@@ -2589,7 +2631,7 @@ var SiteHeaderShell = ({
     (state) => state.siteFrameExtensions
   );
   const { locale, publicLocales, translate } = useWebsiteBuilderI18n();
-  const [isCompact, setIsCompact] = useState4(false);
+  const [isCompact, setIsCompact] = useState5(false);
   const headerRef = useRef3(null);
   const disabledExtensionIds = normalizeWebsiteBuilderSiteStringItems(
     block.props.disabledExtensionIds
@@ -2608,7 +2650,7 @@ var SiteHeaderShell = ({
     ),
     disabledExtensionItemIds
   );
-  const utilityLinks = [
+  const rawUtilityLinks = [
     ...normalizeWebsiteBuilderSiteLinkItems(block.props.utilityLinks),
     ...normalizeWebsiteBuilderSiteLinkItems(headerExtensionItems.utilityLinks)
   ];
@@ -2618,14 +2660,10 @@ var SiteHeaderShell = ({
   const commerceCatalogLink = extensionCategoryLinks.find(
     (link) => link.id === "commerce:catalog-link" || getHeaderLinkPathname(link.href) === "/catalog"
   ) ?? null;
-  const categoryLinks = [
+  const rawCategoryLinks = [
     ...normalizeWebsiteBuilderSiteLinkItems(block.props.categoryLinks),
     ...extensionCategoryLinks.filter((link) => link !== commerceCatalogLink)
   ];
-  const extensionActions = headerExtensionItems.actions;
-  const hasExtensionAuthAction = extensionActions.some(
-    (action) => (action.kind ?? "link") === "auth"
-  );
   const variant = block.props.variant ?? "commerce-inline";
   const liveSurfaceMode = mode !== "builder";
   const compact = liveSurfaceMode && block.props.compactOnScroll && isCompact;
@@ -2633,8 +2671,68 @@ var SiteHeaderShell = ({
   const isShowcaseCard = variant === "showcase-card" && !framelessSite;
   const localeSwitcherVisible = block.props.showLocaleSwitcher !== false && publicLocales.length > 1;
   const authenticatedUser = hasAuthenticatedUser(resources);
-  const [cartQuantity, setCartQuantity] = useState4(
+  const [cartQuantity, setCartQuantity] = useState5(
     () => getHeaderCartQuantity(resources)
+  );
+  const rawExtensionActions = collectUniqueHeaderLinks(
+    headerExtensionItems.actions
+  ).filter((action) => {
+    const visibleHref = getHeaderActionVisibleHref(action, authenticatedUser);
+    return normalizeHeaderHref(visibleHref) !== "";
+  });
+  const dedicatedCartLink = getHeaderCartLink(
+    rawExtensionActions.map((action) => ({
+      label: action.label,
+      href: getHeaderActionVisibleHref(action, authenticatedUser)
+    }))
+  ) ?? getHeaderCartLink([
+    {
+      label: block.props.secondaryCtaLabel,
+      href: block.props.secondaryCtaHref
+    },
+    {
+      label: block.props.primaryCtaLabel,
+      href: block.props.primaryCtaHref
+    },
+    ...rawCategoryLinks,
+    ...rawUtilityLinks
+  ]);
+  const extensionActions = rawExtensionActions.filter(
+    (action) => !isCartLinkHref(getHeaderActionVisibleHref(action, authenticatedUser))
+  );
+  const hasExtensionAuthAction = extensionActions.some(
+    (action) => (action.kind ?? "link") === "auth"
+  );
+  const extensionActionLinkKeys = collectHeaderActionLinkKeys(extensionActions);
+  const secondaryCtaLinkKey = getHeaderLinkDedupeKey(
+    block.props.secondaryCtaHref
+  );
+  const primaryCtaLinkKey = getHeaderLinkDedupeKey(block.props.primaryCtaHref);
+  const shouldRenderSecondaryCta = normalizeHeaderHref(block.props.secondaryCtaHref) !== "" && !isCartLinkHref(block.props.secondaryCtaHref) && !extensionActionLinkKeys.has(secondaryCtaLinkKey) && !((hasExtensionAuthAction || !authenticatedUser) && isProtectedAccountHref(block.props.secondaryCtaHref));
+  const shouldRenderPrimaryCta = normalizeHeaderHref(block.props.primaryCtaHref) !== "" && !isCartLinkHref(block.props.primaryCtaHref) && (!extensionActionLinkKeys.has(primaryCtaLinkKey) || primaryCtaLinkKey === secondaryCtaLinkKey);
+  const prominentLinkKeys = new Set(extensionActionLinkKeys);
+  if (dedicatedCartLink) {
+    prominentLinkKeys.add(getHeaderLinkDedupeKey(dedicatedCartLink.href));
+  }
+  if (commerceCatalogLink) {
+    prominentLinkKeys.add(getHeaderLinkDedupeKey(commerceCatalogLink.href));
+  }
+  if (shouldRenderPrimaryCta) {
+    prominentLinkKeys.add(primaryCtaLinkKey);
+  }
+  if (shouldRenderSecondaryCta) {
+    prominentLinkKeys.add(secondaryCtaLinkKey);
+  }
+  const categoryLinks = collectUniqueHeaderLinks(
+    rawCategoryLinks,
+    prominentLinkKeys
+  );
+  const categoryLinkKeys = new Set(
+    categoryLinks.map((link) => getHeaderLinkDedupeKey(link.href))
+  );
+  const utilityLinks = collectUniqueHeaderLinks(
+    rawUtilityLinks,
+    /* @__PURE__ */ new Set([...prominentLinkKeys, ...categoryLinkKeys])
   );
   const renderCartLink = (href, label, className, key) => /* @__PURE__ */ jsxs9(
     WebsiteBuilderLink,
@@ -2679,6 +2777,26 @@ var SiteHeaderShell = ({
       appearance === "primary" ? "bg-[var(--wb-site-accent)] text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] hover:translate-y-[-1px]" : appearance === "ghost" ? "text-[var(--wb-site-text)] hover:text-[var(--wb-site-accent)]" : "border border-[var(--wb-site-border)] text-[var(--wb-site-text)] hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
     );
     if ((action.kind ?? "link") === "auth") {
+      if (authenticatedUser) {
+        const authenticatedHref = action.authenticatedHref ?? action.href;
+        if (!authenticatedHref) {
+          return null;
+        }
+        return /* @__PURE__ */ jsxs9(
+          WebsiteBuilderLink,
+          {
+            href: authenticatedHref,
+            target: action.authenticatedTarget,
+            rel: action.authenticatedRel,
+            className,
+            children: [
+              /* @__PURE__ */ jsx12(CircleUserRound, { className: "h-4 w-4" }),
+              /* @__PURE__ */ jsx12("span", { children: action.authenticatedLabel ?? action.label })
+            ]
+          },
+          action.id ?? `${action.authenticatedLabel ?? action.label}:${authenticatedHref}`
+        );
+      }
       return /* @__PURE__ */ jsx12(
         "button",
         {
@@ -2915,12 +3033,12 @@ var SiteHeaderShell = ({
                           }
                         ),
                         /* @__PURE__ */ jsxs9("div", { className: "flex flex-wrap items-center justify-start gap-2 lg:justify-end", children: [
-                          isCartLinkHref(block.props.secondaryCtaHref) ? renderCartLink(
+                          shouldRenderSecondaryCta ? isCartLinkHref(block.props.secondaryCtaHref) ? renderCartLink(
                             block.props.secondaryCtaHref,
                             block.props.secondaryCtaLabel,
                             void 0,
                             "secondary-cart"
-                          ) : !authenticatedUser && isProtectedAccountHref(block.props.secondaryCtaHref) ? null : /* @__PURE__ */ jsx12(
+                          ) : /* @__PURE__ */ jsx12(
                             WebsiteBuilderLink,
                             {
                               href: block.props.secondaryCtaHref,
@@ -2934,8 +3052,8 @@ var SiteHeaderShell = ({
                                 }
                               )
                             }
-                          ),
-                          /* @__PURE__ */ jsxs9(
+                          ) : null,
+                          shouldRenderPrimaryCta ? /* @__PURE__ */ jsxs9(
                             WebsiteBuilderLink,
                             {
                               href: block.props.primaryCtaHref,
@@ -2952,9 +3070,15 @@ var SiteHeaderShell = ({
                                 /* @__PURE__ */ jsx12(ArrowRight2, { className: "h-4 w-4" })
                               ]
                             }
-                          ),
+                          ) : null,
+                          dedicatedCartLink ? renderCartLink(
+                            dedicatedCartLink.href,
+                            dedicatedCartLink.label,
+                            void 0,
+                            "dedicated-cart"
+                          ) : null,
                           extensionActions.map(renderExtensionAction),
-                          block.props.showLoginAction && !isAdmin && !hasExtensionAuthAction ? /* @__PURE__ */ jsxs9(
+                          block.props.showLoginAction && !isAdmin && !authenticatedUser && !hasExtensionAuthAction ? /* @__PURE__ */ jsxs9(
                             "button",
                             {
                               type: "button",
@@ -3008,7 +3132,7 @@ var siteHeaderShellDefinition = defineWebsiteBuilderBlockDefinition({
   type: "site-header-shell",
   label: "Site Header Shell",
   labelKey: "websiteBuilder.system.siteHeader.block.label",
-  description: "Shared live-site header with utility links, search, contact actions and an admin sign-in entrypoint.",
+  description: "Shared live-site header with utility links, search and package-registered actions.",
   descriptionKey: "websiteBuilder.system.siteHeader.block.description",
   category: "Site Frame",
   icon: "panel-top",
@@ -3055,7 +3179,7 @@ var siteHeaderShellDefinition = defineWebsiteBuilderBlockDefinition({
       ru: "WhatsApp"
     }),
     secondaryCtaHref: "https://wa.me/77070404343",
-    showLoginAction: true,
+    showLoginAction: false,
     loginLabel: createWebsiteBuilderLocalizedDefault({
       en: "Admin sign in",
       ru: "\u0412\u0445\u043E\u0434 \u0434\u043B\u044F \u0430\u0434\u043C\u0438\u043D\u0430"

@@ -2,7 +2,7 @@ import {
   useWebsiteBuilderCanEdit,
   useWebsiteBuilderFieldValue,
   useWebsiteBuilderStore
-} from "./chunk-HCA5T4KG.js";
+} from "./chunk-QQ25VPZM.js";
 import {
   WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
   WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
@@ -14,14 +14,30 @@ import {
 
 // src/search/helpers.ts
 var buildWebsiteBuilderSearchTargetId = (blockId, path) => `${blockId}::${path}`;
+var preservedWebsiteBuilderSearchQueryParams = /* @__PURE__ */ new Set([
+  "wbProfile",
+  "wbBranch",
+  "wbRevision",
+  "mode",
+  "contentLocale"
+]);
+var preserveWebsiteBuilderSearchParams = (currentSearchParams) => {
+  const searchParams = new URLSearchParams();
+  currentSearchParams.forEach((value, key) => {
+    if (preservedWebsiteBuilderSearchQueryParams.has(key)) {
+      searchParams.append(key, value);
+    }
+  });
+  return searchParams;
+};
 var buildWebsiteBuilderSearchResultHref = (result, query, mode, isAdmin, options) => {
   const localePrefix = options?.locale === "en" && !result.route.startsWith("/en") ? "/en" : "";
   const url = new URL(
     `${localePrefix}${result.route}`,
     "https://website-builder.local"
   );
-  const searchParams = new URLSearchParams(
-    options?.currentSearchParams?.toString() ?? ""
+  const searchParams = preserveWebsiteBuilderSearchParams(
+    options?.currentSearchParams ?? new URLSearchParams()
   );
   if (isAdmin && mode !== "preview") {
     searchParams.set("mode", mode);
@@ -57,7 +73,7 @@ var buildWebsiteBuilderSearchResultHref = (result, query, mode, isAdmin, options
 };
 
 // src/components/editable/editable-text.tsx
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // src/components/editable/shared.ts
 import clsx from "clsx";
@@ -117,11 +133,15 @@ var EditableText = ({
   );
   const inputRef = useRef(null);
   const value = String(useWebsiteBuilderFieldValue(blockId, path) ?? "");
+  const fallbackValue = value || (placeholder !== WEBSITE_BUILDER_EMPTY_TEXT ? String(placeholder) : "");
+  const [draftValue, setDraftValue] = useState(fallbackValue);
   const isEditable = useWebsiteBuilderCanEdit();
   const isActive = selectedField?.blockId === blockId && selectedField.path === path;
   const searchTargetId = buildWebsiteBuilderSearchTargetId(blockId, path);
   const handleChange = (event) => {
-    updateFieldValue(blockId, path, event.currentTarget.value);
+    const nextValue = event.currentTarget.value;
+    setDraftValue(nextValue);
+    updateFieldValue(blockId, path, nextValue);
   };
   const handleBlur = (event) => {
     if (event.currentTarget.contains(event.relatedTarget)) {
@@ -130,6 +150,7 @@ var EditableText = ({
     clearSelectedField();
   };
   const handleKeyDown = (event) => {
+    event.stopPropagation();
     if (event.key !== "Escape") {
       return;
     }
@@ -144,11 +165,12 @@ var EditableText = ({
       if (!input) {
         return;
       }
+      setDraftValue(fallbackValue);
       input.focus();
-      const caretPosition = input.value.length;
+      const caretPosition = fallbackValue.length;
       input.setSelectionRange(caretPosition, caretPosition);
     }
-  }, [isActive, isEditable]);
+  }, [fallbackValue, isActive, isEditable]);
   if (isEditable && isActive) {
     return /* @__PURE__ */ jsx(
       Tag,
@@ -161,11 +183,13 @@ var EditableText = ({
           "input",
           {
             ref: inputRef,
-            value,
+            value: draftValue,
             placeholder,
             onChange: handleChange,
             onBlur: handleBlur,
             onKeyDown: handleKeyDown,
+            onKeyUp: (event) => event.stopPropagation(),
+            onKeyPress: (event) => event.stopPropagation(),
             onClick: (event) => event.stopPropagation(),
             className: "m-0 block w-full min-w-0 appearance-none border-0 bg-transparent p-0 font-inherit leading-inherit tracking-inherit text-inherit outline-none ring-0 shadow-none placeholder:text-white/28 focus:outline-none"
           }

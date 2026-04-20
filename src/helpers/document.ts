@@ -183,6 +183,45 @@ const collectWebsiteBuilderFieldLocalization = (
 		return;
 	}
 
+	if (field.kind === "form-fields") {
+		if (!currentPath) {
+			throw new Error("Website Builder form fields require a concrete path.");
+		}
+
+		for (const localizedPath of [
+			"helpText",
+			"label",
+			"options.*.label",
+			"placeholder",
+		]) {
+			registerWebsiteBuilderFieldLocalization(
+				schema,
+				"localized",
+				`${currentPath}.*.${localizedPath}`,
+			);
+		}
+
+		for (const sharedPath of [
+			"disabled",
+			"id",
+			"locked",
+			"name",
+			"options.*.value",
+			"removable",
+			"required",
+			"type",
+			"width",
+		]) {
+			registerWebsiteBuilderFieldLocalization(
+				schema,
+				"shared",
+				`${currentPath}.*.${sharedPath}`,
+			);
+		}
+
+		return;
+	}
+
 	if (!currentPath) {
 		throw new Error("Website Builder field localization requires a concrete path.");
 	}

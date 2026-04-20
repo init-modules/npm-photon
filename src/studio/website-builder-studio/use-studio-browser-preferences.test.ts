@@ -150,6 +150,27 @@ test("manual save shortcut only fires on ctrl/cmd+s without modifier conflicts",
 		}),
 		false,
 	);
+	assert.equal(
+		isStudioManualSaveShortcut({
+			code: "KeyS",
+			ctrlKey: true,
+			metaKey: false,
+			altKey: false,
+			shiftKey: false,
+			preventDefault: () => undefined,
+		} as unknown as Parameters<typeof isStudioManualSaveShortcut>[0]),
+		true,
+	);
+	assert.equal(
+		isStudioManualSaveShortcut({
+			ctrlKey: true,
+			metaKey: false,
+			altKey: false,
+			shiftKey: false,
+			preventDefault: () => undefined,
+		} as unknown as Parameters<typeof isStudioManualSaveShortcut>[0]),
+		false,
+	);
 
 	let keydownHandler: null | ((event: Event) => void) = null;
 	let saveCount = 0;

@@ -8,6 +8,7 @@ It provides:
 - installable kit and runtime helpers
 - SSR-safe builder state provider backed by a per-request Zustand store
 - inline content editing primitives
+- form schema/runtime primitives through [`@init-modules/website-builder/forms`](./src/forms/README.md)
 - live site search primitives with stable `blockId::path` targets and exact-hit highlighting
 - runtime block renderer
 - reusable `WebsiteBuilderStudio` shell that apps can wrap with their own auth/backend adapters
@@ -49,6 +50,7 @@ npm install @init-modules/website-builder
 
 - <code>.</code>
 - <code>./client</code>
+- <code>./forms</code>
 - <code>./sdk</code>
 - <code>./shared</code>
 - <code>./server</code>
@@ -103,7 +105,7 @@ Peer dependencies:
 
 ## Сборка
 
-- <code>build: tsup src/index.ts src/client.ts src/sdk.ts src/server.ts src/shared.ts --format esm --dts --clean</code>
+- <code>build: tsup src/index.ts src/client.ts src/sdk.ts src/forms.ts src/server.ts src/shared.ts --format esm --dts --clean</code>
 - <code>prepack: npm run build</code>
 
 ## Разработка

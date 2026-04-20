@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react';
-import { z as WebsiteBuilderSurfaceMode } from './types-q9w-WbBC.js';
+import { z as WebsiteBuilderSurfaceMode } from './types-B_tR-sKT.js';
 
 declare const getWebsiteBuilderSurfaceModeStyle: (mode: WebsiteBuilderSurfaceMode) => CSSProperties | undefined;
 

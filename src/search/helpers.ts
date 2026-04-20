@@ -13,6 +13,28 @@ export const buildWebsiteBuilderSearchTargetId = (
 	path: string,
 ) => `${blockId}::${path}`;
 
+const preservedWebsiteBuilderSearchQueryParams = new Set([
+	"wbProfile",
+	"wbBranch",
+	"wbRevision",
+	"mode",
+	"contentLocale",
+]);
+
+const preserveWebsiteBuilderSearchParams = (
+	currentSearchParams: URLSearchParams,
+) => {
+	const searchParams = new URLSearchParams();
+
+	currentSearchParams.forEach((value, key) => {
+		if (preservedWebsiteBuilderSearchQueryParams.has(key)) {
+			searchParams.append(key, value);
+		}
+	});
+
+	return searchParams;
+};
+
 export const buildWebsiteBuilderSearchResultHref = (
 	result: WebsiteBuilderSearchResult,
 	query: string,
@@ -37,8 +59,8 @@ export const buildWebsiteBuilderSearchResultHref = (
 		`${localePrefix}${result.route}`,
 		"https://website-builder.local",
 	);
-	const searchParams = new URLSearchParams(
-		options?.currentSearchParams?.toString() ?? "",
+	const searchParams = preserveWebsiteBuilderSearchParams(
+		options?.currentSearchParams ?? new URLSearchParams(),
 	);
 
 	if (isAdmin && mode !== "preview") {

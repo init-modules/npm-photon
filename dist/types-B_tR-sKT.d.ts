@@ -2,7 +2,7 @@ import { ReactNode, ComponentType, MouseEventHandler } from 'react';
 
 type WebsiteBuilderMode = "preview" | "content" | "builder";
 type WebsiteBuilderSurfaceMode = "contained" | "bleed" | "full-viewport" | "fixed-shell";
-type WebsiteBuilderFieldKind = "text" | "textarea" | "rich-text" | "number" | "url" | "color" | "select" | "toggle" | "tags" | "json" | "object" | "repeater" | "image" | "gallery";
+type WebsiteBuilderFieldKind = "text" | "textarea" | "rich-text" | "number" | "url" | "color" | "select" | "toggle" | "tags" | "json" | "form-fields" | "object" | "repeater" | "image" | "gallery";
 type WebsiteBuilderFieldOption = {
     label: string;
     labelKey?: string;
@@ -196,6 +196,10 @@ type WebsiteBuilderSiteFrameActionKind = "link" | "auth";
 type WebsiteBuilderSiteFrameActionItem = WebsiteBuilderSiteFrameLinkItem & {
     kind?: WebsiteBuilderSiteFrameActionKind;
     appearance?: "primary" | "secondary" | "ghost";
+    authenticatedLabel?: string;
+    authenticatedHref?: string;
+    authenticatedTarget?: string;
+    authenticatedRel?: string;
 };
 type WebsiteBuilderSiteFrameNavigationColumn = {
     id?: string;

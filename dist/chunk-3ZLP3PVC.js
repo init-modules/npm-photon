@@ -10,7 +10,7 @@ import {
   useWebsiteBuilderPersistedState,
   useWebsiteBuilderStore,
   websiteBuilderCollisionDetection
-} from "./chunk-HCA5T4KG.js";
+} from "./chunk-QQ25VPZM.js";
 import {
   WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
   getWebsiteBuilderDocumentFingerprint,
@@ -20,7 +20,7 @@ import {
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-PD2EQKYT.js";
+} from "./chunk-GBIC56HN.js";
 import {
   resolveWebsiteBuilderSiteDesignSettings
 } from "./chunk-7A32BINR.js";
@@ -743,8 +743,8 @@ var updateWebsiteBuilderMediaUrl = (currentValue, url) => isWebsiteBuilderMediaV
 
 // src/studio/inspector-panel/field-editor.tsx
 import clsx6 from "clsx";
-import { ArrowDown, ArrowUp, ChevronDown, Plus, Trash2 } from "lucide-react";
-import { useEffect as useEffect5, useState as useState5 } from "react";
+import { ArrowDown as ArrowDown2, ArrowUp as ArrowUp2, ChevronDown, Plus as Plus2, Trash2 as Trash22 } from "lucide-react";
+import { useEffect as useEffect5, useState as useState6 } from "react";
 
 // src/components/ui/dropdown-menu/index.ts
 import {
@@ -1341,8 +1341,304 @@ var JsonFieldEditor = ({
   ] });
 };
 
-// src/studio/inspector-panel/field-editor.tsx
+// src/forms/form-fields-editor.tsx
+import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
+import { useState as useState5 } from "react";
 import { jsx as jsx13, jsxs as jsxs8 } from "react/jsx-runtime";
+var fieldTypes = [
+  { value: "text", label: "Text" },
+  { value: "email", label: "Email" },
+  { value: "phone", label: "Phone" },
+  { value: "number", label: "Number" },
+  { value: "textarea", label: "Textarea" },
+  { value: "select", label: "Select" },
+  { value: "checkbox", label: "Checkbox" },
+  { value: "date", label: "Date" },
+  { value: "hidden", label: "Hidden" }
+];
+var widthOptions = [
+  { value: "full", label: "Full" },
+  { value: "half", label: "Half" },
+  { value: "third", label: "Third" }
+];
+var normalizeFields = (value) => Array.isArray(value) ? value.filter(
+  (item) => typeof item === "object" && item !== null
+) : [];
+var createField = () => ({
+  id: "custom_field",
+  name: "custom_field",
+  type: "text",
+  label: "Custom field",
+  placeholder: "",
+  helpText: "",
+  required: false,
+  width: "full",
+  locked: false,
+  removable: true
+});
+var createOption = () => ({
+  label: "Option",
+  value: "option"
+});
+var updateField = (fields, index, patch) => fields.map((field, fieldIndex) => fieldIndex === index ? { ...field, ...patch } : field);
+var updateOption = (field, optionIndex, patch) => ({
+  ...field,
+  options: (field.options ?? []).map(
+    (option, index) => index === optionIndex ? { ...option, ...patch } : option
+  )
+});
+var WebsiteBuilderFormFieldsEditor = ({
+  value,
+  onChange,
+  onFocus
+}) => {
+  const fields = normalizeFields(value);
+  const [expandedFieldId, setExpandedFieldId] = useState5(
+    fields[0]?.id ?? null
+  );
+  const emit = (nextFields) => {
+    onChange(cloneWebsiteBuilderValue(nextFields));
+  };
+  return /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
+    /* @__PURE__ */ jsx13("div", { className: "space-y-2 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2", children: fields.map((field, index) => {
+      const isExpanded = expandedFieldId === field.id;
+      const options = field.options ?? [];
+      return /* @__PURE__ */ jsxs8(
+        "div",
+        {
+          className: "rounded-[18px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] p-3",
+          children: [
+            /* @__PURE__ */ jsxs8("div", { className: "flex items-center justify-between gap-3", children: [
+              /* @__PURE__ */ jsxs8(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => setExpandedFieldId(isExpanded ? null : field.id),
+                  className: "min-w-0 cursor-pointer text-left",
+                  children: [
+                    /* @__PURE__ */ jsx13("div", { className: "truncate text-sm font-semibold text-[color:var(--wb-builder-text)]", children: field.label || field.id || "Field" }),
+                    /* @__PURE__ */ jsxs8("div", { className: "mt-1 truncate font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--wb-builder-text-ghost)]", children: [
+                      field.type,
+                      " / ",
+                      field.name
+                    ] })
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxs8("div", { className: "flex shrink-0 items-center gap-1", children: [
+                /* @__PURE__ */ jsx13(
+                  "button",
+                  {
+                    type: "button",
+                    disabled: index === 0,
+                    onClick: () => emit(moveWebsiteBuilderArrayItem(fields, index, index - 1)),
+                    className: "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40",
+                    children: /* @__PURE__ */ jsx13(ArrowUp, { className: "h-4 w-4" })
+                  }
+                ),
+                /* @__PURE__ */ jsx13(
+                  "button",
+                  {
+                    type: "button",
+                    disabled: index === fields.length - 1,
+                    onClick: () => emit(moveWebsiteBuilderArrayItem(fields, index, index + 1)),
+                    className: "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40",
+                    children: /* @__PURE__ */ jsx13(ArrowDown, { className: "h-4 w-4" })
+                  }
+                ),
+                /* @__PURE__ */ jsx13(
+                  "button",
+                  {
+                    type: "button",
+                    disabled: field.locked || field.removable === false,
+                    onClick: () => emit(fields.filter((_, fieldIndex) => fieldIndex !== index)),
+                    className: "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40",
+                    children: /* @__PURE__ */ jsx13(Trash2, { className: "h-4 w-4" })
+                  }
+                )
+              ] })
+            ] }),
+            isExpanded ? /* @__PURE__ */ jsxs8("div", { className: "mt-4 grid gap-3", children: [
+              /* @__PURE__ */ jsxs8("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+                /* @__PURE__ */ jsxs8("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                  "Label",
+                  /* @__PURE__ */ jsx13(
+                    "input",
+                    {
+                      value: field.label ?? "",
+                      onFocus: () => onFocus(`${index}.label`),
+                      onChange: (event) => emit(updateField(fields, index, { label: event.currentTarget.value })),
+                      className: inputClassName
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxs8("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                  "Type",
+                  /* @__PURE__ */ jsx13(
+                    "select",
+                    {
+                      value: field.type,
+                      onFocus: () => onFocus(`${index}.type`),
+                      onChange: (event) => emit(updateField(fields, index, { type: event.currentTarget.value })),
+                      className: inputClassName,
+                      children: fieldTypes.map((item) => /* @__PURE__ */ jsx13("option", { value: item.value, children: item.label }, item.value))
+                    }
+                  )
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs8("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+                /* @__PURE__ */ jsxs8("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                  "Field id",
+                  /* @__PURE__ */ jsx13(
+                    "input",
+                    {
+                      value: field.id ?? "",
+                      onFocus: () => onFocus(`${index}.id`),
+                      onChange: (event) => emit(updateField(fields, index, { id: event.currentTarget.value })),
+                      className: inputClassName
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxs8("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                  "Input name",
+                  /* @__PURE__ */ jsx13(
+                    "input",
+                    {
+                      value: field.name ?? "",
+                      onFocus: () => onFocus(`${index}.name`),
+                      onChange: (event) => emit(updateField(fields, index, { name: event.currentTarget.value })),
+                      className: inputClassName
+                    }
+                  )
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs8("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                "Placeholder",
+                /* @__PURE__ */ jsx13(
+                  "input",
+                  {
+                    value: field.placeholder ?? "",
+                    onFocus: () => onFocus(`${index}.placeholder`),
+                    onChange: (event) => emit(updateField(fields, index, { placeholder: event.currentTarget.value })),
+                    className: inputClassName
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxs8("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                "Help text",
+                /* @__PURE__ */ jsx13(
+                  "textarea",
+                  {
+                    rows: 3,
+                    value: field.helpText ?? "",
+                    onFocus: () => onFocus(`${index}.helpText`),
+                    onChange: (event) => emit(updateField(fields, index, { helpText: event.currentTarget.value })),
+                    className: inputClassName
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxs8("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+                /* @__PURE__ */ jsxs8("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                  "Width",
+                  /* @__PURE__ */ jsx13(
+                    "select",
+                    {
+                      value: field.width ?? "full",
+                      onFocus: () => onFocus(`${index}.width`),
+                      onChange: (event) => emit(updateField(fields, index, { width: event.currentTarget.value })),
+                      className: inputClassName,
+                      children: widthOptions.map((item) => /* @__PURE__ */ jsx13("option", { value: item.value, children: item.label }, item.value))
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsx13("div", { className: "grid grid-cols-2 gap-2 pt-7", children: [
+                  ["required", "Required"],
+                  ["disabled", "Disabled"]
+                ].map(([key, label]) => /* @__PURE__ */ jsxs8("label", { className: "flex items-center gap-2 text-xs font-semibold text-[color:var(--wb-builder-text-soft)]", children: [
+                  /* @__PURE__ */ jsx13(
+                    "input",
+                    {
+                      type: "checkbox",
+                      checked: Boolean(field[key]),
+                      onChange: (event) => emit(updateField(fields, index, { [key]: event.currentTarget.checked }))
+                    }
+                  ),
+                  label
+                ] }, key)) })
+              ] }),
+              field.type === "select" ? /* @__PURE__ */ jsxs8("div", { className: "rounded-[16px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-3", children: [
+                /* @__PURE__ */ jsx13("div", { className: "mb-3 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: "Options" }),
+                /* @__PURE__ */ jsx13("div", { className: "grid gap-2", children: options.map((option, optionIndex) => /* @__PURE__ */ jsxs8("div", { className: "grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]", children: [
+                  /* @__PURE__ */ jsx13(
+                    "input",
+                    {
+                      value: option.label,
+                      onFocus: () => onFocus(`${index}.options.${optionIndex}.label`),
+                      onChange: (event) => emit(updateField(fields, index, updateOption(field, optionIndex, { label: event.currentTarget.value }))),
+                      className: inputClassName,
+                      placeholder: "Label"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx13(
+                    "input",
+                    {
+                      value: option.value,
+                      onFocus: () => onFocus(`${index}.options.${optionIndex}.value`),
+                      onChange: (event) => emit(updateField(fields, index, updateOption(field, optionIndex, { value: event.currentTarget.value }))),
+                      className: inputClassName,
+                      placeholder: "Value"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx13(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => emit(updateField(fields, index, { options: options.filter((_, currentIndex) => currentIndex !== optionIndex) })),
+                      className: "inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)]",
+                      children: /* @__PURE__ */ jsx13(Trash2, { className: "h-4 w-4" })
+                    }
+                  )
+                ] }, optionIndex)) }),
+                /* @__PURE__ */ jsxs8(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => emit(updateField(fields, index, { options: [...options, createOption()] })),
+                    className: "mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[18px] border border-[color:var(--wb-builder-border)] px-4 py-3 text-sm font-semibold text-[color:var(--wb-builder-text)]",
+                    children: [
+                      /* @__PURE__ */ jsx13(Plus, { className: "h-4 w-4" }),
+                      " Add option"
+                    ]
+                  }
+                )
+              ] }) : null
+            ] }) : null
+          ]
+        },
+        `${field.id}:${index}`
+      );
+    }) }),
+    /* @__PURE__ */ jsxs8(
+      "button",
+      {
+        type: "button",
+        onClick: () => {
+          const nextField = createField();
+          emit([...fields, nextField]);
+          setExpandedFieldId(nextField.id);
+        },
+        className: "inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] px-4 py-3 text-sm font-semibold text-[color:var(--wb-builder-text)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:bg-[color:var(--wb-builder-panel-solid)]",
+        children: [
+          /* @__PURE__ */ jsx13(Plus, { className: "h-4 w-4" }),
+          " Add field"
+        ]
+      }
+    )
+  ] });
+};
+
+// src/studio/inspector-panel/field-editor.tsx
+import { jsx as jsx14, jsxs as jsxs9 } from "react/jsx-runtime";
 var joinFieldPath = (parentPath, childPath) => {
   if (!childPath) {
     return parentPath;
@@ -1397,21 +1693,21 @@ var SelectFieldEditor = ({
   onFocus
 }) => {
   const { translate } = useWebsiteBuilderI18n();
-  const [hasMounted, setHasMounted] = useState5(false);
+  const [hasMounted, setHasMounted] = useState6(false);
   const selectedValue = String(value ?? "");
   const activeOption = (field.options ?? []).find((option) => option.value === selectedValue) ?? null;
-  const trigger = /* @__PURE__ */ jsxs8(
+  const trigger = /* @__PURE__ */ jsxs9(
     "button",
     {
       type: "button",
       onFocus: () => onFocus(),
       className: "inline-flex h-auto w-full min-w-0 cursor-pointer items-center justify-between gap-3 rounded-[20px] border px-4 py-3 text-left text-sm font-semibold shadow-none transition-[border-color,background-color] border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] text-[color:var(--wb-builder-text)] hover:border-[color:var(--wb-builder-border-strong)] hover:bg-[color:var(--wb-builder-panel-solid)] focus-visible:border-[color:var(--wb-builder-border-strong)] focus-visible:bg-[color:var(--wb-builder-panel-solid)]",
       children: [
-        /* @__PURE__ */ jsx13("span", { className: "min-w-0 truncate", children: translate(
+        /* @__PURE__ */ jsx14("span", { className: "min-w-0 truncate", children: translate(
           activeOption?.labelKey ?? activeOption?.label ?? "Select value",
           activeOption?.label ?? "Select value"
         ) }),
-        /* @__PURE__ */ jsx13(ChevronDown, { className: "h-4 w-4 shrink-0 text-[color:var(--wb-builder-text-soft)]" })
+        /* @__PURE__ */ jsx14(ChevronDown, { className: "h-4 w-4 shrink-0 text-[color:var(--wb-builder-text-soft)]" })
       ]
     }
   );
@@ -1421,14 +1717,14 @@ var SelectFieldEditor = ({
   if (!hasMounted) {
     return trigger;
   }
-  return /* @__PURE__ */ jsxs8(Root, { modal: false, children: [
-    /* @__PURE__ */ jsx13(Trigger, { asChild: true, children: trigger }),
-    /* @__PURE__ */ jsx13(DropdownMenuContent, { align: "start", className: "min-w-[14rem]", children: /* @__PURE__ */ jsx13(
+  return /* @__PURE__ */ jsxs9(Root, { modal: false, children: [
+    /* @__PURE__ */ jsx14(Trigger, { asChild: true, children: trigger }),
+    /* @__PURE__ */ jsx14(DropdownMenuContent, { align: "start", className: "min-w-[14rem]", children: /* @__PURE__ */ jsx14(
       RadioGroup,
       {
         value: selectedValue,
         onValueChange: (nextValue) => onChange(nextValue),
-        children: (field.options ?? []).map((option) => /* @__PURE__ */ jsx13(
+        children: (field.options ?? []).map((option) => /* @__PURE__ */ jsx14(
           DropdownMenuRadioItem,
           {
             value: option.value,
@@ -1451,15 +1747,15 @@ var ObjectFieldEditor = ({
   hidePathLabel
 }) => {
   const objectValue = normalizeObjectValue(value);
-  return /* @__PURE__ */ jsx13("div", { className: "space-y-3 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-3", children: (field.fields ?? []).map((childField, index) => {
+  return /* @__PURE__ */ jsx14("div", { className: "space-y-3 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-3", children: (field.fields ?? []).map((childField, index) => {
     const childPath = childField.path ?? "";
     const childAbsolutePath = joinFieldPath(absolutePath ?? "", childPath);
     const childValue = childPath ? getValueAtPath(objectValue, childPath) : objectValue;
-    return /* @__PURE__ */ jsx13(
+    return /* @__PURE__ */ jsx14(
       "div",
       {
         className: "rounded-[18px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] p-3",
-        children: /* @__PURE__ */ jsx13(
+        children: /* @__PURE__ */ jsx14(
           FieldEditor,
           {
             field: childField,
@@ -1503,21 +1799,21 @@ var RepeaterFieldEditor = ({
     });
     updateItems([...items, defaultItem]);
   };
-  return /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
-    /* @__PURE__ */ jsx13("div", { className: "space-y-3 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-3", children: items.map((item, index) => {
+  return /* @__PURE__ */ jsxs9("div", { className: "space-y-3", children: [
+    /* @__PURE__ */ jsx14("div", { className: "space-y-3 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-3", children: items.map((item, index) => {
       const itemAbsolutePath = joinFieldPath(absolutePath ?? "", String(index));
       const itemLabelSource = field.itemLabelPath && item && typeof item === "object" ? getValueAtPath(item, field.itemLabelPath) : null;
       const itemLabel = typeof itemLabelSource === "string" && itemLabelSource.trim() !== "" ? itemLabelSource : translate(
         field.itemLabelKey ?? field.itemLabel ?? "Item",
         field.itemLabel ?? "Item"
       );
-      return /* @__PURE__ */ jsxs8(
+      return /* @__PURE__ */ jsxs9(
         "div",
         {
           className: "rounded-[18px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] p-3",
           children: [
-            /* @__PURE__ */ jsxs8("div", { className: "mb-3 flex items-center justify-between gap-3", children: [
-              /* @__PURE__ */ jsx13("div", { className: "min-w-0", children: /* @__PURE__ */ jsx13(
+            /* @__PURE__ */ jsxs9("div", { className: "mb-3 flex items-center justify-between gap-3", children: [
+              /* @__PURE__ */ jsx14("div", { className: "min-w-0", children: /* @__PURE__ */ jsx14(
                 "div",
                 {
                   className: "truncate text-sm font-semibold",
@@ -1525,8 +1821,8 @@ var RepeaterFieldEditor = ({
                   children: itemLabel
                 }
               ) }),
-              /* @__PURE__ */ jsxs8("div", { className: "flex shrink-0 items-center gap-1", children: [
-                /* @__PURE__ */ jsx13(
+              /* @__PURE__ */ jsxs9("div", { className: "flex shrink-0 items-center gap-1", children: [
+                /* @__PURE__ */ jsx14(
                   "button",
                   {
                     type: "button",
@@ -1534,10 +1830,10 @@ var RepeaterFieldEditor = ({
                     onClick: () => updateItems(moveWebsiteBuilderArrayItem(items, index, index - 1)),
                     className: "inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
                     "aria-label": `Move ${itemLabel} up`,
-                    children: /* @__PURE__ */ jsx13(ArrowUp, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx14(ArrowUp2, { className: "h-4 w-4" })
                   }
                 ),
-                /* @__PURE__ */ jsx13(
+                /* @__PURE__ */ jsx14(
                   "button",
                   {
                     type: "button",
@@ -1545,22 +1841,22 @@ var RepeaterFieldEditor = ({
                     onClick: () => updateItems(moveWebsiteBuilderArrayItem(items, index, index + 1)),
                     className: "inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
                     "aria-label": `Move ${itemLabel} down`,
-                    children: /* @__PURE__ */ jsx13(ArrowDown, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx14(ArrowDown2, { className: "h-4 w-4" })
                   }
                 ),
-                /* @__PURE__ */ jsx13(
+                /* @__PURE__ */ jsx14(
                   "button",
                   {
                     type: "button",
                     onClick: () => updateItems(items.filter((_, itemIndex) => itemIndex !== index)),
                     className: "inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)]",
                     "aria-label": `Remove ${itemLabel}`,
-                    children: /* @__PURE__ */ jsx13(Trash2, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx14(Trash22, { className: "h-4 w-4" })
                   }
                 )
               ] })
             ] }),
-            itemField ? /* @__PURE__ */ jsx13(
+            itemField ? /* @__PURE__ */ jsx14(
               FieldEditor,
               {
                 field: itemField,
@@ -1575,7 +1871,7 @@ var RepeaterFieldEditor = ({
                   )
                 )
               }
-            ) : /* @__PURE__ */ jsx13("div", { className: "space-y-3", children: (field.fields ?? []).map((childField, childIndex) => {
+            ) : /* @__PURE__ */ jsx14("div", { className: "space-y-3", children: (field.fields ?? []).map((childField, childIndex) => {
               const itemObject = normalizeObjectValue(item);
               const childPath = childField.path ?? "";
               const childAbsolutePath = joinFieldPath(
@@ -1583,11 +1879,11 @@ var RepeaterFieldEditor = ({
                 childPath
               );
               const childValue = childPath ? getValueAtPath(itemObject, childPath) : itemObject;
-              return /* @__PURE__ */ jsx13(
+              return /* @__PURE__ */ jsx14(
                 "div",
                 {
                   className: "rounded-[16px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-3",
-                  children: /* @__PURE__ */ jsx13(
+                  children: /* @__PURE__ */ jsx14(
                     FieldEditor,
                     {
                       field: childField,
@@ -1622,14 +1918,14 @@ var RepeaterFieldEditor = ({
         itemAbsolutePath
       );
     }) }),
-    /* @__PURE__ */ jsxs8(
+    /* @__PURE__ */ jsxs9(
       "button",
       {
         type: "button",
         onClick: addItem,
         className: "inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] px-4 py-3 text-sm font-semibold text-[color:var(--wb-builder-text)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:bg-[color:var(--wb-builder-panel-solid)]",
         children: [
-          /* @__PURE__ */ jsx13(Plus, { className: "h-4 w-4" }),
+          /* @__PURE__ */ jsx14(Plus2, { className: "h-4 w-4" }),
           translate(
             field.addLabelKey ?? field.addLabel ?? "Add item",
             field.addLabel ?? "Add item"
@@ -1652,9 +1948,9 @@ var FieldEditor = ({
   const uploadMedia = useWebsiteBuilderStore((state) => state.uploadMedia);
   const { translate } = useWebsiteBuilderI18n();
   const path = absolutePath ?? field.path ?? "";
-  return /* @__PURE__ */ jsxs8("div", { children: [
-    /* @__PURE__ */ jsxs8("div", { className: "mb-2 flex items-center justify-between gap-3", children: [
-      /* @__PURE__ */ jsx13(
+  return /* @__PURE__ */ jsxs9("div", { children: [
+    /* @__PURE__ */ jsxs9("div", { className: "mb-2 flex items-center justify-between gap-3", children: [
+      /* @__PURE__ */ jsx14(
         "div",
         {
           className: "text-sm font-semibold",
@@ -1665,7 +1961,7 @@ var FieldEditor = ({
           )
         }
       ),
-      path && !hidePathLabel ? /* @__PURE__ */ jsx13(
+      path && !hidePathLabel ? /* @__PURE__ */ jsx14(
         "button",
         {
           type: "button",
@@ -1676,7 +1972,7 @@ var FieldEditor = ({
         }
       ) : null
     ] }),
-    field.description ? /* @__PURE__ */ jsx13(
+    field.description ? /* @__PURE__ */ jsx14(
       "div",
       {
         className: "mb-2 text-xs leading-5",
@@ -1687,7 +1983,7 @@ var FieldEditor = ({
         )
       }
     ) : null,
-    field.kind === "textarea" ? /* @__PURE__ */ jsx13(
+    field.kind === "textarea" ? /* @__PURE__ */ jsx14(
       "textarea",
       {
         rows: 5,
@@ -1697,7 +1993,7 @@ var FieldEditor = ({
         className: inputClassName
       }
     ) : null,
-    field.kind === "rich-text" ? /* @__PURE__ */ jsx13(
+    field.kind === "rich-text" ? /* @__PURE__ */ jsx14(
       WebsiteBuilderRichTextEditor,
       {
         value: String(value ?? ""),
@@ -1707,7 +2003,7 @@ var FieldEditor = ({
         surfaceClassName: "border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)]"
       }
     ) : null,
-    field.kind === "json" ? /* @__PURE__ */ jsx13(
+    field.kind === "json" ? /* @__PURE__ */ jsx14(
       JsonFieldEditor,
       {
         blockId,
@@ -1717,7 +2013,7 @@ var FieldEditor = ({
         onApply: onChange
       }
     ) : null,
-    field.kind === "object" ? /* @__PURE__ */ jsx13(
+    field.kind === "object" ? /* @__PURE__ */ jsx14(
       ObjectFieldEditor,
       {
         field,
@@ -1728,7 +2024,7 @@ var FieldEditor = ({
         absolutePath: path
       }
     ) : null,
-    field.kind === "repeater" ? /* @__PURE__ */ jsx13(
+    field.kind === "repeater" ? /* @__PURE__ */ jsx14(
       RepeaterFieldEditor,
       {
         field,
@@ -1739,7 +2035,16 @@ var FieldEditor = ({
         absolutePath: path
       }
     ) : null,
-    field.kind === "select" ? /* @__PURE__ */ jsx13(
+    field.kind === "form-fields" ? /* @__PURE__ */ jsx14(
+      WebsiteBuilderFormFieldsEditor,
+      {
+        value,
+        onChange,
+        onFocus: (path2) => onFocus(joinFieldPath(absolutePath ?? "", path2)),
+        absolutePath: path
+      }
+    ) : null,
+    field.kind === "select" ? /* @__PURE__ */ jsx14(
       SelectFieldEditor,
       {
         field,
@@ -1748,8 +2053,8 @@ var FieldEditor = ({
         onFocus
       }
     ) : null,
-    field.kind === "toggle" ? /* @__PURE__ */ jsxs8("label", { className: "inline-flex cursor-pointer items-center gap-3 rounded-2xl border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] px-4 py-3 text-sm text-[color:var(--wb-builder-text)]", children: [
-      /* @__PURE__ */ jsx13(
+    field.kind === "toggle" ? /* @__PURE__ */ jsxs9("label", { className: "inline-flex cursor-pointer items-center gap-3 rounded-2xl border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] px-4 py-3 text-sm text-[color:var(--wb-builder-text)]", children: [
+      /* @__PURE__ */ jsx14(
         "input",
         {
           type: "checkbox",
@@ -1760,7 +2065,7 @@ var FieldEditor = ({
       ),
       "Enable value"
     ] }) : null,
-    field.kind === "tags" ? /* @__PURE__ */ jsx13(
+    field.kind === "tags" ? /* @__PURE__ */ jsx14(
       "textarea",
       {
         rows: 4,
@@ -1773,7 +2078,7 @@ var FieldEditor = ({
         className: inputClassName
       }
     ) : null,
-    field.kind === "image" ? /* @__PURE__ */ jsx13(
+    field.kind === "image" ? /* @__PURE__ */ jsx14(
       ImageFieldEditor,
       {
         blockId,
@@ -1785,7 +2090,7 @@ var FieldEditor = ({
         onUpload: uploadMedia
       }
     ) : null,
-    field.kind === "gallery" ? /* @__PURE__ */ jsx13(
+    field.kind === "gallery" ? /* @__PURE__ */ jsx14(
       GalleryFieldEditor,
       {
         blockId,
@@ -1797,7 +2102,7 @@ var FieldEditor = ({
         onUpload: uploadMedia
       }
     ) : null,
-    ["text", "url", "color"].includes(field.kind) ? /* @__PURE__ */ jsx13(
+    ["text", "url", "color"].includes(field.kind) ? /* @__PURE__ */ jsx14(
       "input",
       {
         type: field.kind === "color" ? "color" : field.kind === "url" ? "url" : "text",
@@ -1810,7 +2115,7 @@ var FieldEditor = ({
         )
       }
     ) : null,
-    field.kind === "number" ? /* @__PURE__ */ jsx13(
+    field.kind === "number" ? /* @__PURE__ */ jsx14(
       "input",
       {
         type: "number",
@@ -1827,7 +2132,7 @@ var FieldEditor = ({
 };
 
 // src/components/website-builder-field-editor-list.tsx
-import { jsx as jsx14 } from "react/jsx-runtime";
+import { jsx as jsx15 } from "react/jsx-runtime";
 var WebsiteBuilderFieldEditorList = ({
   fields,
   subjectId,
@@ -1835,7 +2140,7 @@ var WebsiteBuilderFieldEditorList = ({
   onChange,
   onFocus
 }) => {
-  return /* @__PURE__ */ jsx14("div", { className: "space-y-4", children: fields.map((field) => /* @__PURE__ */ jsx14(
+  return /* @__PURE__ */ jsx15("div", { className: "space-y-4", children: fields.map((field) => /* @__PURE__ */ jsx15(
     FieldEditor,
     {
       field,
@@ -1862,7 +2167,7 @@ import {
   useDeferredValue,
   useEffect as useEffect20,
   useRef as useRef6,
-  useState as useState20
+  useState as useState21
 } from "react";
 import { createPortal } from "react-dom";
 import { toast as toast4 } from "sonner";
@@ -1878,10 +2183,10 @@ import {
   ChevronUp,
   Copy,
   GripVertical,
-  Trash2 as Trash22
+  Trash2 as Trash23
 } from "lucide-react";
-import { memo, useEffect as useEffect6, useState as useState6 } from "react";
-import { Fragment, jsx as jsx15, jsxs as jsxs9 } from "react/jsx-runtime";
+import { memo, useEffect as useEffect6, useState as useState7 } from "react";
+import { Fragment, jsx as jsx16, jsxs as jsxs10 } from "react/jsx-runtime";
 var CanvasBlockShellComponent = ({
   block,
   blockLabel,
@@ -1905,7 +2210,7 @@ var CanvasBlockShellComponent = ({
     },
     disabled: !builderEnabled
   });
-  const [hasMounted, setHasMounted] = useState6(false);
+  const [hasMounted, setHasMounted] = useState7(false);
   const chromeEnabled = builderEnabled || collapseControlsEnabled;
   const contentChromeOnly = collapseControlsEnabled && !builderEnabled;
   const edgeToEdgeChrome = chromeStyle === "edge-to-edge";
@@ -1916,8 +2221,8 @@ var CanvasBlockShellComponent = ({
     "border transition",
     isSelected ? "border-[color:var(--wb-builder-border-strong)] shadow-[0_0_0_1px_var(--wb-builder-accent-strong)]" : "border-[color:var(--wb-builder-border)] group-hover:border-[color:var(--wb-builder-border-strong)]"
   );
-  const chromeBadges = builderEnabled ? /* @__PURE__ */ jsxs9(Fragment, { children: [
-    /* @__PURE__ */ jsx15(
+  const chromeBadges = builderEnabled ? /* @__PURE__ */ jsxs10(Fragment, { children: [
+    /* @__PURE__ */ jsx16(
       "div",
       {
         className: "rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em]",
@@ -1929,7 +2234,7 @@ var CanvasBlockShellComponent = ({
         children: blockLabel
       }
     ),
-    /* @__PURE__ */ jsx15(
+    /* @__PURE__ */ jsx16(
       "div",
       {
         className: "rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -1942,8 +2247,8 @@ var CanvasBlockShellComponent = ({
       }
     )
   ] }) : null;
-  const chromeControls = chromeEnabled ? /* @__PURE__ */ jsxs9(Fragment, { children: [
-    /* @__PURE__ */ jsx15(
+  const chromeControls = chromeEnabled ? /* @__PURE__ */ jsxs10(Fragment, { children: [
+    /* @__PURE__ */ jsx16(
       "button",
       {
         type: "button",
@@ -1957,11 +2262,11 @@ var CanvasBlockShellComponent = ({
           background: "var(--wb-builder-panel-solid)",
           color: "var(--wb-builder-text-muted)"
         },
-        children: isCollapsed ? /* @__PURE__ */ jsx15(ChevronDown2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx15(ChevronUp, { className: "h-4 w-4" })
+        children: isCollapsed ? /* @__PURE__ */ jsx16(ChevronDown2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx16(ChevronUp, { className: "h-4 w-4" })
       }
     ),
-    builderEnabled ? /* @__PURE__ */ jsxs9(Fragment, { children: [
-      /* @__PURE__ */ jsx15(
+    builderEnabled ? /* @__PURE__ */ jsxs10(Fragment, { children: [
+      /* @__PURE__ */ jsx16(
         "button",
         {
           type: "button",
@@ -1975,10 +2280,10 @@ var CanvasBlockShellComponent = ({
             background: "var(--wb-builder-panel-solid)",
             color: "var(--wb-builder-text-muted)"
           },
-          children: /* @__PURE__ */ jsx15(Copy, { className: "h-4 w-4" })
+          children: /* @__PURE__ */ jsx16(Copy, { className: "h-4 w-4" })
         }
       ),
-      /* @__PURE__ */ jsx15(
+      /* @__PURE__ */ jsx16(
         "button",
         {
           type: "button",
@@ -1992,10 +2297,10 @@ var CanvasBlockShellComponent = ({
             background: "var(--wb-builder-panel-solid)",
             color: "var(--wb-builder-text-muted)"
           },
-          children: /* @__PURE__ */ jsx15(Trash22, { className: "h-4 w-4" })
+          children: /* @__PURE__ */ jsx16(Trash23, { className: "h-4 w-4" })
         }
       ),
-      /* @__PURE__ */ jsx15(
+      /* @__PURE__ */ jsx16(
         "button",
         {
           type: "button",
@@ -2008,13 +2313,13 @@ var CanvasBlockShellComponent = ({
             background: "var(--wb-builder-panel-solid)",
             color: "var(--wb-builder-text-muted)"
           },
-          children: /* @__PURE__ */ jsx15(GripVertical, { className: "h-4 w-4" })
+          children: /* @__PURE__ */ jsx16(GripVertical, { className: "h-4 w-4" })
         }
       )
     ] }) : null
   ] }) : null;
   if (edgeToEdgeChrome && chromeEnabled) {
-    return /* @__PURE__ */ jsxs9(
+    return /* @__PURE__ */ jsxs10(
       "article",
       {
         ref: hasMounted ? setNodeRef : void 0,
@@ -2033,11 +2338,11 @@ var CanvasBlockShellComponent = ({
           hasMounted && isDragging && "opacity-0"
         ),
         children: [
-          chromeEnabled ? /* @__PURE__ */ jsxs9("div", { className: "mb-3 flex items-start justify-between gap-3", children: [
-            /* @__PURE__ */ jsx15("div", { className: "pointer-events-none flex min-h-10 max-w-[70%] flex-wrap items-center gap-2", children: chromeBadges }),
-            /* @__PURE__ */ jsx15("div", { className: "relative z-10 flex shrink-0 items-center gap-2", children: chromeControls })
+          chromeEnabled ? /* @__PURE__ */ jsxs10("div", { className: "mb-3 flex items-start justify-between gap-3", children: [
+            /* @__PURE__ */ jsx16("div", { className: "pointer-events-none flex min-h-10 max-w-[70%] flex-wrap items-center gap-2", children: chromeBadges }),
+            /* @__PURE__ */ jsx16("div", { className: "relative z-10 flex shrink-0 items-center gap-2", children: chromeControls })
           ] }) : null,
-          /* @__PURE__ */ jsx15(
+          /* @__PURE__ */ jsx16(
             "div",
             {
               className: clsx7(
@@ -2051,7 +2356,7 @@ var CanvasBlockShellComponent = ({
       }
     );
   }
-  return /* @__PURE__ */ jsxs9(
+  return /* @__PURE__ */ jsxs10(
     "article",
     {
       ref: hasMounted ? setNodeRef : void 0,
@@ -2070,7 +2375,7 @@ var CanvasBlockShellComponent = ({
         hasMounted && isDragging && "opacity-0"
       ),
       children: [
-        chromeEnabled ? /* @__PURE__ */ jsx15(
+        chromeEnabled ? /* @__PURE__ */ jsx16(
           "div",
           {
             className: clsx7(
@@ -2079,9 +2384,9 @@ var CanvasBlockShellComponent = ({
             )
           }
         ) : null,
-        builderEnabled ? /* @__PURE__ */ jsx15("div", { className: "pointer-events-none absolute left-5 top-5 z-10 flex max-w-[70%] flex-wrap items-center gap-2", children: chromeBadges }) : null,
-        chromeEnabled ? /* @__PURE__ */ jsx15("div", { className: "absolute right-5 top-5 z-10 flex items-center gap-2", children: chromeControls }) : null,
-        /* @__PURE__ */ jsx15(
+        builderEnabled ? /* @__PURE__ */ jsx16("div", { className: "pointer-events-none absolute left-5 top-5 z-10 flex max-w-[70%] flex-wrap items-center gap-2", children: chromeBadges }) : null,
+        chromeEnabled ? /* @__PURE__ */ jsx16("div", { className: "absolute right-5 top-5 z-10 flex items-center gap-2", children: chromeControls }) : null,
+        /* @__PURE__ */ jsx16(
           "div",
           {
             className: clsx7(
@@ -2100,8 +2405,8 @@ var CanvasBlockShell = memo(CanvasBlockShellComponent);
 // src/studio/canvas/canvas-insert-zone.tsx
 import { useDroppable } from "@dnd-kit/core";
 import clsx8 from "clsx";
-import { Plus as Plus2 } from "lucide-react";
-import { jsx as jsx16, jsxs as jsxs10 } from "react/jsx-runtime";
+import { Plus as Plus3 } from "lucide-react";
+import { jsx as jsx17, jsxs as jsxs11 } from "react/jsx-runtime";
 var CanvasInsertZone = ({
   listId,
   index,
@@ -2124,7 +2429,7 @@ var CanvasInsertZone = ({
   if (!builderEnabled) {
     return null;
   }
-  return /* @__PURE__ */ jsxs10(
+  return /* @__PURE__ */ jsxs11(
     "div",
     {
       ref: setNodeRef,
@@ -2134,7 +2439,7 @@ var CanvasInsertZone = ({
         isEmpty && !isDragging && "py-4"
       ),
       children: [
-        /* @__PURE__ */ jsx16(
+        /* @__PURE__ */ jsx17(
           "div",
           {
             className: clsx8(
@@ -2148,7 +2453,7 @@ var CanvasInsertZone = ({
             }
           }
         ),
-        /* @__PURE__ */ jsx16(
+        /* @__PURE__ */ jsx17(
           "div",
           {
             className: clsx8(
@@ -2159,7 +2464,7 @@ var CanvasInsertZone = ({
             }
           }
         ),
-        /* @__PURE__ */ jsxs10(
+        /* @__PURE__ */ jsxs11(
           "button",
           {
             type: "button",
@@ -2174,7 +2479,7 @@ var CanvasInsertZone = ({
               color: isActive || isOver ? "var(--wb-builder-accent-text)" : isManual ? "var(--wb-builder-text)" : "var(--wb-builder-text-muted)"
             },
             children: [
-              /* @__PURE__ */ jsx16(Plus2, { className: "h-3.5 w-3.5" }),
+              /* @__PURE__ */ jsx17(Plus3, { className: "h-3.5 w-3.5" }),
               isEmpty ? isDragging ? "Drop first block here" : "Insert first block" : isDragging ? "Drop block here" : "Insert here"
             ]
           }
@@ -2185,11 +2490,11 @@ var CanvasInsertZone = ({
 };
 
 // src/studio/canvas/collapsed-block-preview.tsx
-import { jsx as jsx17, jsxs as jsxs11 } from "react/jsx-runtime";
+import { jsx as jsx18, jsxs as jsxs12 } from "react/jsx-runtime";
 var CollapsedBlockPreview = ({
   block
 }) => {
-  return /* @__PURE__ */ jsxs11(
+  return /* @__PURE__ */ jsxs12(
     "div",
     {
       className: "rounded-[28px] border border-dashed px-5 py-5 text-sm",
@@ -2199,7 +2504,7 @@ var CollapsedBlockPreview = ({
         color: "var(--wb-builder-text-muted)"
       },
       children: [
-        /* @__PURE__ */ jsx17(
+        /* @__PURE__ */ jsx18(
           "div",
           {
             className: "font-semibold",
@@ -2207,7 +2512,7 @@ var CollapsedBlockPreview = ({
             children: block.type
           }
         ),
-        /* @__PURE__ */ jsx17(
+        /* @__PURE__ */ jsx18(
           "div",
           {
             className: "mt-2",
@@ -2221,7 +2526,7 @@ var CollapsedBlockPreview = ({
 };
 
 // src/studio/canvas/canvas-block-item.tsx
-import { jsx as jsx18, jsxs as jsxs12 } from "react/jsx-runtime";
+import { jsx as jsx19, jsxs as jsxs13 } from "react/jsx-runtime";
 var CanvasBlockItemComponent = ({
   block,
   index,
@@ -2253,8 +2558,8 @@ var CanvasBlockItemComponent = ({
   );
   const definition = registry.getDefinition(block.module, block.type);
   const chromeStyle = definition?.category === "Site Frame" ? "edge-to-edge" : "default";
-  return /* @__PURE__ */ jsxs12(Fragment2, { children: [
-    /* @__PURE__ */ jsx18(
+  return /* @__PURE__ */ jsxs13(Fragment2, { children: [
+    /* @__PURE__ */ jsx19(
       CanvasBlockShell,
       {
         block,
@@ -2272,11 +2577,11 @@ var CanvasBlockItemComponent = ({
         onDelete: () => removeBlock(block.id),
         onSelect: () => selectBlock(block.id),
         onToggleCollapse: () => toggleBlockCollapse(block.id),
-        children: respectsCollapsedState && isCollapsed ? /* @__PURE__ */ jsx18(CollapsedBlockPreview, { block }) : /* @__PURE__ */ jsx18(
+        children: respectsCollapsedState && isCollapsed ? /* @__PURE__ */ jsx19(CollapsedBlockPreview, { block }) : /* @__PURE__ */ jsx19(
           WebsiteBuilderBlockRenderer,
           {
             block,
-            renderArea: (area) => /* @__PURE__ */ jsx18(WebsiteBuilderRenderDepthProvider, { value: renderDepth + 1, children: /* @__PURE__ */ jsx18(
+            renderArea: (area) => /* @__PURE__ */ jsx19(WebsiteBuilderRenderDepthProvider, { value: renderDepth + 1, children: /* @__PURE__ */ jsx19(
               CanvasBlockList,
               {
                 blocks: area.blocks,
@@ -2294,7 +2599,7 @@ var CanvasBlockItemComponent = ({
         )
       }
     ),
-    /* @__PURE__ */ jsx18(
+    /* @__PURE__ */ jsx19(
       CanvasInsertZone,
       {
         listId,
@@ -2311,7 +2616,7 @@ var CanvasBlockItemComponent = ({
 var CanvasBlockItem = memo2(CanvasBlockItemComponent);
 
 // src/studio/canvas/canvas-block-list.tsx
-import { jsx as jsx19, jsxs as jsxs13 } from "react/jsx-runtime";
+import { jsx as jsx20, jsxs as jsxs14 } from "react/jsx-runtime";
 var CanvasBlockList = ({
   blocks,
   listId,
@@ -2322,8 +2627,8 @@ var CanvasBlockList = ({
   manualInsertTarget,
   dropTarget,
   onActivateInsertTarget
-}) => /* @__PURE__ */ jsxs13("div", { className: "space-y-[var(--wb-list-gap,0.75rem)]", children: [
-  /* @__PURE__ */ jsx19(
+}) => /* @__PURE__ */ jsxs14("div", { className: "space-y-[var(--wb-list-gap,0.75rem)]", children: [
+  /* @__PURE__ */ jsx20(
     CanvasInsertZone,
     {
       listId,
@@ -2336,7 +2641,7 @@ var CanvasBlockList = ({
       onActivate: () => onActivateInsertTarget({ listId, index: 0 })
     }
   ),
-  blocks.map((block, index) => /* @__PURE__ */ jsx19(
+  blocks.map((block, index) => /* @__PURE__ */ jsx20(
     CanvasBlockItem,
     {
       block,
@@ -2355,9 +2660,9 @@ var CanvasBlockList = ({
 ] });
 
 // src/studio/canvas/block-overlay-card.tsx
-import { jsx as jsx20, jsxs as jsxs14 } from "react/jsx-runtime";
+import { jsx as jsx21, jsxs as jsxs15 } from "react/jsx-runtime";
 var BlockOverlayCard = ({ block }) => {
-  return /* @__PURE__ */ jsxs14(
+  return /* @__PURE__ */ jsxs15(
     "div",
     {
       className: "rounded-[24px] border px-4 py-4 text-sm backdrop-blur-xl",
@@ -2368,7 +2673,7 @@ var BlockOverlayCard = ({ block }) => {
         boxShadow: "var(--wb-builder-shadow)"
       },
       children: [
-        /* @__PURE__ */ jsx20(
+        /* @__PURE__ */ jsx21(
           "div",
           {
             className: "text-[11px] uppercase tracking-[0.28em]",
@@ -2376,8 +2681,8 @@ var BlockOverlayCard = ({ block }) => {
             children: block.module
           }
         ),
-        /* @__PURE__ */ jsx20("div", { className: "mt-2 font-semibold", children: block.type }),
-        /* @__PURE__ */ jsx20(
+        /* @__PURE__ */ jsx21("div", { className: "mt-2 font-semibold", children: block.type }),
+        /* @__PURE__ */ jsx21(
           "div",
           {
             className: "mt-1",
@@ -2396,9 +2701,9 @@ import {
   memo as memo3,
   useEffect as useEffect7,
   useRef as useRef2,
-  useState as useState7
+  useState as useState8
 } from "react";
-import { jsx as jsx21, jsxs as jsxs15 } from "react/jsx-runtime";
+import { jsx as jsx22, jsxs as jsxs16 } from "react/jsx-runtime";
 var SiteSurfaceRegionSection = ({
   region,
   site,
@@ -2413,7 +2718,7 @@ var SiteSurfaceRegionSection = ({
   previewEnabled
 }) => {
   const sectionRef = useRef2(null);
-  const [surfaceWidth, setSurfaceWidth] = useState7(0);
+  const [surfaceWidth, setSurfaceWidth] = useState8(0);
   const blocks = getWebsiteBuilderSurfaceRegionBlocks(document2, region.key) ?? [];
   const regionListId = getWebsiteBuilderSurfaceRegionListId(region.key);
   const isPageRegion = region.key === WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY;
@@ -2433,7 +2738,7 @@ var SiteSurfaceRegionSection = ({
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
-  return /* @__PURE__ */ jsx21(
+  return /* @__PURE__ */ jsx22(
     WebsiteBuilderSurfaceLayoutProvider,
     {
       value: {
@@ -2442,7 +2747,7 @@ var SiteSurfaceRegionSection = ({
         regionKey: region.key,
         width: surfaceWidth
       },
-      children: /* @__PURE__ */ jsxs15(
+      children: /* @__PURE__ */ jsxs16(
         "section",
         {
           ref: sectionRef,
@@ -2455,7 +2760,7 @@ var SiteSurfaceRegionSection = ({
             top: "calc(var(--wb-dock-offset, 0px) + var(--wb-site-header-offset, 0px))"
           } : void 0,
           children: [
-            builderEnabled ? /* @__PURE__ */ jsxs15(
+            builderEnabled ? /* @__PURE__ */ jsxs16(
               "div",
               {
                 className: clsx9(
@@ -2463,7 +2768,7 @@ var SiteSurfaceRegionSection = ({
                   builderRegionInsetClassName
                 ),
                 children: [
-                  /* @__PURE__ */ jsx21(
+                  /* @__PURE__ */ jsx22(
                     "div",
                     {
                       className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.28em]",
@@ -2475,7 +2780,7 @@ var SiteSurfaceRegionSection = ({
                       children: region.label
                     }
                   ),
-                  region.lockedOnCanvas ? /* @__PURE__ */ jsx21(
+                  region.lockedOnCanvas ? /* @__PURE__ */ jsx22(
                     "div",
                     {
                       className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -2490,7 +2795,7 @@ var SiteSurfaceRegionSection = ({
                 ]
               }
             ) : null,
-            /* @__PURE__ */ jsx21(
+            /* @__PURE__ */ jsx22(
               "div",
               {
                 className: clsx9(
@@ -2500,7 +2805,7 @@ var SiteSurfaceRegionSection = ({
                 style: isPageRegion ? {
                   "--wb-list-gap": "var(--wb-section-gap,2rem)"
                 } : void 0,
-                children: /* @__PURE__ */ jsx21(
+                children: /* @__PURE__ */ jsx22(
                   CanvasBlockList,
                   {
                     blocks,
@@ -2536,7 +2841,7 @@ var SiteSurfaceCanvasComponent = ({
   const mode = useWebsiteBuilderStore((state) => state.mode);
   const regions = resolveWebsiteBuilderSurfaceRegionDescriptors(site);
   const previewEnabled = mode !== "builder";
-  return /* @__PURE__ */ jsx21("div", { className: "space-y-[var(--wb-section-gap,2rem)]", children: regions.map((region) => /* @__PURE__ */ jsx21(
+  return /* @__PURE__ */ jsx22("div", { className: "space-y-[var(--wb-section-gap,2rem)]", children: regions.map((region) => /* @__PURE__ */ jsx22(
     SiteSurfaceRegionSection,
     {
       region,
@@ -2563,18 +2868,18 @@ import { useEffect as useEffect11, useRef as useRef3 } from "react";
 
 // src/studio/editor-dock/editor-dock-brand.tsx
 import { PanelsTopLeft } from "lucide-react";
-import { jsx as jsx22, jsxs as jsxs16 } from "react/jsx-runtime";
+import { jsx as jsx23, jsxs as jsxs17 } from "react/jsx-runtime";
 var EditorDockBrand = ({
   title,
   compact = false
 }) => {
   const { translate } = useWebsiteBuilderI18n();
-  return /* @__PURE__ */ jsxs16(
+  return /* @__PURE__ */ jsxs17(
     "div",
     {
       className: `flex min-w-0 items-start transition-[gap] duration-300 ease-out ${compact ? "gap-2.5" : "gap-3"}`,
       children: [
-        /* @__PURE__ */ jsx22(
+        /* @__PURE__ */ jsx23(
           "div",
           {
             className: `flex items-center justify-center rounded-2xl border transition-[width,height,transform] duration-300 ease-out ${compact ? "h-10 w-10" : "h-11 w-11"}`,
@@ -2583,11 +2888,11 @@ var EditorDockBrand = ({
               background: "var(--wb-builder-accent-strong)",
               color: "var(--wb-builder-accent)"
             },
-            children: /* @__PURE__ */ jsx22(PanelsTopLeft, { className: "h-5 w-5" })
+            children: /* @__PURE__ */ jsx23(PanelsTopLeft, { className: "h-5 w-5" })
           }
         ),
-        /* @__PURE__ */ jsxs16("div", { className: "min-w-0", children: [
-          /* @__PURE__ */ jsx22(
+        /* @__PURE__ */ jsxs17("div", { className: "min-w-0", children: [
+          /* @__PURE__ */ jsx23(
             "div",
             {
               className: "text-[11px] uppercase tracking-[0.3em]",
@@ -2595,7 +2900,7 @@ var EditorDockBrand = ({
               children: translate("websiteBuilder.brand", "Website Builder")
             }
           ),
-          /* @__PURE__ */ jsx22(
+          /* @__PURE__ */ jsx23(
             "div",
             {
               className: `font-semibold tracking-[-0.03em] transition-[font-size] duration-300 ease-out ${compact ? "text-base" : "text-lg"}`,
@@ -2611,15 +2916,15 @@ var EditorDockBrand = ({
 
 // src/studio/editor-dock/editor-locale-select.tsx
 import { ChevronDown as ChevronDown3 } from "lucide-react";
-import { useEffect as useEffect8, useState as useState8 } from "react";
-import { jsx as jsx23, jsxs as jsxs17 } from "react/jsx-runtime";
+import { useEffect as useEffect8, useState as useState9 } from "react";
+import { jsx as jsx24, jsxs as jsxs18 } from "react/jsx-runtime";
 var EditorLocaleSelect = ({
   label,
   value,
   options,
   onChange
 }) => {
-  const [hasMounted, setHasMounted] = useState8(false);
+  const [hasMounted, setHasMounted] = useState9(false);
   const activeOption = options.find((option) => option.code === value) ?? options[0] ?? null;
   useEffect8(() => {
     setHasMounted(true);
@@ -2627,76 +2932,18 @@ var EditorLocaleSelect = ({
   if (options.length <= 1 || !activeOption || typeof onChange !== "function") {
     return null;
   }
-  const trigger = /* @__PURE__ */ jsxs17(
+  const trigger = /* @__PURE__ */ jsxs18(
     "button",
     {
       type: "button",
       "aria-label": label,
       className: "inline-flex h-11 min-w-[10.25rem] cursor-pointer items-center justify-between gap-3 rounded-full border px-4 text-sm font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[border-color,background-color,box-shadow,color] duration-200 ease-out outline-none border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] text-[color:var(--wb-builder-text)] hover:border-[color:var(--wb-builder-border-strong)] hover:bg-[color:var(--wb-builder-field)] focus-visible:border-[color:var(--wb-builder-border-strong)] focus-visible:bg-[color:var(--wb-builder-accent-strong)]",
       children: [
-        /* @__PURE__ */ jsxs17("span", { className: "flex min-w-0 items-center gap-2.5", children: [
-          /* @__PURE__ */ jsx23("span", { className: "text-[10px] uppercase tracking-[0.24em] text-[color:var(--wb-builder-text-soft)]", children: label }),
-          /* @__PURE__ */ jsx23("span", { className: "truncate uppercase", children: activeOption.label })
-        ] }),
-        /* @__PURE__ */ jsx23(ChevronDown3, { className: "h-4 w-4 shrink-0 text-[color:var(--wb-builder-text-soft)] transition-transform duration-200 ease-out" })
-      ]
-    }
-  );
-  if (!hasMounted) {
-    return trigger;
-  }
-  return /* @__PURE__ */ jsxs17(Root, { modal: false, children: [
-    /* @__PURE__ */ jsx23(Trigger, { asChild: true, children: trigger }),
-    /* @__PURE__ */ jsx23(DropdownMenuContent, { align: "start", children: /* @__PURE__ */ jsx23(
-      RadioGroup,
-      {
-        value,
-        onValueChange: (nextLocale) => onChange(nextLocale),
-        children: options.map((option) => /* @__PURE__ */ jsx23(DropdownMenuRadioItem, { value: option.code, children: /* @__PURE__ */ jsxs17("span", { className: "flex items-center gap-2.5", children: [
-          /* @__PURE__ */ jsx23("span", { className: "text-[10px] uppercase tracking-[0.24em] text-[color:var(--wb-builder-text-soft)]", children: label }),
-          /* @__PURE__ */ jsx23("span", { className: "uppercase", children: option.label })
-        ] }) }, option.code))
-      }
-    ) })
-  ] });
-};
-
-// src/studio/editor-dock/editor-mode-select.tsx
-import { ChevronDown as ChevronDown4, Eye, PanelsTopLeft as PanelsTopLeft2, PenLine } from "lucide-react";
-import { useEffect as useEffect9, useState as useState9 } from "react";
-import { jsx as jsx24, jsxs as jsxs18 } from "react/jsx-runtime";
-var MODE_OPTIONS = [
-  { label: "Preview", value: "preview", icon: Eye },
-  { label: "Content", value: "content", icon: PenLine },
-  { label: "Builder", value: "builder", icon: PanelsTopLeft2 }
-];
-var EditorModeSelect = ({
-  value,
-  onChange
-}) => {
-  const activeValue = MODE_OPTIONS.find((option) => option.value === value)?.value ?? "preview";
-  const [optimisticValue, setOptimisticValue] = useState9(activeValue);
-  const activeOption = MODE_OPTIONS.find((option) => option.value === optimisticValue) ?? MODE_OPTIONS[0];
-  const ActiveIcon = activeOption.icon;
-  const [hasMounted, setHasMounted] = useState9(false);
-  useEffect9(() => {
-    setHasMounted(true);
-  }, []);
-  useEffect9(() => {
-    setOptimisticValue(activeValue);
-  }, [activeValue]);
-  const trigger = /* @__PURE__ */ jsxs18(
-    "button",
-    {
-      type: "button",
-      "aria-label": "Editing mode",
-      className: "inline-flex h-11 min-w-[10.25rem] cursor-pointer items-center justify-between gap-3 rounded-full border px-4 text-sm font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[border-color,background-color,box-shadow,color] duration-200 ease-out outline-none border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] text-[color:var(--wb-builder-text)] hover:border-[color:var(--wb-builder-border-strong)] hover:bg-[color:var(--wb-builder-field)] focus-visible:border-[color:var(--wb-builder-border-strong)] focus-visible:bg-[color:var(--wb-builder-accent-strong)]",
-      children: [
         /* @__PURE__ */ jsxs18("span", { className: "flex min-w-0 items-center gap-2.5", children: [
-          /* @__PURE__ */ jsx24(ActiveIcon, { className: "h-4 w-4 text-[color:var(--wb-builder-accent)]" }),
-          /* @__PURE__ */ jsx24("span", { children: activeOption.label })
+          /* @__PURE__ */ jsx24("span", { className: "text-[10px] uppercase tracking-[0.24em] text-[color:var(--wb-builder-text-soft)]", children: label }),
+          /* @__PURE__ */ jsx24("span", { className: "truncate uppercase", children: activeOption.label })
         ] }),
-        /* @__PURE__ */ jsx24(ChevronDown4, { className: "h-4 w-4 text-[color:var(--wb-builder-text-soft)] transition-transform duration-200 ease-out" })
+        /* @__PURE__ */ jsx24(ChevronDown3, { className: "h-4 w-4 shrink-0 text-[color:var(--wb-builder-text-soft)] transition-transform duration-200 ease-out" })
       ]
     }
   );
@@ -2708,6 +2955,64 @@ var EditorModeSelect = ({
     /* @__PURE__ */ jsx24(DropdownMenuContent, { align: "start", children: /* @__PURE__ */ jsx24(
       RadioGroup,
       {
+        value,
+        onValueChange: (nextLocale) => onChange(nextLocale),
+        children: options.map((option) => /* @__PURE__ */ jsx24(DropdownMenuRadioItem, { value: option.code, children: /* @__PURE__ */ jsxs18("span", { className: "flex items-center gap-2.5", children: [
+          /* @__PURE__ */ jsx24("span", { className: "text-[10px] uppercase tracking-[0.24em] text-[color:var(--wb-builder-text-soft)]", children: label }),
+          /* @__PURE__ */ jsx24("span", { className: "uppercase", children: option.label })
+        ] }) }, option.code))
+      }
+    ) })
+  ] });
+};
+
+// src/studio/editor-dock/editor-mode-select.tsx
+import { ChevronDown as ChevronDown4, Eye, PanelsTopLeft as PanelsTopLeft2, PenLine } from "lucide-react";
+import { useEffect as useEffect9, useState as useState10 } from "react";
+import { jsx as jsx25, jsxs as jsxs19 } from "react/jsx-runtime";
+var MODE_OPTIONS = [
+  { label: "Preview", value: "preview", icon: Eye },
+  { label: "Content", value: "content", icon: PenLine },
+  { label: "Builder", value: "builder", icon: PanelsTopLeft2 }
+];
+var EditorModeSelect = ({
+  value,
+  onChange
+}) => {
+  const activeValue = MODE_OPTIONS.find((option) => option.value === value)?.value ?? "preview";
+  const [optimisticValue, setOptimisticValue] = useState10(activeValue);
+  const activeOption = MODE_OPTIONS.find((option) => option.value === optimisticValue) ?? MODE_OPTIONS[0];
+  const ActiveIcon = activeOption.icon;
+  const [hasMounted, setHasMounted] = useState10(false);
+  useEffect9(() => {
+    setHasMounted(true);
+  }, []);
+  useEffect9(() => {
+    setOptimisticValue(activeValue);
+  }, [activeValue]);
+  const trigger = /* @__PURE__ */ jsxs19(
+    "button",
+    {
+      type: "button",
+      "aria-label": "Editing mode",
+      className: "inline-flex h-11 min-w-[10.25rem] cursor-pointer items-center justify-between gap-3 rounded-full border px-4 text-sm font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[border-color,background-color,box-shadow,color] duration-200 ease-out outline-none border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] text-[color:var(--wb-builder-text)] hover:border-[color:var(--wb-builder-border-strong)] hover:bg-[color:var(--wb-builder-field)] focus-visible:border-[color:var(--wb-builder-border-strong)] focus-visible:bg-[color:var(--wb-builder-accent-strong)]",
+      children: [
+        /* @__PURE__ */ jsxs19("span", { className: "flex min-w-0 items-center gap-2.5", children: [
+          /* @__PURE__ */ jsx25(ActiveIcon, { className: "h-4 w-4 text-[color:var(--wb-builder-accent)]" }),
+          /* @__PURE__ */ jsx25("span", { children: activeOption.label })
+        ] }),
+        /* @__PURE__ */ jsx25(ChevronDown4, { className: "h-4 w-4 text-[color:var(--wb-builder-text-soft)] transition-transform duration-200 ease-out" })
+      ]
+    }
+  );
+  if (!hasMounted) {
+    return trigger;
+  }
+  return /* @__PURE__ */ jsxs19(Root, { modal: false, children: [
+    /* @__PURE__ */ jsx25(Trigger, { asChild: true, children: trigger }),
+    /* @__PURE__ */ jsx25(DropdownMenuContent, { align: "start", children: /* @__PURE__ */ jsx25(
+      RadioGroup,
+      {
         value: optimisticValue,
         onValueChange: (nextMode) => {
           const resolvedMode = nextMode;
@@ -2716,9 +3021,9 @@ var EditorModeSelect = ({
         },
         children: MODE_OPTIONS.map((option) => {
           const OptionIcon = option.icon;
-          return /* @__PURE__ */ jsx24(DropdownMenuRadioItem, { value: option.value, children: /* @__PURE__ */ jsxs18("span", { className: "flex items-center gap-2.5", children: [
-            /* @__PURE__ */ jsx24(OptionIcon, { className: "h-4 w-4 text-[color:var(--wb-builder-accent)]" }),
-            /* @__PURE__ */ jsx24("span", { children: option.label })
+          return /* @__PURE__ */ jsx25(DropdownMenuRadioItem, { value: option.value, children: /* @__PURE__ */ jsxs19("span", { className: "flex items-center gap-2.5", children: [
+            /* @__PURE__ */ jsx25(OptionIcon, { className: "h-4 w-4 text-[color:var(--wb-builder-accent)]" }),
+            /* @__PURE__ */ jsx25("span", { children: option.label })
           ] }) }, option.value);
         })
       }
@@ -2729,7 +3034,7 @@ var EditorModeSelect = ({
 // src/studio/editor-dock/editor-page-browser.tsx
 import clsx10 from "clsx";
 import { ChevronDown as ChevronDown5, FilePlus2, FolderTree } from "lucide-react";
-import { useEffect as useEffect10, useMemo as useMemo2, useState as useState10 } from "react";
+import { useEffect as useEffect10, useMemo as useMemo2, useState as useState11 } from "react";
 
 // src/components/ui/dialog/index.ts
 import {
@@ -2749,9 +3054,9 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   forwardRef as forwardRef3
 } from "react";
-import { jsx as jsx25 } from "react/jsx-runtime";
+import { jsx as jsx26 } from "react/jsx-runtime";
 var DialogOverlay = forwardRef3(({ className, ...props }, ref) => {
-  return /* @__PURE__ */ jsx25(
+  return /* @__PURE__ */ jsx26(
     DialogPrimitive.Overlay,
     {
       ref,
@@ -2767,12 +3072,12 @@ var DialogOverlay = forwardRef3(({ className, ...props }, ref) => {
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 // src/components/ui/dialog/dialog-content.tsx
-import { jsx as jsx26, jsxs as jsxs19 } from "react/jsx-runtime";
+import { jsx as jsx27, jsxs as jsxs20 } from "react/jsx-runtime";
 var DialogContent = forwardRef4(({ className, ...props }, ref) => {
   const builderThemeRoot = typeof document === "undefined" ? null : document.querySelector('[data-testid="wb-builder-theme-root"]');
-  return /* @__PURE__ */ jsxs19(DialogPrimitive2.Portal, { container: builderThemeRoot ?? void 0, children: [
-    /* @__PURE__ */ jsx26(DialogOverlay, {}),
-    /* @__PURE__ */ jsx26(
+  return /* @__PURE__ */ jsxs20(DialogPrimitive2.Portal, { container: builderThemeRoot ?? void 0, children: [
+    /* @__PURE__ */ jsx27(DialogOverlay, {}),
+    /* @__PURE__ */ jsx27(
       DialogPrimitive2.Content,
       {
         ref,
@@ -2794,9 +3099,9 @@ import * as DialogPrimitive3 from "@radix-ui/react-dialog";
 import {
   forwardRef as forwardRef5
 } from "react";
-import { jsx as jsx27 } from "react/jsx-runtime";
+import { jsx as jsx28 } from "react/jsx-runtime";
 var DialogDescription = forwardRef5(({ className, ...props }, ref) => {
-  return /* @__PURE__ */ jsx27(
+  return /* @__PURE__ */ jsx28(
     DialogPrimitive3.Description,
     {
       ref,
@@ -2812,12 +3117,12 @@ var DialogDescription = forwardRef5(({ className, ...props }, ref) => {
 DialogDescription.displayName = DialogPrimitive3.Description.displayName;
 
 // src/components/ui/dialog/dialog-footer.tsx
-import { jsx as jsx28 } from "react/jsx-runtime";
+import { jsx as jsx29 } from "react/jsx-runtime";
 var DialogFooter = ({
   className,
   ...props
 }) => {
-  return /* @__PURE__ */ jsx28(
+  return /* @__PURE__ */ jsx29(
     "div",
     {
       "data-slot": "dialog-footer",
@@ -2831,12 +3136,12 @@ var DialogFooter = ({
 };
 
 // src/components/ui/dialog/dialog-header.tsx
-import { jsx as jsx29 } from "react/jsx-runtime";
+import { jsx as jsx30 } from "react/jsx-runtime";
 var DialogHeader = ({
   className,
   ...props
 }) => {
-  return /* @__PURE__ */ jsx29(
+  return /* @__PURE__ */ jsx30(
     "div",
     {
       "data-slot": "dialog-header",
@@ -2851,9 +3156,9 @@ import * as DialogPrimitive4 from "@radix-ui/react-dialog";
 import {
   forwardRef as forwardRef6
 } from "react";
-import { jsx as jsx30 } from "react/jsx-runtime";
+import { jsx as jsx31 } from "react/jsx-runtime";
 var DialogTitle = forwardRef6(({ className, ...props }, ref) => {
-  return /* @__PURE__ */ jsx30(
+  return /* @__PURE__ */ jsx31(
     DialogPrimitive4.Title,
     {
       ref,
@@ -2895,7 +3200,7 @@ var translateWebsiteBuilderFieldGroup = (group, translate) => translate(FIELD_GR
 var translateWebsiteBuilderPageGroup = (group, translate) => translate(PAGE_GROUP_KEYS[group] ?? group, group);
 
 // src/studio/editor-dock/editor-page-browser.tsx
-import { Fragment as Fragment3, jsx as jsx31, jsxs as jsxs20 } from "react/jsx-runtime";
+import { Fragment as Fragment3, jsx as jsx32, jsxs as jsxs21 } from "react/jsx-runtime";
 var EditorPageBrowser = ({
   activeMode,
   currentPage,
@@ -2904,12 +3209,12 @@ var EditorPageBrowser = ({
   onCreatePage
 }) => {
   const { translate } = useWebsiteBuilderI18n();
-  const [menuOpen, setMenuOpen] = useState10(false);
-  const [dialogOpen, setDialogOpen] = useState10(false);
-  const [name, setName] = useState10("");
-  const [route, setRoute] = useState10("");
-  const [duplicateCurrent, setDuplicateCurrent] = useState10(false);
-  const [isSubmitting, setIsSubmitting] = useState10(false);
+  const [menuOpen, setMenuOpen] = useState11(false);
+  const [dialogOpen, setDialogOpen] = useState11(false);
+  const [name, setName] = useState11("");
+  const [route, setRoute] = useState11("");
+  const [duplicateCurrent, setDuplicateCurrent] = useState11(false);
+  const [isSubmitting, setIsSubmitting] = useState11(false);
   const groupedPages = useMemo2(() => {
     return pages.reduce(
       (groups, page) => {
@@ -2957,9 +3262,9 @@ var EditorPageBrowser = ({
     }
     window.requestAnimationFrame(() => pageMenu.focusList());
   }, [menuOpen]);
-  return /* @__PURE__ */ jsxs20(Fragment3, { children: [
-    /* @__PURE__ */ jsxs20(Root, { open: menuOpen, onOpenChange: setMenuOpen, modal: false, children: [
-      /* @__PURE__ */ jsx31(Trigger, { asChild: true, children: /* @__PURE__ */ jsxs20(
+  return /* @__PURE__ */ jsxs21(Fragment3, { children: [
+    /* @__PURE__ */ jsxs21(Root, { open: menuOpen, onOpenChange: setMenuOpen, modal: false, children: [
+      /* @__PURE__ */ jsx32(Trigger, { asChild: true, children: /* @__PURE__ */ jsxs21(
         "button",
         {
           type: "button",
@@ -2969,28 +3274,28 @@ var EditorPageBrowser = ({
             compact ? "h-10" : "h-11"
           ),
           children: [
-            /* @__PURE__ */ jsxs20("span", { className: "min-w-0", children: [
-              /* @__PURE__ */ jsxs20("span", { className: "flex items-center gap-2.5", children: [
-                /* @__PURE__ */ jsx31(FolderTree, { className: "h-4 w-4 text-[color:var(--wb-builder-accent)]" }),
-                /* @__PURE__ */ jsx31("span", { className: "truncate text-sm font-semibold", children: currentPage?.name ?? translate(
+            /* @__PURE__ */ jsxs21("span", { className: "min-w-0", children: [
+              /* @__PURE__ */ jsxs21("span", { className: "flex items-center gap-2.5", children: [
+                /* @__PURE__ */ jsx32(FolderTree, { className: "h-4 w-4 text-[color:var(--wb-builder-accent)]" }),
+                /* @__PURE__ */ jsx32("span", { className: "truncate text-sm font-semibold", children: currentPage?.name ?? translate(
                   "websiteBuilder.pageBrowser.groups.pages",
                   "Pages"
                 ) })
               ] }),
-              /* @__PURE__ */ jsx31("span", { className: "mt-0.5 block truncate text-[11px] uppercase tracking-[0.22em] text-[color:var(--wb-builder-text-soft)]", children: currentRouteLabel })
+              /* @__PURE__ */ jsx32("span", { className: "mt-0.5 block truncate text-[11px] uppercase tracking-[0.22em] text-[color:var(--wb-builder-text-soft)]", children: currentRouteLabel })
             ] }),
-            /* @__PURE__ */ jsx31(ChevronDown5, { className: "h-4 w-4 shrink-0 text-[color:var(--wb-builder-text-soft)]" })
+            /* @__PURE__ */ jsx32(ChevronDown5, { className: "h-4 w-4 shrink-0 text-[color:var(--wb-builder-text-soft)]" })
           ]
         }
       ) }),
-      /* @__PURE__ */ jsxs20(DropdownMenuContent, { className: "w-[22rem] p-0", children: [
-        /* @__PURE__ */ jsxs20(
+      /* @__PURE__ */ jsxs21(DropdownMenuContent, { className: "w-[22rem] p-0", children: [
+        /* @__PURE__ */ jsxs21(
           "div",
           {
             className: "border-b px-4 py-4",
             style: { borderColor: "var(--wb-builder-border)" },
             children: [
-              /* @__PURE__ */ jsx31(
+              /* @__PURE__ */ jsx32(
                 "div",
                 {
                   className: "text-[11px] uppercase tracking-[0.28em]",
@@ -3001,7 +3306,7 @@ var EditorPageBrowser = ({
                   )
                 }
               ),
-              /* @__PURE__ */ jsx31(
+              /* @__PURE__ */ jsx32(
                 "div",
                 {
                   className: "mt-2 text-sm leading-6",
@@ -3012,7 +3317,7 @@ var EditorPageBrowser = ({
                   )
                 }
               ),
-              onCreatePage ? /* @__PURE__ */ jsxs20(
+              onCreatePage ? /* @__PURE__ */ jsxs21(
                 "button",
                 {
                   type: "button",
@@ -3029,7 +3334,7 @@ var EditorPageBrowser = ({
                     color: "var(--wb-builder-accent)"
                   },
                   children: [
-                    /* @__PURE__ */ jsx31(FilePlus2, { className: "h-4 w-4" }),
+                    /* @__PURE__ */ jsx32(FilePlus2, { className: "h-4 w-4" }),
                     translate(
                       "websiteBuilder.pageBrowser.newPage",
                       "New Page"
@@ -3040,7 +3345,7 @@ var EditorPageBrowser = ({
             ]
           }
         ),
-        /* @__PURE__ */ jsx31(
+        /* @__PURE__ */ jsx32(
           KeyboardMenuList,
           {
             controller: pageMenu,
@@ -3055,7 +3360,7 @@ var EditorPageBrowser = ({
             className: "max-h-[26rem] space-y-4 overflow-y-auto px-3 py-3",
             renderItem: (page, { isActive, isDisabled, isSelected }) => {
               const routeLabel = page.routePattern ?? page.route;
-              return /* @__PURE__ */ jsxs20(
+              return /* @__PURE__ */ jsxs21(
                 "button",
                 {
                   type: "button",
@@ -3075,8 +3380,8 @@ var EditorPageBrowser = ({
                     color: "var(--wb-builder-text)"
                   },
                   children: [
-                    /* @__PURE__ */ jsxs20("div", { className: "min-w-0", children: [
-                      /* @__PURE__ */ jsx31(
+                    /* @__PURE__ */ jsxs21("div", { className: "min-w-0", children: [
+                      /* @__PURE__ */ jsx32(
                         "div",
                         {
                           className: "truncate text-sm font-semibold",
@@ -3084,7 +3389,7 @@ var EditorPageBrowser = ({
                           children: page.name
                         }
                       ),
-                      /* @__PURE__ */ jsx31(
+                      /* @__PURE__ */ jsx32(
                         "div",
                         {
                           className: "mt-1 truncate font-mono text-[10px] uppercase tracking-[0.22em]",
@@ -3092,7 +3397,7 @@ var EditorPageBrowser = ({
                           children: routeLabel
                         }
                       ),
-                      page.description ? /* @__PURE__ */ jsx31(
+                      page.description ? /* @__PURE__ */ jsx32(
                         "div",
                         {
                           className: "mt-2 text-xs leading-5",
@@ -3101,7 +3406,7 @@ var EditorPageBrowser = ({
                         }
                       ) : null
                     ] }),
-                    /* @__PURE__ */ jsx31(
+                    /* @__PURE__ */ jsx32(
                       "div",
                       {
                         className: "shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -3121,7 +3426,7 @@ var EditorPageBrowser = ({
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsx31(
+    /* @__PURE__ */ jsx32(
       Root2,
       {
         open: dialogOpen,
@@ -3131,14 +3436,14 @@ var EditorPageBrowser = ({
             resetCreateForm();
           }
         },
-        children: /* @__PURE__ */ jsxs20(DialogContent, { "data-testid": "wb-page-browser-create-dialog", children: [
-          /* @__PURE__ */ jsxs20(DialogHeader, { children: [
-            /* @__PURE__ */ jsx31(DialogTitle, { children: "Create Page" }),
-            /* @__PURE__ */ jsx31(DialogDescription, { children: "Add a new static page to the live website and start editing it in the same builder surface." })
+        children: /* @__PURE__ */ jsxs21(DialogContent, { "data-testid": "wb-page-browser-create-dialog", children: [
+          /* @__PURE__ */ jsxs21(DialogHeader, { children: [
+            /* @__PURE__ */ jsx32(DialogTitle, { children: "Create Page" }),
+            /* @__PURE__ */ jsx32(DialogDescription, { children: "Add a new static page to the live website and start editing it in the same builder surface." })
           ] }),
-          /* @__PURE__ */ jsxs20("div", { className: "space-y-4", children: [
-            /* @__PURE__ */ jsxs20("label", { className: "block", children: [
-              /* @__PURE__ */ jsx31(
+          /* @__PURE__ */ jsxs21("div", { className: "space-y-4", children: [
+            /* @__PURE__ */ jsxs21("label", { className: "block", children: [
+              /* @__PURE__ */ jsx32(
                 "div",
                 {
                   className: "mb-2 text-[11px] uppercase tracking-[0.24em]",
@@ -3146,7 +3451,7 @@ var EditorPageBrowser = ({
                   children: "Page Name"
                 }
               ),
-              /* @__PURE__ */ jsx31(
+              /* @__PURE__ */ jsx32(
                 "input",
                 {
                   "data-testid": "wb-page-browser-create-name",
@@ -3162,8 +3467,8 @@ var EditorPageBrowser = ({
                 }
               )
             ] }),
-            /* @__PURE__ */ jsxs20("label", { className: "block", children: [
-              /* @__PURE__ */ jsx31(
+            /* @__PURE__ */ jsxs21("label", { className: "block", children: [
+              /* @__PURE__ */ jsx32(
                 "div",
                 {
                   className: "mb-2 text-[11px] uppercase tracking-[0.24em]",
@@ -3171,7 +3476,7 @@ var EditorPageBrowser = ({
                   children: "Route"
                 }
               ),
-              /* @__PURE__ */ jsx31(
+              /* @__PURE__ */ jsx32(
                 "input",
                 {
                   "data-testid": "wb-page-browser-create-route",
@@ -3187,8 +3492,8 @@ var EditorPageBrowser = ({
                 }
               )
             ] }),
-            canDuplicateCurrent ? /* @__PURE__ */ jsxs20("div", { className: "space-y-2", children: [
-              /* @__PURE__ */ jsx31(
+            canDuplicateCurrent ? /* @__PURE__ */ jsxs21("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx32(
                 "div",
                 {
                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -3196,8 +3501,8 @@ var EditorPageBrowser = ({
                   children: "Starting Point"
                 }
               ),
-              /* @__PURE__ */ jsxs20("div", { className: "grid gap-2 sm:grid-cols-2", children: [
-                /* @__PURE__ */ jsxs20(
+              /* @__PURE__ */ jsxs21("div", { className: "grid gap-2 sm:grid-cols-2", children: [
+                /* @__PURE__ */ jsxs21(
                   "button",
                   {
                     type: "button",
@@ -3215,12 +3520,12 @@ var EditorPageBrowser = ({
                       color: "var(--wb-builder-text-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx31("div", { className: "text-sm font-semibold", children: "Blank page" }),
-                      /* @__PURE__ */ jsx31("div", { className: "mt-1 text-xs leading-5", children: "Start from a clean canvas." })
+                      /* @__PURE__ */ jsx32("div", { className: "text-sm font-semibold", children: "Blank page" }),
+                      /* @__PURE__ */ jsx32("div", { className: "mt-1 text-xs leading-5", children: "Start from a clean canvas." })
                     ]
                   }
                 ),
-                /* @__PURE__ */ jsxs20(
+                /* @__PURE__ */ jsxs21(
                   "button",
                   {
                     type: "button",
@@ -3238,16 +3543,16 @@ var EditorPageBrowser = ({
                       color: "var(--wb-builder-text-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx31("div", { className: "text-sm font-semibold", children: "Duplicate current" }),
-                      /* @__PURE__ */ jsx31("div", { className: "mt-1 text-xs leading-5", children: "Copy the current page layout into the new route." })
+                      /* @__PURE__ */ jsx32("div", { className: "text-sm font-semibold", children: "Duplicate current" }),
+                      /* @__PURE__ */ jsx32("div", { className: "mt-1 text-xs leading-5", children: "Copy the current page layout into the new route." })
                     ]
                   }
                 )
               ] })
             ] }) : null
           ] }),
-          /* @__PURE__ */ jsxs20(DialogFooter, { children: [
-            /* @__PURE__ */ jsx31(
+          /* @__PURE__ */ jsxs21(DialogFooter, { children: [
+            /* @__PURE__ */ jsx32(
               "button",
               {
                 type: "button",
@@ -3261,7 +3566,7 @@ var EditorPageBrowser = ({
                 children: "Cancel"
               }
             ),
-            /* @__PURE__ */ jsx31(
+            /* @__PURE__ */ jsx32(
               "button",
               {
                 type: "button",
@@ -3307,7 +3612,7 @@ import {
   LoaderCircle,
   Save
 } from "lucide-react";
-import { useState as useState11 } from "react";
+import { useState as useState12 } from "react";
 
 // src/components/ui/context-menu/index.ts
 import {
@@ -3321,9 +3626,9 @@ import { Check as Check2 } from "lucide-react";
 import {
   forwardRef as forwardRef7
 } from "react";
-import { jsx as jsx32, jsxs as jsxs21 } from "react/jsx-runtime";
+import { jsx as jsx33, jsxs as jsxs22 } from "react/jsx-runtime";
 var ContextMenuCheckboxItem = forwardRef7(({ className, children, checked, ...props }, ref) => {
-  return /* @__PURE__ */ jsxs21(
+  return /* @__PURE__ */ jsxs22(
     ContextMenuPrimitive.CheckboxItem,
     {
       ref,
@@ -3335,7 +3640,7 @@ var ContextMenuCheckboxItem = forwardRef7(({ className, children, checked, ...pr
       ),
       ...props,
       children: [
-        /* @__PURE__ */ jsx32("span", { className: "absolute left-3 inline-flex h-4 w-4 items-center justify-center", children: /* @__PURE__ */ jsx32(ContextMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx32(
+        /* @__PURE__ */ jsx33("span", { className: "absolute left-3 inline-flex h-4 w-4 items-center justify-center", children: /* @__PURE__ */ jsx33(ContextMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx33(
           Check2,
           {
             className: "h-4 w-4",
@@ -3354,9 +3659,9 @@ import * as ContextMenuPrimitive2 from "@radix-ui/react-context-menu";
 import {
   forwardRef as forwardRef8
 } from "react";
-import { jsx as jsx33 } from "react/jsx-runtime";
+import { jsx as jsx34 } from "react/jsx-runtime";
 var ContextMenuContent = forwardRef8(({ className, ...props }, ref) => {
-  return /* @__PURE__ */ jsx33(ContextMenuPrimitive2.Portal, { children: /* @__PURE__ */ jsx33(
+  return /* @__PURE__ */ jsx34(ContextMenuPrimitive2.Portal, { children: /* @__PURE__ */ jsx34(
     ContextMenuPrimitive2.Content,
     {
       ref,
@@ -3382,9 +3687,9 @@ import * as ContextMenuPrimitive3 from "@radix-ui/react-context-menu";
 import {
   forwardRef as forwardRef9
 } from "react";
-import { jsx as jsx34 } from "react/jsx-runtime";
+import { jsx as jsx35 } from "react/jsx-runtime";
 var ContextMenuItem = forwardRef9(({ className, inset, ...props }, ref) => {
-  return /* @__PURE__ */ jsx34(
+  return /* @__PURE__ */ jsx35(
     ContextMenuPrimitive3.Item,
     {
       ref,
@@ -3405,9 +3710,9 @@ import * as ContextMenuPrimitive4 from "@radix-ui/react-context-menu";
 import {
   forwardRef as forwardRef10
 } from "react";
-import { jsx as jsx35 } from "react/jsx-runtime";
+import { jsx as jsx36 } from "react/jsx-runtime";
 var ContextMenuSeparator = forwardRef10(({ className, ...props }, ref) => {
-  return /* @__PURE__ */ jsx35(
+  return /* @__PURE__ */ jsx36(
     ContextMenuPrimitive4.Separator,
     {
       ref,
@@ -3420,19 +3725,19 @@ var ContextMenuSeparator = forwardRef10(({ className, ...props }, ref) => {
 ContextMenuSeparator.displayName = ContextMenuPrimitive4.Separator.displayName;
 
 // src/studio/editor-dock/editor-reset-dialog.tsx
-import { jsx as jsx36, jsxs as jsxs22 } from "react/jsx-runtime";
+import { jsx as jsx37, jsxs as jsxs23 } from "react/jsx-runtime";
 var EditorResetDialog = ({
   open,
   onOpenChange,
   onConfirm
 }) => {
-  return /* @__PURE__ */ jsx36(Root2, { open, onOpenChange, children: /* @__PURE__ */ jsxs22(DialogContent, { children: [
-    /* @__PURE__ */ jsxs22(DialogHeader, { children: [
-      /* @__PURE__ */ jsx36(DialogTitle, { children: "Discard local draft?" }),
-      /* @__PURE__ */ jsx36(DialogDescription, { children: "This will remove every unsaved local change and restore the last version synced with Laravel." })
+  return /* @__PURE__ */ jsx37(Root2, { open, onOpenChange, children: /* @__PURE__ */ jsxs23(DialogContent, { children: [
+    /* @__PURE__ */ jsxs23(DialogHeader, { children: [
+      /* @__PURE__ */ jsx37(DialogTitle, { children: "Discard local draft?" }),
+      /* @__PURE__ */ jsx37(DialogDescription, { children: "This will remove every unsaved local change and restore the last version synced with Laravel." })
     ] }),
-    /* @__PURE__ */ jsxs22(DialogFooter, { children: [
-      /* @__PURE__ */ jsx36(
+    /* @__PURE__ */ jsxs23(DialogFooter, { children: [
+      /* @__PURE__ */ jsx37(
         "button",
         {
           type: "button",
@@ -3441,7 +3746,7 @@ var EditorResetDialog = ({
           children: "Cancel"
         }
       ),
-      /* @__PURE__ */ jsx36(
+      /* @__PURE__ */ jsx37(
         "button",
         {
           type: "button",
@@ -3490,7 +3795,7 @@ var getSaveButtonMeta = ({
 };
 
 // src/studio/editor-dock/editor-save-button.tsx
-import { Fragment as Fragment4, jsx as jsx37, jsxs as jsxs23 } from "react/jsx-runtime";
+import { Fragment as Fragment4, jsx as jsx38, jsxs as jsxs24 } from "react/jsx-runtime";
 var EditorSaveButton = ({
   activeMode,
   autosaveEnabled,
@@ -3503,16 +3808,16 @@ var EditorSaveButton = ({
   onReset,
   onSave
 }) => {
-  const [resetDialogOpen, setResetDialogOpen] = useState11(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState12(false);
   const meta = getSaveButtonMeta({
     activeMode,
     autosaveEnabled,
     hasUnsavedChanges,
     saveState
   });
-  return /* @__PURE__ */ jsxs23(Fragment4, { children: [
-    /* @__PURE__ */ jsxs23(Root3, { children: [
-      /* @__PURE__ */ jsx37(Trigger3, { asChild: true, children: /* @__PURE__ */ jsxs23(
+  return /* @__PURE__ */ jsxs24(Fragment4, { children: [
+    /* @__PURE__ */ jsxs24(Root3, { children: [
+      /* @__PURE__ */ jsx38(Trigger3, { asChild: true, children: /* @__PURE__ */ jsxs24(
         "button",
         {
           type: "button",
@@ -3522,23 +3827,23 @@ var EditorSaveButton = ({
             meta.className
           ),
           children: [
-            saveState === "saving" ? /* @__PURE__ */ jsx37(LoaderCircle, { className: "h-4 w-4 animate-spin" }) : /* @__PURE__ */ jsx37(Save, { className: "h-4 w-4" }),
-            /* @__PURE__ */ jsx37(
+            saveState === "saving" ? /* @__PURE__ */ jsx38(LoaderCircle, { className: "h-4 w-4 animate-spin" }) : /* @__PURE__ */ jsx38(Save, { className: "h-4 w-4" }),
+            /* @__PURE__ */ jsx38(
               "span",
               {
                 className: clsx11("h-2.5 w-2.5 rounded-full", meta.dotClassName)
               }
             ),
-            /* @__PURE__ */ jsx37("span", { children: meta.label })
+            /* @__PURE__ */ jsx38("span", { children: meta.label })
           ]
         }
       ) }),
-      /* @__PURE__ */ jsxs23(ContextMenuContent, { children: [
-        /* @__PURE__ */ jsxs23(ContextMenuItem, { onSelect: onSave, children: [
-          /* @__PURE__ */ jsx37(Save, { className: "mr-3 h-4 w-4 text-[color:var(--wb-builder-text-soft)]" }),
+      /* @__PURE__ */ jsxs24(ContextMenuContent, { children: [
+        /* @__PURE__ */ jsxs24(ContextMenuItem, { onSelect: onSave, children: [
+          /* @__PURE__ */ jsx38(Save, { className: "mr-3 h-4 w-4 text-[color:var(--wb-builder-text-soft)]" }),
           "Save now"
         ] }),
-        /* @__PURE__ */ jsx37(
+        /* @__PURE__ */ jsx38(
           ContextMenuCheckboxItem,
           {
             checked: autosaveEnabled,
@@ -3546,7 +3851,7 @@ var EditorSaveButton = ({
             children: "Autosave"
           }
         ),
-        /* @__PURE__ */ jsxs23(
+        /* @__PURE__ */ jsxs24(
           ContextMenuItem,
           {
             disabled: !hasUnsavedChanges,
@@ -3554,19 +3859,19 @@ var EditorSaveButton = ({
               setResetDialogOpen(true);
             },
             children: [
-              /* @__PURE__ */ jsx37(History, { className: "mr-3 h-4 w-4 text-[color:var(--wb-builder-text-soft)]" }),
+              /* @__PURE__ */ jsx38(History, { className: "mr-3 h-4 w-4 text-[color:var(--wb-builder-text-soft)]" }),
               "Revert local draft"
             ]
           }
         ),
-        /* @__PURE__ */ jsx37(ContextMenuSeparator, {}),
-        activeMode === "preview" && collapsedBlockCount > 0 ? /* @__PURE__ */ jsxs23(ContextMenuItem, { onSelect: onPreviewCollapsedChange, children: [
-          /* @__PURE__ */ jsx37(ChevronRight, { className: "mr-3 h-4 w-4 rotate-90 text-[color:var(--wb-builder-text-soft)]" }),
+        /* @__PURE__ */ jsx38(ContextMenuSeparator, {}),
+        activeMode === "preview" && collapsedBlockCount > 0 ? /* @__PURE__ */ jsxs24(ContextMenuItem, { onSelect: onPreviewCollapsedChange, children: [
+          /* @__PURE__ */ jsx38(ChevronRight, { className: "mr-3 h-4 w-4 rotate-90 text-[color:var(--wb-builder-text-soft)]" }),
           showCollapsedInPreview ? "Show full layout" : "Show collapsed blocks"
         ] }) : null
       ] })
     ] }),
-    /* @__PURE__ */ jsx37(
+    /* @__PURE__ */ jsx38(
       EditorResetDialog,
       {
         open: resetDialogOpen,
@@ -3581,7 +3886,7 @@ var EditorSaveButton = ({
 };
 
 // src/studio/editor-dock/editor-dock.tsx
-import { Fragment as Fragment5, jsx as jsx38, jsxs as jsxs24 } from "react/jsx-runtime";
+import { Fragment as Fragment5, jsx as jsx39, jsxs as jsxs25 } from "react/jsx-runtime";
 var WEBSITE_BUILDER_EDITOR_DOCK_FALLBACK_HEIGHT = 80;
 var EditorDock = ({
   activeMode,
@@ -3641,7 +3946,7 @@ var EditorDock = ({
     observer.observe(node);
     return () => observer.disconnect();
   }, [onHeightChange]);
-  return /* @__PURE__ */ jsx38(
+  return /* @__PURE__ */ jsx39(
     "header",
     {
       ref: headerRef,
@@ -3654,7 +3959,7 @@ var EditorDock = ({
         borderColor: "var(--wb-builder-border)",
         color: "var(--wb-builder-text)"
       },
-      children: /* @__PURE__ */ jsx38(
+      children: /* @__PURE__ */ jsx39(
         "div",
         {
           className: clsx12(
@@ -3662,7 +3967,7 @@ var EditorDock = ({
             compact ? "gap-2 py-2.5" : "gap-3 py-3"
           ),
           style: { maxWidth: "1720px" },
-          children: /* @__PURE__ */ jsxs24(
+          children: /* @__PURE__ */ jsxs25(
             "div",
             {
               className: clsx12(
@@ -3670,8 +3975,8 @@ var EditorDock = ({
                 canManage ? "xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center" : "lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
               ),
               children: [
-                /* @__PURE__ */ jsx38(EditorDockBrand, { title, compact }),
-                /* @__PURE__ */ jsx38(
+                /* @__PURE__ */ jsx39(EditorDockBrand, { title, compact }),
+                /* @__PURE__ */ jsx39(
                   "div",
                   {
                     className: clsx12(
@@ -3679,8 +3984,8 @@ var EditorDock = ({
                       "flex-wrap lg:flex-nowrap",
                       canManage ? "xl:justify-end" : "lg:justify-end"
                     ),
-                    children: canManage ? /* @__PURE__ */ jsxs24(Fragment5, { children: [
-                      /* @__PURE__ */ jsx38(
+                    children: canManage ? /* @__PURE__ */ jsxs25(Fragment5, { children: [
+                      /* @__PURE__ */ jsx39(
                         EditorPageBrowser,
                         {
                           activeMode,
@@ -3690,7 +3995,7 @@ var EditorDock = ({
                           onCreatePage
                         }
                       ),
-                      /* @__PURE__ */ jsx38(
+                      /* @__PURE__ */ jsx39(
                         EditorLocaleSelect,
                         {
                           label: translate(
@@ -3702,7 +4007,7 @@ var EditorDock = ({
                           onChange: onContentLocaleChange
                         }
                       ),
-                      showInterfaceLocaleControl ? /* @__PURE__ */ jsx38(
+                      showInterfaceLocaleControl ? /* @__PURE__ */ jsx39(
                         EditorLocaleSelect,
                         {
                           label: translate(
@@ -3714,7 +4019,7 @@ var EditorDock = ({
                           onChange: onInterfaceLocaleChange
                         }
                       ) : null,
-                      workspaceControl ? /* @__PURE__ */ jsxs24(
+                      workspaceControl ? /* @__PURE__ */ jsxs25(
                         "button",
                         {
                           type: "button",
@@ -3724,13 +4029,13 @@ var EditorDock = ({
                           "aria-label": workspaceControl.isOpen ? "Hide workspace panel" : "Show workspace panel",
                           "data-testid": "wb-workspace-toggle",
                           children: [
-                            /* @__PURE__ */ jsx38(WorkspaceIcon, { className: "h-4 w-4 text-[color:var(--wb-builder-accent)]" }),
-                            /* @__PURE__ */ jsx38("span", { children: "Workspace" })
+                            /* @__PURE__ */ jsx39(WorkspaceIcon, { className: "h-4 w-4 text-[color:var(--wb-builder-accent)]" }),
+                            /* @__PURE__ */ jsx39("span", { children: "Workspace" })
                           ]
                         }
                       ) : null,
-                      /* @__PURE__ */ jsx38(EditorModeSelect, { value: activeMode, onChange: onModeChange }),
-                      /* @__PURE__ */ jsx38(
+                      /* @__PURE__ */ jsx39(EditorModeSelect, { value: activeMode, onChange: onModeChange }),
+                      /* @__PURE__ */ jsx39(
                         EditorSaveButton,
                         {
                           activeMode,
@@ -3745,12 +4050,12 @@ var EditorDock = ({
                           onSave
                         }
                       ),
-                      /* @__PURE__ */ jsxs24(ToolbarButton, { onClick: onLogout, children: [
-                        /* @__PURE__ */ jsx38(LogOut, { className: "h-4 w-4" }),
+                      /* @__PURE__ */ jsxs25(ToolbarButton, { onClick: onLogout, children: [
+                        /* @__PURE__ */ jsx39(LogOut, { className: "h-4 w-4" }),
                         translate("websiteBuilder.auth.logOut", "Log out")
                       ] })
-                    ] }) : /* @__PURE__ */ jsxs24(ToolbarButton, { onClick: onAuthOpen, children: [
-                      /* @__PURE__ */ jsx38(LogIn, { className: "h-4 w-4" }),
+                    ] }) : /* @__PURE__ */ jsxs25(ToolbarButton, { onClick: onAuthOpen, children: [
+                      /* @__PURE__ */ jsx39(LogIn, { className: "h-4 w-4" }),
                       translate("websiteBuilder.auth.signIn", "Admin sign in")
                     ] })
                   }
@@ -3778,8 +4083,8 @@ import { memo as memo4 } from "react";
 import { useDraggable as useDraggable2 } from "@dnd-kit/core";
 import clsx13 from "clsx";
 import { Boxes } from "lucide-react";
-import { useEffect as useEffect12, useState as useState12 } from "react";
-import { jsx as jsx39, jsxs as jsxs25 } from "react/jsx-runtime";
+import { useEffect as useEffect12, useState as useState13 } from "react";
+import { jsx as jsx40, jsxs as jsxs26 } from "react/jsx-runtime";
 var PaletteCard = ({
   definition,
   isSelected,
@@ -3796,12 +4101,12 @@ var PaletteCard = ({
       definitionKey: definition.key
     }
   });
-  const [hasMounted, setHasMounted] = useState12(false);
+  const [hasMounted, setHasMounted] = useState13(false);
   const Icon = STUDIO_ICONS[definition.icon] ?? Boxes;
   useEffect12(() => {
     setHasMounted(true);
   }, []);
-  return /* @__PURE__ */ jsxs25(
+  return /* @__PURE__ */ jsxs26(
     "button",
     {
       type: "button",
@@ -3822,7 +4127,7 @@ var PaletteCard = ({
         boxShadow: "var(--wb-builder-card-shadow)"
       },
       children: [
-        /* @__PURE__ */ jsx39(
+        /* @__PURE__ */ jsx40(
           "div",
           {
             className: "flex h-12 w-12 shrink-0 items-center justify-center rounded-[20px] border",
@@ -3832,10 +4137,10 @@ var PaletteCard = ({
               color: isSelected ? "var(--wb-builder-accent)" : "var(--wb-builder-text-soft)",
               boxShadow: "var(--wb-builder-card-shadow)"
             },
-            children: /* @__PURE__ */ jsx39(Icon, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx40(Icon, { className: "h-4 w-4" })
           }
         ),
-        /* @__PURE__ */ jsx39("div", { className: "min-w-0 flex-1", children: /* @__PURE__ */ jsx39(
+        /* @__PURE__ */ jsx40("div", { className: "min-w-0 flex-1", children: /* @__PURE__ */ jsx40(
           "div",
           {
             className: "truncate text-[15px] font-semibold",
@@ -3849,7 +4154,7 @@ var PaletteCard = ({
 };
 
 // src/studio/palette-panel/palette-panel.tsx
-import { jsx as jsx40, jsxs as jsxs26 } from "react/jsx-runtime";
+import { jsx as jsx41, jsxs as jsxs27 } from "react/jsx-runtime";
 var PalettePanelComponent = ({
   search,
   onSearchChange,
@@ -3906,15 +4211,15 @@ var PalettePanelComponent = ({
     }
     return left.value.localeCompare(right.value);
   });
-  return /* @__PURE__ */ jsxs26("div", { className: "flex h-full flex-col", children: [
-    /* @__PURE__ */ jsxs26(
+  return /* @__PURE__ */ jsxs27("div", { className: "flex h-full flex-col", children: [
+    /* @__PURE__ */ jsxs27(
       "div",
       {
         className: "border-b px-5 py-5",
         style: { borderColor: "var(--wb-builder-border)" },
         children: [
-          /* @__PURE__ */ jsxs26("div", { className: "flex items-center justify-between gap-3", children: [
-            /* @__PURE__ */ jsx40(
+          /* @__PURE__ */ jsxs27("div", { className: "flex items-center justify-between gap-3", children: [
+            /* @__PURE__ */ jsx41(
               "div",
               {
                 className: "text-[11px] uppercase tracking-[0.28em]",
@@ -3922,7 +4227,7 @@ var PalettePanelComponent = ({
                 children: translate("websiteBuilder.palette.title", "Palette")
               }
             ),
-            onCollapse ? /* @__PURE__ */ jsx40(
+            onCollapse ? /* @__PURE__ */ jsx41(
               "button",
               {
                 type: "button",
@@ -3933,19 +4238,19 @@ var PalettePanelComponent = ({
                   background: "var(--wb-builder-panel-muted)",
                   color: "var(--wb-builder-text-soft)"
                 },
-                children: /* @__PURE__ */ jsx40(ChevronLeft, { className: "h-4 w-4" })
+                children: /* @__PURE__ */ jsx41(ChevronLeft, { className: "h-4 w-4" })
               }
             ) : null
           ] }),
-          /* @__PURE__ */ jsxs26("div", { className: "relative mt-4", children: [
-            /* @__PURE__ */ jsx40(
+          /* @__PURE__ */ jsxs27("div", { className: "relative mt-4", children: [
+            /* @__PURE__ */ jsx41(
               Search,
               {
                 className: "pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2",
                 style: { color: "var(--wb-builder-text-soft)" }
               }
             ),
-            /* @__PURE__ */ jsx40(
+            /* @__PURE__ */ jsx41(
               "input",
               {
                 value: search,
@@ -3962,8 +4267,8 @@ var PalettePanelComponent = ({
                 }
               }
             ),
-            /* @__PURE__ */ jsx40("div", { className: "absolute right-2 top-1/2 -translate-y-1/2", children: /* @__PURE__ */ jsxs26(Root, { modal: false, children: [
-              /* @__PURE__ */ jsx40(Trigger, { asChild: true, children: /* @__PURE__ */ jsx40(
+            /* @__PURE__ */ jsx41("div", { className: "absolute right-2 top-1/2 -translate-y-1/2", children: /* @__PURE__ */ jsxs27(Root, { modal: false, children: [
+              /* @__PURE__ */ jsx41(Trigger, { asChild: true, children: /* @__PURE__ */ jsx41(
                 "button",
                 {
                   type: "button",
@@ -3974,17 +4279,17 @@ var PalettePanelComponent = ({
                     background: paletteFamily !== "all" || palettePackage !== "all" ? "var(--wb-builder-card-selected)" : "var(--wb-builder-panel-muted)",
                     color: "var(--wb-builder-text-soft)"
                   },
-                  children: /* @__PURE__ */ jsx40(SlidersHorizontal, { className: "h-4 w-4" })
+                  children: /* @__PURE__ */ jsx41(SlidersHorizontal, { className: "h-4 w-4" })
                 }
               ) }),
-              /* @__PURE__ */ jsxs26(
+              /* @__PURE__ */ jsxs27(
                 DropdownMenuContent,
                 {
                   align: "end",
                   className: "w-[20rem] space-y-4 p-3",
                   children: [
-                    /* @__PURE__ */ jsxs26("div", { className: "space-y-2", children: [
-                      /* @__PURE__ */ jsx40(
+                    /* @__PURE__ */ jsxs27("div", { className: "space-y-2", children: [
+                      /* @__PURE__ */ jsx41(
                         "div",
                         {
                           className: "text-[11px] font-semibold uppercase tracking-[0.24em]",
@@ -3992,8 +4297,8 @@ var PalettePanelComponent = ({
                           children: "Family"
                         }
                       ),
-                      /* @__PURE__ */ jsxs26("div", { className: "flex flex-wrap gap-2", children: [
-                        /* @__PURE__ */ jsx40(
+                      /* @__PURE__ */ jsxs27("div", { className: "flex flex-wrap gap-2", children: [
+                        /* @__PURE__ */ jsx41(
                           "button",
                           {
                             type: "button",
@@ -4007,7 +4312,7 @@ var PalettePanelComponent = ({
                             children: "All"
                           }
                         ),
-                        familyOptions.map((family) => /* @__PURE__ */ jsx40(
+                        familyOptions.map((family) => /* @__PURE__ */ jsx41(
                           "button",
                           {
                             type: "button",
@@ -4026,8 +4331,8 @@ var PalettePanelComponent = ({
                         ))
                       ] })
                     ] }),
-                    /* @__PURE__ */ jsxs26("div", { className: "space-y-2", children: [
-                      /* @__PURE__ */ jsx40(
+                    /* @__PURE__ */ jsxs27("div", { className: "space-y-2", children: [
+                      /* @__PURE__ */ jsx41(
                         "div",
                         {
                           className: "text-[11px] font-semibold uppercase tracking-[0.24em]",
@@ -4035,8 +4340,8 @@ var PalettePanelComponent = ({
                           children: "Package"
                         }
                       ),
-                      /* @__PURE__ */ jsxs26("div", { className: "flex flex-wrap gap-2", children: [
-                        /* @__PURE__ */ jsx40(
+                      /* @__PURE__ */ jsxs27("div", { className: "flex flex-wrap gap-2", children: [
+                        /* @__PURE__ */ jsx41(
                           "button",
                           {
                             type: "button",
@@ -4050,7 +4355,7 @@ var PalettePanelComponent = ({
                             children: "All"
                           }
                         ),
-                        packageOptions.map((pkg) => /* @__PURE__ */ jsx40(
+                        packageOptions.map((pkg) => /* @__PURE__ */ jsx41(
                           "button",
                           {
                             type: "button",
@@ -4077,8 +4382,8 @@ var PalettePanelComponent = ({
         ]
       }
     ),
-    /* @__PURE__ */ jsx40("div", { className: "flex-1 overflow-y-auto px-4 py-4", children: /* @__PURE__ */ jsx40("div", { className: "space-y-4", children: paletteGroups.map((familyGroup) => /* @__PURE__ */ jsxs26("section", { className: "space-y-3", children: [
-      /* @__PURE__ */ jsxs26(
+    /* @__PURE__ */ jsx41("div", { className: "flex-1 overflow-y-auto px-4 py-4", children: /* @__PURE__ */ jsx41("div", { className: "space-y-4", children: paletteGroups.map((familyGroup) => /* @__PURE__ */ jsxs27("section", { className: "space-y-3", children: [
+      /* @__PURE__ */ jsxs27(
         "button",
         {
           type: "button",
@@ -4090,8 +4395,8 @@ var PalettePanelComponent = ({
             background: "var(--wb-builder-panel-muted)"
           },
           children: [
-            /* @__PURE__ */ jsxs26("div", { className: "flex items-center gap-3", children: [
-              /* @__PURE__ */ jsx40(
+            /* @__PURE__ */ jsxs27("div", { className: "flex items-center gap-3", children: [
+              /* @__PURE__ */ jsx41(
                 "div",
                 {
                   className: "rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.3em]",
@@ -4103,20 +4408,20 @@ var PalettePanelComponent = ({
                   children: familyGroup.family
                 }
               ),
-              /* @__PURE__ */ jsx40("span", { className: "font-mono text-[11px] uppercase tracking-[0.24em] text-[color:var(--wb-builder-text-ghost)]", children: familyGroup.groups.reduce(
+              /* @__PURE__ */ jsx41("span", { className: "font-mono text-[11px] uppercase tracking-[0.24em] text-[color:var(--wb-builder-text-ghost)]", children: familyGroup.groups.reduce(
                 (total, group) => total + group.definitions.length,
                 0
               ) })
             ] }),
-            /* @__PURE__ */ jsx40("div", { style: { color: "var(--wb-builder-text-ghost)" }, children: collapsedFamilies.includes(familyGroup.family) ? /* @__PURE__ */ jsx40(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx40(ChevronDown6, { className: "h-4 w-4" }) })
+            /* @__PURE__ */ jsx41("div", { style: { color: "var(--wb-builder-text-ghost)" }, children: collapsedFamilies.includes(familyGroup.family) ? /* @__PURE__ */ jsx41(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx41(ChevronDown6, { className: "h-4 w-4" }) })
           ]
         }
       ),
       collapsedFamilies.includes(familyGroup.family) ? null : familyGroup.groups.map(({ group, definitions }) => {
         const key = `${familyGroup.family}:${group}`;
         const collapsed = collapsedGroups.includes(key);
-        return /* @__PURE__ */ jsxs26("section", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxs26(
+        return /* @__PURE__ */ jsxs27("section", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxs27(
             "button",
             {
               type: "button",
@@ -4124,8 +4429,8 @@ var PalettePanelComponent = ({
               className: "flex w-full cursor-pointer items-center justify-between gap-3 rounded-[18px] px-2 py-1.5 text-left transition",
               style: { color: "var(--wb-builder-text)" },
               children: [
-                /* @__PURE__ */ jsxs26("div", { className: "flex items-center gap-3", children: [
-                  /* @__PURE__ */ jsx40(
+                /* @__PURE__ */ jsxs27("div", { className: "flex items-center gap-3", children: [
+                  /* @__PURE__ */ jsx41(
                     "div",
                     {
                       className: "text-[11px] uppercase tracking-[0.28em]",
@@ -4136,13 +4441,13 @@ var PalettePanelComponent = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx40("span", { className: "font-mono text-[10px] uppercase tracking-[0.24em]", children: definitions.length })
+                  /* @__PURE__ */ jsx41("span", { className: "font-mono text-[10px] uppercase tracking-[0.24em]", children: definitions.length })
                 ] }),
-                /* @__PURE__ */ jsx40("div", { style: { color: "var(--wb-builder-text-ghost)" }, children: collapsed ? /* @__PURE__ */ jsx40(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx40(ChevronDown6, { className: "h-4 w-4" }) })
+                /* @__PURE__ */ jsx41("div", { style: { color: "var(--wb-builder-text-ghost)" }, children: collapsed ? /* @__PURE__ */ jsx41(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx41(ChevronDown6, { className: "h-4 w-4" }) })
               ]
             }
           ),
-          collapsed ? null : /* @__PURE__ */ jsx40("div", { className: "space-y-2", children: definitions.map((definition) => /* @__PURE__ */ jsx40(
+          collapsed ? null : /* @__PURE__ */ jsx41("div", { className: "space-y-2", children: definitions.map((definition) => /* @__PURE__ */ jsx41(
             PaletteCard,
             {
               definition,
@@ -4161,12 +4466,12 @@ var PalettePanel = memo4(PalettePanelComponent);
 
 // src/studio/palette-panel/palette-overlay-card.tsx
 import { Boxes as Boxes2 } from "lucide-react";
-import { jsx as jsx41, jsxs as jsxs27 } from "react/jsx-runtime";
+import { jsx as jsx42, jsxs as jsxs28 } from "react/jsx-runtime";
 var PaletteOverlayCard = ({
   definition
 }) => {
   const Icon = STUDIO_ICONS[definition.icon] ?? Boxes2;
-  return /* @__PURE__ */ jsx41(
+  return /* @__PURE__ */ jsx42(
     "div",
     {
       className: "w-[13.5rem] min-w-[13.5rem] max-w-[13.5rem] overflow-hidden rounded-[30px] border px-3.5 py-3.5 text-left backdrop-blur-xl",
@@ -4176,8 +4481,8 @@ var PaletteOverlayCard = ({
         color: "var(--wb-builder-text)",
         boxShadow: "var(--wb-builder-shadow)"
       },
-      children: /* @__PURE__ */ jsxs27("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ jsx41(
+      children: /* @__PURE__ */ jsxs28("div", { className: "flex items-center gap-3", children: [
+        /* @__PURE__ */ jsx42(
           "div",
           {
             className: "flex h-11 w-11 shrink-0 items-center justify-center rounded-[20px] border",
@@ -4186,11 +4491,11 @@ var PaletteOverlayCard = ({
               background: "var(--wb-builder-field)",
               color: "var(--wb-builder-accent)"
             },
-            children: /* @__PURE__ */ jsx41(Icon, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx42(Icon, { className: "h-4 w-4" })
           }
         ),
-        /* @__PURE__ */ jsxs27("div", { className: "min-w-0 flex-1", children: [
-          /* @__PURE__ */ jsx41(
+        /* @__PURE__ */ jsxs28("div", { className: "min-w-0 flex-1", children: [
+          /* @__PURE__ */ jsx42(
             "div",
             {
               className: "text-[10px] uppercase tracking-[0.26em]",
@@ -4198,8 +4503,8 @@ var PaletteOverlayCard = ({
               children: definition.category
             }
           ),
-          /* @__PURE__ */ jsx41("div", { className: "mt-1 truncate text-[1.05rem] font-semibold leading-6", children: definition.label }),
-          /* @__PURE__ */ jsx41(
+          /* @__PURE__ */ jsx42("div", { className: "mt-1 truncate text-[1.05rem] font-semibold leading-6", children: definition.label }),
+          /* @__PURE__ */ jsx42(
             "div",
             {
               className: "mt-2 text-[10px] uppercase tracking-[0.26em]",
@@ -4214,7 +4519,7 @@ var PaletteOverlayCard = ({
 };
 
 // src/studio/website-builder-studio/use-studio-browser-preferences.ts
-import { useEffect as useEffect13, useState as useState13 } from "react";
+import { useEffect as useEffect13, useState as useState14 } from "react";
 
 // src/studio/website-builder-studio/studio-browser-storage.ts
 import { openDB } from "idb";
@@ -4386,7 +4691,11 @@ var persistStudioBuilderSurfacePreference = async ({
     serializeLegacy: (persistedMode) => persistedMode
   });
 };
-var isStudioManualSaveShortcut = (event) => (event.code === "KeyS" || event.key.toLowerCase() === "s") && (event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey;
+var isStudioManualSaveShortcut = (event) => {
+  const key = typeof event.key === "string" ? event.key.toLowerCase() : "";
+  const code = typeof event.code === "string" ? event.code : "";
+  return (code === "KeyS" || key === "s") && (event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey;
+};
 var registerStudioManualSaveShortcut = ({
   isAdmin,
   target,
@@ -4414,12 +4723,12 @@ var useStudioBrowserPreferences = ({
   hydrateModePreference,
   onManualSave
 }) => {
-  const [modePreferenceHydrated, setModePreferenceHydrated] = useState13(false);
-  const [builderSurfaceMode, setBuilderSurfaceMode] = useState13("canvas");
+  const [modePreferenceHydrated, setModePreferenceHydrated] = useState14(false);
+  const [builderSurfaceMode, setBuilderSurfaceMode] = useState14("canvas");
   const [
     builderSurfacePreferenceHydrated,
     setBuilderSurfacePreferenceHydrated
-  ] = useState13(false);
+  ] = useState14(false);
   const { modeStorageKey, builderSurfaceStorageKey } = resolveStudioBrowserPreferenceStorageKeys(draftStorageKey);
   useEffect13(() => {
     if (typeof window === "undefined") {
@@ -4690,7 +4999,7 @@ var useStudioDefinitionCatalog = (input) => useMemo3(
 );
 
 // src/studio/website-builder-studio/use-studio-drag-state.ts
-import { useState as useState14 } from "react";
+import { useState as useState15 } from "react";
 var useStudioDragState = ({
   builderEnabled,
   document: document2,
@@ -4702,11 +5011,11 @@ var useStudioDragState = ({
   selectBlock,
   onClearPaletteSelection
 }) => {
-  const [activePaletteKey, setActivePaletteKey] = useState14(null);
-  const [activeBlockId, setActiveBlockId] = useState14(null);
-  const [activeDragKind, setActiveDragKind] = useState14(null);
-  const [dropTarget, setDropTarget] = useState14(null);
-  const [paletteOverlayOrigin, setPaletteOverlayOrigin] = useState14(null);
+  const [activePaletteKey, setActivePaletteKey] = useState15(null);
+  const [activeBlockId, setActiveBlockId] = useState15(null);
+  const [activeDragKind, setActiveDragKind] = useState15(null);
+  const [dropTarget, setDropTarget] = useState15(null);
+  const [paletteOverlayOrigin, setPaletteOverlayOrigin] = useState15(null);
   const activePaletteDefinition = activePaletteKey ? allPaletteBlocks.find(
     (definition) => definition.key === activePaletteKey
   ) ?? null : null;
@@ -4804,7 +5113,7 @@ var useStudioDragState = ({
 };
 
 // src/studio/website-builder-studio/use-studio-persistence.ts
-import { useCallback as useCallback2, useEffect as useEffect14, useMemo as useMemo4, useRef as useRef4, useState as useState15 } from "react";
+import { useCallback as useCallback2, useEffect as useEffect14, useMemo as useMemo4, useRef as useRef4, useState as useState16 } from "react";
 import { toast as toast3 } from "sonner";
 
 // src/studio/website-builder-studio/persistence-helpers.ts
@@ -4975,13 +5284,13 @@ var useStudioPersistence = ({
     }),
     [isAdmin, normalizedCapabilities, normalizedWorkspace]
   );
-  const [autosaveEnabled, setAutosaveEnabled] = useState15(
+  const [autosaveEnabled, setAutosaveEnabled] = useState16(
     getDefaultWebsiteBuilderAutosaveEnabled
   );
-  const [saveState, setSaveState] = useState15("idle");
-  const [hasHydrated, setHasHydrated] = useState15(false);
-  const [lastSavedRevision, setLastSavedRevision] = useState15(0);
-  const [lastSavedState, setLastSavedState] = useState15(() => ({
+  const [saveState, setSaveState] = useState16("idle");
+  const [hasHydrated, setHasHydrated] = useState16(false);
+  const [lastSavedRevision, setLastSavedRevision] = useState16(0);
+  const [lastSavedState, setLastSavedState] = useState16(() => ({
     ...createWebsiteBuilderStudioSavePayload({
       workspace: cloneWebsiteBuilderValue(normalizedWorkspace),
       expectedHeadRevisionId: normalizedWorkspace.headRevisionId ?? null,
@@ -5383,7 +5692,7 @@ var useStudioSiteSettingChange = ({
 import {
   useEffect as useEffect15,
   useRef as useRef5,
-  useState as useState16
+  useState as useState17
 } from "react";
 var DEFAULT_LEFT_WIDTH = 304;
 var DEFAULT_RIGHT_WIDTH = 368;
@@ -5400,12 +5709,12 @@ var isPersistedSidebarState = (value) => {
   return typeof candidate.leftWidth === "number" && typeof candidate.rightWidth === "number" && typeof candidate.leftCollapsed === "boolean" && typeof candidate.rightCollapsed === "boolean";
 };
 var useStudioSidebars = ({ storageKey }) => {
-  const [leftWidth, setLeftWidth] = useState16(DEFAULT_LEFT_WIDTH);
-  const [rightWidth, setRightWidth] = useState16(DEFAULT_RIGHT_WIDTH);
-  const [leftCollapsed, setLeftCollapsed] = useState16(false);
-  const [rightCollapsed, setRightCollapsed] = useState16(false);
-  const [hasHydrated, setHasHydrated] = useState16(false);
-  const [isResizing, setIsResizing] = useState16(false);
+  const [leftWidth, setLeftWidth] = useState17(DEFAULT_LEFT_WIDTH);
+  const [rightWidth, setRightWidth] = useState17(DEFAULT_RIGHT_WIDTH);
+  const [leftCollapsed, setLeftCollapsed] = useState17(false);
+  const [rightCollapsed, setRightCollapsed] = useState17(false);
+  const [hasHydrated, setHasHydrated] = useState17(false);
+  const [isResizing, setIsResizing] = useState17(false);
   const resizeFrameRef = useRef5(null);
   useEffect15(() => {
     let cancelled = false;
@@ -5543,12 +5852,12 @@ import { ChevronDown as ChevronDown7, ChevronUp as ChevronUp2, History as Histor
 
 // src/studio/canvas/canvas-surface-mode-toggle.tsx
 import clsx14 from "clsx";
-import { jsx as jsx42 } from "react/jsx-runtime";
+import { jsx as jsx43 } from "react/jsx-runtime";
 var CanvasSurfaceModeToggle = ({
   value,
   onChange
 }) => {
-  return /* @__PURE__ */ jsx42(
+  return /* @__PURE__ */ jsx43(
     "div",
     {
       className: "pointer-events-auto inline-flex items-center gap-1 rounded-[14px] border p-1",
@@ -5566,7 +5875,7 @@ var CanvasSurfaceModeToggle = ({
           key: "settings",
           label: "Settings"
         }
-      ].map((option) => /* @__PURE__ */ jsx42(
+      ].map((option) => /* @__PURE__ */ jsx43(
         "button",
         {
           type: "button",
@@ -5588,14 +5897,14 @@ var CanvasSurfaceModeToggle = ({
 };
 
 // src/studio/canvas/canvas-top-toolbar.tsx
-import { jsx as jsx43, jsxs as jsxs28 } from "react/jsx-runtime";
+import { jsx as jsx44, jsxs as jsxs29 } from "react/jsx-runtime";
 var CanvasTopToolbarButton = ({
   label,
   onClick,
   disabled = false,
   children
 }) => {
-  return /* @__PURE__ */ jsxs28(
+  return /* @__PURE__ */ jsxs29(
     "button",
     {
       type: "button",
@@ -5611,7 +5920,7 @@ var CanvasTopToolbarButton = ({
       },
       children: [
         children,
-        /* @__PURE__ */ jsx43(
+        /* @__PURE__ */ jsx44(
           "span",
           {
             className: "pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md border px-2 py-1 text-[10px] font-semibold opacity-0 transition duration-150 group-hover:-translate-y-0.5 group-hover:opacity-100",
@@ -5641,7 +5950,7 @@ var CanvasTopToolbar = ({
   onExpandAll
 }) => {
   const { translate } = useWebsiteBuilderI18n();
-  return /* @__PURE__ */ jsx43(
+  return /* @__PURE__ */ jsx44(
     "div",
     {
       className: clsx15(
@@ -5654,7 +5963,7 @@ var CanvasTopToolbar = ({
         right: rightOffset
       },
       "data-testid": "wb-canvas-toolbar",
-      children: /* @__PURE__ */ jsx43(
+      children: /* @__PURE__ */ jsx44(
         "div",
         {
           className: "border-b backdrop-blur-xl",
@@ -5663,15 +5972,15 @@ var CanvasTopToolbar = ({
             background: "linear-gradient(180deg, var(--wb-builder-panel-solid), var(--wb-builder-panel))",
             boxShadow: "var(--wb-builder-shadow)"
           },
-          children: /* @__PURE__ */ jsxs28("div", { className: "flex h-10 items-center justify-between gap-3 px-4 sm:px-6 lg:px-8", children: [
-            /* @__PURE__ */ jsx43(
+          children: /* @__PURE__ */ jsxs29("div", { className: "flex h-10 items-center justify-between gap-3 px-4 sm:px-6 lg:px-8", children: [
+            /* @__PURE__ */ jsx44(
               CanvasSurfaceModeToggle,
               {
                 value: surfaceMode,
                 onChange: onSurfaceModeChange
               }
             ),
-            /* @__PURE__ */ jsxs28(
+            /* @__PURE__ */ jsxs29(
               "div",
               {
                 className: clsx15(
@@ -5684,7 +5993,7 @@ var CanvasTopToolbar = ({
                   boxShadow: "var(--wb-builder-shadow)"
                 },
                 children: [
-                  /* @__PURE__ */ jsx43(
+                  /* @__PURE__ */ jsx44(
                     CanvasTopToolbarButton,
                     {
                       label: translate(
@@ -5693,10 +6002,10 @@ var CanvasTopToolbar = ({
                       ),
                       onClick: onReset,
                       disabled: !canReset || surfaceMode !== "canvas",
-                      children: /* @__PURE__ */ jsx43(History2, { className: clsx15("h-[13px] w-[13px]") })
+                      children: /* @__PURE__ */ jsx44(History2, { className: clsx15("h-[13px] w-[13px]") })
                     }
                   ),
-                  /* @__PURE__ */ jsx43(
+                  /* @__PURE__ */ jsx44(
                     CanvasTopToolbarButton,
                     {
                       label: translate(
@@ -5705,10 +6014,10 @@ var CanvasTopToolbar = ({
                       ),
                       onClick: onCollapseAll,
                       disabled: surfaceMode !== "canvas",
-                      children: /* @__PURE__ */ jsx43(ChevronDown7, { className: "h-[13px] w-[13px]" })
+                      children: /* @__PURE__ */ jsx44(ChevronDown7, { className: "h-[13px] w-[13px]" })
                     }
                   ),
-                  /* @__PURE__ */ jsx43(
+                  /* @__PURE__ */ jsx44(
                     CanvasTopToolbarButton,
                     {
                       label: translate(
@@ -5717,7 +6026,7 @@ var CanvasTopToolbar = ({
                       ),
                       onClick: onExpandAll,
                       disabled: surfaceMode !== "canvas",
-                      children: /* @__PURE__ */ jsx43(ChevronUp2, { className: "h-[13px] w-[13px]" })
+                      children: /* @__PURE__ */ jsx44(ChevronUp2, { className: "h-[13px] w-[13px]" })
                     }
                   )
                 ]
@@ -5732,8 +6041,8 @@ var CanvasTopToolbar = ({
 
 // src/studio/page-settings-surface/page-settings-surface.tsx
 import clsx16 from "clsx";
-import { useEffect as useEffect16, useMemo as useMemo5, useState as useState17 } from "react";
-import { Fragment as Fragment6, jsx as jsx44, jsxs as jsxs29 } from "react/jsx-runtime";
+import { useEffect as useEffect16, useMemo as useMemo5, useState as useState18 } from "react";
+import { Fragment as Fragment6, jsx as jsx45, jsxs as jsxs30 } from "react/jsx-runtime";
 var scopeOrder = [
   "page",
   "template",
@@ -5807,8 +6116,8 @@ var SettingsCard = ({
   title,
   description,
   children
-}) => /* @__PURE__ */ jsxs29("section", { className: "rounded-[28px] border px-5 py-5", style: surfaceCardStyle, children: [
-  /* @__PURE__ */ jsx44(
+}) => /* @__PURE__ */ jsxs30("section", { className: "rounded-[28px] border px-5 py-5", style: surfaceCardStyle, children: [
+  /* @__PURE__ */ jsx45(
     "div",
     {
       className: "text-[11px] uppercase tracking-[0.28em]",
@@ -5816,7 +6125,7 @@ var SettingsCard = ({
       children: eyebrow
     }
   ),
-  /* @__PURE__ */ jsx44(
+  /* @__PURE__ */ jsx45(
     "div",
     {
       className: "mt-4 text-2xl font-semibold tracking-[-0.04em]",
@@ -5824,7 +6133,7 @@ var SettingsCard = ({
       children: title
     }
   ),
-  description ? /* @__PURE__ */ jsx44(
+  description ? /* @__PURE__ */ jsx45(
     "div",
     {
       className: "mt-3 text-sm leading-7",
@@ -5832,7 +6141,7 @@ var SettingsCard = ({
       children: description
     }
   ) : null,
-  children ? /* @__PURE__ */ jsx44("div", { className: "mt-5", children }) : null
+  children ? /* @__PURE__ */ jsx45("div", { className: "mt-5", children }) : null
 ] });
 var PageSettingsSurface = ({
   currentPage,
@@ -5852,8 +6161,8 @@ var PageSettingsSurface = ({
     () => resolveAvailableScopes(pageSettings),
     [pageSettings]
   );
-  const [activeTab, setActiveTab] = useState17("page");
-  const [activeScope, setActiveScope] = useState17(availableScopes[0] ?? "page");
+  const [activeTab, setActiveTab] = useState18("page");
+  const [activeScope, setActiveScope] = useState18(availableScopes[0] ?? "page");
   const siteSubtabs = useMemo5(
     () => [
       { key: "design", label: "Design" },
@@ -5866,7 +6175,7 @@ var PageSettingsSurface = ({
     ],
     [siteSettingsSubtabs]
   );
-  const [activeSiteTab, setActiveSiteTab] = useState17(siteSubtabs[0]?.key ?? "design");
+  const [activeSiteTab, setActiveSiteTab] = useState18(siteSubtabs[0]?.key ?? "design");
   useEffect16(() => {
     if (availableScopes.length === 0) {
       setActiveTab("site");
@@ -5907,15 +6216,15 @@ var PageSettingsSurface = ({
     }
     const scopeSettings2 = typeof site.settings[panel.key] === "object" && site.settings[panel.key] !== null ? site.settings[panel.key] : {};
     const PanelComponent = panel.component;
-    return /* @__PURE__ */ jsxs29(
+    return /* @__PURE__ */ jsxs30(
       "section",
       {
         className: "rounded-[28px] border px-5 py-5",
         style: surfaceCardStyle,
         "data-testid": `wb-site-settings-panel-${panel.key}${viewMode ? `-${viewMode}` : ""}`,
         children: [
-          /* @__PURE__ */ jsxs29("div", { className: "mb-4", children: [
-            /* @__PURE__ */ jsx44(
+          /* @__PURE__ */ jsxs30("div", { className: "mb-4", children: [
+            /* @__PURE__ */ jsx45(
               "div",
               {
                 className: "text-[11px] uppercase tracking-[0.28em]",
@@ -5923,7 +6232,7 @@ var PageSettingsSurface = ({
                 children: panel.label
               }
             ),
-            panel.description ? /* @__PURE__ */ jsx44(
+            panel.description ? /* @__PURE__ */ jsx45(
               "div",
               {
                 className: "mt-2 text-sm leading-6",
@@ -5932,7 +6241,7 @@ var PageSettingsSurface = ({
               }
             ) : null
           ] }),
-          /* @__PURE__ */ jsx44(
+          /* @__PURE__ */ jsx45(
             PanelComponent,
             {
               currentPage,
@@ -5950,12 +6259,12 @@ var PageSettingsSurface = ({
       `${panel.key}:${viewMode ?? "default"}`
     );
   };
-  return /* @__PURE__ */ jsx44(
+  return /* @__PURE__ */ jsx45(
     "section",
     {
       className: "mx-auto w-full max-w-[1240px] px-1 pb-10",
       "data-testid": "wb-page-settings-surface",
-      children: /* @__PURE__ */ jsx44(
+      children: /* @__PURE__ */ jsx45(
         "div",
         {
           className: "rounded-[34px] border p-5 sm:p-6",
@@ -5966,10 +6275,10 @@ var PageSettingsSurface = ({
             color: "var(--wb-builder-text)"
           },
           "data-testid": "wb-builder-settings-shell",
-          children: /* @__PURE__ */ jsxs29("div", { className: "flex flex-col gap-6", children: [
-            /* @__PURE__ */ jsxs29("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
-              /* @__PURE__ */ jsxs29("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx44(
+          children: /* @__PURE__ */ jsxs30("div", { className: "flex flex-col gap-6", children: [
+            /* @__PURE__ */ jsxs30("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
+              /* @__PURE__ */ jsxs30("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx45(
                   "div",
                   {
                     className: "text-[11px] uppercase tracking-[0.3em]",
@@ -5977,7 +6286,7 @@ var PageSettingsSurface = ({
                     children: "Settings mode"
                   }
                 ),
-                /* @__PURE__ */ jsx44(
+                /* @__PURE__ */ jsx45(
                   "div",
                   {
                     className: "mt-3 text-2xl font-semibold tracking-[-0.04em] sm:text-3xl",
@@ -5985,7 +6294,7 @@ var PageSettingsSurface = ({
                     children: "Website settings"
                   }
                 ),
-                /* @__PURE__ */ jsx44(
+                /* @__PURE__ */ jsx45(
                   "div",
                   {
                     className: "mt-2 max-w-3xl text-sm leading-7",
@@ -5994,7 +6303,7 @@ var PageSettingsSurface = ({
                   }
                 )
               ] }),
-              /* @__PURE__ */ jsx44(
+              /* @__PURE__ */ jsx45(
                 "div",
                 {
                   className: "inline-flex w-full max-w-full flex-wrap rounded-full border p-1 sm:w-auto",
@@ -6013,7 +6322,7 @@ var PageSettingsSurface = ({
                       label: "Site",
                       disabled: false
                     }
-                  ].map((tab) => /* @__PURE__ */ jsx44(
+                  ].map((tab) => /* @__PURE__ */ jsx45(
                     "button",
                     {
                       type: "button",
@@ -6034,8 +6343,8 @@ var PageSettingsSurface = ({
                 }
               )
             ] }),
-            activeTab === "page" && availableScopes.length > 0 ? /* @__PURE__ */ jsxs29(Fragment6, { children: [
-              /* @__PURE__ */ jsx44(
+            activeTab === "page" && availableScopes.length > 0 ? /* @__PURE__ */ jsxs30(Fragment6, { children: [
+              /* @__PURE__ */ jsx45(
                 "div",
                 {
                   className: "inline-flex w-full max-w-full flex-wrap rounded-full border p-1 sm:w-auto",
@@ -6043,7 +6352,7 @@ var PageSettingsSurface = ({
                     borderColor: "var(--wb-builder-border)",
                     background: "var(--wb-builder-field)"
                   },
-                  children: availableScopes.map((scope) => /* @__PURE__ */ jsx44(
+                  children: availableScopes.map((scope) => /* @__PURE__ */ jsx45(
                     "button",
                     {
                       type: "button",
@@ -6062,14 +6371,14 @@ var PageSettingsSurface = ({
                   ))
                 }
               ),
-              /* @__PURE__ */ jsx44(
+              /* @__PURE__ */ jsx45(
                 SettingsCard,
                 {
                   eyebrow: scopeMeta[activeScope].eyebrow,
                   title: scopeTitle,
                   description: scopeMeta[activeScope].description,
-                  children: /* @__PURE__ */ jsxs29("div", { className: "flex flex-wrap items-center gap-2", children: [
-                    /* @__PURE__ */ jsx44(
+                  children: /* @__PURE__ */ jsxs30("div", { className: "flex flex-wrap items-center gap-2", children: [
+                    /* @__PURE__ */ jsx45(
                       "div",
                       {
                         className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6077,7 +6386,7 @@ var PageSettingsSurface = ({
                         children: scopeMeta[activeScope].label
                       }
                     ),
-                    primaryRoute ? /* @__PURE__ */ jsx44(
+                    primaryRoute ? /* @__PURE__ */ jsx45(
                       "div",
                       {
                         className: "rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -6085,7 +6394,7 @@ var PageSettingsSurface = ({
                         children: primaryRoute
                       }
                     ) : null,
-                    activeScope === "template" && currentPage?.isDynamic ? /* @__PURE__ */ jsx44(
+                    activeScope === "template" && currentPage?.isDynamic ? /* @__PURE__ */ jsx45(
                       "div",
                       {
                         className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6096,13 +6405,13 @@ var PageSettingsSurface = ({
                   ] })
                 }
               ),
-              /* @__PURE__ */ jsxs29(
+              /* @__PURE__ */ jsxs30(
                 "section",
                 {
                   className: "rounded-[28px] border px-5 py-5",
                   style: surfaceCardStyle,
                   children: [
-                    /* @__PURE__ */ jsx44(
+                    /* @__PURE__ */ jsx45(
                       "div",
                       {
                         className: "mb-4 text-[11px] uppercase tracking-[0.28em]",
@@ -6110,7 +6419,7 @@ var PageSettingsSurface = ({
                         children: "Basics"
                       }
                     ),
-                    activeScope === "page" ? /* @__PURE__ */ jsx44(
+                    activeScope === "page" ? /* @__PURE__ */ jsx45(
                       WebsiteBuilderFieldEditorList,
                       {
                         fields: staticPageFields,
@@ -6120,8 +6429,8 @@ var PageSettingsSurface = ({
                         onFocus: (path) => onPageSettingFocus(`${activeScope}.${path}`)
                       }
                     ) : null,
-                    activeScope === "template" ? /* @__PURE__ */ jsxs29("div", { className: "space-y-4", children: [
-                      /* @__PURE__ */ jsx44(
+                    activeScope === "template" ? /* @__PURE__ */ jsxs30("div", { className: "space-y-4", children: [
+                      /* @__PURE__ */ jsx45(
                         "div",
                         {
                           className: "rounded-2xl border px-4 py-3 text-sm leading-6",
@@ -6129,14 +6438,14 @@ var PageSettingsSurface = ({
                           children: "Template structure stays shared here. The current route below is the live record you are previewing while editing that shared template."
                         }
                       ),
-                      /* @__PURE__ */ jsxs29("div", { className: "grid gap-3 md:grid-cols-2", children: [
-                        /* @__PURE__ */ jsxs29(
+                      /* @__PURE__ */ jsxs30("div", { className: "grid gap-3 md:grid-cols-2", children: [
+                        /* @__PURE__ */ jsxs30(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
                             style: surfaceCardStyle,
                             children: [
-                              /* @__PURE__ */ jsx44(
+                              /* @__PURE__ */ jsx45(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -6144,7 +6453,7 @@ var PageSettingsSurface = ({
                                   children: "Name"
                                 }
                               ),
-                              /* @__PURE__ */ jsx44(
+                              /* @__PURE__ */ jsx45(
                                 "div",
                                 {
                                   className: "mt-2 text-sm font-semibold",
@@ -6155,13 +6464,13 @@ var PageSettingsSurface = ({
                             ]
                           }
                         ),
-                        /* @__PURE__ */ jsxs29(
+                        /* @__PURE__ */ jsxs30(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
                             style: surfaceCardStyle,
                             children: [
-                              /* @__PURE__ */ jsx44(
+                              /* @__PURE__ */ jsx45(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -6169,7 +6478,7 @@ var PageSettingsSurface = ({
                                   children: "Route pattern"
                                 }
                               ),
-                              /* @__PURE__ */ jsx44(
+                              /* @__PURE__ */ jsx45(
                                 "div",
                                 {
                                   className: "mt-2 font-mono text-sm",
@@ -6180,13 +6489,13 @@ var PageSettingsSurface = ({
                             ]
                           }
                         ),
-                        /* @__PURE__ */ jsxs29(
+                        /* @__PURE__ */ jsxs30(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3 md:col-span-2",
                             style: surfaceCardStyle,
                             children: [
-                              /* @__PURE__ */ jsx44(
+                              /* @__PURE__ */ jsx45(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -6194,7 +6503,7 @@ var PageSettingsSurface = ({
                                   children: "Current route"
                                 }
                               ),
-                              /* @__PURE__ */ jsx44(
+                              /* @__PURE__ */ jsx45(
                                 "div",
                                 {
                                   className: "mt-2 font-mono text-sm",
@@ -6207,8 +6516,8 @@ var PageSettingsSurface = ({
                         )
                       ] })
                     ] }) : null,
-                    activeScope === "record" ? /* @__PURE__ */ jsxs29("div", { className: "space-y-4", children: [
-                      /* @__PURE__ */ jsx44(
+                    activeScope === "record" ? /* @__PURE__ */ jsxs30("div", { className: "space-y-4", children: [
+                      /* @__PURE__ */ jsx45(
                         "div",
                         {
                           className: "rounded-2xl border px-4 py-3 text-sm leading-6",
@@ -6216,14 +6525,14 @@ var PageSettingsSurface = ({
                           children: "Record settings affect only the live entity behind the current route. Shared builder structure remains owned by the template scope."
                         }
                       ),
-                      /* @__PURE__ */ jsxs29("div", { className: "grid gap-3 md:grid-cols-2", children: [
-                        /* @__PURE__ */ jsxs29(
+                      /* @__PURE__ */ jsxs30("div", { className: "grid gap-3 md:grid-cols-2", children: [
+                        /* @__PURE__ */ jsxs30(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
                             style: surfaceCardStyle,
                             children: [
-                              /* @__PURE__ */ jsx44(
+                              /* @__PURE__ */ jsx45(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -6231,7 +6540,7 @@ var PageSettingsSurface = ({
                                   children: "Current route"
                                 }
                               ),
-                              /* @__PURE__ */ jsx44(
+                              /* @__PURE__ */ jsx45(
                                 "div",
                                 {
                                   className: "mt-2 font-mono text-sm",
@@ -6242,13 +6551,13 @@ var PageSettingsSurface = ({
                             ]
                           }
                         ),
-                        /* @__PURE__ */ jsxs29(
+                        /* @__PURE__ */ jsxs30(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
                             style: surfaceCardStyle,
                             children: [
-                              /* @__PURE__ */ jsx44(
+                              /* @__PURE__ */ jsx45(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -6256,7 +6565,7 @@ var PageSettingsSurface = ({
                                   children: "Record key"
                                 }
                               ),
-                              /* @__PURE__ */ jsx44(
+                              /* @__PURE__ */ jsx45(
                                 "div",
                                 {
                                   className: "mt-2 text-sm font-semibold",
@@ -6274,14 +6583,14 @@ var PageSettingsSurface = ({
               ),
               scopedPanels.map((panel) => {
                 const PanelComponent = panel.component;
-                return /* @__PURE__ */ jsxs29(
+                return /* @__PURE__ */ jsxs30(
                   "section",
                   {
                     className: "rounded-[28px] border px-5 py-5",
                     style: surfaceCardStyle,
                     children: [
-                      /* @__PURE__ */ jsxs29("div", { className: "mb-4", children: [
-                        /* @__PURE__ */ jsx44(
+                      /* @__PURE__ */ jsxs30("div", { className: "mb-4", children: [
+                        /* @__PURE__ */ jsx45(
                           "div",
                           {
                             className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6289,7 +6598,7 @@ var PageSettingsSurface = ({
                             children: panel.label
                           }
                         ),
-                        panel.description ? /* @__PURE__ */ jsx44(
+                        panel.description ? /* @__PURE__ */ jsx45(
                           "div",
                           {
                             className: "mt-2 text-sm leading-6",
@@ -6298,7 +6607,7 @@ var PageSettingsSurface = ({
                           }
                         ) : null
                       ] }),
-                      /* @__PURE__ */ jsx44(
+                      /* @__PURE__ */ jsx45(
                         PanelComponent,
                         {
                           scope: activeScope,
@@ -6316,15 +6625,15 @@ var PageSettingsSurface = ({
                 );
               })
             ] }) : null,
-            activeTab === "site" ? /* @__PURE__ */ jsxs29(Fragment6, { children: [
-              /* @__PURE__ */ jsx44(
+            activeTab === "site" ? /* @__PURE__ */ jsxs30(Fragment6, { children: [
+              /* @__PURE__ */ jsx45(
                 SettingsCard,
                 {
                   eyebrow: "Site settings",
                   title: "Shared design system",
                   description: sitePanelDescription,
-                  children: /* @__PURE__ */ jsxs29("div", { className: "flex flex-wrap items-center gap-2", children: [
-                    /* @__PURE__ */ jsxs29(
+                  children: /* @__PURE__ */ jsxs30("div", { className: "flex flex-wrap items-center gap-2", children: [
+                    /* @__PURE__ */ jsxs30(
                       "div",
                       {
                         className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6335,7 +6644,7 @@ var PageSettingsSurface = ({
                         ]
                       }
                     ),
-                    Object.values(site.regions).map((region) => /* @__PURE__ */ jsx44(
+                    Object.values(site.regions).map((region) => /* @__PURE__ */ jsx45(
                       "div",
                       {
                         className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6347,7 +6656,7 @@ var PageSettingsSurface = ({
                   ] })
                 }
               ),
-              /* @__PURE__ */ jsx44(
+              /* @__PURE__ */ jsx45(
                 "div",
                 {
                   className: "inline-flex w-full max-w-full flex-wrap rounded-full border p-1 sm:w-auto",
@@ -6356,7 +6665,7 @@ var PageSettingsSurface = ({
                     background: "var(--wb-builder-field)"
                   },
                   "data-testid": "wb-site-settings-subtabs",
-                  children: siteSubtabs.map((tab) => /* @__PURE__ */ jsx44(
+                  children: siteSubtabs.map((tab) => /* @__PURE__ */ jsx45(
                     "button",
                     {
                       type: "button",
@@ -6375,14 +6684,14 @@ var PageSettingsSurface = ({
               ),
               activeSiteTab === "design" ? renderSitePanel(siteDesignPanel, "curated") : null,
               activeSiteTab === "advanced-design" ? renderSitePanel(siteDesignPanel, "advanced") : null,
-              activeSiteTab === "locales" ? siteLocalesPanel ? renderSitePanel(siteLocalesPanel) : remainingSitePanels.length > 0 ? remainingSitePanels.map((panel) => renderSitePanel(panel)) : /* @__PURE__ */ jsxs29(
+              activeSiteTab === "locales" ? siteLocalesPanel ? renderSitePanel(siteLocalesPanel) : remainingSitePanels.length > 0 ? remainingSitePanels.map((panel) => renderSitePanel(panel)) : /* @__PURE__ */ jsxs30(
                 "section",
                 {
                   className: "rounded-[28px] border px-5 py-5",
                   style: surfaceCardStyle,
                   "data-testid": "wb-site-settings-panel-locales-empty",
                   children: [
-                    /* @__PURE__ */ jsx44(
+                    /* @__PURE__ */ jsx45(
                       "div",
                       {
                         className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6390,7 +6699,7 @@ var PageSettingsSurface = ({
                         children: "Locales"
                       }
                     ),
-                    /* @__PURE__ */ jsx44(
+                    /* @__PURE__ */ jsx45(
                       "div",
                       {
                         className: "mt-3 text-sm leading-6",
@@ -6401,15 +6710,15 @@ var PageSettingsSurface = ({
                   ]
                 }
               ) : null,
-              siteWorkspaceSubtab ? /* @__PURE__ */ jsxs29(
+              siteWorkspaceSubtab ? /* @__PURE__ */ jsxs30(
                 "section",
                 {
                   className: "rounded-[28px] border px-5 py-5",
                   style: surfaceCardStyle,
                   "data-testid": `wb-site-settings-panel-${siteWorkspaceSubtab.key}`,
                   children: [
-                    /* @__PURE__ */ jsxs29("div", { className: "mb-4", children: [
-                      /* @__PURE__ */ jsx44(
+                    /* @__PURE__ */ jsxs30("div", { className: "mb-4", children: [
+                      /* @__PURE__ */ jsx45(
                         "div",
                         {
                           className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6417,7 +6726,7 @@ var PageSettingsSurface = ({
                           children: siteWorkspaceSubtab.label
                         }
                       ),
-                      siteWorkspaceSubtab.description ? /* @__PURE__ */ jsx44(
+                      siteWorkspaceSubtab.description ? /* @__PURE__ */ jsx45(
                         "div",
                         {
                           className: "mt-2 text-sm leading-6",
@@ -6426,7 +6735,7 @@ var PageSettingsSurface = ({
                         }
                       ) : null
                     ] }),
-                    /* @__PURE__ */ jsx44(siteWorkspaceSubtab.component, {})
+                    /* @__PURE__ */ jsx45(siteWorkspaceSubtab.component, {})
                   ]
                 }
               ) : null
@@ -6441,8 +6750,8 @@ var PageSettingsSurface = ({
 // src/studio/inspector-panel/inspector-panel.tsx
 import clsx17 from "clsx";
 import { ChevronDown as ChevronDown8, ChevronRight as ChevronRight3 } from "lucide-react";
-import { memo as memo5, useEffect as useEffect17, useMemo as useMemo6, useState as useState18 } from "react";
-import { Fragment as Fragment7, jsx as jsx45, jsxs as jsxs30 } from "react/jsx-runtime";
+import { memo as memo5, useEffect as useEffect17, useMemo as useMemo6, useState as useState19 } from "react";
+import { Fragment as Fragment7, jsx as jsx46, jsxs as jsxs31 } from "react/jsx-runtime";
 var readString2 = (settings, key) => {
   const value = settings[key];
   return typeof value === "string" && value.trim() !== "" ? value : void 0;
@@ -6484,9 +6793,9 @@ var InspectorPanelComponent = ({
     (state) => state.updateFieldValue
   );
   const selectField = useWebsiteBuilderStore((state) => state.selectField);
-  const [activeTab, setActiveTab] = useState18("block");
-  const [showBlockJson, setShowBlockJson] = useState18(false);
-  const [showDocumentJson, setShowDocumentJson] = useState18(false);
+  const [activeTab, setActiveTab] = useState19("block");
+  const [showBlockJson, setShowBlockJson] = useState19(false);
+  const [showDocumentJson, setShowDocumentJson] = useState19(false);
   const hasBlockContext = selectedBlock !== null || inspectorDefinition !== null;
   const pageTabLabel = currentPage?.isDynamic ? translate("websiteBuilder.studio.inspector.templateTab", "Template") : translate("websiteBuilder.studio.inspector.pageTab", "Page");
   const templateSettings = typeof pageSettings.template === "object" && pageSettings.template !== null ? pageSettings.template : {};
@@ -6522,7 +6831,7 @@ var InspectorPanelComponent = ({
       setActiveTab("block");
     }
   }, [selectedBlock]);
-  return /* @__PURE__ */ jsxs30(
+  return /* @__PURE__ */ jsxs31(
     "div",
     {
       className: "flex h-full flex-col",
@@ -6531,7 +6840,7 @@ var InspectorPanelComponent = ({
         color: "var(--wb-builder-text)"
       },
       children: [
-        /* @__PURE__ */ jsx45(
+        /* @__PURE__ */ jsx46(
           "div",
           {
             className: "border-b px-5 py-5",
@@ -6539,9 +6848,9 @@ var InspectorPanelComponent = ({
               borderColor: "var(--wb-builder-border)",
               background: "var(--wb-builder-shell-strong)"
             },
-            children: /* @__PURE__ */ jsxs30("div", { className: "flex items-center justify-between gap-3", children: [
-              /* @__PURE__ */ jsxs30("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx45(
+            children: /* @__PURE__ */ jsxs31("div", { className: "flex items-center justify-between gap-3", children: [
+              /* @__PURE__ */ jsxs31("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx46(
                   "div",
                   {
                     className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6549,7 +6858,7 @@ var InspectorPanelComponent = ({
                     children: translate("websiteBuilder.studio.inspector.title", "Inspector")
                   }
                 ),
-                /* @__PURE__ */ jsxs30(
+                /* @__PURE__ */ jsxs31(
                   "div",
                   {
                     className: "mt-4 inline-flex rounded-full border p-1",
@@ -6558,7 +6867,7 @@ var InspectorPanelComponent = ({
                       background: "var(--wb-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsx46(
                         "button",
                         {
                           type: "button",
@@ -6573,7 +6882,7 @@ var InspectorPanelComponent = ({
                           children: translate("websiteBuilder.studio.inspector.blockTab", "Block")
                         }
                       ),
-                      /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsx46(
                         "button",
                         {
                           type: "button",
@@ -6592,7 +6901,7 @@ var InspectorPanelComponent = ({
                   }
                 )
               ] }),
-              onCollapse ? /* @__PURE__ */ jsx45(
+              onCollapse ? /* @__PURE__ */ jsx46(
                 "button",
                 {
                   type: "button",
@@ -6603,20 +6912,20 @@ var InspectorPanelComponent = ({
                     background: "var(--wb-builder-panel-muted)",
                     color: "var(--wb-builder-text-soft)"
                   },
-                  children: /* @__PURE__ */ jsx45(ChevronRight3, { className: "h-4 w-4" })
+                  children: /* @__PURE__ */ jsx46(ChevronRight3, { className: "h-4 w-4" })
                 }
               ) : null
             ] })
           }
         ),
-        /* @__PURE__ */ jsxs30(
+        /* @__PURE__ */ jsxs31(
           "div",
           {
             className: "flex-1 space-y-5 overflow-y-auto px-4 py-4",
             style: { background: "var(--wb-builder-shell-muted)" },
             children: [
-              activeTab === "block" && !selectedBlock && inspectorDefinition ? /* @__PURE__ */ jsxs30(Fragment7, { children: [
-                /* @__PURE__ */ jsxs30(
+              activeTab === "block" && !selectedBlock && inspectorDefinition ? /* @__PURE__ */ jsxs31(Fragment7, { children: [
+                /* @__PURE__ */ jsxs31(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6625,7 +6934,7 @@ var InspectorPanelComponent = ({
                       background: "var(--wb-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsx46(
                         "div",
                         {
                           className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6633,7 +6942,7 @@ var InspectorPanelComponent = ({
                           children: "Palette block"
                         }
                       ),
-                      /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsx46(
                         "div",
                         {
                           className: "mt-3 text-lg font-semibold",
@@ -6641,8 +6950,8 @@ var InspectorPanelComponent = ({
                           children: inspectorDefinition.label
                         }
                       ),
-                      /* @__PURE__ */ jsxs30("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
-                        /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsxs31("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
+                        /* @__PURE__ */ jsx46(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -6654,7 +6963,7 @@ var InspectorPanelComponent = ({
                             children: inspectorDefinition.module
                           }
                         ),
-                        /* @__PURE__ */ jsx45(
+                        /* @__PURE__ */ jsx46(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6669,7 +6978,7 @@ var InspectorPanelComponent = ({
                             )
                           }
                         ),
-                        /* @__PURE__ */ jsxs30(
+                        /* @__PURE__ */ jsxs31(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6685,7 +6994,7 @@ var InspectorPanelComponent = ({
                           }
                         )
                       ] }),
-                      /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsx46(
                         "div",
                         {
                           className: "mt-4 text-sm leading-6",
@@ -6696,7 +7005,7 @@ var InspectorPanelComponent = ({
                     ]
                   }
                 ),
-                Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsxs30(
+                Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsxs31(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6705,8 +7014,8 @@ var InspectorPanelComponent = ({
                       background: "var(--wb-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsxs30("div", { className: "mb-4 flex items-center justify-between gap-3", children: [
-                        /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsxs31("div", { className: "mb-4 flex items-center justify-between gap-3", children: [
+                        /* @__PURE__ */ jsx46(
                           "div",
                           {
                             className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6717,7 +7026,7 @@ var InspectorPanelComponent = ({
                             )
                           }
                         ),
-                        /* @__PURE__ */ jsx45(
+                        /* @__PURE__ */ jsx46(
                           "div",
                           {
                             className: "font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -6726,7 +7035,7 @@ var InspectorPanelComponent = ({
                           }
                         )
                       ] }),
-                      /* @__PURE__ */ jsx45("div", { className: "space-y-3", children: fields.map((field) => /* @__PURE__ */ jsxs30(
+                      /* @__PURE__ */ jsx46("div", { className: "space-y-3", children: fields.map((field) => /* @__PURE__ */ jsxs31(
                         "div",
                         {
                           className: "rounded-2xl border px-4 py-3",
@@ -6735,8 +7044,8 @@ var InspectorPanelComponent = ({
                             background: "var(--wb-builder-field)"
                           },
                           children: [
-                            /* @__PURE__ */ jsxs30("div", { className: "flex items-center justify-between gap-3", children: [
-                              /* @__PURE__ */ jsx45(
+                            /* @__PURE__ */ jsxs31("div", { className: "flex items-center justify-between gap-3", children: [
+                              /* @__PURE__ */ jsx46(
                                 "div",
                                 {
                                   className: "text-sm font-semibold",
@@ -6744,7 +7053,7 @@ var InspectorPanelComponent = ({
                                   children: field.label
                                 }
                               ),
-                              /* @__PURE__ */ jsx45(
+                              /* @__PURE__ */ jsx46(
                                 "div",
                                 {
                                   className: "rounded-full border px-2 py-1 text-[10px] uppercase tracking-[0.22em]",
@@ -6756,7 +7065,7 @@ var InspectorPanelComponent = ({
                                 }
                               )
                             ] }),
-                            /* @__PURE__ */ jsx45(
+                            /* @__PURE__ */ jsx46(
                               "div",
                               {
                                 className: "mt-2 font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -6764,7 +7073,7 @@ var InspectorPanelComponent = ({
                                 children: field.path
                               }
                             ),
-                            field.description ? /* @__PURE__ */ jsx45(
+                            field.description ? /* @__PURE__ */ jsx46(
                               "div",
                               {
                                 className: "mt-2 text-xs leading-5",
@@ -6781,8 +7090,8 @@ var InspectorPanelComponent = ({
                   groupKey
                 ))
               ] }) : null,
-              activeTab === "block" && selectedBlock ? /* @__PURE__ */ jsxs30(Fragment7, { children: [
-                /* @__PURE__ */ jsxs30(
+              activeTab === "block" && selectedBlock ? /* @__PURE__ */ jsxs31(Fragment7, { children: [
+                /* @__PURE__ */ jsxs31(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6791,7 +7100,7 @@ var InspectorPanelComponent = ({
                       background: "var(--wb-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsx46(
                         "div",
                         {
                           className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6799,7 +7108,7 @@ var InspectorPanelComponent = ({
                           children: "Selected block"
                         }
                       ),
-                      /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsx46(
                         "div",
                         {
                           className: "mt-3 text-lg font-semibold",
@@ -6807,8 +7116,8 @@ var InspectorPanelComponent = ({
                           children: inspectorDefinition?.label ?? selectedBlock.type
                         }
                       ),
-                      /* @__PURE__ */ jsxs30("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
-                        /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsxs31("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
+                        /* @__PURE__ */ jsx46(
                           "div",
                           {
                             className: "font-mono text-[11px] uppercase tracking-[0.24em]",
@@ -6816,7 +7125,7 @@ var InspectorPanelComponent = ({
                             children: selectedBlock.module
                           }
                         ),
-                        inspectorDefinition ? /* @__PURE__ */ jsx45(
+                        inspectorDefinition ? /* @__PURE__ */ jsx46(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6832,7 +7141,7 @@ var InspectorPanelComponent = ({
                           }
                         ) : null
                       ] }),
-                      inspectorDefinition?.description ? /* @__PURE__ */ jsx45(
+                      inspectorDefinition?.description ? /* @__PURE__ */ jsx46(
                         "div",
                         {
                           className: "mt-4 text-sm leading-6",
@@ -6840,7 +7149,7 @@ var InspectorPanelComponent = ({
                           children: inspectorDefinition.description
                         }
                       ) : null,
-                      selectedFieldPath ? /* @__PURE__ */ jsxs30(
+                      selectedFieldPath ? /* @__PURE__ */ jsxs31(
                         "div",
                         {
                           className: "mt-4 rounded-2xl border px-3 py-3 text-sm",
@@ -6852,14 +7161,14 @@ var InspectorPanelComponent = ({
                           children: [
                             "Active field:",
                             " ",
-                            /* @__PURE__ */ jsx45("span", { className: "font-mono", children: selectedFieldPath })
+                            /* @__PURE__ */ jsx46("span", { className: "font-mono", children: selectedFieldPath })
                           ]
                         }
                       ) : null
                     ]
                   }
                 ),
-                Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsxs30(
+                Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsxs31(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6868,7 +7177,7 @@ var InspectorPanelComponent = ({
                       background: "var(--wb-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsx46(
                         "div",
                         {
                           className: "mb-4 text-[11px] uppercase tracking-[0.28em]",
@@ -6879,7 +7188,7 @@ var InspectorPanelComponent = ({
                           )
                         }
                       ),
-                      groupKey === "content" && editableLocales.length > 1 && fields.some((field) => fieldSupportsLocalization(field)) ? /* @__PURE__ */ jsx45(
+                      groupKey === "content" && editableLocales.length > 1 && fields.some((field) => fieldSupportsLocalization(field)) ? /* @__PURE__ */ jsx46(
                         "div",
                         {
                           className: "mb-4 inline-flex flex-wrap rounded-full border p-1",
@@ -6887,7 +7196,7 @@ var InspectorPanelComponent = ({
                             borderColor: "var(--wb-builder-border)",
                             background: "var(--wb-builder-panel)"
                           },
-                          children: editableLocales.map((locale) => /* @__PURE__ */ jsx45(
+                          children: editableLocales.map((locale) => /* @__PURE__ */ jsx46(
                             "button",
                             {
                               type: "button",
@@ -6903,7 +7212,7 @@ var InspectorPanelComponent = ({
                           ))
                         }
                       ) : null,
-                      /* @__PURE__ */ jsx45("div", { className: "space-y-4", children: fields.map((field) => /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsx46("div", { className: "space-y-4", children: fields.map((field) => /* @__PURE__ */ jsx46(
                         FieldEditor,
                         {
                           field,
@@ -6918,7 +7227,7 @@ var InspectorPanelComponent = ({
                   },
                   groupKey
                 )),
-                /* @__PURE__ */ jsxs30(
+                /* @__PURE__ */ jsxs31(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6927,14 +7236,14 @@ var InspectorPanelComponent = ({
                       background: "var(--wb-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsxs30(
+                      /* @__PURE__ */ jsxs31(
                         "button",
                         {
                           type: "button",
                           onClick: () => setShowBlockJson((current) => !current),
                           className: "flex w-full cursor-pointer items-center justify-between gap-3 text-left",
                           children: [
-                            /* @__PURE__ */ jsx45(
+                            /* @__PURE__ */ jsx46(
                               "div",
                               {
                                 className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6942,13 +7251,13 @@ var InspectorPanelComponent = ({
                                 children: "Raw block manifest"
                               }
                             ),
-                            showBlockJson ? /* @__PURE__ */ jsx45(
+                            showBlockJson ? /* @__PURE__ */ jsx46(
                               ChevronDown8,
                               {
                                 className: "h-4 w-4",
                                 style: { color: "var(--wb-builder-text-soft)" }
                               }
-                            ) : /* @__PURE__ */ jsx45(
+                            ) : /* @__PURE__ */ jsx46(
                               ChevronRight3,
                               {
                                 className: "h-4 w-4",
@@ -6958,7 +7267,7 @@ var InspectorPanelComponent = ({
                           ]
                         }
                       ),
-                      showBlockJson ? /* @__PURE__ */ jsx45(
+                      showBlockJson ? /* @__PURE__ */ jsx46(
                         "pre",
                         {
                           className: "mt-4 h-[320px] overflow-x-auto rounded-2xl border p-4 text-xs leading-6",
@@ -6974,8 +7283,8 @@ var InspectorPanelComponent = ({
                   }
                 )
               ] }) : null,
-              activeTab === "block" ? /* @__PURE__ */ jsxs30(Fragment7, { children: [
-                /* @__PURE__ */ jsxs30(
+              activeTab === "block" ? /* @__PURE__ */ jsxs31(Fragment7, { children: [
+                /* @__PURE__ */ jsxs31(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6984,14 +7293,14 @@ var InspectorPanelComponent = ({
                       background: "var(--wb-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsxs30(
+                      /* @__PURE__ */ jsxs31(
                         "button",
                         {
                           type: "button",
                           onClick: () => setShowDocumentJson((current) => !current),
                           className: "flex w-full cursor-pointer items-center justify-between gap-3 text-left",
                           children: [
-                            /* @__PURE__ */ jsx45(
+                            /* @__PURE__ */ jsx46(
                               "div",
                               {
                                 className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6999,13 +7308,13 @@ var InspectorPanelComponent = ({
                                 children: "Document JSON"
                               }
                             ),
-                            showDocumentJson ? /* @__PURE__ */ jsx45(
+                            showDocumentJson ? /* @__PURE__ */ jsx46(
                               ChevronDown8,
                               {
                                 className: "h-4 w-4",
                                 style: { color: "var(--wb-builder-text-soft)" }
                               }
-                            ) : /* @__PURE__ */ jsx45(
+                            ) : /* @__PURE__ */ jsx46(
                               ChevronRight3,
                               {
                                 className: "h-4 w-4",
@@ -7015,7 +7324,7 @@ var InspectorPanelComponent = ({
                           ]
                         }
                       ),
-                      showDocumentJson ? /* @__PURE__ */ jsx45(
+                      showDocumentJson ? /* @__PURE__ */ jsx46(
                         "pre",
                         {
                           className: "mt-4 max-h-[320px] overflow-auto rounded-2xl border p-4 text-xs leading-6",
@@ -7030,7 +7339,7 @@ var InspectorPanelComponent = ({
                     ]
                   }
                 ),
-                !definitionFields.length && !hasBlockContext ? /* @__PURE__ */ jsx45(
+                !definitionFields.length && !hasBlockContext ? /* @__PURE__ */ jsx46(
                   "section",
                   {
                     className: "rounded-[24px] border border-dashed px-4 py-4 text-sm leading-6",
@@ -7042,8 +7351,8 @@ var InspectorPanelComponent = ({
                   }
                 ) : null
               ] }) : null,
-              activeTab === "page" ? /* @__PURE__ */ jsxs30(Fragment7, { children: [
-                /* @__PURE__ */ jsxs30(
+              activeTab === "page" ? /* @__PURE__ */ jsxs31(Fragment7, { children: [
+                /* @__PURE__ */ jsxs31(
                   "section",
                   {
                     className: "rounded-[24px] border border-dashed px-4 py-4 text-sm leading-6",
@@ -7052,7 +7361,7 @@ var InspectorPanelComponent = ({
                       color: "var(--wb-builder-text-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsxs30(
+                      /* @__PURE__ */ jsxs31(
                         "div",
                         {
                           className: "text-[11px] uppercase tracking-[0.28em]",
@@ -7063,7 +7372,7 @@ var InspectorPanelComponent = ({
                           ]
                         }
                       ),
-                      /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsx46(
                         "div",
                         {
                           className: "mt-3 text-lg font-semibold",
@@ -7071,8 +7380,8 @@ var InspectorPanelComponent = ({
                           children: summaryName
                         }
                       ),
-                      /* @__PURE__ */ jsxs30("div", { className: "mt-2 flex flex-wrap items-center gap-2", children: [
-                        /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsxs31("div", { className: "mt-2 flex flex-wrap items-center gap-2", children: [
+                        /* @__PURE__ */ jsx46(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -7084,7 +7393,7 @@ var InspectorPanelComponent = ({
                             children: currentPage?.kind ?? "page"
                           }
                         ),
-                        /* @__PURE__ */ jsx45(
+                        /* @__PURE__ */ jsx46(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -7096,9 +7405,9 @@ var InspectorPanelComponent = ({
                             children: currentPage?.route ?? document2.route
                           }
                         ),
-                        currentPage?.isDynamic ? /* @__PURE__ */ jsx45("div", { className: "rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-amber-100/80", children: "Dynamic template" }) : null
+                        currentPage?.isDynamic ? /* @__PURE__ */ jsx46("div", { className: "rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-amber-100/80", children: "Dynamic template" }) : null
                       ] }),
-                      /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsx46(
                         "div",
                         {
                           className: "mt-4 rounded-2xl border px-3 py-3 text-sm leading-6",
@@ -7113,7 +7422,7 @@ var InspectorPanelComponent = ({
                     ]
                   }
                 ),
-                /* @__PURE__ */ jsxs30(
+                /* @__PURE__ */ jsxs31(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -7122,7 +7431,7 @@ var InspectorPanelComponent = ({
                       background: "var(--wb-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx45(
+                      /* @__PURE__ */ jsx46(
                         "div",
                         {
                           className: "mb-4 text-[11px] uppercase tracking-[0.28em]",
@@ -7130,8 +7439,8 @@ var InspectorPanelComponent = ({
                           children: "Basics"
                         }
                       ),
-                      /* @__PURE__ */ jsxs30("div", { className: "space-y-3", children: [
-                        /* @__PURE__ */ jsxs30(
+                      /* @__PURE__ */ jsxs31("div", { className: "space-y-3", children: [
+                        /* @__PURE__ */ jsxs31(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
@@ -7140,7 +7449,7 @@ var InspectorPanelComponent = ({
                               background: "var(--wb-builder-field)"
                             },
                             children: [
-                              /* @__PURE__ */ jsx45(
+                              /* @__PURE__ */ jsx46(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -7148,7 +7457,7 @@ var InspectorPanelComponent = ({
                                   children: "Name"
                                 }
                               ),
-                              /* @__PURE__ */ jsx45(
+                              /* @__PURE__ */ jsx46(
                                 "div",
                                 {
                                   className: "mt-2 text-sm font-semibold",
@@ -7159,7 +7468,7 @@ var InspectorPanelComponent = ({
                             ]
                           }
                         ),
-                        /* @__PURE__ */ jsxs30(
+                        /* @__PURE__ */ jsxs31(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
@@ -7168,7 +7477,7 @@ var InspectorPanelComponent = ({
                               background: "var(--wb-builder-field)"
                             },
                             children: [
-                              /* @__PURE__ */ jsx45(
+                              /* @__PURE__ */ jsx46(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -7176,7 +7485,7 @@ var InspectorPanelComponent = ({
                                   children: currentPage?.isDynamic ? "Route pattern" : "Path"
                                 }
                               ),
-                              /* @__PURE__ */ jsx45(
+                              /* @__PURE__ */ jsx46(
                                 "div",
                                 {
                                   className: "mt-2 font-mono text-sm",
@@ -7187,7 +7496,7 @@ var InspectorPanelComponent = ({
                             ]
                           }
                         ),
-                        currentPage?.isDynamic ? /* @__PURE__ */ jsxs30(
+                        currentPage?.isDynamic ? /* @__PURE__ */ jsxs31(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
@@ -7196,7 +7505,7 @@ var InspectorPanelComponent = ({
                               background: "var(--wb-builder-field)"
                             },
                             children: [
-                              /* @__PURE__ */ jsx45(
+                              /* @__PURE__ */ jsx46(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -7204,7 +7513,7 @@ var InspectorPanelComponent = ({
                                   children: "Current route"
                                 }
                               ),
-                              /* @__PURE__ */ jsx45(
+                              /* @__PURE__ */ jsx46(
                                 "div",
                                 {
                                   className: "mt-2 font-mono text-sm",
@@ -7230,7 +7539,7 @@ var InspectorPanelComponent = ({
 var InspectorPanel = memo5(InspectorPanelComponent);
 
 // src/studio/website-builder-studio/builder-mobile-panels.tsx
-import { jsx as jsx46, jsxs as jsxs31 } from "react/jsx-runtime";
+import { jsx as jsx47, jsxs as jsxs32 } from "react/jsx-runtime";
 var BuilderMobilePanels = ({
   search,
   onSearchChange,
@@ -7256,8 +7565,8 @@ var BuilderMobilePanels = ({
   currentPage,
   onContentLocaleChange
 }) => {
-  return /* @__PURE__ */ jsxs31("div", { className: "mt-6 grid gap-4 lg:hidden", children: [
-    /* @__PURE__ */ jsx46(
+  return /* @__PURE__ */ jsxs32("div", { className: "mt-6 grid gap-4 lg:hidden", children: [
+    /* @__PURE__ */ jsx47(
       PalettePanel,
       {
         search,
@@ -7278,7 +7587,7 @@ var BuilderMobilePanels = ({
         manualInsertTarget
       }
     ),
-    /* @__PURE__ */ jsx46(
+    /* @__PURE__ */ jsx47(
       InspectorPanel,
       {
         definitionFields,
@@ -7297,19 +7606,19 @@ var BuilderMobilePanels = ({
 import clsx20 from "clsx";
 import {
   useEffect as useEffect18,
-  useState as useState19
+  useState as useState20
 } from "react";
 
 // src/studio/website-builder-studio/builder-sidebar-edge-toggle.tsx
 import clsx18 from "clsx";
 import { ChevronLeft as ChevronLeft2, ChevronRight as ChevronRight4 } from "lucide-react";
-import { jsx as jsx47 } from "react/jsx-runtime";
+import { jsx as jsx48 } from "react/jsx-runtime";
 var BuilderSidebarEdgeToggle = ({
   side,
   dockHeight,
   onExpand
 }) => {
-  return /* @__PURE__ */ jsx47(
+  return /* @__PURE__ */ jsx48(
     "div",
     {
       className: clsx18(
@@ -7319,7 +7628,7 @@ var BuilderSidebarEdgeToggle = ({
       style: {
         top: dockHeight
       },
-      children: /* @__PURE__ */ jsx47("div", { className: "group relative h-full w-full", children: /* @__PURE__ */ jsx47(
+      children: /* @__PURE__ */ jsx48("div", { className: "group relative h-full w-full", children: /* @__PURE__ */ jsx48(
         "button",
         {
           type: "button",
@@ -7334,7 +7643,7 @@ var BuilderSidebarEdgeToggle = ({
             background: "var(--wb-builder-panel-solid)",
             color: "var(--wb-builder-text-muted)"
           },
-          children: side === "left" ? /* @__PURE__ */ jsx47(ChevronRight4, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx47(ChevronLeft2, { className: "h-4 w-4" })
+          children: side === "left" ? /* @__PURE__ */ jsx48(ChevronRight4, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx48(ChevronLeft2, { className: "h-4 w-4" })
         }
       ) })
     }
@@ -7343,12 +7652,12 @@ var BuilderSidebarEdgeToggle = ({
 
 // src/studio/website-builder-studio/builder-sidebar-resize-handle.tsx
 import clsx19 from "clsx";
-import { jsx as jsx48, jsxs as jsxs32 } from "react/jsx-runtime";
+import { jsx as jsx49, jsxs as jsxs33 } from "react/jsx-runtime";
 var BuilderSidebarResizeHandle = ({
   side,
   onPointerDown
 }) => {
-  return /* @__PURE__ */ jsxs32(
+  return /* @__PURE__ */ jsxs33(
     "button",
     {
       type: "button",
@@ -7359,15 +7668,15 @@ var BuilderSidebarResizeHandle = ({
         side === "left" ? "right-0 translate-x-1/2" : "left-0 -translate-x-1/2"
       ),
       children: [
-        /* @__PURE__ */ jsx48("span", { className: "absolute inset-y-0 left-1/2 w-3 -translate-x-1/2 rounded-full bg-cyan-300/0 opacity-0 transition-[background-color,opacity] duration-200 delay-500 group-hover:bg-cyan-300/12 group-hover:opacity-100 group-focus-visible:bg-cyan-300/12 group-focus-visible:opacity-100 group-active:delay-0 group-active:bg-cyan-300/18 group-active:opacity-100" }),
-        /* @__PURE__ */ jsx48("span", { className: "absolute inset-y-8 left-1/2 w-px -translate-x-1/2 rounded-full bg-white/12 opacity-50 transition-[background-color,opacity] duration-200 delay-500 group-hover:bg-cyan-300/55 group-hover:opacity-100 group-focus-visible:bg-cyan-300/55 group-focus-visible:opacity-100 group-active:delay-0 group-active:bg-cyan-300/65 group-active:opacity-100" })
+        /* @__PURE__ */ jsx49("span", { className: "absolute inset-y-0 left-1/2 w-3 -translate-x-1/2 rounded-full bg-cyan-300/0 opacity-0 transition-[background-color,opacity] duration-200 delay-500 group-hover:bg-cyan-300/12 group-hover:opacity-100 group-focus-visible:bg-cyan-300/12 group-focus-visible:opacity-100 group-active:delay-0 group-active:bg-cyan-300/18 group-active:opacity-100" }),
+        /* @__PURE__ */ jsx49("span", { className: "absolute inset-y-8 left-1/2 w-px -translate-x-1/2 rounded-full bg-white/12 opacity-50 transition-[background-color,opacity] duration-200 delay-500 group-hover:bg-cyan-300/55 group-hover:opacity-100 group-focus-visible:bg-cyan-300/55 group-focus-visible:opacity-100 group-active:delay-0 group-active:bg-cyan-300/65 group-active:opacity-100" })
       ]
     }
   );
 };
 
 // src/studio/website-builder-studio/builder-sidebars.tsx
-import { Fragment as Fragment8, jsx as jsx49, jsxs as jsxs33 } from "react/jsx-runtime";
+import { Fragment as Fragment8, jsx as jsx50, jsxs as jsxs34 } from "react/jsx-runtime";
 var BuilderSidebars = ({
   sidebarsVisible,
   dockHeight,
@@ -7406,7 +7715,7 @@ var BuilderSidebars = ({
   onExpandRight,
   onResizeStart
 }) => {
-  const [transitionsEnabled, setTransitionsEnabled] = useState19(false);
+  const [transitionsEnabled, setTransitionsEnabled] = useState20(false);
   const leftReservedWidth = sidebarsVisible && !leftCollapsed ? leftSidebarWidth : 0;
   const rightReservedWidth = sidebarsVisible && !rightCollapsed ? rightSidebarWidth : 0;
   useEffect18(() => {
@@ -7415,8 +7724,8 @@ var BuilderSidebars = ({
     }, 0);
     return () => window.clearTimeout(timeoutId);
   }, []);
-  return /* @__PURE__ */ jsxs33(Fragment8, { children: [
-    transitionsEnabled && sidebarsVisible && leftCollapsed ? /* @__PURE__ */ jsx49(
+  return /* @__PURE__ */ jsxs34(Fragment8, { children: [
+    transitionsEnabled && sidebarsVisible && leftCollapsed ? /* @__PURE__ */ jsx50(
       BuilderSidebarEdgeToggle,
       {
         side: "left",
@@ -7424,7 +7733,7 @@ var BuilderSidebars = ({
         onExpand: onExpandLeft
       }
     ) : null,
-    transitionsEnabled && sidebarsVisible && rightCollapsed ? /* @__PURE__ */ jsx49(
+    transitionsEnabled && sidebarsVisible && rightCollapsed ? /* @__PURE__ */ jsx50(
       BuilderSidebarEdgeToggle,
       {
         side: "right",
@@ -7432,7 +7741,7 @@ var BuilderSidebars = ({
         onExpand: onExpandRight
       }
     ) : null,
-    /* @__PURE__ */ jsxs33(
+    /* @__PURE__ */ jsxs34(
       "div",
       {
         className: clsx20(
@@ -7444,7 +7753,7 @@ var BuilderSidebars = ({
           "--wb-right-sidebar-width": `${rightReservedWidth}px`
         },
         children: [
-          /* @__PURE__ */ jsx49(
+          /* @__PURE__ */ jsx50(
             "aside",
             {
               className: clsx20(
@@ -7460,7 +7769,7 @@ var BuilderSidebars = ({
               },
               "aria-hidden": !sidebarsVisible || leftCollapsed,
               "data-testid": "wb-builder-sidebar-left",
-              children: /* @__PURE__ */ jsxs33(
+              children: /* @__PURE__ */ jsxs34(
                 "div",
                 {
                   className: clsx20(
@@ -7473,7 +7782,7 @@ var BuilderSidebars = ({
                     boxShadow: "var(--wb-builder-sidebar-shadow)"
                   },
                   children: [
-                    /* @__PURE__ */ jsx49(
+                    /* @__PURE__ */ jsx50(
                       PalettePanel,
                       {
                         search,
@@ -7495,7 +7804,7 @@ var BuilderSidebars = ({
                         onCollapse: onToggleLeftCollapsed
                       }
                     ),
-                    /* @__PURE__ */ jsx49(
+                    /* @__PURE__ */ jsx50(
                       BuilderSidebarResizeHandle,
                       {
                         side: "left",
@@ -7507,8 +7816,8 @@ var BuilderSidebars = ({
               )
             }
           ),
-          /* @__PURE__ */ jsx49("div", { className: "min-w-0", children }),
-          /* @__PURE__ */ jsx49(
+          /* @__PURE__ */ jsx50("div", { className: "min-w-0", children }),
+          /* @__PURE__ */ jsx50(
             "aside",
             {
               className: clsx20(
@@ -7524,7 +7833,7 @@ var BuilderSidebars = ({
               },
               "aria-hidden": !sidebarsVisible || rightCollapsed,
               "data-testid": "wb-builder-sidebar-right",
-              children: /* @__PURE__ */ jsxs33(
+              children: /* @__PURE__ */ jsxs34(
                 "div",
                 {
                   className: clsx20(
@@ -7537,7 +7846,7 @@ var BuilderSidebars = ({
                     boxShadow: "var(--wb-builder-sidebar-shadow)"
                   },
                   children: [
-                    /* @__PURE__ */ jsx49(
+                    /* @__PURE__ */ jsx50(
                       InspectorPanel,
                       {
                         definitionFields,
@@ -7550,7 +7859,7 @@ var BuilderSidebars = ({
                         onCollapse: onToggleRightCollapsed
                       }
                     ),
-                    /* @__PURE__ */ jsx49(
+                    /* @__PURE__ */ jsx50(
                       BuilderSidebarResizeHandle,
                       {
                         side: "right",
@@ -7569,7 +7878,7 @@ var BuilderSidebars = ({
 };
 
 // src/studio/website-builder-studio/website-builder-stage.tsx
-import { jsx as jsx50, jsxs as jsxs34 } from "react/jsx-runtime";
+import { jsx as jsx51, jsxs as jsxs35 } from "react/jsx-runtime";
 var clampChannel = (value) => Math.max(0, Math.min(255, Math.round(value)));
 var HEX_COLOR_PATTERN = /^#([\da-f]{3}|[\da-f]{6})$/i;
 var RGB_COLOR_PATTERN = /^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*[\d.]+\s*)?\)$/i;
@@ -7857,7 +8166,7 @@ var WebsiteBuilderStage = ({
       }
     };
   }, [builderThemeStyle, canManage]);
-  return /* @__PURE__ */ jsxs34(
+  return /* @__PURE__ */ jsxs35(
     "div",
     {
       className: "relative z-10 transition-[background-color,color] duration-500",
@@ -7867,7 +8176,7 @@ var WebsiteBuilderStage = ({
         parseColor(designSettings.backgroundColor) ?? { r: 8, g: 19, b: 33 }
       ) < 0.38 ? "dark" : "light",
       children: [
-        canManage ? /* @__PURE__ */ jsx50(
+        canManage ? /* @__PURE__ */ jsx51(
           EditorDock,
           {
             activeMode,
@@ -7897,7 +8206,7 @@ var WebsiteBuilderStage = ({
             onSave
           }
         ) : null,
-        /* @__PURE__ */ jsxs34(
+        /* @__PURE__ */ jsxs35(
           BuilderSidebars,
           {
             sidebarsVisible,
@@ -7936,7 +8245,7 @@ var WebsiteBuilderStage = ({
             onExpandRight,
             onResizeStart,
             children: [
-              /* @__PURE__ */ jsx50(
+              /* @__PURE__ */ jsx51(
                 CanvasTopToolbar,
                 {
                   visible: builderEnabled,
@@ -7951,7 +8260,7 @@ var WebsiteBuilderStage = ({
                   onExpandAll
                 }
               ),
-              /* @__PURE__ */ jsxs34(
+              /* @__PURE__ */ jsxs35(
                 "main",
                 {
                   className: clsx21(
@@ -7961,14 +8270,14 @@ var WebsiteBuilderStage = ({
                   ),
                   style: mainStyle,
                   children: [
-                    /* @__PURE__ */ jsx50(
+                    /* @__PURE__ */ jsx51(
                       "div",
                       {
                         className: clsx21(
                           "mx-auto transition-[max-width,opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
                           canvasSurfaceVisible ? "max-w-none" : "max-w-[1480px]"
                         ),
-                        children: builderEnabled && builderSurfaceMode === "settings" ? /* @__PURE__ */ jsx50(
+                        children: builderEnabled && builderSurfaceMode === "settings" ? /* @__PURE__ */ jsx51(
                           PageSettingsSurface,
                           {
                             currentPage,
@@ -7984,7 +8293,7 @@ var WebsiteBuilderStage = ({
                             onSiteSettingChange,
                             onSiteSettingFocus
                           }
-                        ) : /* @__PURE__ */ jsxs34(
+                        ) : /* @__PURE__ */ jsxs35(
                           "div",
                           {
                             className: clsx21(
@@ -7999,14 +8308,14 @@ var WebsiteBuilderStage = ({
                               } : {}
                             },
                             children: [
-                              builderEnabled ? /* @__PURE__ */ jsx50(
+                              builderEnabled ? /* @__PURE__ */ jsx51(
                                 "div",
                                 {
                                   className: "pointer-events-none absolute inset-0 rounded-[28px]",
                                   style: { background: "var(--wb-builder-elevation)" }
                                 }
                               ) : null,
-                              /* @__PURE__ */ jsx50("div", { className: "relative", children: /* @__PURE__ */ jsx50(
+                              /* @__PURE__ */ jsx51("div", { className: "relative", children: /* @__PURE__ */ jsx51(
                                 SiteSurfaceCanvas,
                                 {
                                   document: document2,
@@ -8025,8 +8334,8 @@ var WebsiteBuilderStage = ({
                         )
                       }
                     ),
-                    contentEnabled && contentNotice ? /* @__PURE__ */ jsx50("div", { className: "mx-auto mt-4 max-w-[1480px]", children: contentNotice }) : null,
-                    builderEnabled && builderSurfaceMode === "canvas" ? /* @__PURE__ */ jsx50(
+                    contentEnabled && contentNotice ? /* @__PURE__ */ jsx51("div", { className: "mx-auto mt-4 max-w-[1480px]", children: contentNotice }) : null,
+                    builderEnabled && builderSurfaceMode === "canvas" ? /* @__PURE__ */ jsx51(
                       BuilderMobilePanels,
                       {
                         search,
@@ -8066,7 +8375,7 @@ var WebsiteBuilderStage = ({
 };
 
 // src/studio/website-builder-studio/website-builder-studio-inner.tsx
-import { jsx as jsx51, jsxs as jsxs35 } from "react/jsx-runtime";
+import { jsx as jsx52, jsxs as jsxs36 } from "react/jsx-runtime";
 var WebsiteBuilderStudioInner = ({
   initialDocument,
   initialResources = {},
@@ -8159,20 +8468,20 @@ var WebsiteBuilderStudioInner = ({
   const collapsedBlockCount = useWebsiteBuilderStore(
     (state) => Object.keys(state.collapsedBlockIds).length
   );
-  const [search, setSearch] = useState20("");
-  const [paletteFamily, setPaletteFamily] = useState20("all");
-  const [palettePackage, setPalettePackage] = useState20("all");
-  const [selectedPaletteKey, setSelectedPaletteKey] = useState20(
+  const [search, setSearch] = useState21("");
+  const [paletteFamily, setPaletteFamily] = useState21("all");
+  const [palettePackage, setPalettePackage] = useState21("all");
+  const [selectedPaletteKey, setSelectedPaletteKey] = useState21(
     null
   );
-  const [manualInsertTarget, setManualInsertTarget] = useState20(null);
-  const [paletteCollapsedGroups, setPaletteCollapsedGroups] = useState20([]);
-  const [paletteCollapsedFamilies, setPaletteCollapsedFamilies] = useState20([]);
-  const [dockHeight, setDockHeight] = useState20(
+  const [manualInsertTarget, setManualInsertTarget] = useState21(null);
+  const [paletteCollapsedGroups, setPaletteCollapsedGroups] = useState21([]);
+  const [paletteCollapsedFamilies, setPaletteCollapsedFamilies] = useState21([]);
+  const [dockHeight, setDockHeight] = useState21(
     WEBSITE_BUILDER_EDITOR_DOCK_FALLBACK_HEIGHT
   );
-  const [showCollapsedInPreview, setShowCollapsedInPreview] = useState20(false);
-  const [hasMounted, setHasMounted] = useState20(false);
+  const [showCollapsedInPreview, setShowCollapsedInPreview] = useState21(false);
+  const [hasMounted, setHasMounted] = useState21(false);
   const lastExternalModeRef = useRef6(initialMode);
   const deferredSearch = useDeferredValue(search);
   const builderEnabled = isAdmin && mode === "builder";
@@ -8363,14 +8672,14 @@ var WebsiteBuilderStudioInner = ({
     );
   };
   const contentNotice = renderContentNotice ?? null;
-  return /* @__PURE__ */ jsxs35("div", { className: "relative min-h-screen", children: [
-    /* @__PURE__ */ jsx51(
+  return /* @__PURE__ */ jsxs36("div", { className: "relative min-h-screen", children: [
+    /* @__PURE__ */ jsx52(
       WebsiteBuilderSearchHighlightEffect,
       {
         activeHighlight: activeSearchHighlight
       }
     ),
-    /* @__PURE__ */ jsxs35(
+    /* @__PURE__ */ jsxs36(
       DndContext,
       {
         id: "website-builder-studio",
@@ -8381,7 +8690,7 @@ var WebsiteBuilderStudioInner = ({
         onDragEnd: handleDragEnd,
         onDragCancel: handleDragCancel,
         children: [
-          /* @__PURE__ */ jsx51(
+          /* @__PURE__ */ jsx52(
             WebsiteBuilderStage,
             {
               activeMode,
@@ -8480,13 +8789,13 @@ var WebsiteBuilderStudioInner = ({
             }
           ),
           hasMounted ? createPortal(
-            /* @__PURE__ */ jsx51(
+            /* @__PURE__ */ jsx52(
               DragOverlay,
               {
                 adjustScale: false,
                 dropAnimation: null,
                 modifiers: dragOverlayModifiers,
-                children: activeDragKind === "palette" && activePaletteDefinition ? /* @__PURE__ */ jsx51(PaletteOverlayCard, { definition: activePaletteDefinition }) : activeBlock ? /* @__PURE__ */ jsx51(BlockOverlayCard, { block: activeBlock }) : null
+                children: activeDragKind === "palette" && activePaletteDefinition ? /* @__PURE__ */ jsx52(PaletteOverlayCard, { definition: activePaletteDefinition }) : activeBlock ? /* @__PURE__ */ jsx52(BlockOverlayCard, { block: activeBlock }) : null
               }
             ),
             globalThis.document.body
@@ -8498,7 +8807,7 @@ var WebsiteBuilderStudioInner = ({
 };
 
 // src/studio/website-builder-studio/website-builder-studio.tsx
-import { jsx as jsx52 } from "react/jsx-runtime";
+import { jsx as jsx53 } from "react/jsx-runtime";
 var WebsiteBuilderStudio = ({
   initialDocument,
   initialResources,
@@ -8540,7 +8849,7 @@ var WebsiteBuilderStudio = ({
   renderContentNotice,
   siteSettingsSubtabs
 }) => {
-  return /* @__PURE__ */ jsx52(
+  return /* @__PURE__ */ jsx53(
     WebsiteBuilderProvider,
     {
       initialDocument,
@@ -8559,7 +8868,7 @@ var WebsiteBuilderStudio = ({
       siteFrameExtensions,
       accountTabs,
       i18n,
-      children: /* @__PURE__ */ jsx52(
+      children: /* @__PURE__ */ jsx53(
         WebsiteBuilderStudioInner,
         {
           initialDocument,

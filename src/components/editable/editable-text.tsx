@@ -8,7 +8,7 @@ import type {
 	KeyboardEvent,
 	MouseEvent,
 } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
 	useWebsiteBuilderCanEdit,
 	useWebsiteBuilderFieldValue,
@@ -43,12 +43,18 @@ export const EditableText = ({
 	);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const value = String(useWebsiteBuilderFieldValue(blockId, path) ?? "");
+	const fallbackValue =
+		value ||
+		(placeholder !== WEBSITE_BUILDER_EMPTY_TEXT ? String(placeholder) : "");
+	const [draftValue, setDraftValue] = useState(fallbackValue);
 	const isEditable = useWebsiteBuilderCanEdit();
 	const isActive =
 		selectedField?.blockId === blockId && selectedField.path === path;
 	const searchTargetId = buildWebsiteBuilderSearchTargetId(blockId, path);
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-		updateFieldValue(blockId, path, event.currentTarget.value);
+		const nextValue = event.currentTarget.value;
+		setDraftValue(nextValue);
+		updateFieldValue(blockId, path, nextValue);
 	};
 	const handleBlur = (event: FocusEvent<HTMLInputElement>) => {
 		if (event.currentTarget.contains(event.relatedTarget)) {
@@ -58,6 +64,8 @@ export const EditableText = ({
 		clearSelectedField();
 	};
 	const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+		event.stopPropagation();
+
 		if (event.key !== "Escape") {
 			return;
 		}
@@ -75,11 +83,12 @@ export const EditableText = ({
 				return;
 			}
 
+			setDraftValue(fallbackValue);
 			input.focus();
-			const caretPosition = input.value.length;
+			const caretPosition = fallbackValue.length;
 			input.setSelectionRange(caretPosition, caretPosition);
 		}
-	}, [isActive, isEditable]);
+	}, [fallbackValue, isActive, isEditable]);
 
 	if (isEditable && isActive) {
 		return (
@@ -91,11 +100,13 @@ export const EditableText = ({
 			>
 				<input
 					ref={inputRef}
-					value={value}
+					value={draftValue}
 					placeholder={placeholder}
 					onChange={handleChange}
 					onBlur={handleBlur}
 					onKeyDown={handleKeyDown}
+					onKeyUp={(event) => event.stopPropagation()}
+					onKeyPress={(event) => event.stopPropagation()}
 					onClick={(event) => event.stopPropagation()}
 					className="m-0 block w-full min-w-0 appearance-none border-0 bg-transparent p-0 font-inherit leading-inherit tracking-inherit text-inherit outline-none ring-0 shadow-none placeholder:text-white/28 focus:outline-none"
 				/>

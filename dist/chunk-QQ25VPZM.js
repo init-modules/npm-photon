@@ -6,7 +6,7 @@ import {
   getFirstWebsiteBuilderSurfaceEditableBlockId,
   getWebsiteBuilderDocumentFingerprint,
   getWebsiteBuilderSurfaceRegionListId
-} from "./chunk-PD2EQKYT.js";
+} from "./chunk-GBIC56HN.js";
 import {
   canEditWebsiteBuilderWorkspace,
   cloneWebsiteBuilderValue,
