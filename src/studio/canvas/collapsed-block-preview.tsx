@@ -22,10 +22,7 @@ export const CollapsedBlockPreview = ({
 			>
 				{block.type}
 			</div>
-			<div
-				className="mt-2"
-				style={{ color: "var(--wb-builder-text-soft)" }}
-			>
+			<div className="mt-2" style={{ color: "var(--wb-builder-text-soft)" }}>
 				{block.areas?.length
 					? `${block.areas.length} layout area${block.areas.length > 1 ? "s" : ""} hidden while collapsed.`
 					: "Collapsed to keep the canvas compact while you work on neighboring sections."}

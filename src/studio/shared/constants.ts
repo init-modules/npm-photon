@@ -84,7 +84,9 @@ const sortInsertZoneCollisions = (
 ) =>
 	[...collisions].sort((left, right) => {
 		const leftValue =
-			typeof left.data?.value === "number" ? left.data.value : Number.NEGATIVE_INFINITY;
+			typeof left.data?.value === "number"
+				? left.data.value
+				: Number.NEGATIVE_INFINITY;
 		const rightValue =
 			typeof right.data?.value === "number"
 				? right.data.value
@@ -97,7 +99,10 @@ const sortInsertZoneCollisions = (
 		const leftRect = droppableRects.get(left.id);
 		const rightRect = droppableRects.get(right.id);
 		const leftDistance = getPointerDistanceToRect(pointerCoordinates, leftRect);
-		const rightDistance = getPointerDistanceToRect(pointerCoordinates, rightRect);
+		const rightDistance = getPointerDistanceToRect(
+			pointerCoordinates,
+			rightRect,
+		);
 
 		if (leftDistance !== rightDistance) {
 			return leftDistance - rightDistance;
@@ -155,7 +160,9 @@ export const websiteBuilderCollisionDetection: CollisionDetection = (args) => {
 		});
 	}
 
-	const pointerProximityRect = createPointerProximityRect(args.pointerCoordinates);
+	const pointerProximityRect = createPointerProximityRect(
+		args.pointerCoordinates,
+	);
 
 	if (pointerProximityRect) {
 		const proximityHits = rectIntersection({

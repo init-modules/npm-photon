@@ -12,12 +12,13 @@ import {
 	DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
 import { useWebsiteBuilderStore } from "../../context/website-builder-context";
+import { WebsiteBuilderFormFieldsEditor } from "../../forms/form-fields-editor";
+import { moveWebsiteBuilderArrayItem } from "../../helpers/document";
 import {
 	cloneWebsiteBuilderValue,
 	getValueAtPath,
 	setValueAtPath,
 } from "../../helpers/path";
-import { moveWebsiteBuilderArrayItem } from "../../helpers/document";
 import { useWebsiteBuilderI18n } from "../../i18n/website-builder-i18n-context";
 import type {
 	WebsiteBuilderField,
@@ -27,7 +28,6 @@ import { inputClassName } from "../shared";
 import { GalleryFieldEditor } from "./gallery-field-editor";
 import { ImageFieldEditor } from "./image-field-editor";
 import { JsonFieldEditor } from "./json-field-editor";
-import { WebsiteBuilderFormFieldsEditor } from "../../forms/form-fields-editor";
 
 type FieldEditorProps = {
 	field: WebsiteBuilderField | WebsiteBuilderNestedField;
@@ -242,10 +242,16 @@ const RepeaterFieldEditor = ({
 		<div className="space-y-3">
 			<div className="space-y-3 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-3">
 				{items.map((item, index) => {
-					const itemAbsolutePath = joinFieldPath(absolutePath ?? "", String(index));
+					const itemAbsolutePath = joinFieldPath(
+						absolutePath ?? "",
+						String(index),
+					);
 					const itemLabelSource =
 						field.itemLabelPath && item && typeof item === "object"
-							? getValueAtPath(item as Record<string, unknown>, field.itemLabelPath)
+							? getValueAtPath(
+									item as Record<string, unknown>,
+									field.itemLabelPath,
+								)
 							: null;
 					const itemLabel =
 						typeof itemLabelSource === "string" && itemLabelSource.trim() !== ""
@@ -274,7 +280,9 @@ const RepeaterFieldEditor = ({
 										type="button"
 										disabled={index === 0}
 										onClick={() =>
-											updateItems(moveWebsiteBuilderArrayItem(items, index, index - 1))
+											updateItems(
+												moveWebsiteBuilderArrayItem(items, index, index - 1),
+											)
 										}
 										className="inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)] disabled:cursor-not-allowed disabled:opacity-40"
 										aria-label={`Move ${itemLabel} up`}
@@ -285,7 +293,9 @@ const RepeaterFieldEditor = ({
 										type="button"
 										disabled={index === items.length - 1}
 										onClick={() =>
-											updateItems(moveWebsiteBuilderArrayItem(items, index, index + 1))
+											updateItems(
+												moveWebsiteBuilderArrayItem(items, index, index + 1),
+											)
 										}
 										className="inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)] disabled:cursor-not-allowed disabled:opacity-40"
 										aria-label={`Move ${itemLabel} down`}
@@ -295,7 +305,9 @@ const RepeaterFieldEditor = ({
 									<button
 										type="button"
 										onClick={() =>
-											updateItems(items.filter((_, itemIndex) => itemIndex !== index))
+											updateItems(
+												items.filter((_, itemIndex) => itemIndex !== index),
+											)
 										}
 										className="inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)]"
 										aria-label={`Remove ${itemLabel}`}
@@ -362,7 +374,11 @@ const RepeaterFieldEditor = ({
 														updateItems(
 															items.map((currentItem, itemIndex) =>
 																itemIndex === index
-																	? setValueAtPath(itemObject, childPath, nextValue)
+																	? setValueAtPath(
+																			itemObject,
+																			childPath,
+																			nextValue,
+																		)
 																	: currentItem,
 															),
 														);

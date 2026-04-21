@@ -204,7 +204,9 @@ export const PageSettingsSurface = ({
 		],
 		[siteSettingsSubtabs],
 	);
-	const [activeSiteTab, setActiveSiteTab] = useState(siteSubtabs[0]?.key ?? "design");
+	const [activeSiteTab, setActiveSiteTab] = useState(
+		siteSubtabs[0]?.key ?? "design",
+	);
 
 	useEffect(() => {
 		if (availableScopes.length === 0) {
@@ -241,18 +243,22 @@ export const PageSettingsSurface = ({
 		scopeMeta[activeScope].label;
 	const primaryRoute =
 		activeScope === "template"
-			? readString(scopeSettings, "pathPattern") ??
+			? (readString(scopeSettings, "pathPattern") ??
 				currentPage?.routePattern ??
-				currentPage?.route
-			: readString(scopeSettings, "path") ?? currentPage?.route;
+				currentPage?.route)
+			: (readString(scopeSettings, "path") ?? currentPage?.route);
 	const secondaryRoute =
 		activeScope === "template"
-			? readString(scopeSettings, "currentPath") ?? currentPage?.route
+			? (readString(scopeSettings, "currentPath") ?? currentPage?.route)
 			: null;
 	const sitePanelDescription =
 		"Design sources now belong to website profiles. Use Design to inspect the current profile source, Advanced Design to edit stored runtime tokens, and Locales to manage public/admin locale exposure.";
-	const siteDesignPanel = siteSettingsPanels.find((panel) => panel.key === "design");
-	const siteLocalesPanel = siteSettingsPanels.find((panel) => panel.key === "locales");
+	const siteDesignPanel = siteSettingsPanels.find(
+		(panel) => panel.key === "design",
+	);
+	const siteLocalesPanel = siteSettingsPanels.find(
+		(panel) => panel.key === "locales",
+	);
 	const siteWorkspaceSubtab = siteSettingsSubtabs.find(
 		(tab) => tab.key === activeSiteTab,
 	);
@@ -269,7 +275,8 @@ export const PageSettingsSurface = ({
 		}
 
 		const scopeSettings =
-			typeof site.settings[panel.key] === "object" && site.settings[panel.key] !== null
+			typeof site.settings[panel.key] === "object" &&
+			site.settings[panel.key] !== null
 				? (site.settings[panel.key] as Record<string, unknown>)
 				: {};
 		const PanelComponent = panel.component;
@@ -545,7 +552,9 @@ export const PageSettingsSurface = ({
 													className="mt-2 font-mono text-sm"
 													style={{ color: "var(--wb-builder-text-muted)" }}
 												>
-													{secondaryRoute ?? currentPage?.route ?? "Not available"}
+													{secondaryRoute ??
+														currentPage?.route ??
+														"Not available"}
 												</div>
 											</div>
 										</div>
@@ -559,8 +568,8 @@ export const PageSettingsSurface = ({
 											style={warningCardStyle}
 										>
 											Record settings affect only the live entity behind the
-											current route. Shared builder structure remains owned by the
-											template scope.
+											current route. Shared builder structure remains owned by
+											the template scope.
 										</div>
 										<div className="grid gap-3 md:grid-cols-2">
 											<div
@@ -577,7 +586,9 @@ export const PageSettingsSurface = ({
 													className="mt-2 font-mono text-sm"
 													style={{ color: "var(--wb-builder-text-muted)" }}
 												>
-													{primaryRoute ?? currentPage?.route ?? "Not available"}
+													{primaryRoute ??
+														currentPage?.route ??
+														"Not available"}
 												</div>
 											</div>
 											<div
@@ -729,7 +740,8 @@ export const PageSettingsSurface = ({
 											className="mt-3 text-sm leading-6"
 											style={{ color: "var(--wb-builder-text-muted)" }}
 										>
-											The locales settings panel is not registered in this build.
+											The locales settings panel is not registered in this
+											build.
 										</div>
 									</section>
 								)

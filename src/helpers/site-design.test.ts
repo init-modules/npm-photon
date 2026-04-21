@@ -1,5 +1,7 @@
-import test from "node:test";
 import assert from "node:assert/strict";
+import test from "node:test";
+import { getWebsiteBuilderSiteColorScheme } from "../modules/system/site/site-color-schemes";
+import { getWebsiteBuilderSiteDesignPreset } from "../modules/system/site/site-design-presets";
 import {
 	applyWebsiteBuilderSiteColorScheme,
 	applyWebsiteBuilderSiteDesignPreset,
@@ -8,8 +10,6 @@ import {
 	isWebsiteBuilderSiteDesignPresetApplied,
 	resolveWebsiteBuilderSiteDesignSettings,
 } from "./site-design";
-import { getWebsiteBuilderSiteColorScheme } from "../modules/system/site/site-color-schemes";
-import { getWebsiteBuilderSiteDesignPreset } from "../modules/system/site/site-design-presets";
 
 test("fallback flat defaults resolve without forcing the new preset metadata", () => {
 	const resolved = resolveWebsiteBuilderSiteDesignSettings({
@@ -59,13 +59,19 @@ test("applying a preset replaces preset-owned variants while preserving unrelate
 	assert.equal(applied.presetId, "paper-flow");
 	assert.equal(applied.colorSchemeId, "paper-sky");
 	assert.equal(applied.bodyFontFamily, preset?.designTokens.bodyFontFamily);
-	assert.equal(applied.headingFontFamily, preset?.designTokens.headingFontFamily);
+	assert.equal(
+		applied.headingFontFamily,
+		preset?.designTokens.headingFontFamily,
+	);
 	assert.equal(applied.siteMaxWidth, preset?.designTokens.siteMaxWidth);
 	assert.equal(
 		applied.backgroundColor,
 		recommendedScheme?.colorTokens.backgroundColor,
 	);
-	assert.equal(applied.surfaceColor, recommendedScheme?.colorTokens.surfaceColor);
+	assert.equal(
+		applied.surfaceColor,
+		recommendedScheme?.colorTokens.surfaceColor,
+	);
 	assert.equal(applied.textColor, recommendedScheme?.colorTokens.textColor);
 	assert.equal(applied.componentVariants.hero, "editorial");
 	assert.equal(applied.componentVariants.cta, "ribbon");
@@ -82,7 +88,10 @@ test("remaining flow presets publish their linked scheme and full marketing-demo
 
 	assert.equal(paperFlow?.appearance, "light");
 	assert.equal(paperFlow?.recommendedColorSchemeId, "paper-sky");
-	assert.equal(paperFlow?.componentVariants["marketing-demo/hero-spotlight"], "air");
+	assert.equal(
+		paperFlow?.componentVariants["marketing-demo/hero-spotlight"],
+		"air",
+	);
 	assert.equal(initLanding?.appearance, "light");
 	assert.equal(initLanding?.recommendedColorSchemeId, undefined);
 	assert.equal(
@@ -101,7 +110,10 @@ test("creating preset-backed settings without an explicit scheme uses the preset
 
 	assert.equal(paperFlow.presetId, "paper-flow");
 	assert.equal(paperFlow.colorSchemeId, "paper-sky");
-	assert.equal(paperFlow.componentVariants["marketing-demo/feature-grid"], "air");
+	assert.equal(
+		paperFlow.componentVariants["marketing-demo/feature-grid"],
+		"air",
+	);
 	assert.equal(initLanding.presetId, "init-landing");
 	assert.equal(initLanding.colorSchemeId, undefined);
 	assert.equal(

@@ -22,8 +22,7 @@ export const EditableGalleryAddCard = ({
 			data-testid="wb-editable-gallery-add-card"
 			className={`flex min-h-[18rem] cursor-pointer flex-col items-center justify-center gap-3 rounded-[34px] border border-dashed px-6 py-8 text-center transition ${className ?? ""}`}
 			style={{
-				borderColor:
-					"var(--wb-gallery-add-border, rgba(34,211,238,0.18))",
+				borderColor: "var(--wb-gallery-add-border, rgba(34,211,238,0.18))",
 				background:
 					"var(--wb-gallery-add-bg, radial-gradient(circle_at_top_left,rgba(34,211,238,0.1),transparent_52%),linear-gradient(180deg,rgba(8,18,31,0.84),rgba(6,13,24,0.94)))",
 				color: "var(--wb-gallery-add-text, rgba(255,255,255,0.55))",
@@ -34,8 +33,7 @@ export const EditableGalleryAddCard = ({
 				style={{
 					borderColor:
 						"var(--wb-gallery-add-button-border, rgba(34,211,238,0.18))",
-					background:
-						"var(--wb-gallery-add-button-bg, rgba(34,211,238,0.1))",
+					background: "var(--wb-gallery-add-button-bg, rgba(34,211,238,0.1))",
 					color: "var(--wb-gallery-add-button-text, rgb(207 250 254))",
 				}}
 			>

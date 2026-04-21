@@ -8,9 +8,7 @@ import {
 	useWebsiteBuilderFieldValue,
 } from "../../context/website-builder-context";
 import { getWebsiteBuilderEditableEditorLoader } from "../../helpers/editable-editor-loaders";
-import {
-	resolveWebsiteBuilderMediaPreviewUrl,
-} from "../../helpers/media";
+import { resolveWebsiteBuilderMediaPreviewUrl } from "../../helpers/media";
 
 type PublicEditableImageProps = {
 	blockId: string;
@@ -34,7 +32,9 @@ export const EditableImage = ({
 	const canEdit = useWebsiteBuilderCanEdit();
 	const rawValue = useWebsiteBuilderFieldValue(blockId, path);
 	const source = resolveWebsiteBuilderMediaPreviewUrl(rawValue);
-	const altValue = altPath ? useWebsiteBuilderFieldValue(blockId, altPath) : null;
+	const altValue = altPath
+		? useWebsiteBuilderFieldValue(blockId, altPath)
+		: null;
 	const alt = altPath ? String(altValue ?? fallbackAlt) : fallbackAlt;
 	const [EditableImageEditor, setEditableImageEditor] =
 		useState<EditableImageEditorComponent | null>(null);

@@ -12,9 +12,7 @@ import {
 } from "../../helpers/site";
 import { findWebsiteBuilderBlock } from "../../helpers/tree";
 import type { WebsiteBuilderBlock, WebsiteBuilderDocument } from "../../types";
-import {
-	resolveInsertTarget,
-} from "../shared";
+import { resolveInsertTarget } from "../shared";
 import type { InsertTarget, PaletteDefinition } from "../types";
 
 type UseStudioDragStateProps = {

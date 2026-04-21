@@ -1,13 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import {
-	type CSSProperties,
-	memo,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import { type CSSProperties, memo, useEffect, useRef, useState } from "react";
 import { useWebsiteBuilderStore } from "../../context/website-builder-context";
 import { WebsiteBuilderSurfaceLayoutProvider } from "../../context/website-builder-surface-layout-context";
 import {
@@ -33,7 +27,9 @@ type SiteSurfaceCanvasProps = {
 };
 
 type SiteSurfaceRegionSectionProps = {
-	region: ReturnType<typeof resolveWebsiteBuilderSurfaceRegionDescriptors>[number];
+	region: ReturnType<
+		typeof resolveWebsiteBuilderSurfaceRegionDescriptors
+	>[number];
 	site: WebsiteBuilderSite;
 	document: WebsiteBuilderDocument;
 	builderEnabled: boolean;
@@ -116,7 +112,7 @@ const SiteSurfaceRegionSection = ({
 							} as CSSProperties)
 						: undefined
 				}
-				>
+			>
 				{builderEnabled ? (
 					<div
 						className={clsx(

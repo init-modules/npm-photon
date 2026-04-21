@@ -25,8 +25,7 @@ export const resolveWebsiteBuilderAccess = (
 	);
 	const hasRoleAccess = authState?.user?.role === "admin";
 	const hasRealAccess = hasExplicitPermission || hasRoleAccess;
-	const hasDemoAccess =
-		!authState?.user && options?.demoAccessAllowed === true;
+	const hasDemoAccess = !authState?.user && options?.demoAccessAllowed === true;
 
 	return {
 		canManage: hasRealAccess || hasDemoAccess,

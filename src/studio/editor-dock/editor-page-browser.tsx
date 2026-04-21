@@ -20,12 +20,12 @@ import {
 	KeyboardMenuList,
 	useKeyboardMenuController,
 } from "../../components/ui/keyboard-menu";
+import { useWebsiteBuilderI18n } from "../../i18n/website-builder-i18n-context";
+import { translateWebsiteBuilderPageGroup } from "../../i18n/website-builder-labels";
 import type {
 	WebsiteBuilderMode,
 	WebsiteBuilderPageCatalogItem,
 } from "../../types";
-import { useWebsiteBuilderI18n } from "../../i18n/website-builder-i18n-context";
-import { translateWebsiteBuilderPageGroup } from "../../i18n/website-builder-labels";
 
 type EditorPageBrowserProps = {
 	activeMode: WebsiteBuilderMode;
@@ -78,10 +78,7 @@ export const EditorPageBrowser = ({
 	const currentRouteLabel =
 		currentPage?.routePattern ??
 		currentPage?.route ??
-		translate(
-			"websiteBuilder.pageBrowser.unmappedRoute",
-			"Unmapped route",
-		);
+		translate("websiteBuilder.pageBrowser.unmappedRoute", "Unmapped route");
 	const canDuplicateCurrent = currentPage?.canDuplicate === true;
 	const compact = activeMode === "builder";
 	const pageMenu = useKeyboardMenuController({
@@ -125,13 +122,13 @@ export const EditorPageBrowser = ({
 						<span className="min-w-0">
 							<span className="flex items-center gap-2.5">
 								<FolderTree className="h-4 w-4 text-[color:var(--wb-builder-accent)]" />
-										<span className="truncate text-sm font-semibold">
-											{currentPage?.name ??
-												translate(
-													"websiteBuilder.pageBrowser.groups.pages",
-													"Pages",
-												)}
-										</span>
+								<span className="truncate text-sm font-semibold">
+									{currentPage?.name ??
+										translate(
+											"websiteBuilder.pageBrowser.groups.pages",
+											"Pages",
+										)}
+								</span>
 							</span>
 							<span className="mt-0.5 block truncate text-[11px] uppercase tracking-[0.22em] text-[color:var(--wb-builder-text-soft)]">
 								{currentRouteLabel}
@@ -150,10 +147,7 @@ export const EditorPageBrowser = ({
 							className="text-[11px] uppercase tracking-[0.28em]"
 							style={{ color: "var(--wb-builder-text-soft)" }}
 						>
-							{translate(
-								"websiteBuilder.pageBrowser.title",
-								"Page Browser",
-							)}
+							{translate("websiteBuilder.pageBrowser.title", "Page Browser")}
 						</div>
 						<div
 							className="mt-2 text-sm leading-6"
@@ -181,10 +175,7 @@ export const EditorPageBrowser = ({
 								}}
 							>
 								<FilePlus2 className="h-4 w-4" />
-								{translate(
-									"websiteBuilder.pageBrowser.newPage",
-									"New Page",
-								)}
+								{translate("websiteBuilder.pageBrowser.newPage", "New Page")}
 							</button>
 						) : null}
 					</div>

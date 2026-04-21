@@ -1,12 +1,12 @@
 import {
   EditableText
-} from "./chunk-LEXLLWPP.js";
+} from "./chunk-QVAFUFZV.js";
 import "./chunk-JWEWJA2O.js";
 import "./chunk-HFEMF2E3.js";
-import "./chunk-OWDRVIFG.js";
-import "./chunk-4FGVRZOX.js";
-import "./chunk-M743RWMM.js";
-import "./chunk-NYLOTAVT.js";
+import "./chunk-ZQJWNS6S.js";
+import "./chunk-EN3VAWKM.js";
+import "./chunk-GQSABMVW.js";
+import "./chunk-KUHW6SOQ.js";
 
 // src/forms/helpers.ts
 var fieldTypeOptions = [
@@ -54,7 +54,9 @@ var mergeEditableFieldParts = (base, incoming, policy) => {
 };
 var defineWebsiteBuilderForm = (definition) => definition;
 var createWebsiteBuilderFormFieldsField = (path = "fields", options = {}) => {
-  const typeOptions = options.allowedFieldTypes?.length ? fieldTypeOptions.filter((item) => options.allowedFieldTypes?.includes(item.value)) : fieldTypeOptions;
+  const typeOptions = options.allowedFieldTypes?.length ? fieldTypeOptions.filter(
+    (item) => options.allowedFieldTypes?.includes(item.value)
+  ) : fieldTypeOptions;
   return {
     path,
     label: options.label ?? "Form fields",
@@ -78,7 +80,12 @@ var createWebsiteBuilderFormFieldsField = (path = "fields", options = {}) => {
     },
     fields: [
       { path: "id", label: "Field id", kind: "text", localization: "shared" },
-      { path: "name", label: "Input name", kind: "text", localization: "shared" },
+      {
+        path: "name",
+        label: "Input name",
+        kind: "text",
+        localization: "shared"
+      },
       {
         path: "type",
         label: "Type",
@@ -86,7 +93,12 @@ var createWebsiteBuilderFormFieldsField = (path = "fields", options = {}) => {
         localization: "shared",
         options: typeOptions
       },
-      { path: "label", label: "Label", kind: "text", localization: "localized" },
+      {
+        path: "label",
+        label: "Label",
+        kind: "text",
+        localization: "localized"
+      },
       {
         path: "placeholder",
         label: "Placeholder",
@@ -99,7 +111,12 @@ var createWebsiteBuilderFormFieldsField = (path = "fields", options = {}) => {
         kind: "textarea",
         localization: "localized"
       },
-      { path: "required", label: "Required", kind: "toggle", localization: "shared" },
+      {
+        path: "required",
+        label: "Required",
+        kind: "toggle",
+        localization: "shared"
+      },
       {
         path: "width",
         label: "Width",
@@ -107,8 +124,18 @@ var createWebsiteBuilderFormFieldsField = (path = "fields", options = {}) => {
         localization: "shared",
         options: widthOptions
       },
-      { path: "locked", label: "Locked", kind: "toggle", localization: "shared" },
-      { path: "removable", label: "Removable", kind: "toggle", localization: "shared" },
+      {
+        path: "locked",
+        label: "Locked",
+        kind: "toggle",
+        localization: "shared"
+      },
+      {
+        path: "removable",
+        label: "Removable",
+        kind: "toggle",
+        localization: "shared"
+      },
       {
         path: "options",
         label: "Options",
@@ -118,8 +145,18 @@ var createWebsiteBuilderFormFieldsField = (path = "fields", options = {}) => {
         addLabel: "Add option",
         defaultItem: { label: "Option", value: "option" },
         fields: [
-          { path: "label", label: "Label", kind: "text", localization: "localized" },
-          { path: "value", label: "Value", kind: "text", localization: "shared" }
+          {
+            path: "label",
+            label: "Label",
+            kind: "text",
+            localization: "localized"
+          },
+          {
+            path: "value",
+            label: "Value",
+            kind: "text",
+            localization: "shared"
+          }
         ]
       }
     ]
@@ -133,7 +170,10 @@ var resolveWebsiteBuilderFormFields = (fields, definition) => {
     definition.defaultFields.map((field) => [normalizeFieldKey(field), field])
   );
   const incomingByKey = new Map(
-    incoming.map((field, index) => [normalizeFieldKey(field), { field, index }])
+    incoming.map((field, index) => [
+      normalizeFieldKey(field),
+      { field, index }
+    ])
   );
   const requiredFieldIds = /* @__PURE__ */ new Set([
     ...policy.requiredFieldIds ?? [],
@@ -143,7 +183,11 @@ var resolveWebsiteBuilderFormFields = (fields, definition) => {
   const allowAddFields = mode === "freeform" ? true : policy.allowAddFields !== false;
   const allowReorder = mode === "freeform" ? true : policy.allowReorder !== false;
   const sourceItems = mode === "fixed" ? definition.defaultFields.map(
-    (field) => mergeEditableFieldParts(field, incomingByKey.get(normalizeFieldKey(field))?.field, policy)
+    (field) => mergeEditableFieldParts(
+      field,
+      incomingByKey.get(normalizeFieldKey(field))?.field,
+      policy
+    )
   ) : [
     ...incoming,
     ...definition.defaultFields.filter(
@@ -160,8 +204,16 @@ var resolveWebsiteBuilderFormFields = (fields, definition) => {
     return defaultByKey.has(normalizeFieldKey(field));
   });
   const ordered = allowReorder ? filtered : [
-    ...definition.defaultFields.map((field) => filtered.find((item) => normalizeFieldKey(item) === normalizeFieldKey(field))).filter((field) => Boolean(field)),
-    ...filtered.filter((field) => !defaultByKey.has(normalizeFieldKey(field)))
+    ...definition.defaultFields.map(
+      (field) => filtered.find(
+        (item) => normalizeFieldKey(item) === normalizeFieldKey(field)
+      )
+    ).filter(
+      (field) => Boolean(field)
+    ),
+    ...filtered.filter(
+      (field) => !defaultByKey.has(normalizeFieldKey(field))
+    )
   ];
   return ordered.map((field) => {
     const key = normalizeFieldKey(field);
@@ -268,7 +320,10 @@ var WebsiteBuilderForm = ({
       return;
     }
     event.preventDefault();
-    await onSubmitValues(readWebsiteBuilderFormValues(event.currentTarget, resolvedFields), event);
+    await onSubmitValues(
+      readWebsiteBuilderFormValues(event.currentTarget, resolvedFields),
+      event
+    );
   };
   return /* @__PURE__ */ jsxs(
     "form",
@@ -278,7 +333,12 @@ var WebsiteBuilderForm = ({
       ...props,
       children: [
         resolvedFields.map((field) => {
-          const label = renderFieldLabel(field, blockId, fieldsPath, classNames?.label);
+          const label = renderFieldLabel(
+            field,
+            blockId,
+            fieldsPath,
+            classNames?.label
+          );
           const helpText = renderFieldHelpText(
             field,
             blockId,

@@ -8,11 +8,6 @@ import {
 	setValueAtPath,
 } from "../helpers/path";
 import {
-	canEditWebsiteBuilderWorkspace,
-	normalizeWebsiteBuilderWorkspaceCapabilities,
-	normalizeWebsiteBuilderWorkspaceDescriptor,
-} from "../helpers/workspace";
-import {
 	composeWebsiteBuilderSurfaceDocument,
 	decomposeWebsiteBuilderSurfaceDocument,
 	getFirstWebsiteBuilderSurfaceEditableBlockId,
@@ -20,17 +15,22 @@ import {
 	WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
 } from "../helpers/site";
 import {
+	collectBlockIds,
 	duplicateWebsiteBuilderBlockInDocument,
 	findWebsiteBuilderBlock,
 	insertWebsiteBuilderBlockInDocument,
 	moveWebsiteBuilderBlockInDocument,
 	removeWebsiteBuilderBlockFromDocument,
 	updateWebsiteBuilderBlockInDocument,
-	collectBlockIds,
 } from "../helpers/tree";
+import {
+	canEditWebsiteBuilderWorkspace,
+	normalizeWebsiteBuilderWorkspaceCapabilities,
+	normalizeWebsiteBuilderWorkspaceDescriptor,
+} from "../helpers/workspace";
 import type {
-	WebsiteBuilderBlock,
 	WebsiteBuilderAccountTabExtension,
+	WebsiteBuilderBlock,
 	WebsiteBuilderDocument,
 	WebsiteBuilderFieldBinding,
 	WebsiteBuilderLinkComponent,
@@ -702,9 +702,8 @@ export const createWebsiteBuilderStore = ({
 				initialSite: cloneWebsiteBuilderValue(nextInitialSite),
 				initialWorkspace: cloneWebsiteBuilderValue(normalizedWorkspace),
 				initialCapabilities: cloneWebsiteBuilderValue(normalizedCapabilities),
-				selectedBlockId: getFirstWebsiteBuilderSurfaceEditableBlockId(
-					nextSurfaceDocument,
-				),
+				selectedBlockId:
+					getFirstWebsiteBuilderSurfaceEditableBlockId(nextSurfaceDocument),
 				selectedField: null,
 				collapsedBlockIds: {},
 				mode: normalizeWebsiteBuilderMode(state.mode, state.isAdmin),

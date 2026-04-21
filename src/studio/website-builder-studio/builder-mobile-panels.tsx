@@ -1,16 +1,16 @@
 "use client";
 
-import { InspectorPanel } from "../inspector-panel";
-import { PalettePanel } from "../palette-panel";
 import type {
 	WebsiteBuilderPageCatalogItem,
 	WebsiteBuilderPageSettings,
 } from "../../types";
+import { InspectorPanel } from "../inspector-panel";
+import { PalettePanel } from "../palette-panel";
 import type {
 	InspectorDefinitionMeta,
 	InspectorGroups,
-	PaletteFamilyGroup,
 	PaletteDefinition,
+	PaletteFamilyGroup,
 } from "../types";
 
 type BuilderMobilePanelsProps = {

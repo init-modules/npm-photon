@@ -1,11 +1,6 @@
 "use client";
 
-import {
-	createContext,
-	type ReactNode,
-	useContext,
-	useMemo,
-} from "react";
+import { createContext, type ReactNode, useContext, useMemo } from "react";
 import type { WebsiteBuilderI18nValue } from "../types";
 
 const createDefaultTranslate = () => (key: string, fallback?: string) =>

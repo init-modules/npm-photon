@@ -1,6 +1,27 @@
 import {
   useWebsiteBuilderStore
-} from "./chunk-OWDRVIFG.js";
+} from "./chunk-ZQJWNS6S.js";
+
+// src/context/website-builder-surface-layout-context.tsx
+import { createContext, useContext } from "react";
+import { jsx } from "react/jsx-runtime";
+var WebsiteBuilderSurfaceLayoutContext = createContext(null);
+var WebsiteBuilderSurfaceLayoutProvider = ({
+  children,
+  value
+}) => /* @__PURE__ */ jsx(WebsiteBuilderSurfaceLayoutContext.Provider, { value, children });
+var useWebsiteBuilderSurfaceLayoutMetrics = () => useContext(WebsiteBuilderSurfaceLayoutContext);
+var useWebsiteBuilderSurfaceBreakpoints = () => {
+  const metrics = useWebsiteBuilderSurfaceLayoutMetrics();
+  const width = metrics?.width ?? 0;
+  return {
+    width,
+    atLeastSm: width >= 640,
+    atLeastMd: width >= 768,
+    atLeastLg: width >= 1024,
+    atLeastXl: width >= 1280
+  };
+};
 
 // src/search/website-builder-search-highlight-effect.tsx
 import { useEffect } from "react";
@@ -34,9 +55,7 @@ var findTargetElement = (targetId) => {
   const elements = Array.from(
     document.querySelectorAll(SEARCH_TARGET_SELECTOR)
   );
-  return elements.find(
-    (element) => element.dataset.wbSearchTarget === targetId
-  ) ?? null;
+  return elements.find((element) => element.dataset.wbSearchTarget === targetId) ?? null;
 };
 var appendNormalizedTextNode = (textNode, normalized) => {
   const source = textNode.textContent ?? "";
@@ -226,7 +245,7 @@ var WebsiteBuilderSearchHighlightEffect = ({
 };
 
 // src/components/block-renderer.tsx
-import { jsx, jsxs } from "react/jsx-runtime";
+import { jsx as jsx2, jsxs } from "react/jsx-runtime";
 var WebsiteBuilderBlockRenderer = ({
   block,
   renderArea
@@ -242,38 +261,14 @@ var WebsiteBuilderBlockRenderer = ({
     ] });
   }
   const Component = definition.component;
-  return /* @__PURE__ */ jsx(Component, { block, renderArea });
+  return /* @__PURE__ */ jsx2(Component, { block, renderArea });
 };
 
 // src/context/website-builder-render-depth-context.tsx
-import { createContext, useContext } from "react";
-var WebsiteBuilderRenderDepthContext = createContext(0);
+import { createContext as createContext2, useContext as useContext2 } from "react";
+var WebsiteBuilderRenderDepthContext = createContext2(0);
 var WebsiteBuilderRenderDepthProvider = WebsiteBuilderRenderDepthContext.Provider;
-var useWebsiteBuilderRenderDepth = () => useContext(WebsiteBuilderRenderDepthContext);
-
-// src/context/website-builder-surface-layout-context.tsx
-import {
-  createContext as createContext2,
-  useContext as useContext2
-} from "react";
-import { jsx as jsx2 } from "react/jsx-runtime";
-var WebsiteBuilderSurfaceLayoutContext = createContext2(null);
-var WebsiteBuilderSurfaceLayoutProvider = ({
-  children,
-  value
-}) => /* @__PURE__ */ jsx2(WebsiteBuilderSurfaceLayoutContext.Provider, { value, children });
-var useWebsiteBuilderSurfaceLayoutMetrics = () => useContext2(WebsiteBuilderSurfaceLayoutContext);
-var useWebsiteBuilderSurfaceBreakpoints = () => {
-  const metrics = useWebsiteBuilderSurfaceLayoutMetrics();
-  const width = metrics?.width ?? 0;
-  return {
-    width,
-    atLeastSm: width >= 640,
-    atLeastMd: width >= 768,
-    atLeastLg: width >= 1024,
-    atLeastXl: width >= 1280
-  };
-};
+var useWebsiteBuilderRenderDepth = () => useContext2(WebsiteBuilderRenderDepthContext);
 
 // src/components/ui/keyboard-menu/keyboard-menu.tsx
 import clsx from "clsx";
@@ -548,7 +543,9 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 // src/components/ui/dialog/dialog-content.tsx
 import { jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
 var DialogContent = forwardRef2(({ className, ...props }, ref) => {
-  const builderThemeRoot = typeof document === "undefined" ? null : document.querySelector('[data-testid="wb-builder-theme-root"]');
+  const builderThemeRoot = typeof document === "undefined" ? null : document.querySelector(
+    '[data-testid="wb-builder-theme-root"]'
+  );
   return /* @__PURE__ */ jsxs3(DialogPrimitive2.Portal, { container: builderThemeRoot ?? void 0, children: [
     /* @__PURE__ */ jsx5(DialogOverlay, {}),
     /* @__PURE__ */ jsx5(
@@ -653,13 +650,13 @@ var DialogHeader = ({
 };
 
 export {
+  WebsiteBuilderSurfaceLayoutProvider,
+  useWebsiteBuilderSurfaceLayoutMetrics,
+  useWebsiteBuilderSurfaceBreakpoints,
   WebsiteBuilderSearchHighlightEffect,
   WebsiteBuilderBlockRenderer,
   WebsiteBuilderRenderDepthProvider,
   useWebsiteBuilderRenderDepth,
-  WebsiteBuilderSurfaceLayoutProvider,
-  useWebsiteBuilderSurfaceLayoutMetrics,
-  useWebsiteBuilderSurfaceBreakpoints,
   cn,
   DialogContent,
   DialogDescription,

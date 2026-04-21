@@ -62,9 +62,7 @@ export const loadStudioModePreference = async ({
 
 	return {
 		preferredMode:
-			isAdmin &&
-			isPersistedMode(preferredMode) &&
-			preferredMode !== mode
+			isAdmin && isPersistedMode(preferredMode) && preferredMode !== mode
 				? preferredMode
 				: null,
 	};
@@ -275,10 +273,7 @@ export const useStudioBrowserPreferences = ({
 					storageKey: builderSurfaceStorageKey,
 				});
 
-			if (
-				!cancelled &&
-				preferredBuilderSurfaceMode !== builderSurfaceMode
-			) {
+			if (!cancelled && preferredBuilderSurfaceMode !== builderSurfaceMode) {
 				setBuilderSurfaceMode(preferredBuilderSurfaceMode);
 			}
 

@@ -3,9 +3,12 @@
 import { Fragment, memo } from "react";
 import { WebsiteBuilderBlockRenderer } from "../../components/block-renderer";
 import { useWebsiteBuilderStore } from "../../context/website-builder-context";
-import { WebsiteBuilderRenderDepthProvider, useWebsiteBuilderRenderDepth } from "../../context/website-builder-render-depth-context";
-import { useWebsiteBuilderI18n } from "../../i18n/website-builder-i18n-context";
+import {
+	useWebsiteBuilderRenderDepth,
+	WebsiteBuilderRenderDepthProvider,
+} from "../../context/website-builder-render-depth-context";
 import { createWebsiteBuilderAreaListId } from "../../helpers/tree";
+import { useWebsiteBuilderI18n } from "../../i18n/website-builder-i18n-context";
 import type { WebsiteBuilderBlock } from "../../types";
 import { matchesTarget } from "../shared";
 import type { InsertTarget } from "../types";

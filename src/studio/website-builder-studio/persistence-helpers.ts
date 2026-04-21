@@ -1,6 +1,5 @@
 import { getWebsiteBuilderDocumentFingerprint } from "../../helpers/document";
-import { cloneWebsiteBuilderValue } from "../../helpers/path";
-import { setValueAtPath } from "../../helpers/path";
+import { cloneWebsiteBuilderValue, setValueAtPath } from "../../helpers/path";
 import {
 	canSaveWebsiteBuilderWorkspace,
 	getWebsiteBuilderWorkspaceIdentityKey,
@@ -164,7 +163,8 @@ export const createWebsiteBuilderStudioSavePayload = ({
 	site: WebsiteBuilderSite;
 }): WebsiteBuilderStudioSavePayload => ({
 	workspace,
-	expectedHeadRevisionId: expectedHeadRevisionId ?? workspace?.headRevisionId ?? null,
+	expectedHeadRevisionId:
+		expectedHeadRevisionId ?? workspace?.headRevisionId ?? null,
 	commitMessage: null,
 	saveMode,
 	document,

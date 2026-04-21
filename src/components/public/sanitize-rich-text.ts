@@ -34,9 +34,13 @@ const escapeHtml = (value: string) =>
 		.replaceAll(">", "&gt;");
 
 const escapeAttribute = (value: string) =>
-	escapeHtml(value).replaceAll("\"", "&quot;");
+	escapeHtml(value).replaceAll('"', "&quot;");
 
-const sanitizeAttributeValue = (tagName: string, name: string, value: string) => {
+const sanitizeAttributeValue = (
+	tagName: string,
+	name: string,
+	value: string,
+) => {
 	if (name === "href") {
 		const sanitizedHref = sanitizeWebsiteBuilderLinkHref(value, "");
 
@@ -73,7 +77,8 @@ const sanitizeWithDomParser = (html: string) => {
 		}
 
 		const cleanElement = document.createElement(tagName);
-		const allowedAttributes = allowedAttributesByTag[tagName] ?? new Set<string>();
+		const allowedAttributes =
+			allowedAttributesByTag[tagName] ?? new Set<string>();
 
 		for (const attribute of Array.from(element.attributes)) {
 			const name = attribute.name.toLowerCase();
@@ -123,7 +128,8 @@ const sanitizeWithDomParser = (html: string) => {
 
 const parseAttributes = (source: string) => {
 	const attributes: Array<{ name: string; value: string }> = [];
-	const pattern = /([^\s"'<>/=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
+	const pattern =
+		/([^\s"'<>/=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
 
 	for (const match of source.matchAll(pattern)) {
 		const name = match[1]?.toLowerCase();
@@ -165,7 +171,8 @@ const sanitizeWithoutDomParser = (html: string) => {
 			continue;
 		}
 
-		const allowedAttributes = allowedAttributesByTag[tagName] ?? new Set<string>();
+		const allowedAttributes =
+			allowedAttributesByTag[tagName] ?? new Set<string>();
 		const cleanAttributes: string[] = [];
 
 		for (const attribute of parseAttributes(rawAttributes)) {
@@ -191,7 +198,10 @@ const sanitizeWithoutDomParser = (html: string) => {
 			}
 		}
 
-		if (tagName === "a" && !cleanAttributes.some((item) => item.startsWith("rel="))) {
+		if (
+			tagName === "a" &&
+			!cleanAttributes.some((item) => item.startsWith("rel="))
+		) {
 			cleanAttributes.push(`rel="noopener noreferrer"`);
 		}
 

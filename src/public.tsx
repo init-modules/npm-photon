@@ -6,8 +6,8 @@ import { memo, useEffect, useRef, useState } from "react";
 import { WebsiteBuilderBlockRenderer } from "./components/block-renderer";
 import { WebsiteBuilderProvider } from "./context/website-builder-context";
 import {
-	WebsiteBuilderRenderDepthProvider,
 	useWebsiteBuilderRenderDepth,
+	WebsiteBuilderRenderDepthProvider,
 } from "./context/website-builder-render-depth-context";
 import { WebsiteBuilderSurfaceLayoutProvider } from "./context/website-builder-surface-layout-context";
 import { resolveWebsiteBuilderPublicSiteDesignSettings } from "./helpers/public-site-design";
@@ -16,12 +16,15 @@ import {
 	resolveWebsiteBuilderSurfaceRegionDescriptors,
 	WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
 } from "./helpers/site";
+
 export {
 	getWebsiteBuilderAnchorRel,
 	sanitizeWebsiteBuilderLinkHref,
 } from "./helpers/link-url";
+
 import { WebsiteBuilderSearchHighlightEffect } from "./search/website-builder-search-highlight-effect";
 import type {
+	WebsiteBuilderAccountTabExtension,
 	WebsiteBuilderArea,
 	WebsiteBuilderBlock,
 	WebsiteBuilderI18nValue,
@@ -30,8 +33,12 @@ import type {
 	WebsiteBuilderResolvedPage,
 	WebsiteBuilderSearchHighlight,
 	WebsiteBuilderSiteFrameExtension,
-	WebsiteBuilderAccountTabExtension,
 } from "./types";
+
+export type WebsiteBuilderPublicRuntimePageValue = Pick<
+	WebsiteBuilderResolvedPage,
+	"page" | "document" | "resources" | "pageSettings" | "runtimeData" | "site"
+>;
 
 type WebsiteBuilderPublicBlockListProps = {
 	blocks: WebsiteBuilderBlock[];
@@ -49,9 +56,7 @@ const WebsiteBuilderPublicBlockItem = ({
 			block={block}
 			renderArea={(area: WebsiteBuilderArea) => (
 				<WebsiteBuilderRenderDepthProvider value={renderDepth + 1}>
-					<WebsiteBuilderPublicBlockList
-						blocks={area.blocks}
-					/>
+					<WebsiteBuilderPublicBlockList blocks={area.blocks} />
 				</WebsiteBuilderRenderDepthProvider>
 			)}
 		/>
@@ -69,8 +74,10 @@ const WebsiteBuilderPublicBlockList = ({
 );
 
 type WebsiteBuilderPublicSurfaceRegionProps = {
-	region: ReturnType<typeof resolveWebsiteBuilderSurfaceRegionDescriptors>[number];
-	page: WebsiteBuilderResolvedPage;
+	region: ReturnType<
+		typeof resolveWebsiteBuilderSurfaceRegionDescriptors
+	>[number];
+	page: WebsiteBuilderPublicRuntimePageValue;
 };
 
 const WebsiteBuilderPublicSurfaceRegion = ({
@@ -79,7 +86,10 @@ const WebsiteBuilderPublicSurfaceRegion = ({
 }: WebsiteBuilderPublicSurfaceRegionProps) => {
 	const sectionRef = useRef<HTMLElement | null>(null);
 	const [surfaceWidth, setSurfaceWidth] = useState(0);
-	const blocks = getWebsiteBuilderSurfaceRegionBlocks(page.document, region.key);
+	const blocks = getWebsiteBuilderSurfaceRegionBlocks(
+		page.document,
+		region.key,
+	);
 	const isPageRegion = region.key === WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY;
 	const stickySiteHeaderRegion =
 		region.key === "header" &&
@@ -144,9 +154,7 @@ const WebsiteBuilderPublicSurfaceRegion = ({
 							: undefined
 					}
 				>
-					<WebsiteBuilderPublicBlockList
-						blocks={blocks ?? []}
-					/>
+					<WebsiteBuilderPublicBlockList blocks={blocks ?? []} />
 				</div>
 			</section>
 		</WebsiteBuilderSurfaceLayoutProvider>
@@ -156,7 +164,7 @@ const WebsiteBuilderPublicSurfaceRegion = ({
 const WebsiteBuilderPublicSurface = memo(function WebsiteBuilderPublicSurface({
 	page,
 }: {
-	page: WebsiteBuilderResolvedPage;
+	page: WebsiteBuilderPublicRuntimePageValue;
 }) {
 	const regions = resolveWebsiteBuilderSurfaceRegionDescriptors(page.site);
 
@@ -174,7 +182,7 @@ const WebsiteBuilderPublicSurface = memo(function WebsiteBuilderPublicSurface({
 });
 
 type WebsiteBuilderPublicPageProps = {
-	page: WebsiteBuilderResolvedPage;
+	page: WebsiteBuilderPublicRuntimePageValue;
 	registry: WebsiteBuilderRegistry;
 	i18n?: WebsiteBuilderI18nValue | null;
 	linkComponent?: WebsiteBuilderLinkComponent;
@@ -246,8 +254,8 @@ export const WebsiteBuilderPublicPage = ({
 	);
 };
 
-export { EditableImage } from "./components/public/public-editable-image";
 export { EditableGallery } from "./components/public/public-editable-gallery";
+export { EditableImage } from "./components/public/public-editable-image";
 export { EditableRepeaterValue } from "./components/public/public-editable-repeater-value";
 export { EditableRichText } from "./components/public/public-editable-rich-text";
 export { EditableText } from "./components/public/public-editable-text";
@@ -258,12 +266,11 @@ export {
 } from "./components/public/sanitize-rich-text";
 export {
 	useWebsiteBuilder,
-	useWebsiteBuilderStore,
 	useWebsiteBuilderCanEdit,
 	useWebsiteBuilderFieldValue as useWebsiteBuilderValueAtPath,
+	useWebsiteBuilderStore,
 	WebsiteBuilderLink,
 } from "./context/website-builder-context";
-export { useWebsiteBuilderI18n } from "./i18n/website-builder-i18n-context";
 export { useWebsiteBuilderRenderDepth } from "./context/website-builder-render-depth-context";
 export {
 	createWebsiteBuilderBlockLocalizationSchema,
@@ -272,29 +279,30 @@ export {
 } from "./helpers/document";
 export { createWebsiteBuilderKit } from "./helpers/installable";
 export { createWebsiteBuilderRuntime } from "./helpers/runtime";
-export { getWebsiteBuilderSurfaceModeStyle } from "./helpers/surface-layout";
 export {
 	createWebsiteBuilderAccountTabExtension,
 	createWebsiteBuilderSiteFrameExtension,
 	resolveWebsiteBuilderAccountTabs,
 } from "./helpers/site-frame-extensions";
+export { getWebsiteBuilderSurfaceModeStyle } from "./helpers/surface-layout";
+export { useWebsiteBuilderI18n } from "./i18n/website-builder-i18n-context";
+export {
+	websiteBuilderPublicSystemKit as websiteBuilderSystemKit,
+	websiteBuilderPublicSystemModule as websiteBuilderSystemModule,
+} from "./modules/system-public";
 export {
 	WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
 	WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
 	WEBSITE_BUILDER_SEARCH_TARGET_PARAM,
 } from "./search/constants";
 export { WebsiteBuilderSiteSearch } from "./search/website-builder-site-search";
-export {
-	websiteBuilderPublicSystemKit as websiteBuilderSystemKit,
-	websiteBuilderPublicSystemModule as websiteBuilderSystemModule,
-} from "./modules/system-public";
 export type {
 	WebsiteBuilderAccountTabExtension,
+	WebsiteBuilderBindingAdapter,
 	WebsiteBuilderBlock,
 	WebsiteBuilderBlockComponentProps,
 	WebsiteBuilderBlockDefinition,
 	WebsiteBuilderBlockLocalizationSchema,
-	WebsiteBuilderBindingAdapter,
 	WebsiteBuilderDocument,
 	WebsiteBuilderDocumentsMap,
 	WebsiteBuilderField,

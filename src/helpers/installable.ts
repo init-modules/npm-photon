@@ -43,7 +43,7 @@ export const collectWebsiteBuilderSiteFrameExtensions = (
 ): WebsiteBuilderSiteFrameExtension[] =>
 	entries.flatMap((entry) =>
 		isWebsiteBuilderInstallableKit(entry)
-			? entry.siteFrameExtensions ?? []
+			? (entry.siteFrameExtensions ?? [])
 			: [],
 	);
 
@@ -51,5 +51,5 @@ export const collectWebsiteBuilderAccountTabs = (
 	entries: WebsiteBuilderRegistryEntry[],
 ): WebsiteBuilderAccountTabExtension[] =>
 	entries.flatMap((entry) =>
-		isWebsiteBuilderInstallableKit(entry) ? entry.accountTabs ?? [] : [],
+		isWebsiteBuilderInstallableKit(entry) ? (entry.accountTabs ?? []) : [],
 	);

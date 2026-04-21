@@ -38,8 +38,8 @@ import { useStudioBrowserPreferences } from "./use-studio-browser-preferences";
 import { useStudioDefinitionCatalog } from "./use-studio-definition-catalog";
 import { useStudioDragState } from "./use-studio-drag-state";
 import { useStudioPersistence } from "./use-studio-persistence";
-import { useStudioSiteSettingChange } from "./use-studio-site-setting-change";
 import { useStudioSidebars } from "./use-studio-sidebars";
+import { useStudioSiteSettingChange } from "./use-studio-site-setting-change";
 import { WebsiteBuilderStage } from "./website-builder-stage";
 
 type WebsiteBuilderStudioInnerProps = {

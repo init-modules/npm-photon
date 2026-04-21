@@ -2,7 +2,7 @@ import {
   WebsiteBuilderRichTextEditor,
   renderWebsiteBuilderRichTextHtml,
   websiteBuilderRichTextContentClassName
-} from "./chunk-RHGH5BX2.js";
+} from "./chunk-PVXBOLON.js";
 import {
   buildWebsiteBuilderSearchTargetId
 } from "./chunk-JWEWJA2O.js";
@@ -14,10 +14,10 @@ import {
   useWebsiteBuilderCanEdit,
   useWebsiteBuilderFieldValue,
   useWebsiteBuilderStore
-} from "./chunk-OWDRVIFG.js";
+} from "./chunk-ZQJWNS6S.js";
 import {
   WEBSITE_BUILDER_EMPTY_TEXT
-} from "./chunk-NYLOTAVT.js";
+} from "./chunk-KUHW6SOQ.js";
 
 // src/components/editable/editable-rich-text.tsx
 import clsx from "clsx";

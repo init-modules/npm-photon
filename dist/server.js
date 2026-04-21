@@ -1,6 +1,6 @@
 import {
   createWebsiteBuilderRuntime
-} from "./chunk-73LA5FDK.js";
+} from "./chunk-JBXEMZUN.js";
 import {
   collectWebsiteBuilderFooterExtensionItems,
   collectWebsiteBuilderHeaderExtensionItems,
@@ -8,7 +8,7 @@ import {
   createWebsiteBuilderSiteFrameExtension,
   resolveWebsiteBuilderAccountTabs,
   resolveWebsiteBuilderSiteFrameExtensions
-} from "./chunk-4N2K54N2.js";
+} from "./chunk-2UNKJB65.js";
 import {
   WEBSITE_BUILDER_DEFAULT_SITE_DESIGN_PRESET_ID,
   WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS,
@@ -25,7 +25,7 @@ import {
   resolveWebsiteBuilderSiteDesignSettings,
   websiteBuilderSiteColorSchemes,
   websiteBuilderSiteDesignPresets
-} from "./chunk-7A32BINR.js";
+} from "./chunk-KEOML5B2.js";
 import {
   WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
   WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
@@ -56,7 +56,7 @@ import {
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-4FGVRZOX.js";
+} from "./chunk-EN3VAWKM.js";
 import {
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
@@ -84,7 +84,7 @@ import {
   removeWebsiteBuilderBlockFromDocument,
   setValueAtPath,
   updateWebsiteBuilderBlockInDocument
-} from "./chunk-NYLOTAVT.js";
+} from "./chunk-KUHW6SOQ.js";
 export {
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,

@@ -7,12 +7,12 @@ import {
 	useWebsiteBuilderStore,
 } from "../../context/website-builder-context";
 import { WEBSITE_BUILDER_EMPTY_TEXT } from "../../helpers/path";
+import { buildWebsiteBuilderSearchTargetId } from "../../search/helpers";
 import {
 	renderWebsiteBuilderRichTextHtml,
 	WebsiteBuilderRichTextEditor,
 	websiteBuilderRichTextContentClassName,
 } from "../rich-text-editor";
-import { buildWebsiteBuilderSearchTargetId } from "../../search/helpers";
 import { createActivationProps, editableFrameClassName } from "./shared";
 
 type EditableRichTextProps = {

@@ -18,7 +18,8 @@ type PublicEditableTextareaProps = {
 	placeholder?: string;
 };
 
-type EditableTextareaEditorComponent = ComponentType<PublicEditableTextareaProps>;
+type EditableTextareaEditorComponent =
+	ComponentType<PublicEditableTextareaProps>;
 
 export const EditableTextarea = ({
 	blockId,

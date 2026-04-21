@@ -17,8 +17,8 @@ import { PalettePanel } from "../palette-panel";
 import type {
 	InspectorDefinitionMeta,
 	InspectorGroups,
-	PaletteFamilyGroup,
 	PaletteDefinition,
+	PaletteFamilyGroup,
 } from "../types";
 import { BuilderSidebarEdgeToggle } from "./builder-sidebar-edge-toggle";
 import { BuilderSidebarResizeHandle } from "./builder-sidebar-resize-handle";
@@ -180,18 +180,18 @@ export const BuilderSidebars = ({
 							boxShadow: "var(--wb-builder-sidebar-shadow)",
 						}}
 					>
-							<PalettePanel
-								search={search}
-								onSearchChange={onSearchChange}
-								allPaletteBlocks={allPaletteBlocks}
-								paletteGroups={paletteGroups}
-								paletteFamily={paletteFamily}
-								onPaletteFamilyChange={onPaletteFamilyChange}
-								palettePackage={palettePackage}
-								onPalettePackageChange={onPalettePackageChange}
-								collapsedFamilies={collapsedFamilies}
-								onToggleFamily={onToggleFamily}
-								collapsedGroups={collapsedGroups}
+						<PalettePanel
+							search={search}
+							onSearchChange={onSearchChange}
+							allPaletteBlocks={allPaletteBlocks}
+							paletteGroups={paletteGroups}
+							paletteFamily={paletteFamily}
+							onPaletteFamilyChange={onPaletteFamilyChange}
+							palettePackage={palettePackage}
+							onPalettePackageChange={onPalettePackageChange}
+							collapsedFamilies={collapsedFamilies}
+							onToggleFamily={onToggleFamily}
+							collapsedGroups={collapsedGroups}
 							onToggleGroup={onToggleGroup}
 							selectedDefinitionKey={selectedDefinitionKey}
 							onSelectDefinition={onSelectDefinition}

@@ -347,25 +347,26 @@ export const useStudioPersistence = ({
 			setSaveState("saving");
 
 			try {
-				const persistedState = (await onSaveDocument?.(
-					createWebsiteBuilderStudioSavePayload({
-						workspace: normalizedWorkspace,
-						expectedHeadRevisionId:
-							lastSavedState.expectedHeadRevisionId ??
-							normalizedWorkspace.headRevisionId ??
-							null,
-						saveMode: reason,
-						document: persistedDocument,
-						resources,
-						pageSettings,
-						site,
-					}),
-					{
-						reason,
-						workspace: normalizedWorkspace,
-						capabilities: normalizedCapabilities,
-					},
-				)) ??
+				const persistedState =
+					(await onSaveDocument?.(
+						createWebsiteBuilderStudioSavePayload({
+							workspace: normalizedWorkspace,
+							expectedHeadRevisionId:
+								lastSavedState.expectedHeadRevisionId ??
+								normalizedWorkspace.headRevisionId ??
+								null,
+							saveMode: reason,
+							document: persistedDocument,
+							resources,
+							pageSettings,
+							site,
+						}),
+						{
+							reason,
+							workspace: normalizedWorkspace,
+							capabilities: normalizedCapabilities,
+						},
+					)) ??
 					createWebsiteBuilderStudioSavePayload({
 						workspace: normalizedWorkspace,
 						expectedHeadRevisionId:
@@ -400,9 +401,7 @@ export const useStudioPersistence = ({
 						saveMode: persistedState.saveMode,
 						document: cloneWebsiteBuilderValue(persistedState.document),
 						resources: cloneWebsiteBuilderValue(persistedState.resources),
-						pageSettings: cloneWebsiteBuilderValue(
-							persistedState.pageSettings,
-						),
+						pageSettings: cloneWebsiteBuilderValue(persistedState.pageSettings),
 						site: cloneWebsiteBuilderValue(persistedState.site),
 					}),
 				);
@@ -446,7 +445,9 @@ export const useStudioPersistence = ({
 		syncExternalState({
 			initialDocument: cloneWebsiteBuilderValue(lastSavedState.document),
 			initialResources: cloneWebsiteBuilderValue(lastSavedState.resources),
-			initialPageSettings: cloneWebsiteBuilderValue(lastSavedState.pageSettings),
+			initialPageSettings: cloneWebsiteBuilderValue(
+				lastSavedState.pageSettings,
+			),
 			initialSite: cloneWebsiteBuilderValue(lastSavedState.site),
 			workspace: lastSavedState.workspace ?? normalizedWorkspace,
 			capabilities: normalizedCapabilities,

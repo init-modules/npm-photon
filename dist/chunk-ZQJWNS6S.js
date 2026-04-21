@@ -6,11 +6,11 @@ import {
   getFirstWebsiteBuilderSurfaceEditableBlockId,
   getWebsiteBuilderDocumentFingerprint,
   getWebsiteBuilderSurfaceRegionListId
-} from "./chunk-4FGVRZOX.js";
+} from "./chunk-EN3VAWKM.js";
 import {
   getWebsiteBuilderAnchorRel,
   sanitizeWebsiteBuilderLinkHref
-} from "./chunk-M743RWMM.js";
+} from "./chunk-GQSABMVW.js";
 import {
   canEditWebsiteBuilderWorkspace,
   cloneWebsiteBuilderValue,
@@ -26,14 +26,10 @@ import {
   removeWebsiteBuilderBlockFromDocument,
   setValueAtPath,
   updateWebsiteBuilderBlockInDocument
-} from "./chunk-NYLOTAVT.js";
+} from "./chunk-KUHW6SOQ.js";
 
 // src/i18n/website-builder-i18n-context.tsx
-import {
-  createContext,
-  useContext,
-  useMemo
-} from "react";
+import { createContext, useContext, useMemo } from "react";
 import { jsx } from "react/jsx-runtime";
 var createDefaultTranslate = () => (key, fallback) => fallback ?? key;
 var defaultValue = {
@@ -79,6 +75,21 @@ import {
   useRef
 } from "react";
 import { useStore } from "zustand";
+
+// src/context/external-state.ts
+var getWebsiteBuilderExternalStateFingerprint = ({
+  document,
+  resources,
+  pageSettings,
+  site,
+  workspace
+}) => JSON.stringify({
+  workspace: getWebsiteBuilderWorkspaceIdentityKey(workspace),
+  document: getWebsiteBuilderDocumentFingerprint(document),
+  resources,
+  pageSettings,
+  site
+});
 
 // src/context/website-builder-store.ts
 import { createStore } from "zustand/vanilla";
@@ -478,9 +489,7 @@ var createWebsiteBuilderStore = ({
         initialSite: cloneWebsiteBuilderValue(nextInitialSite),
         initialWorkspace: cloneWebsiteBuilderValue(normalizedWorkspace),
         initialCapabilities: cloneWebsiteBuilderValue(normalizedCapabilities),
-        selectedBlockId: getFirstWebsiteBuilderSurfaceEditableBlockId(
-          nextSurfaceDocument
-        ),
+        selectedBlockId: getFirstWebsiteBuilderSurfaceEditableBlockId(nextSurfaceDocument),
         selectedField: null,
         collapsedBlockIds: {},
         mode: normalizeWebsiteBuilderMode(state.mode, state.isAdmin),
@@ -538,21 +547,6 @@ var createWebsiteBuilderStore = ({
     }
   }));
 };
-
-// src/context/external-state.ts
-var getWebsiteBuilderExternalStateFingerprint = ({
-  document,
-  resources,
-  pageSettings,
-  site,
-  workspace
-}) => JSON.stringify({
-  workspace: getWebsiteBuilderWorkspaceIdentityKey(workspace),
-  document: getWebsiteBuilderDocumentFingerprint(document),
-  resources,
-  pageSettings,
-  site
-});
 
 // src/context/website-builder-context.tsx
 import { jsx as jsx2 } from "react/jsx-runtime";
@@ -651,7 +645,15 @@ var WebsiteBuilderProvider = ({
         normalizeWebsiteBuilderWorkspaceCapabilities(capabilities)
       )
     });
-  }, [externalStateFingerprint, capabilities, initialDocument, initialPageSettings, initialResources, initialSite, workspace]);
+  }, [
+    externalStateFingerprint,
+    capabilities,
+    initialDocument,
+    initialPageSettings,
+    initialResources,
+    initialSite,
+    workspace
+  ]);
   useEffect(() => {
     storeRef.current?.setState((state) => {
       const normalizedWorkspace = normalizeWebsiteBuilderWorkspaceDescriptor(workspace);

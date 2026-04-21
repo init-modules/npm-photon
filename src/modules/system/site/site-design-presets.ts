@@ -60,8 +60,7 @@ export const websiteBuilderSiteDesignPresets: WebsiteBuilderSiteDesignPresetDefi
 			designTokens: {
 				bodyFontFamily:
 					"var(--font-body, 'Avenir Next', ui-sans-serif), system-ui, sans-serif",
-				headingFontFamily:
-					"'Iowan Old Style', 'Palatino Linotype', serif",
+				headingFontFamily: "'Iowan Old Style', 'Palatino Linotype', serif",
 				siteMaxWidth: "1120px",
 				pageGutter: "40px",
 				sectionGap: "0px",

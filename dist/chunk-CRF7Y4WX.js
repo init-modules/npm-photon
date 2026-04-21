@@ -14,10 +14,10 @@ import {
   useWebsiteBuilderCanEdit,
   useWebsiteBuilderFieldValue,
   useWebsiteBuilderStore
-} from "./chunk-OWDRVIFG.js";
+} from "./chunk-ZQJWNS6S.js";
 import {
   createWebsiteBuilderNodeId
-} from "./chunk-NYLOTAVT.js";
+} from "./chunk-KUHW6SOQ.js";
 
 // src/components/editable/editable-gallery.tsx
 import clsx2 from "clsx";
@@ -118,7 +118,9 @@ var EditableGalleryEmptyState = ({
           "div",
           {
             className: `text-base font-semibold ${titleClassName ?? ""}`,
-            style: { color: "var(--wb-gallery-empty-title, rgba(255,255,255,0.82))" },
+            style: {
+              color: "var(--wb-gallery-empty-title, rgba(255,255,255,0.82))"
+            },
             children: emptyTitle
           }
         ),
@@ -126,7 +128,9 @@ var EditableGalleryEmptyState = ({
           "div",
           {
             className: `max-w-sm text-sm leading-7 ${bodyClassName ?? ""}`,
-            style: { color: "var(--wb-gallery-empty-body, rgba(255,255,255,0.48))" },
+            style: {
+              color: "var(--wb-gallery-empty-body, rgba(255,255,255,0.48))"
+            },
             children: emptyBody
           }
         ),
@@ -358,10 +362,7 @@ var EditableGalleryItemCard = ({
             "div",
             {
               "data-testid": "wb-editable-gallery-item-caption",
-              className: clsx(
-                "text-sm leading-7",
-                captionClassName
-              ),
+              className: clsx("text-sm leading-7", captionClassName),
               style: {
                 color: "var(--wb-gallery-caption, rgba(203,213,225,0.92))"
               },

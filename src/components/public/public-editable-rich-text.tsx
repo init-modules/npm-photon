@@ -22,7 +22,8 @@ type PublicEditableRichTextProps = {
 const richTextContentClassName =
 	"text-[var(--wb-site-text)] [&_blockquote]:my-5 [&_blockquote]:border-l-2 [&_blockquote]:border-[var(--wb-site-border)] [&_blockquote]:pl-4 [&_blockquote]:text-[var(--wb-site-muted-text)] [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-[-0.04em] [&_h2]:text-[var(--wb-site-text)] [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:tracking-[-0.03em] [&_h3]:text-[var(--wb-site-text)] [&_li]:text-[var(--wb-site-text)] [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-8 [&_p]:text-[var(--wb-site-text)] [&_p+p]:mt-4 [&_strong]:font-semibold [&_strong]:text-[var(--wb-site-text)] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-5";
 
-type EditableRichTextEditorComponent = ComponentType<PublicEditableRichTextProps>;
+type EditableRichTextEditorComponent =
+	ComponentType<PublicEditableRichTextProps>;
 
 export const EditableRichText = ({
 	blockId,
@@ -73,7 +74,9 @@ export const EditableRichText = ({
 	}
 
 	return (
-		<div data-wb-search-target={buildWebsiteBuilderSearchTargetId(blockId, path)}>
+		<div
+			data-wb-search-target={buildWebsiteBuilderSearchTargetId(blockId, path)}
+		>
 			<div
 				className={clsx(
 					richTextContentClassName,

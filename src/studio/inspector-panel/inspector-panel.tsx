@@ -4,21 +4,21 @@ import clsx from "clsx";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { memo, useEffect, useMemo, useState } from "react";
 import { useWebsiteBuilderStore } from "../../context/website-builder-context";
+import { findWebsiteBuilderBlock } from "../../helpers/tree";
 import { useWebsiteBuilderI18n } from "../../i18n/website-builder-i18n-context";
 import {
 	translateWebsiteBuilderFieldGroup,
 	translateWebsiteBuilderPaletteCategory,
 } from "../../i18n/website-builder-labels";
-import { findWebsiteBuilderBlock } from "../../helpers/tree";
 import type {
 	WebsiteBuilderField,
+	WebsiteBuilderNestedField,
 	WebsiteBuilderPageCatalogItem,
 	WebsiteBuilderPageSettings,
 } from "../../types";
 import { FIELD_GROUP_LABELS } from "../shared";
 import type { InspectorDefinitionMeta, InspectorGroups } from "../types";
 import { FieldEditor } from "./field-editor";
-import type { WebsiteBuilderNestedField } from "../../types";
 
 type InspectorPanelProps = {
 	definitionFields: WebsiteBuilderField[];
@@ -46,7 +46,11 @@ const fieldSupportsLocalization = (
 ): boolean => {
 	const effectiveLocalization = field.localization ?? inheritedLocalization;
 
-	if (effectiveLocalization === "localized" && field.kind !== "object" && field.kind !== "repeater") {
+	if (
+		effectiveLocalization === "localized" &&
+		field.kind !== "object" &&
+		field.kind !== "repeater"
+	) {
 		return true;
 	}
 
@@ -467,7 +471,7 @@ const InspectorPanelComponent = ({
 										translateWebsiteBuilderFieldGroup(groupKey, translate),
 									)}
 								</div>
-							{groupKey === "content" &&
+								{groupKey === "content" &&
 								editableLocales.length > 1 &&
 								fields.some((field) => fieldSupportsLocalization(field)) ? (
 									<div

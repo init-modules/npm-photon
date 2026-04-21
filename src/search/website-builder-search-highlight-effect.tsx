@@ -30,20 +30,22 @@ const clearSearchMarks = () => {
 		return;
 	}
 
-	document.querySelectorAll<HTMLElement>(SEARCH_MARK_SELECTOR).forEach((mark) => {
-		const parent = mark.parentNode;
+	document
+		.querySelectorAll<HTMLElement>(SEARCH_MARK_SELECTOR)
+		.forEach((mark) => {
+			const parent = mark.parentNode;
 
-		if (!parent) {
-			return;
-		}
+			if (!parent) {
+				return;
+			}
 
-		while (mark.firstChild) {
-			parent.insertBefore(mark.firstChild, mark);
-		}
+			while (mark.firstChild) {
+				parent.insertBefore(mark.firstChild, mark);
+			}
 
-		parent.removeChild(mark);
-		parent.normalize();
-	});
+			parent.removeChild(mark);
+			parent.normalize();
+		});
 
 	document
 		.querySelectorAll<HTMLElement>(`[${ACTIVE_TARGET_ATTRIBUTE}="true"]`)
@@ -61,9 +63,8 @@ const findTargetElement = (targetId: string) => {
 	);
 
 	return (
-		elements.find(
-			(element) => element.dataset.wbSearchTarget === targetId,
-		) ?? null
+		elements.find((element) => element.dataset.wbSearchTarget === targetId) ??
+		null
 	);
 };
 
@@ -80,12 +81,10 @@ const appendNormalizedTextNode = (
 	let segmentText = "";
 	const segmentPoints: NormalizedCharacterPoint[] = [];
 	let started = false;
-	let pendingWhitespace:
-		| {
-				offset: number;
-				length: number;
-		  }
-		| null = null;
+	let pendingWhitespace: {
+		offset: number;
+		length: number;
+	} | null = null;
 
 	for (let rawOffset = 0; rawOffset < source.length; ) {
 		const codePoint = source.codePointAt(rawOffset);

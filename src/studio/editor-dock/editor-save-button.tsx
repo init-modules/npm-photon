@@ -1,12 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import {
-	ChevronRight,
-	History,
-	LoaderCircle,
-	Save,
-} from "lucide-react";
+import { ChevronRight, History, LoaderCircle, Save } from "lucide-react";
 import { useState } from "react";
 import {
 	ContextMenu,

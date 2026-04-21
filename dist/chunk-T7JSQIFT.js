@@ -1,6 +1,6 @@
 import {
   WebsiteBuilderRichTextEditor
-} from "./chunk-RHGH5BX2.js";
+} from "./chunk-PVXBOLON.js";
 import {
   DialogContent,
   DialogDescription,
@@ -16,10 +16,10 @@ import {
   cn,
   useKeyboardMenuController,
   useWebsiteBuilderRenderDepth
-} from "./chunk-OURPASIW.js";
+} from "./chunk-N3SPUPCV.js";
 import {
   resolveWebsiteBuilderSiteDesignSettings
-} from "./chunk-7A32BINR.js";
+} from "./chunk-KEOML5B2.js";
 import {
   isWebsiteBuilderMediaValue,
   resolveWebsiteBuilderMediaPreviewUrl,
@@ -31,7 +31,7 @@ import {
   useWebsiteBuilderI18n,
   useWebsiteBuilderPersistedState,
   useWebsiteBuilderStore
-} from "./chunk-OWDRVIFG.js";
+} from "./chunk-ZQJWNS6S.js";
 import {
   WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
   getWebsiteBuilderDocumentFingerprint,
@@ -41,7 +41,7 @@ import {
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-4FGVRZOX.js";
+} from "./chunk-EN3VAWKM.js";
 import {
   canSaveWebsiteBuilderWorkspace,
   cloneWebsiteBuilderValue,
@@ -53,7 +53,7 @@ import {
   normalizeWebsiteBuilderWorkspaceCapabilities,
   normalizeWebsiteBuilderWorkspaceDescriptor,
   setValueAtPath
-} from "./chunk-NYLOTAVT.js";
+} from "./chunk-KUHW6SOQ.js";
 
 // src/studio/inspector-panel/field-editor.tsx
 import clsx4 from "clsx";
@@ -132,6 +132,10 @@ var DropdownMenuRadioItem = forwardRef2(({ className, children, ...props }, ref)
 });
 DropdownMenuRadioItem.displayName = DropdownMenuPrimitive2.RadioItem.displayName;
 
+// src/forms/form-fields-editor.tsx
+import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+
 // src/studio/shared/constants.ts
 import {
   closestCenter,
@@ -185,7 +189,10 @@ var sortInsertZoneCollisions = (collisions, {
   const leftRect = droppableRects.get(left.id);
   const rightRect = droppableRects.get(right.id);
   const leftDistance = getPointerDistanceToRect(pointerCoordinates, leftRect);
-  const rightDistance = getPointerDistanceToRect(pointerCoordinates, rightRect);
+  const rightDistance = getPointerDistanceToRect(
+    pointerCoordinates,
+    rightRect
+  );
   if (leftDistance !== rightDistance) {
     return leftDistance - rightDistance;
   }
@@ -231,7 +238,9 @@ var websiteBuilderCollisionDetection = (args) => {
       prioritizeValue: true
     });
   }
-  const pointerProximityRect = createPointerProximityRect(args.pointerCoordinates);
+  const pointerProximityRect = createPointerProximityRect(
+    args.pointerCoordinates
+  );
   if (pointerProximityRect) {
     const proximityHits = rectIntersection({
       ...collisionArgs,
@@ -324,11 +333,391 @@ var ToolbarButton = ({
 // src/studio/shared/toolbar-chip-button.tsx
 import { jsx as jsx5 } from "react/jsx-runtime";
 
+// src/forms/form-fields-editor.tsx
+import { jsx as jsx6, jsxs as jsxs2 } from "react/jsx-runtime";
+var fieldTypes = [
+  { value: "text", label: "Text" },
+  { value: "email", label: "Email" },
+  { value: "phone", label: "Phone" },
+  { value: "number", label: "Number" },
+  { value: "textarea", label: "Textarea" },
+  { value: "select", label: "Select" },
+  { value: "checkbox", label: "Checkbox" },
+  { value: "date", label: "Date" },
+  { value: "hidden", label: "Hidden" }
+];
+var widthOptions = [
+  { value: "full", label: "Full" },
+  { value: "half", label: "Half" },
+  { value: "third", label: "Third" }
+];
+var normalizeFields = (value) => Array.isArray(value) ? value.filter(
+  (item) => typeof item === "object" && item !== null
+) : [];
+var createField = () => ({
+  id: "custom_field",
+  name: "custom_field",
+  type: "text",
+  label: "Custom field",
+  placeholder: "",
+  helpText: "",
+  required: false,
+  width: "full",
+  locked: false,
+  removable: true
+});
+var createOption = () => ({
+  label: "Option",
+  value: "option"
+});
+var updateField = (fields, index, patch) => fields.map(
+  (field, fieldIndex) => fieldIndex === index ? { ...field, ...patch } : field
+);
+var updateOption = (field, optionIndex, patch) => ({
+  ...field,
+  options: (field.options ?? []).map(
+    (option, index) => index === optionIndex ? { ...option, ...patch } : option
+  )
+});
+var WebsiteBuilderFormFieldsEditor = ({
+  value,
+  onChange,
+  onFocus
+}) => {
+  const fields = normalizeFields(value);
+  const [expandedFieldId, setExpandedFieldId] = useState(
+    fields[0]?.id ?? null
+  );
+  const emit = (nextFields) => {
+    onChange(
+      cloneWebsiteBuilderValue(
+        nextFields
+      )
+    );
+  };
+  return /* @__PURE__ */ jsxs2("div", { className: "space-y-3", children: [
+    /* @__PURE__ */ jsx6("div", { className: "space-y-2 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2", children: fields.map((field, index) => {
+      const isExpanded = expandedFieldId === field.id;
+      const options = field.options ?? [];
+      return /* @__PURE__ */ jsxs2(
+        "div",
+        {
+          className: "rounded-[18px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] p-3",
+          children: [
+            /* @__PURE__ */ jsxs2("div", { className: "flex items-center justify-between gap-3", children: [
+              /* @__PURE__ */ jsxs2(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => setExpandedFieldId(isExpanded ? null : field.id),
+                  className: "min-w-0 cursor-pointer text-left",
+                  children: [
+                    /* @__PURE__ */ jsx6("div", { className: "truncate text-sm font-semibold text-[color:var(--wb-builder-text)]", children: field.label || field.id || "Field" }),
+                    /* @__PURE__ */ jsxs2("div", { className: "mt-1 truncate font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--wb-builder-text-ghost)]", children: [
+                      field.type,
+                      " / ",
+                      field.name
+                    ] })
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsxs2("div", { className: "flex shrink-0 items-center gap-1", children: [
+                /* @__PURE__ */ jsx6(
+                  "button",
+                  {
+                    type: "button",
+                    disabled: index === 0,
+                    onClick: () => emit(
+                      moveWebsiteBuilderArrayItem(fields, index, index - 1)
+                    ),
+                    className: "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40",
+                    children: /* @__PURE__ */ jsx6(ArrowUp, { className: "h-4 w-4" })
+                  }
+                ),
+                /* @__PURE__ */ jsx6(
+                  "button",
+                  {
+                    type: "button",
+                    disabled: index === fields.length - 1,
+                    onClick: () => emit(
+                      moveWebsiteBuilderArrayItem(fields, index, index + 1)
+                    ),
+                    className: "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40",
+                    children: /* @__PURE__ */ jsx6(ArrowDown, { className: "h-4 w-4" })
+                  }
+                ),
+                /* @__PURE__ */ jsx6(
+                  "button",
+                  {
+                    type: "button",
+                    disabled: field.locked || field.removable === false,
+                    onClick: () => emit(
+                      fields.filter((_, fieldIndex) => fieldIndex !== index)
+                    ),
+                    className: "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40",
+                    children: /* @__PURE__ */ jsx6(Trash2, { className: "h-4 w-4" })
+                  }
+                )
+              ] })
+            ] }),
+            isExpanded ? /* @__PURE__ */ jsxs2("div", { className: "mt-4 grid gap-3", children: [
+              /* @__PURE__ */ jsxs2("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+                /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                  "Label",
+                  /* @__PURE__ */ jsx6(
+                    "input",
+                    {
+                      value: field.label ?? "",
+                      onFocus: () => onFocus(`${index}.label`),
+                      onChange: (event) => emit(
+                        updateField(fields, index, {
+                          label: event.currentTarget.value
+                        })
+                      ),
+                      className: inputClassName
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                  "Type",
+                  /* @__PURE__ */ jsx6(
+                    "select",
+                    {
+                      value: field.type,
+                      onFocus: () => onFocus(`${index}.type`),
+                      onChange: (event) => emit(
+                        updateField(fields, index, {
+                          type: event.currentTarget.value
+                        })
+                      ),
+                      className: inputClassName,
+                      children: fieldTypes.map((item) => /* @__PURE__ */ jsx6("option", { value: item.value, children: item.label }, item.value))
+                    }
+                  )
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs2("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+                /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                  "Field id",
+                  /* @__PURE__ */ jsx6(
+                    "input",
+                    {
+                      value: field.id ?? "",
+                      onFocus: () => onFocus(`${index}.id`),
+                      onChange: (event) => emit(
+                        updateField(fields, index, {
+                          id: event.currentTarget.value
+                        })
+                      ),
+                      className: inputClassName
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                  "Input name",
+                  /* @__PURE__ */ jsx6(
+                    "input",
+                    {
+                      value: field.name ?? "",
+                      onFocus: () => onFocus(`${index}.name`),
+                      onChange: (event) => emit(
+                        updateField(fields, index, {
+                          name: event.currentTarget.value
+                        })
+                      ),
+                      className: inputClassName
+                    }
+                  )
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                "Placeholder",
+                /* @__PURE__ */ jsx6(
+                  "input",
+                  {
+                    value: field.placeholder ?? "",
+                    onFocus: () => onFocus(`${index}.placeholder`),
+                    onChange: (event) => emit(
+                      updateField(fields, index, {
+                        placeholder: event.currentTarget.value
+                      })
+                    ),
+                    className: inputClassName
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                "Help text",
+                /* @__PURE__ */ jsx6(
+                  "textarea",
+                  {
+                    rows: 3,
+                    value: field.helpText ?? "",
+                    onFocus: () => onFocus(`${index}.helpText`),
+                    onChange: (event) => emit(
+                      updateField(fields, index, {
+                        helpText: event.currentTarget.value
+                      })
+                    ),
+                    className: inputClassName
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxs2("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+                /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
+                  "Width",
+                  /* @__PURE__ */ jsx6(
+                    "select",
+                    {
+                      value: field.width ?? "full",
+                      onFocus: () => onFocus(`${index}.width`),
+                      onChange: (event) => emit(
+                        updateField(fields, index, {
+                          width: event.currentTarget.value
+                        })
+                      ),
+                      className: inputClassName,
+                      children: widthOptions.map((item) => /* @__PURE__ */ jsx6("option", { value: item.value, children: item.label }, item.value))
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsx6("div", { className: "grid grid-cols-2 gap-2 pt-7", children: [
+                  ["required", "Required"],
+                  ["disabled", "Disabled"]
+                ].map(([key, label]) => /* @__PURE__ */ jsxs2(
+                  "label",
+                  {
+                    className: "flex items-center gap-2 text-xs font-semibold text-[color:var(--wb-builder-text-soft)]",
+                    children: [
+                      /* @__PURE__ */ jsx6(
+                        "input",
+                        {
+                          type: "checkbox",
+                          checked: Boolean(
+                            field[key]
+                          ),
+                          onChange: (event) => emit(
+                            updateField(fields, index, {
+                              [key]: event.currentTarget.checked
+                            })
+                          )
+                        }
+                      ),
+                      label
+                    ]
+                  },
+                  key
+                )) })
+              ] }),
+              field.type === "select" ? /* @__PURE__ */ jsxs2("div", { className: "rounded-[16px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-3", children: [
+                /* @__PURE__ */ jsx6("div", { className: "mb-3 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: "Options" }),
+                /* @__PURE__ */ jsx6("div", { className: "grid gap-2", children: options.map((option, optionIndex) => /* @__PURE__ */ jsxs2(
+                  "div",
+                  {
+                    className: "grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]",
+                    children: [
+                      /* @__PURE__ */ jsx6(
+                        "input",
+                        {
+                          value: option.label,
+                          onFocus: () => onFocus(`${index}.options.${optionIndex}.label`),
+                          onChange: (event) => emit(
+                            updateField(
+                              fields,
+                              index,
+                              updateOption(field, optionIndex, {
+                                label: event.currentTarget.value
+                              })
+                            )
+                          ),
+                          className: inputClassName,
+                          placeholder: "Label"
+                        }
+                      ),
+                      /* @__PURE__ */ jsx6(
+                        "input",
+                        {
+                          value: option.value,
+                          onFocus: () => onFocus(`${index}.options.${optionIndex}.value`),
+                          onChange: (event) => emit(
+                            updateField(
+                              fields,
+                              index,
+                              updateOption(field, optionIndex, {
+                                value: event.currentTarget.value
+                              })
+                            )
+                          ),
+                          className: inputClassName,
+                          placeholder: "Value"
+                        }
+                      ),
+                      /* @__PURE__ */ jsx6(
+                        "button",
+                        {
+                          type: "button",
+                          onClick: () => emit(
+                            updateField(fields, index, {
+                              options: options.filter(
+                                (_, currentIndex) => currentIndex !== optionIndex
+                              )
+                            })
+                          ),
+                          className: "inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)]",
+                          children: /* @__PURE__ */ jsx6(Trash2, { className: "h-4 w-4" })
+                        }
+                      )
+                    ]
+                  },
+                  optionIndex
+                )) }),
+                /* @__PURE__ */ jsxs2(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => emit(
+                      updateField(fields, index, {
+                        options: [...options, createOption()]
+                      })
+                    ),
+                    className: "mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[18px] border border-[color:var(--wb-builder-border)] px-4 py-3 text-sm font-semibold text-[color:var(--wb-builder-text)]",
+                    children: [
+                      /* @__PURE__ */ jsx6(Plus, { className: "h-4 w-4" }),
+                      " Add option"
+                    ]
+                  }
+                )
+              ] }) : null
+            ] }) : null
+          ]
+        },
+        `${field.id}:${index}`
+      );
+    }) }),
+    /* @__PURE__ */ jsxs2(
+      "button",
+      {
+        type: "button",
+        onClick: () => {
+          const nextField = createField();
+          emit([...fields, nextField]);
+          setExpandedFieldId(nextField.id);
+        },
+        className: "inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] px-4 py-3 text-sm font-semibold text-[color:var(--wb-builder-text)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:bg-[color:var(--wb-builder-panel-solid)]",
+        children: [
+          /* @__PURE__ */ jsx6(Plus, { className: "h-4 w-4" }),
+          " Add field"
+        ]
+      }
+    )
+  ] });
+};
+
 // src/studio/inspector-panel/gallery-field-editor.tsx
 import clsx3 from "clsx";
-import { useState } from "react";
+import { useState as useState2 } from "react";
 import { toast } from "sonner";
-import { jsx as jsx6, jsxs as jsxs2 } from "react/jsx-runtime";
+import { jsx as jsx7, jsxs as jsxs3 } from "react/jsx-runtime";
 var GalleryFieldEditor = ({
   blockId,
   path,
@@ -338,13 +727,13 @@ var GalleryFieldEditor = ({
   onApply,
   onUpload
 }) => {
-  const [isUploading, setIsUploading] = useState(false);
+  const [isUploading, setIsUploading] = useState2(false);
   const items = Array.isArray(value) ? value : [];
   const updateItems = (nextItems) => {
     onApply(nextItems);
   };
-  return /* @__PURE__ */ jsxs2("div", { className: "space-y-4", children: [
-    /* @__PURE__ */ jsx6("div", { className: "space-y-3", children: items.map((item, index) => /* @__PURE__ */ jsx6(
+  return /* @__PURE__ */ jsxs3("div", { className: "space-y-4", children: [
+    /* @__PURE__ */ jsx7("div", { className: "space-y-3", children: items.map((item, index) => /* @__PURE__ */ jsx7(
       "div",
       {
         className: "rounded-[24px] border p-3",
@@ -354,8 +743,8 @@ var GalleryFieldEditor = ({
           boxShadow: "var(--wb-builder-card-shadow)"
         },
         "data-testid": `wb-gallery-field-editor-item-${path}-${index}`,
-        children: /* @__PURE__ */ jsxs2("div", { className: "grid gap-3 sm:grid-cols-[80px_minmax(0,1fr)]", children: [
-          /* @__PURE__ */ jsx6(
+        children: /* @__PURE__ */ jsxs3("div", { className: "grid gap-3 sm:grid-cols-[80px_minmax(0,1fr)]", children: [
+          /* @__PURE__ */ jsx7(
             "div",
             {
               className: "overflow-hidden rounded-2xl border",
@@ -363,14 +752,14 @@ var GalleryFieldEditor = ({
                 borderColor: "var(--wb-builder-border)",
                 background: "var(--wb-builder-field)"
               },
-              children: resolveWebsiteBuilderMediaPreviewUrl(item.media) ? /* @__PURE__ */ jsx6(
+              children: resolveWebsiteBuilderMediaPreviewUrl(item.media) ? /* @__PURE__ */ jsx7(
                 "img",
                 {
                   src: resolveWebsiteBuilderMediaPreviewUrl(item.media),
                   alt: item.alt ?? `Gallery item ${index + 1}`,
                   className: "aspect-square h-full w-full object-cover"
                 }
-              ) : /* @__PURE__ */ jsx6(
+              ) : /* @__PURE__ */ jsx7(
                 "div",
                 {
                   className: "flex aspect-square items-center justify-center text-xs uppercase tracking-[0.22em]",
@@ -380,9 +769,9 @@ var GalleryFieldEditor = ({
               )
             }
           ),
-          /* @__PURE__ */ jsxs2("div", { className: "space-y-3", children: [
-            /* @__PURE__ */ jsxs2("div", { className: "flex flex-wrap gap-2", children: [
-              /* @__PURE__ */ jsx6(
+          /* @__PURE__ */ jsxs3("div", { className: "space-y-3", children: [
+            /* @__PURE__ */ jsxs3("div", { className: "flex flex-wrap gap-2", children: [
+              /* @__PURE__ */ jsx7(
                 "div",
                 {
                   className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -394,7 +783,7 @@ var GalleryFieldEditor = ({
                   children: `item ${index + 1}`
                 }
               ),
-              isWebsiteBuilderMediaValue(item.media) && item.media.temporaryUploadId ? /* @__PURE__ */ jsx6(
+              isWebsiteBuilderMediaValue(item.media) && item.media.temporaryUploadId ? /* @__PURE__ */ jsx7(
                 "div",
                 {
                   className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -407,7 +796,7 @@ var GalleryFieldEditor = ({
                 }
               ) : null
             ] }),
-            /* @__PURE__ */ jsx6(
+            /* @__PURE__ */ jsx7(
               "input",
               {
                 value: item.alt ?? "",
@@ -424,7 +813,7 @@ var GalleryFieldEditor = ({
                 className: inputClassName
               }
             ),
-            /* @__PURE__ */ jsx6(
+            /* @__PURE__ */ jsx7(
               "textarea",
               {
                 rows: 3,
@@ -442,8 +831,8 @@ var GalleryFieldEditor = ({
                 className: clsx3(inputClassName, "min-h-[92px] resize-y")
               }
             ),
-            /* @__PURE__ */ jsxs2("div", { className: "flex gap-2", children: [
-              /* @__PURE__ */ jsx6(
+            /* @__PURE__ */ jsxs3("div", { className: "flex gap-2", children: [
+              /* @__PURE__ */ jsx7(
                 "button",
                 {
                   type: "button",
@@ -467,7 +856,7 @@ var GalleryFieldEditor = ({
                   children: "Prev"
                 }
               ),
-              /* @__PURE__ */ jsx6(
+              /* @__PURE__ */ jsx7(
                 "button",
                 {
                   type: "button",
@@ -491,7 +880,7 @@ var GalleryFieldEditor = ({
                   children: "Next"
                 }
               ),
-              /* @__PURE__ */ jsx6(
+              /* @__PURE__ */ jsx7(
                 "button",
                 {
                   type: "button",
@@ -515,7 +904,7 @@ var GalleryFieldEditor = ({
       },
       item.id ?? `${blockId}-${path}-${index}`
     )) }),
-    /* @__PURE__ */ jsxs2(
+    /* @__PURE__ */ jsxs3(
       "label",
       {
         className: "inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition",
@@ -525,8 +914,8 @@ var GalleryFieldEditor = ({
           color: "var(--wb-builder-accent)"
         },
         children: [
-          /* @__PURE__ */ jsx6("span", { children: isUploading ? "Uploading..." : items.length > 0 ? "Add more media" : "Add media" }),
-          /* @__PURE__ */ jsx6(
+          /* @__PURE__ */ jsx7("span", { children: isUploading ? "Uploading..." : items.length > 0 ? "Add more media" : "Add media" }),
+          /* @__PURE__ */ jsx7(
             "input",
             {
               type: "file",
@@ -572,7 +961,7 @@ var GalleryFieldEditor = ({
 };
 
 // src/studio/inspector-panel/image-field-editor.tsx
-import { useState as useState2 } from "react";
+import { useState as useState3 } from "react";
 import { toast as toast2 } from "sonner";
 
 // src/studio/inspector-panel/shared.ts
@@ -587,7 +976,7 @@ var formatMediaFileSize = (size) => {
 };
 
 // src/studio/inspector-panel/image-field-editor.tsx
-import { jsx as jsx7, jsxs as jsxs3 } from "react/jsx-runtime";
+import { jsx as jsx8, jsxs as jsxs4 } from "react/jsx-runtime";
 var ImageFieldEditor = ({
   blockId,
   path,
@@ -597,11 +986,11 @@ var ImageFieldEditor = ({
   onApply,
   onUpload
 }) => {
-  const [isUploading, setIsUploading] = useState2(false);
+  const [isUploading, setIsUploading] = useState3(false);
   const source = resolveWebsiteBuilderMediaPreviewUrl(value);
   const mediaValue = isWebsiteBuilderMediaValue(value) ? value : null;
-  return /* @__PURE__ */ jsxs3("div", { className: "space-y-3", children: [
-    /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsxs4("div", { className: "space-y-3", children: [
+    /* @__PURE__ */ jsx8(
       "div",
       {
         className: "overflow-hidden rounded-[24px] border",
@@ -611,14 +1000,14 @@ var ImageFieldEditor = ({
           boxShadow: "var(--wb-builder-card-shadow)"
         },
         "data-testid": `wb-image-field-editor-preview-${path}`,
-        children: source ? /* @__PURE__ */ jsx7(
+        children: source ? /* @__PURE__ */ jsx8(
           "img",
           {
             src: source,
             alt: "Inspector media preview",
             className: "aspect-[4/3] w-full object-cover"
           }
-        ) : /* @__PURE__ */ jsx7(
+        ) : /* @__PURE__ */ jsx8(
           "div",
           {
             className: "flex aspect-[4/3] items-center justify-center px-6 text-center text-sm",
@@ -628,8 +1017,8 @@ var ImageFieldEditor = ({
         )
       }
     ),
-    /* @__PURE__ */ jsxs3("div", { className: "flex flex-wrap gap-2", children: [
-      mediaValue?.temporaryUploadId ? /* @__PURE__ */ jsx7(
+    /* @__PURE__ */ jsxs4("div", { className: "flex flex-wrap gap-2", children: [
+      mediaValue?.temporaryUploadId ? /* @__PURE__ */ jsx8(
         "div",
         {
           className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -641,7 +1030,7 @@ var ImageFieldEditor = ({
           children: "staged upload"
         }
       ) : null,
-      mediaValue?.fileName ? /* @__PURE__ */ jsx7(
+      mediaValue?.fileName ? /* @__PURE__ */ jsx8(
         "div",
         {
           className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -653,7 +1042,7 @@ var ImageFieldEditor = ({
           children: mediaValue.fileName
         }
       ) : null,
-      mediaValue?.size ? /* @__PURE__ */ jsx7(
+      mediaValue?.size ? /* @__PURE__ */ jsx8(
         "div",
         {
           className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -666,7 +1055,7 @@ var ImageFieldEditor = ({
         }
       ) : null
     ] }),
-    /* @__PURE__ */ jsx7(
+    /* @__PURE__ */ jsx8(
       "input",
       {
         type: "text",
@@ -678,8 +1067,8 @@ var ImageFieldEditor = ({
         className: inputClassName
       }
     ),
-    /* @__PURE__ */ jsxs3("div", { className: "flex flex-wrap items-center gap-2", children: [
-      /* @__PURE__ */ jsxs3(
+    /* @__PURE__ */ jsxs4("div", { className: "flex flex-wrap items-center gap-2", children: [
+      /* @__PURE__ */ jsxs4(
         "label",
         {
           className: "inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition",
@@ -689,8 +1078,8 @@ var ImageFieldEditor = ({
             color: "var(--wb-builder-accent)"
           },
           children: [
-            /* @__PURE__ */ jsx7("span", { children: isUploading ? "Uploading..." : source ? "Replace media" : "Upload media" }),
-            /* @__PURE__ */ jsx7(
+            /* @__PURE__ */ jsx8("span", { children: isUploading ? "Uploading..." : source ? "Replace media" : "Upload media" }),
+            /* @__PURE__ */ jsx8(
               "input",
               {
                 type: "file",
@@ -722,7 +1111,7 @@ var ImageFieldEditor = ({
           ]
         }
       ),
-      /* @__PURE__ */ jsx7(
+      /* @__PURE__ */ jsx8(
         "button",
         {
           type: "button",
@@ -742,8 +1131,8 @@ var ImageFieldEditor = ({
 
 // src/studio/inspector-panel/json-field-editor.tsx
 import { WandSparkles } from "lucide-react";
-import { useEffect, useState as useState3 } from "react";
-import { jsx as jsx8, jsxs as jsxs4 } from "react/jsx-runtime";
+import { useEffect, useState as useState4 } from "react";
+import { jsx as jsx9, jsxs as jsxs5 } from "react/jsx-runtime";
 var JsonFieldEditor = ({
   blockId,
   path,
@@ -751,15 +1140,15 @@ var JsonFieldEditor = ({
   onApply,
   onFocus
 }) => {
-  const [draft, setDraft] = useState3(JSON.stringify(initialValue, null, 2));
-  const [error, setError] = useState3(null);
+  const [draft, setDraft] = useState4(JSON.stringify(initialValue, null, 2));
+  const [error, setError] = useState4(null);
   const testIdSuffix = path.replace(/[^a-zA-Z0-9_-]+/g, "-");
   useEffect(() => {
     setDraft(JSON.stringify(initialValue, null, 2));
     setError(null);
   }, [blockId, path, initialValue]);
-  return /* @__PURE__ */ jsxs4("div", { "data-testid": `wb-json-field-editor-${testIdSuffix}`, children: [
-    /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsxs5("div", { "data-testid": `wb-json-field-editor-${testIdSuffix}`, children: [
+    /* @__PURE__ */ jsx9(
       "textarea",
       {
         "data-testid": `wb-json-field-editor-input-${testIdSuffix}`,
@@ -778,8 +1167,8 @@ var JsonFieldEditor = ({
         }
       }
     ),
-    /* @__PURE__ */ jsxs4("div", { className: "mt-3 flex items-center justify-between gap-3", children: [
-      /* @__PURE__ */ jsxs4(
+    /* @__PURE__ */ jsxs5("div", { className: "mt-3 flex items-center justify-between gap-3", children: [
+      /* @__PURE__ */ jsxs5(
         "button",
         {
           "data-testid": `wb-json-field-editor-apply-${testIdSuffix}`,
@@ -800,309 +1189,20 @@ var JsonFieldEditor = ({
             color: "var(--wb-builder-accent)"
           },
           children: [
-            /* @__PURE__ */ jsx8(WandSparkles, { className: "h-3.5 w-3.5" }),
+            /* @__PURE__ */ jsx9(WandSparkles, { className: "h-3.5 w-3.5" }),
             "Apply JSON"
           ]
         }
       ),
-      error ? /* @__PURE__ */ jsx8("div", { className: "text-xs", style: { color: "var(--wb-builder-accent)" }, children: error }) : null
-    ] })
-  ] });
-};
-
-// src/forms/form-fields-editor.tsx
-import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
-import { useState as useState4 } from "react";
-import { jsx as jsx9, jsxs as jsxs5 } from "react/jsx-runtime";
-var fieldTypes = [
-  { value: "text", label: "Text" },
-  { value: "email", label: "Email" },
-  { value: "phone", label: "Phone" },
-  { value: "number", label: "Number" },
-  { value: "textarea", label: "Textarea" },
-  { value: "select", label: "Select" },
-  { value: "checkbox", label: "Checkbox" },
-  { value: "date", label: "Date" },
-  { value: "hidden", label: "Hidden" }
-];
-var widthOptions = [
-  { value: "full", label: "Full" },
-  { value: "half", label: "Half" },
-  { value: "third", label: "Third" }
-];
-var normalizeFields = (value) => Array.isArray(value) ? value.filter(
-  (item) => typeof item === "object" && item !== null
-) : [];
-var createField = () => ({
-  id: "custom_field",
-  name: "custom_field",
-  type: "text",
-  label: "Custom field",
-  placeholder: "",
-  helpText: "",
-  required: false,
-  width: "full",
-  locked: false,
-  removable: true
-});
-var createOption = () => ({
-  label: "Option",
-  value: "option"
-});
-var updateField = (fields, index, patch) => fields.map((field, fieldIndex) => fieldIndex === index ? { ...field, ...patch } : field);
-var updateOption = (field, optionIndex, patch) => ({
-  ...field,
-  options: (field.options ?? []).map(
-    (option, index) => index === optionIndex ? { ...option, ...patch } : option
-  )
-});
-var WebsiteBuilderFormFieldsEditor = ({
-  value,
-  onChange,
-  onFocus
-}) => {
-  const fields = normalizeFields(value);
-  const [expandedFieldId, setExpandedFieldId] = useState4(
-    fields[0]?.id ?? null
-  );
-  const emit = (nextFields) => {
-    onChange(cloneWebsiteBuilderValue(nextFields));
-  };
-  return /* @__PURE__ */ jsxs5("div", { className: "space-y-3", children: [
-    /* @__PURE__ */ jsx9("div", { className: "space-y-2 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2", children: fields.map((field, index) => {
-      const isExpanded = expandedFieldId === field.id;
-      const options = field.options ?? [];
-      return /* @__PURE__ */ jsxs5(
+      error ? /* @__PURE__ */ jsx9(
         "div",
         {
-          className: "rounded-[18px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] p-3",
-          children: [
-            /* @__PURE__ */ jsxs5("div", { className: "flex items-center justify-between gap-3", children: [
-              /* @__PURE__ */ jsxs5(
-                "button",
-                {
-                  type: "button",
-                  onClick: () => setExpandedFieldId(isExpanded ? null : field.id),
-                  className: "min-w-0 cursor-pointer text-left",
-                  children: [
-                    /* @__PURE__ */ jsx9("div", { className: "truncate text-sm font-semibold text-[color:var(--wb-builder-text)]", children: field.label || field.id || "Field" }),
-                    /* @__PURE__ */ jsxs5("div", { className: "mt-1 truncate font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--wb-builder-text-ghost)]", children: [
-                      field.type,
-                      " / ",
-                      field.name
-                    ] })
-                  ]
-                }
-              ),
-              /* @__PURE__ */ jsxs5("div", { className: "flex shrink-0 items-center gap-1", children: [
-                /* @__PURE__ */ jsx9(
-                  "button",
-                  {
-                    type: "button",
-                    disabled: index === 0,
-                    onClick: () => emit(moveWebsiteBuilderArrayItem(fields, index, index - 1)),
-                    className: "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40",
-                    children: /* @__PURE__ */ jsx9(ArrowUp, { className: "h-4 w-4" })
-                  }
-                ),
-                /* @__PURE__ */ jsx9(
-                  "button",
-                  {
-                    type: "button",
-                    disabled: index === fields.length - 1,
-                    onClick: () => emit(moveWebsiteBuilderArrayItem(fields, index, index + 1)),
-                    className: "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40",
-                    children: /* @__PURE__ */ jsx9(ArrowDown, { className: "h-4 w-4" })
-                  }
-                ),
-                /* @__PURE__ */ jsx9(
-                  "button",
-                  {
-                    type: "button",
-                    disabled: field.locked || field.removable === false,
-                    onClick: () => emit(fields.filter((_, fieldIndex) => fieldIndex !== index)),
-                    className: "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40",
-                    children: /* @__PURE__ */ jsx9(Trash2, { className: "h-4 w-4" })
-                  }
-                )
-              ] })
-            ] }),
-            isExpanded ? /* @__PURE__ */ jsxs5("div", { className: "mt-4 grid gap-3", children: [
-              /* @__PURE__ */ jsxs5("div", { className: "grid gap-3 sm:grid-cols-2", children: [
-                /* @__PURE__ */ jsxs5("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
-                  "Label",
-                  /* @__PURE__ */ jsx9(
-                    "input",
-                    {
-                      value: field.label ?? "",
-                      onFocus: () => onFocus(`${index}.label`),
-                      onChange: (event) => emit(updateField(fields, index, { label: event.currentTarget.value })),
-                      className: inputClassName
-                    }
-                  )
-                ] }),
-                /* @__PURE__ */ jsxs5("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
-                  "Type",
-                  /* @__PURE__ */ jsx9(
-                    "select",
-                    {
-                      value: field.type,
-                      onFocus: () => onFocus(`${index}.type`),
-                      onChange: (event) => emit(updateField(fields, index, { type: event.currentTarget.value })),
-                      className: inputClassName,
-                      children: fieldTypes.map((item) => /* @__PURE__ */ jsx9("option", { value: item.value, children: item.label }, item.value))
-                    }
-                  )
-                ] })
-              ] }),
-              /* @__PURE__ */ jsxs5("div", { className: "grid gap-3 sm:grid-cols-2", children: [
-                /* @__PURE__ */ jsxs5("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
-                  "Field id",
-                  /* @__PURE__ */ jsx9(
-                    "input",
-                    {
-                      value: field.id ?? "",
-                      onFocus: () => onFocus(`${index}.id`),
-                      onChange: (event) => emit(updateField(fields, index, { id: event.currentTarget.value })),
-                      className: inputClassName
-                    }
-                  )
-                ] }),
-                /* @__PURE__ */ jsxs5("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
-                  "Input name",
-                  /* @__PURE__ */ jsx9(
-                    "input",
-                    {
-                      value: field.name ?? "",
-                      onFocus: () => onFocus(`${index}.name`),
-                      onChange: (event) => emit(updateField(fields, index, { name: event.currentTarget.value })),
-                      className: inputClassName
-                    }
-                  )
-                ] })
-              ] }),
-              /* @__PURE__ */ jsxs5("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
-                "Placeholder",
-                /* @__PURE__ */ jsx9(
-                  "input",
-                  {
-                    value: field.placeholder ?? "",
-                    onFocus: () => onFocus(`${index}.placeholder`),
-                    onChange: (event) => emit(updateField(fields, index, { placeholder: event.currentTarget.value })),
-                    className: inputClassName
-                  }
-                )
-              ] }),
-              /* @__PURE__ */ jsxs5("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
-                "Help text",
-                /* @__PURE__ */ jsx9(
-                  "textarea",
-                  {
-                    rows: 3,
-                    value: field.helpText ?? "",
-                    onFocus: () => onFocus(`${index}.helpText`),
-                    onChange: (event) => emit(updateField(fields, index, { helpText: event.currentTarget.value })),
-                    className: inputClassName
-                  }
-                )
-              ] }),
-              /* @__PURE__ */ jsxs5("div", { className: "grid gap-3 sm:grid-cols-2", children: [
-                /* @__PURE__ */ jsxs5("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: [
-                  "Width",
-                  /* @__PURE__ */ jsx9(
-                    "select",
-                    {
-                      value: field.width ?? "full",
-                      onFocus: () => onFocus(`${index}.width`),
-                      onChange: (event) => emit(updateField(fields, index, { width: event.currentTarget.value })),
-                      className: inputClassName,
-                      children: widthOptions.map((item) => /* @__PURE__ */ jsx9("option", { value: item.value, children: item.label }, item.value))
-                    }
-                  )
-                ] }),
-                /* @__PURE__ */ jsx9("div", { className: "grid grid-cols-2 gap-2 pt-7", children: [
-                  ["required", "Required"],
-                  ["disabled", "Disabled"]
-                ].map(([key, label]) => /* @__PURE__ */ jsxs5("label", { className: "flex items-center gap-2 text-xs font-semibold text-[color:var(--wb-builder-text-soft)]", children: [
-                  /* @__PURE__ */ jsx9(
-                    "input",
-                    {
-                      type: "checkbox",
-                      checked: Boolean(field[key]),
-                      onChange: (event) => emit(updateField(fields, index, { [key]: event.currentTarget.checked }))
-                    }
-                  ),
-                  label
-                ] }, key)) })
-              ] }),
-              field.type === "select" ? /* @__PURE__ */ jsxs5("div", { className: "rounded-[16px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-3", children: [
-                /* @__PURE__ */ jsx9("div", { className: "mb-3 text-sm font-semibold text-[color:var(--wb-builder-text)]", children: "Options" }),
-                /* @__PURE__ */ jsx9("div", { className: "grid gap-2", children: options.map((option, optionIndex) => /* @__PURE__ */ jsxs5("div", { className: "grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]", children: [
-                  /* @__PURE__ */ jsx9(
-                    "input",
-                    {
-                      value: option.label,
-                      onFocus: () => onFocus(`${index}.options.${optionIndex}.label`),
-                      onChange: (event) => emit(updateField(fields, index, updateOption(field, optionIndex, { label: event.currentTarget.value }))),
-                      className: inputClassName,
-                      placeholder: "Label"
-                    }
-                  ),
-                  /* @__PURE__ */ jsx9(
-                    "input",
-                    {
-                      value: option.value,
-                      onFocus: () => onFocus(`${index}.options.${optionIndex}.value`),
-                      onChange: (event) => emit(updateField(fields, index, updateOption(field, optionIndex, { value: event.currentTarget.value }))),
-                      className: inputClassName,
-                      placeholder: "Value"
-                    }
-                  ),
-                  /* @__PURE__ */ jsx9(
-                    "button",
-                    {
-                      type: "button",
-                      onClick: () => emit(updateField(fields, index, { options: options.filter((_, currentIndex) => currentIndex !== optionIndex) })),
-                      className: "inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)]",
-                      children: /* @__PURE__ */ jsx9(Trash2, { className: "h-4 w-4" })
-                    }
-                  )
-                ] }, optionIndex)) }),
-                /* @__PURE__ */ jsxs5(
-                  "button",
-                  {
-                    type: "button",
-                    onClick: () => emit(updateField(fields, index, { options: [...options, createOption()] })),
-                    className: "mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[18px] border border-[color:var(--wb-builder-border)] px-4 py-3 text-sm font-semibold text-[color:var(--wb-builder-text)]",
-                    children: [
-                      /* @__PURE__ */ jsx9(Plus, { className: "h-4 w-4" }),
-                      " Add option"
-                    ]
-                  }
-                )
-              ] }) : null
-            ] }) : null
-          ]
-        },
-        `${field.id}:${index}`
-      );
-    }) }),
-    /* @__PURE__ */ jsxs5(
-      "button",
-      {
-        type: "button",
-        onClick: () => {
-          const nextField = createField();
-          emit([...fields, nextField]);
-          setExpandedFieldId(nextField.id);
-        },
-        className: "inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] px-4 py-3 text-sm font-semibold text-[color:var(--wb-builder-text)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:bg-[color:var(--wb-builder-panel-solid)]",
-        children: [
-          /* @__PURE__ */ jsx9(Plus, { className: "h-4 w-4" }),
-          " Add field"
-        ]
-      }
-    )
+          className: "text-xs",
+          style: { color: "var(--wb-builder-accent)" },
+          children: error
+        }
+      ) : null
+    ] })
   ] });
 };
 
@@ -1270,8 +1370,14 @@ var RepeaterFieldEditor = ({
   };
   return /* @__PURE__ */ jsxs6("div", { className: "space-y-3", children: [
     /* @__PURE__ */ jsx10("div", { className: "space-y-3 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-3", children: items.map((item, index) => {
-      const itemAbsolutePath = joinFieldPath(absolutePath ?? "", String(index));
-      const itemLabelSource = field.itemLabelPath && item && typeof item === "object" ? getValueAtPath(item, field.itemLabelPath) : null;
+      const itemAbsolutePath = joinFieldPath(
+        absolutePath ?? "",
+        String(index)
+      );
+      const itemLabelSource = field.itemLabelPath && item && typeof item === "object" ? getValueAtPath(
+        item,
+        field.itemLabelPath
+      ) : null;
       const itemLabel = typeof itemLabelSource === "string" && itemLabelSource.trim() !== "" ? itemLabelSource : translate(
         field.itemLabelKey ?? field.itemLabel ?? "Item",
         field.itemLabel ?? "Item"
@@ -1296,7 +1402,9 @@ var RepeaterFieldEditor = ({
                   {
                     type: "button",
                     disabled: index === 0,
-                    onClick: () => updateItems(moveWebsiteBuilderArrayItem(items, index, index - 1)),
+                    onClick: () => updateItems(
+                      moveWebsiteBuilderArrayItem(items, index, index - 1)
+                    ),
                     className: "inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
                     "aria-label": `Move ${itemLabel} up`,
                     children: /* @__PURE__ */ jsx10(ArrowUp2, { className: "h-4 w-4" })
@@ -1307,7 +1415,9 @@ var RepeaterFieldEditor = ({
                   {
                     type: "button",
                     disabled: index === items.length - 1,
-                    onClick: () => updateItems(moveWebsiteBuilderArrayItem(items, index, index + 1)),
+                    onClick: () => updateItems(
+                      moveWebsiteBuilderArrayItem(items, index, index + 1)
+                    ),
                     className: "inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
                     "aria-label": `Move ${itemLabel} down`,
                     children: /* @__PURE__ */ jsx10(ArrowDown2, { className: "h-4 w-4" })
@@ -1317,7 +1427,9 @@ var RepeaterFieldEditor = ({
                   "button",
                   {
                     type: "button",
-                    onClick: () => updateItems(items.filter((_, itemIndex) => itemIndex !== index)),
+                    onClick: () => updateItems(
+                      items.filter((_, itemIndex) => itemIndex !== index)
+                    ),
                     className: "inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2 text-[color:var(--wb-builder-text-soft)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)]",
                     "aria-label": `Remove ${itemLabel}`,
                     children: /* @__PURE__ */ jsx10(Trash22, { className: "h-4 w-4" })
@@ -1372,7 +1484,11 @@ var RepeaterFieldEditor = ({
                         }
                         updateItems(
                           items.map(
-                            (currentItem, itemIndex) => itemIndex === index ? setValueAtPath(itemObject, childPath, nextValue) : currentItem
+                            (currentItem, itemIndex) => itemIndex === index ? setValueAtPath(
+                              itemObject,
+                              childPath,
+                              nextValue
+                            ) : currentItem
                           )
                         );
                       }
@@ -1641,6 +1757,35 @@ import {
 import { createPortal } from "react-dom";
 import { toast as toast4 } from "sonner";
 
+// src/studio/canvas/block-overlay-card.tsx
+import { jsx as jsx12, jsxs as jsxs7 } from "react/jsx-runtime";
+var BlockOverlayCard = ({ block }) => {
+  return /* @__PURE__ */ jsxs7(
+    "div",
+    {
+      className: "rounded-[24px] border px-4 py-4 text-sm backdrop-blur-xl",
+      style: {
+        borderColor: "var(--wb-builder-border-strong)",
+        background: "var(--wb-builder-card-highlight), linear-gradient(180deg, var(--wb-builder-panel-solid), var(--wb-builder-panel))",
+        color: "var(--wb-builder-text)",
+        boxShadow: "var(--wb-builder-shadow)"
+      },
+      children: [
+        /* @__PURE__ */ jsx12(
+          "div",
+          {
+            className: "text-[11px] uppercase tracking-[0.28em]",
+            style: { color: "var(--wb-builder-text-soft)" },
+            children: block.module
+          }
+        ),
+        /* @__PURE__ */ jsx12("div", { className: "mt-2 font-semibold", children: block.type }),
+        /* @__PURE__ */ jsx12("div", { className: "mt-1", style: { color: "var(--wb-builder-text-muted)" }, children: "Move block into any visible insert zone." })
+      ]
+    }
+  );
+};
+
 // src/studio/canvas/canvas-block-item.tsx
 import { Fragment as Fragment2, memo as memo2 } from "react";
 
@@ -1655,7 +1800,7 @@ import {
   Trash2 as Trash23
 } from "lucide-react";
 import { memo, useEffect as useEffect3, useState as useState6 } from "react";
-import { Fragment, jsx as jsx12, jsxs as jsxs7 } from "react/jsx-runtime";
+import { Fragment, jsx as jsx13, jsxs as jsxs8 } from "react/jsx-runtime";
 var CanvasBlockShellComponent = ({
   block,
   blockLabel,
@@ -1690,8 +1835,8 @@ var CanvasBlockShellComponent = ({
     "border transition",
     isSelected ? "border-[color:var(--wb-builder-border-strong)] shadow-[0_0_0_1px_var(--wb-builder-accent-strong)]" : "border-[color:var(--wb-builder-border)] group-hover:border-[color:var(--wb-builder-border-strong)]"
   );
-  const chromeBadges = builderEnabled ? /* @__PURE__ */ jsxs7(Fragment, { children: [
-    /* @__PURE__ */ jsx12(
+  const chromeBadges = builderEnabled ? /* @__PURE__ */ jsxs8(Fragment, { children: [
+    /* @__PURE__ */ jsx13(
       "div",
       {
         className: "rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em]",
@@ -1703,7 +1848,7 @@ var CanvasBlockShellComponent = ({
         children: blockLabel
       }
     ),
-    /* @__PURE__ */ jsx12(
+    /* @__PURE__ */ jsx13(
       "div",
       {
         className: "rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -1716,8 +1861,8 @@ var CanvasBlockShellComponent = ({
       }
     )
   ] }) : null;
-  const chromeControls = chromeEnabled ? /* @__PURE__ */ jsxs7(Fragment, { children: [
-    /* @__PURE__ */ jsx12(
+  const chromeControls = chromeEnabled ? /* @__PURE__ */ jsxs8(Fragment, { children: [
+    /* @__PURE__ */ jsx13(
       "button",
       {
         type: "button",
@@ -1731,11 +1876,11 @@ var CanvasBlockShellComponent = ({
           background: "var(--wb-builder-panel-solid)",
           color: "var(--wb-builder-text-muted)"
         },
-        children: isCollapsed ? /* @__PURE__ */ jsx12(ChevronDown2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx12(ChevronUp, { className: "h-4 w-4" })
+        children: isCollapsed ? /* @__PURE__ */ jsx13(ChevronDown2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx13(ChevronUp, { className: "h-4 w-4" })
       }
     ),
-    builderEnabled ? /* @__PURE__ */ jsxs7(Fragment, { children: [
-      /* @__PURE__ */ jsx12(
+    builderEnabled ? /* @__PURE__ */ jsxs8(Fragment, { children: [
+      /* @__PURE__ */ jsx13(
         "button",
         {
           type: "button",
@@ -1749,10 +1894,10 @@ var CanvasBlockShellComponent = ({
             background: "var(--wb-builder-panel-solid)",
             color: "var(--wb-builder-text-muted)"
           },
-          children: /* @__PURE__ */ jsx12(Copy, { className: "h-4 w-4" })
+          children: /* @__PURE__ */ jsx13(Copy, { className: "h-4 w-4" })
         }
       ),
-      /* @__PURE__ */ jsx12(
+      /* @__PURE__ */ jsx13(
         "button",
         {
           type: "button",
@@ -1766,10 +1911,10 @@ var CanvasBlockShellComponent = ({
             background: "var(--wb-builder-panel-solid)",
             color: "var(--wb-builder-text-muted)"
           },
-          children: /* @__PURE__ */ jsx12(Trash23, { className: "h-4 w-4" })
+          children: /* @__PURE__ */ jsx13(Trash23, { className: "h-4 w-4" })
         }
       ),
-      /* @__PURE__ */ jsx12(
+      /* @__PURE__ */ jsx13(
         "button",
         {
           type: "button",
@@ -1782,13 +1927,13 @@ var CanvasBlockShellComponent = ({
             background: "var(--wb-builder-panel-solid)",
             color: "var(--wb-builder-text-muted)"
           },
-          children: /* @__PURE__ */ jsx12(GripVertical, { className: "h-4 w-4" })
+          children: /* @__PURE__ */ jsx13(GripVertical, { className: "h-4 w-4" })
         }
       )
     ] }) : null
   ] }) : null;
   if (edgeToEdgeChrome && chromeEnabled) {
-    return /* @__PURE__ */ jsxs7(
+    return /* @__PURE__ */ jsxs8(
       "article",
       {
         ref: hasMounted ? setNodeRef : void 0,
@@ -1807,11 +1952,11 @@ var CanvasBlockShellComponent = ({
           hasMounted && isDragging && "opacity-0"
         ),
         children: [
-          chromeEnabled ? /* @__PURE__ */ jsxs7("div", { className: "mb-3 flex items-start justify-between gap-3", children: [
-            /* @__PURE__ */ jsx12("div", { className: "pointer-events-none flex min-h-10 max-w-[70%] flex-wrap items-center gap-2", children: chromeBadges }),
-            /* @__PURE__ */ jsx12("div", { className: "relative z-10 flex shrink-0 items-center gap-2", children: chromeControls })
+          chromeEnabled ? /* @__PURE__ */ jsxs8("div", { className: "mb-3 flex items-start justify-between gap-3", children: [
+            /* @__PURE__ */ jsx13("div", { className: "pointer-events-none flex min-h-10 max-w-[70%] flex-wrap items-center gap-2", children: chromeBadges }),
+            /* @__PURE__ */ jsx13("div", { className: "relative z-10 flex shrink-0 items-center gap-2", children: chromeControls })
           ] }) : null,
-          /* @__PURE__ */ jsx12(
+          /* @__PURE__ */ jsx13(
             "div",
             {
               className: clsx5(
@@ -1825,7 +1970,7 @@ var CanvasBlockShellComponent = ({
       }
     );
   }
-  return /* @__PURE__ */ jsxs7(
+  return /* @__PURE__ */ jsxs8(
     "article",
     {
       ref: hasMounted ? setNodeRef : void 0,
@@ -1844,7 +1989,7 @@ var CanvasBlockShellComponent = ({
         hasMounted && isDragging && "opacity-0"
       ),
       children: [
-        chromeEnabled ? /* @__PURE__ */ jsx12(
+        chromeEnabled ? /* @__PURE__ */ jsx13(
           "div",
           {
             className: clsx5(
@@ -1853,9 +1998,9 @@ var CanvasBlockShellComponent = ({
             )
           }
         ) : null,
-        builderEnabled ? /* @__PURE__ */ jsx12("div", { className: "pointer-events-none absolute left-5 top-5 z-10 flex max-w-[70%] flex-wrap items-center gap-2", children: chromeBadges }) : null,
-        chromeEnabled ? /* @__PURE__ */ jsx12("div", { className: "absolute right-5 top-5 z-10 flex items-center gap-2", children: chromeControls }) : null,
-        /* @__PURE__ */ jsx12(
+        builderEnabled ? /* @__PURE__ */ jsx13("div", { className: "pointer-events-none absolute left-5 top-5 z-10 flex max-w-[70%] flex-wrap items-center gap-2", children: chromeBadges }) : null,
+        chromeEnabled ? /* @__PURE__ */ jsx13("div", { className: "absolute right-5 top-5 z-10 flex items-center gap-2", children: chromeControls }) : null,
+        /* @__PURE__ */ jsx13(
           "div",
           {
             className: clsx5(
@@ -1875,7 +2020,7 @@ var CanvasBlockShell = memo(CanvasBlockShellComponent);
 import { useDroppable } from "@dnd-kit/core";
 import clsx6 from "clsx";
 import { Plus as Plus3 } from "lucide-react";
-import { jsx as jsx13, jsxs as jsxs8 } from "react/jsx-runtime";
+import { jsx as jsx14, jsxs as jsxs9 } from "react/jsx-runtime";
 var CanvasInsertZone = ({
   listId,
   index,
@@ -1898,7 +2043,7 @@ var CanvasInsertZone = ({
   if (!builderEnabled) {
     return null;
   }
-  return /* @__PURE__ */ jsxs8(
+  return /* @__PURE__ */ jsxs9(
     "div",
     {
       ref: setNodeRef,
@@ -1908,7 +2053,7 @@ var CanvasInsertZone = ({
         isEmpty && !isDragging && "py-4"
       ),
       children: [
-        /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsx14(
           "div",
           {
             className: clsx6(
@@ -1922,7 +2067,7 @@ var CanvasInsertZone = ({
             }
           }
         ),
-        /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsx14(
           "div",
           {
             className: clsx6(
@@ -1933,7 +2078,7 @@ var CanvasInsertZone = ({
             }
           }
         ),
-        /* @__PURE__ */ jsxs8(
+        /* @__PURE__ */ jsxs9(
           "button",
           {
             type: "button",
@@ -1948,7 +2093,7 @@ var CanvasInsertZone = ({
               color: isActive || isOver ? "var(--wb-builder-accent-text)" : isManual ? "var(--wb-builder-text)" : "var(--wb-builder-text-muted)"
             },
             children: [
-              /* @__PURE__ */ jsx13(Plus3, { className: "h-3.5 w-3.5" }),
+              /* @__PURE__ */ jsx14(Plus3, { className: "h-3.5 w-3.5" }),
               isEmpty ? isDragging ? "Drop first block here" : "Insert first block" : isDragging ? "Drop block here" : "Insert here"
             ]
           }
@@ -1959,11 +2104,11 @@ var CanvasInsertZone = ({
 };
 
 // src/studio/canvas/collapsed-block-preview.tsx
-import { jsx as jsx14, jsxs as jsxs9 } from "react/jsx-runtime";
+import { jsx as jsx15, jsxs as jsxs10 } from "react/jsx-runtime";
 var CollapsedBlockPreview = ({
   block
 }) => {
-  return /* @__PURE__ */ jsxs9(
+  return /* @__PURE__ */ jsxs10(
     "div",
     {
       className: "rounded-[28px] border border-dashed px-5 py-5 text-sm",
@@ -1973,7 +2118,7 @@ var CollapsedBlockPreview = ({
         color: "var(--wb-builder-text-muted)"
       },
       children: [
-        /* @__PURE__ */ jsx14(
+        /* @__PURE__ */ jsx15(
           "div",
           {
             className: "font-semibold",
@@ -1981,21 +2126,14 @@ var CollapsedBlockPreview = ({
             children: block.type
           }
         ),
-        /* @__PURE__ */ jsx14(
-          "div",
-          {
-            className: "mt-2",
-            style: { color: "var(--wb-builder-text-soft)" },
-            children: block.areas?.length ? `${block.areas.length} layout area${block.areas.length > 1 ? "s" : ""} hidden while collapsed.` : "Collapsed to keep the canvas compact while you work on neighboring sections."
-          }
-        )
+        /* @__PURE__ */ jsx15("div", { className: "mt-2", style: { color: "var(--wb-builder-text-soft)" }, children: block.areas?.length ? `${block.areas.length} layout area${block.areas.length > 1 ? "s" : ""} hidden while collapsed.` : "Collapsed to keep the canvas compact while you work on neighboring sections." })
       ]
     }
   );
 };
 
 // src/studio/canvas/canvas-block-item.tsx
-import { jsx as jsx15, jsxs as jsxs10 } from "react/jsx-runtime";
+import { jsx as jsx16, jsxs as jsxs11 } from "react/jsx-runtime";
 var CanvasBlockItemComponent = ({
   block,
   index,
@@ -2027,8 +2165,8 @@ var CanvasBlockItemComponent = ({
   );
   const definition = registry.getDefinition(block.module, block.type);
   const chromeStyle = definition?.category === "Site Frame" ? "edge-to-edge" : "default";
-  return /* @__PURE__ */ jsxs10(Fragment2, { children: [
-    /* @__PURE__ */ jsx15(
+  return /* @__PURE__ */ jsxs11(Fragment2, { children: [
+    /* @__PURE__ */ jsx16(
       CanvasBlockShell,
       {
         block,
@@ -2046,11 +2184,11 @@ var CanvasBlockItemComponent = ({
         onDelete: () => removeBlock(block.id),
         onSelect: () => selectBlock(block.id),
         onToggleCollapse: () => toggleBlockCollapse(block.id),
-        children: respectsCollapsedState && isCollapsed ? /* @__PURE__ */ jsx15(CollapsedBlockPreview, { block }) : /* @__PURE__ */ jsx15(
+        children: respectsCollapsedState && isCollapsed ? /* @__PURE__ */ jsx16(CollapsedBlockPreview, { block }) : /* @__PURE__ */ jsx16(
           WebsiteBuilderBlockRenderer,
           {
             block,
-            renderArea: (area) => /* @__PURE__ */ jsx15(WebsiteBuilderRenderDepthProvider, { value: renderDepth + 1, children: /* @__PURE__ */ jsx15(
+            renderArea: (area) => /* @__PURE__ */ jsx16(WebsiteBuilderRenderDepthProvider, { value: renderDepth + 1, children: /* @__PURE__ */ jsx16(
               CanvasBlockList,
               {
                 blocks: area.blocks,
@@ -2068,7 +2206,7 @@ var CanvasBlockItemComponent = ({
         )
       }
     ),
-    /* @__PURE__ */ jsx15(
+    /* @__PURE__ */ jsx16(
       CanvasInsertZone,
       {
         listId,
@@ -2085,7 +2223,7 @@ var CanvasBlockItemComponent = ({
 var CanvasBlockItem = memo2(CanvasBlockItemComponent);
 
 // src/studio/canvas/canvas-block-list.tsx
-import { jsx as jsx16, jsxs as jsxs11 } from "react/jsx-runtime";
+import { jsx as jsx17, jsxs as jsxs12 } from "react/jsx-runtime";
 var CanvasBlockList = ({
   blocks,
   listId,
@@ -2096,8 +2234,8 @@ var CanvasBlockList = ({
   manualInsertTarget,
   dropTarget,
   onActivateInsertTarget
-}) => /* @__PURE__ */ jsxs11("div", { className: "space-y-[var(--wb-list-gap,0.75rem)]", children: [
-  /* @__PURE__ */ jsx16(
+}) => /* @__PURE__ */ jsxs12("div", { className: "space-y-[var(--wb-list-gap,0.75rem)]", children: [
+  /* @__PURE__ */ jsx17(
     CanvasInsertZone,
     {
       listId,
@@ -2110,7 +2248,7 @@ var CanvasBlockList = ({
       onActivate: () => onActivateInsertTarget({ listId, index: 0 })
     }
   ),
-  blocks.map((block, index) => /* @__PURE__ */ jsx16(
+  blocks.map((block, index) => /* @__PURE__ */ jsx17(
     CanvasBlockItem,
     {
       block,
@@ -2128,50 +2266,9 @@ var CanvasBlockList = ({
   ))
 ] });
 
-// src/studio/canvas/block-overlay-card.tsx
-import { jsx as jsx17, jsxs as jsxs12 } from "react/jsx-runtime";
-var BlockOverlayCard = ({ block }) => {
-  return /* @__PURE__ */ jsxs12(
-    "div",
-    {
-      className: "rounded-[24px] border px-4 py-4 text-sm backdrop-blur-xl",
-      style: {
-        borderColor: "var(--wb-builder-border-strong)",
-        background: "var(--wb-builder-card-highlight), linear-gradient(180deg, var(--wb-builder-panel-solid), var(--wb-builder-panel))",
-        color: "var(--wb-builder-text)",
-        boxShadow: "var(--wb-builder-shadow)"
-      },
-      children: [
-        /* @__PURE__ */ jsx17(
-          "div",
-          {
-            className: "text-[11px] uppercase tracking-[0.28em]",
-            style: { color: "var(--wb-builder-text-soft)" },
-            children: block.module
-          }
-        ),
-        /* @__PURE__ */ jsx17("div", { className: "mt-2 font-semibold", children: block.type }),
-        /* @__PURE__ */ jsx17(
-          "div",
-          {
-            className: "mt-1",
-            style: { color: "var(--wb-builder-text-muted)" },
-            children: "Move block into any visible insert zone."
-          }
-        )
-      ]
-    }
-  );
-};
-
 // src/studio/canvas/site-surface-canvas.tsx
 import clsx7 from "clsx";
-import {
-  memo as memo3,
-  useEffect as useEffect4,
-  useRef,
-  useState as useState7
-} from "react";
+import { memo as memo3, useEffect as useEffect4, useRef, useState as useState7 } from "react";
 import { jsx as jsx18, jsxs as jsxs13 } from "react/jsx-runtime";
 var SiteSurfaceRegionSection = ({
   region,
@@ -2568,10 +2665,7 @@ var EditorPageBrowser = ({
     })),
     [groupedPages, translate]
   );
-  const currentRouteLabel = currentPage?.routePattern ?? currentPage?.route ?? translate(
-    "websiteBuilder.pageBrowser.unmappedRoute",
-    "Unmapped route"
-  );
+  const currentRouteLabel = currentPage?.routePattern ?? currentPage?.route ?? translate("websiteBuilder.pageBrowser.unmappedRoute", "Unmapped route");
   const canDuplicateCurrent = currentPage?.canDuplicate === true;
   const compact = activeMode === "builder";
   const pageMenu = useKeyboardMenuController({
@@ -2634,10 +2728,7 @@ var EditorPageBrowser = ({
                 {
                   className: "text-[11px] uppercase tracking-[0.28em]",
                   style: { color: "var(--wb-builder-text-soft)" },
-                  children: translate(
-                    "websiteBuilder.pageBrowser.title",
-                    "Page Browser"
-                  )
+                  children: translate("websiteBuilder.pageBrowser.title", "Page Browser")
                 }
               ),
               /* @__PURE__ */ jsx22(
@@ -2669,10 +2760,7 @@ var EditorPageBrowser = ({
                   },
                   children: [
                     /* @__PURE__ */ jsx22(FilePlus2, { className: "h-4 w-4" }),
-                    translate(
-                      "websiteBuilder.pageBrowser.newPage",
-                      "New Page"
-                    )
+                    translate("websiteBuilder.pageBrowser.newPage", "New Page")
                   ]
                 }
               ) : null
@@ -2940,12 +3028,7 @@ var EditorPageBrowser = ({
 
 // src/studio/editor-dock/editor-save-button.tsx
 import clsx9 from "clsx";
-import {
-  ChevronRight,
-  History,
-  LoaderCircle,
-  Save
-} from "lucide-react";
+import { ChevronRight, History, LoaderCircle, Save } from "lucide-react";
 import { useState as useState11 } from "react";
 
 // src/components/ui/context-menu/index.ts
@@ -3403,6 +3486,60 @@ var EditorDock = ({
   );
 };
 
+// src/studio/palette-panel/palette-overlay-card.tsx
+import { Boxes } from "lucide-react";
+import { jsx as jsx30, jsxs as jsxs22 } from "react/jsx-runtime";
+var PaletteOverlayCard = ({
+  definition
+}) => {
+  const Icon = STUDIO_ICONS[definition.icon] ?? Boxes;
+  return /* @__PURE__ */ jsx30(
+    "div",
+    {
+      className: "w-[13.5rem] min-w-[13.5rem] max-w-[13.5rem] overflow-hidden rounded-[30px] border px-3.5 py-3.5 text-left backdrop-blur-xl",
+      style: {
+        borderColor: "var(--wb-builder-border-strong)",
+        background: "var(--wb-builder-card-highlight), linear-gradient(180deg, var(--wb-builder-panel-solid), var(--wb-builder-panel))",
+        color: "var(--wb-builder-text)",
+        boxShadow: "var(--wb-builder-shadow)"
+      },
+      children: /* @__PURE__ */ jsxs22("div", { className: "flex items-center gap-3", children: [
+        /* @__PURE__ */ jsx30(
+          "div",
+          {
+            className: "flex h-11 w-11 shrink-0 items-center justify-center rounded-[20px] border",
+            style: {
+              borderColor: "var(--wb-builder-border)",
+              background: "var(--wb-builder-field)",
+              color: "var(--wb-builder-accent)"
+            },
+            children: /* @__PURE__ */ jsx30(Icon, { className: "h-4 w-4" })
+          }
+        ),
+        /* @__PURE__ */ jsxs22("div", { className: "min-w-0 flex-1", children: [
+          /* @__PURE__ */ jsx30(
+            "div",
+            {
+              className: "text-[10px] uppercase tracking-[0.26em]",
+              style: { color: "var(--wb-builder-text-soft)" },
+              children: definition.category
+            }
+          ),
+          /* @__PURE__ */ jsx30("div", { className: "mt-1 truncate text-[1.05rem] font-semibold leading-6", children: definition.label }),
+          /* @__PURE__ */ jsx30(
+            "div",
+            {
+              className: "mt-2 text-[10px] uppercase tracking-[0.26em]",
+              style: { color: "var(--wb-builder-text-ghost)" },
+              children: definition.module
+            }
+          )
+        ] })
+      ] })
+    }
+  );
+};
+
 // src/studio/palette-panel/palette-panel.tsx
 import {
   ChevronDown as ChevronDown6,
@@ -3416,9 +3553,9 @@ import { memo as memo4 } from "react";
 // src/studio/palette-panel/palette-card.tsx
 import { useDraggable as useDraggable2 } from "@dnd-kit/core";
 import clsx11 from "clsx";
-import { Boxes } from "lucide-react";
+import { Boxes as Boxes2 } from "lucide-react";
 import { useEffect as useEffect9, useState as useState12 } from "react";
-import { jsx as jsx30, jsxs as jsxs22 } from "react/jsx-runtime";
+import { jsx as jsx31, jsxs as jsxs23 } from "react/jsx-runtime";
 var PaletteCard = ({
   definition,
   isSelected,
@@ -3436,11 +3573,11 @@ var PaletteCard = ({
     }
   });
   const [hasMounted, setHasMounted] = useState12(false);
-  const Icon = STUDIO_ICONS[definition.icon] ?? Boxes;
+  const Icon = STUDIO_ICONS[definition.icon] ?? Boxes2;
   useEffect9(() => {
     setHasMounted(true);
   }, []);
-  return /* @__PURE__ */ jsxs22(
+  return /* @__PURE__ */ jsxs23(
     "button",
     {
       type: "button",
@@ -3461,7 +3598,7 @@ var PaletteCard = ({
         boxShadow: "var(--wb-builder-card-shadow)"
       },
       children: [
-        /* @__PURE__ */ jsx30(
+        /* @__PURE__ */ jsx31(
           "div",
           {
             className: "flex h-12 w-12 shrink-0 items-center justify-center rounded-[20px] border",
@@ -3471,10 +3608,10 @@ var PaletteCard = ({
               color: isSelected ? "var(--wb-builder-accent)" : "var(--wb-builder-text-soft)",
               boxShadow: "var(--wb-builder-card-shadow)"
             },
-            children: /* @__PURE__ */ jsx30(Icon, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx31(Icon, { className: "h-4 w-4" })
           }
         ),
-        /* @__PURE__ */ jsx30("div", { className: "min-w-0 flex-1", children: /* @__PURE__ */ jsx30(
+        /* @__PURE__ */ jsx31("div", { className: "min-w-0 flex-1", children: /* @__PURE__ */ jsx31(
           "div",
           {
             className: "truncate text-[15px] font-semibold",
@@ -3488,7 +3625,7 @@ var PaletteCard = ({
 };
 
 // src/studio/palette-panel/palette-panel.tsx
-import { jsx as jsx31, jsxs as jsxs23 } from "react/jsx-runtime";
+import { jsx as jsx32, jsxs as jsxs24 } from "react/jsx-runtime";
 var PalettePanelComponent = ({
   search,
   onSearchChange,
@@ -3545,15 +3682,15 @@ var PalettePanelComponent = ({
     }
     return left.value.localeCompare(right.value);
   });
-  return /* @__PURE__ */ jsxs23("div", { className: "flex h-full flex-col", children: [
-    /* @__PURE__ */ jsxs23(
+  return /* @__PURE__ */ jsxs24("div", { className: "flex h-full flex-col", children: [
+    /* @__PURE__ */ jsxs24(
       "div",
       {
         className: "border-b px-5 py-5",
         style: { borderColor: "var(--wb-builder-border)" },
         children: [
-          /* @__PURE__ */ jsxs23("div", { className: "flex items-center justify-between gap-3", children: [
-            /* @__PURE__ */ jsx31(
+          /* @__PURE__ */ jsxs24("div", { className: "flex items-center justify-between gap-3", children: [
+            /* @__PURE__ */ jsx32(
               "div",
               {
                 className: "text-[11px] uppercase tracking-[0.28em]",
@@ -3561,7 +3698,7 @@ var PalettePanelComponent = ({
                 children: translate("websiteBuilder.palette.title", "Palette")
               }
             ),
-            onCollapse ? /* @__PURE__ */ jsx31(
+            onCollapse ? /* @__PURE__ */ jsx32(
               "button",
               {
                 type: "button",
@@ -3572,19 +3709,19 @@ var PalettePanelComponent = ({
                   background: "var(--wb-builder-panel-muted)",
                   color: "var(--wb-builder-text-soft)"
                 },
-                children: /* @__PURE__ */ jsx31(ChevronLeft, { className: "h-4 w-4" })
+                children: /* @__PURE__ */ jsx32(ChevronLeft, { className: "h-4 w-4" })
               }
             ) : null
           ] }),
-          /* @__PURE__ */ jsxs23("div", { className: "relative mt-4", children: [
-            /* @__PURE__ */ jsx31(
+          /* @__PURE__ */ jsxs24("div", { className: "relative mt-4", children: [
+            /* @__PURE__ */ jsx32(
               Search,
               {
                 className: "pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2",
                 style: { color: "var(--wb-builder-text-soft)" }
               }
             ),
-            /* @__PURE__ */ jsx31(
+            /* @__PURE__ */ jsx32(
               "input",
               {
                 value: search,
@@ -3601,8 +3738,8 @@ var PalettePanelComponent = ({
                 }
               }
             ),
-            /* @__PURE__ */ jsx31("div", { className: "absolute right-2 top-1/2 -translate-y-1/2", children: /* @__PURE__ */ jsxs23(Root2, { modal: false, children: [
-              /* @__PURE__ */ jsx31(Trigger, { asChild: true, children: /* @__PURE__ */ jsx31(
+            /* @__PURE__ */ jsx32("div", { className: "absolute right-2 top-1/2 -translate-y-1/2", children: /* @__PURE__ */ jsxs24(Root2, { modal: false, children: [
+              /* @__PURE__ */ jsx32(Trigger, { asChild: true, children: /* @__PURE__ */ jsx32(
                 "button",
                 {
                   type: "button",
@@ -3613,17 +3750,17 @@ var PalettePanelComponent = ({
                     background: paletteFamily !== "all" || palettePackage !== "all" ? "var(--wb-builder-card-selected)" : "var(--wb-builder-panel-muted)",
                     color: "var(--wb-builder-text-soft)"
                   },
-                  children: /* @__PURE__ */ jsx31(SlidersHorizontal, { className: "h-4 w-4" })
+                  children: /* @__PURE__ */ jsx32(SlidersHorizontal, { className: "h-4 w-4" })
                 }
               ) }),
-              /* @__PURE__ */ jsxs23(
+              /* @__PURE__ */ jsxs24(
                 DropdownMenuContent,
                 {
                   align: "end",
                   className: "w-[20rem] space-y-4 p-3",
                   children: [
-                    /* @__PURE__ */ jsxs23("div", { className: "space-y-2", children: [
-                      /* @__PURE__ */ jsx31(
+                    /* @__PURE__ */ jsxs24("div", { className: "space-y-2", children: [
+                      /* @__PURE__ */ jsx32(
                         "div",
                         {
                           className: "text-[11px] font-semibold uppercase tracking-[0.24em]",
@@ -3631,8 +3768,8 @@ var PalettePanelComponent = ({
                           children: "Family"
                         }
                       ),
-                      /* @__PURE__ */ jsxs23("div", { className: "flex flex-wrap gap-2", children: [
-                        /* @__PURE__ */ jsx31(
+                      /* @__PURE__ */ jsxs24("div", { className: "flex flex-wrap gap-2", children: [
+                        /* @__PURE__ */ jsx32(
                           "button",
                           {
                             type: "button",
@@ -3646,7 +3783,7 @@ var PalettePanelComponent = ({
                             children: "All"
                           }
                         ),
-                        familyOptions.map((family) => /* @__PURE__ */ jsx31(
+                        familyOptions.map((family) => /* @__PURE__ */ jsx32(
                           "button",
                           {
                             type: "button",
@@ -3665,8 +3802,8 @@ var PalettePanelComponent = ({
                         ))
                       ] })
                     ] }),
-                    /* @__PURE__ */ jsxs23("div", { className: "space-y-2", children: [
-                      /* @__PURE__ */ jsx31(
+                    /* @__PURE__ */ jsxs24("div", { className: "space-y-2", children: [
+                      /* @__PURE__ */ jsx32(
                         "div",
                         {
                           className: "text-[11px] font-semibold uppercase tracking-[0.24em]",
@@ -3674,8 +3811,8 @@ var PalettePanelComponent = ({
                           children: "Package"
                         }
                       ),
-                      /* @__PURE__ */ jsxs23("div", { className: "flex flex-wrap gap-2", children: [
-                        /* @__PURE__ */ jsx31(
+                      /* @__PURE__ */ jsxs24("div", { className: "flex flex-wrap gap-2", children: [
+                        /* @__PURE__ */ jsx32(
                           "button",
                           {
                             type: "button",
@@ -3689,7 +3826,7 @@ var PalettePanelComponent = ({
                             children: "All"
                           }
                         ),
-                        packageOptions.map((pkg) => /* @__PURE__ */ jsx31(
+                        packageOptions.map((pkg) => /* @__PURE__ */ jsx32(
                           "button",
                           {
                             type: "button",
@@ -3716,8 +3853,8 @@ var PalettePanelComponent = ({
         ]
       }
     ),
-    /* @__PURE__ */ jsx31("div", { className: "flex-1 overflow-y-auto px-4 py-4", children: /* @__PURE__ */ jsx31("div", { className: "space-y-4", children: paletteGroups.map((familyGroup) => /* @__PURE__ */ jsxs23("section", { className: "space-y-3", children: [
-      /* @__PURE__ */ jsxs23(
+    /* @__PURE__ */ jsx32("div", { className: "flex-1 overflow-y-auto px-4 py-4", children: /* @__PURE__ */ jsx32("div", { className: "space-y-4", children: paletteGroups.map((familyGroup) => /* @__PURE__ */ jsxs24("section", { className: "space-y-3", children: [
+      /* @__PURE__ */ jsxs24(
         "button",
         {
           type: "button",
@@ -3729,8 +3866,8 @@ var PalettePanelComponent = ({
             background: "var(--wb-builder-panel-muted)"
           },
           children: [
-            /* @__PURE__ */ jsxs23("div", { className: "flex items-center gap-3", children: [
-              /* @__PURE__ */ jsx31(
+            /* @__PURE__ */ jsxs24("div", { className: "flex items-center gap-3", children: [
+              /* @__PURE__ */ jsx32(
                 "div",
                 {
                   className: "rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.3em]",
@@ -3742,20 +3879,20 @@ var PalettePanelComponent = ({
                   children: familyGroup.family
                 }
               ),
-              /* @__PURE__ */ jsx31("span", { className: "font-mono text-[11px] uppercase tracking-[0.24em] text-[color:var(--wb-builder-text-ghost)]", children: familyGroup.groups.reduce(
+              /* @__PURE__ */ jsx32("span", { className: "font-mono text-[11px] uppercase tracking-[0.24em] text-[color:var(--wb-builder-text-ghost)]", children: familyGroup.groups.reduce(
                 (total, group) => total + group.definitions.length,
                 0
               ) })
             ] }),
-            /* @__PURE__ */ jsx31("div", { style: { color: "var(--wb-builder-text-ghost)" }, children: collapsedFamilies.includes(familyGroup.family) ? /* @__PURE__ */ jsx31(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx31(ChevronDown6, { className: "h-4 w-4" }) })
+            /* @__PURE__ */ jsx32("div", { style: { color: "var(--wb-builder-text-ghost)" }, children: collapsedFamilies.includes(familyGroup.family) ? /* @__PURE__ */ jsx32(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx32(ChevronDown6, { className: "h-4 w-4" }) })
           ]
         }
       ),
       collapsedFamilies.includes(familyGroup.family) ? null : familyGroup.groups.map(({ group, definitions }) => {
         const key = `${familyGroup.family}:${group}`;
         const collapsed = collapsedGroups.includes(key);
-        return /* @__PURE__ */ jsxs23("section", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxs23(
+        return /* @__PURE__ */ jsxs24("section", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxs24(
             "button",
             {
               type: "button",
@@ -3763,8 +3900,8 @@ var PalettePanelComponent = ({
               className: "flex w-full cursor-pointer items-center justify-between gap-3 rounded-[18px] px-2 py-1.5 text-left transition",
               style: { color: "var(--wb-builder-text)" },
               children: [
-                /* @__PURE__ */ jsxs23("div", { className: "flex items-center gap-3", children: [
-                  /* @__PURE__ */ jsx31(
+                /* @__PURE__ */ jsxs24("div", { className: "flex items-center gap-3", children: [
+                  /* @__PURE__ */ jsx32(
                     "div",
                     {
                       className: "text-[11px] uppercase tracking-[0.28em]",
@@ -3775,13 +3912,19 @@ var PalettePanelComponent = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx31("span", { className: "font-mono text-[10px] uppercase tracking-[0.24em]", children: definitions.length })
+                  /* @__PURE__ */ jsx32("span", { className: "font-mono text-[10px] uppercase tracking-[0.24em]", children: definitions.length })
                 ] }),
-                /* @__PURE__ */ jsx31("div", { style: { color: "var(--wb-builder-text-ghost)" }, children: collapsed ? /* @__PURE__ */ jsx31(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx31(ChevronDown6, { className: "h-4 w-4" }) })
+                /* @__PURE__ */ jsx32(
+                  "div",
+                  {
+                    style: { color: "var(--wb-builder-text-ghost)" },
+                    children: collapsed ? /* @__PURE__ */ jsx32(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx32(ChevronDown6, { className: "h-4 w-4" })
+                  }
+                )
               ]
             }
           ),
-          collapsed ? null : /* @__PURE__ */ jsx31("div", { className: "space-y-2", children: definitions.map((definition) => /* @__PURE__ */ jsx31(
+          collapsed ? null : /* @__PURE__ */ jsx32("div", { className: "space-y-2", children: definitions.map((definition) => /* @__PURE__ */ jsx32(
             PaletteCard,
             {
               definition,
@@ -3797,60 +3940,6 @@ var PalettePanelComponent = ({
   ] });
 };
 var PalettePanel = memo4(PalettePanelComponent);
-
-// src/studio/palette-panel/palette-overlay-card.tsx
-import { Boxes as Boxes2 } from "lucide-react";
-import { jsx as jsx32, jsxs as jsxs24 } from "react/jsx-runtime";
-var PaletteOverlayCard = ({
-  definition
-}) => {
-  const Icon = STUDIO_ICONS[definition.icon] ?? Boxes2;
-  return /* @__PURE__ */ jsx32(
-    "div",
-    {
-      className: "w-[13.5rem] min-w-[13.5rem] max-w-[13.5rem] overflow-hidden rounded-[30px] border px-3.5 py-3.5 text-left backdrop-blur-xl",
-      style: {
-        borderColor: "var(--wb-builder-border-strong)",
-        background: "var(--wb-builder-card-highlight), linear-gradient(180deg, var(--wb-builder-panel-solid), var(--wb-builder-panel))",
-        color: "var(--wb-builder-text)",
-        boxShadow: "var(--wb-builder-shadow)"
-      },
-      children: /* @__PURE__ */ jsxs24("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ jsx32(
-          "div",
-          {
-            className: "flex h-11 w-11 shrink-0 items-center justify-center rounded-[20px] border",
-            style: {
-              borderColor: "var(--wb-builder-border)",
-              background: "var(--wb-builder-field)",
-              color: "var(--wb-builder-accent)"
-            },
-            children: /* @__PURE__ */ jsx32(Icon, { className: "h-4 w-4" })
-          }
-        ),
-        /* @__PURE__ */ jsxs24("div", { className: "min-w-0 flex-1", children: [
-          /* @__PURE__ */ jsx32(
-            "div",
-            {
-              className: "text-[10px] uppercase tracking-[0.26em]",
-              style: { color: "var(--wb-builder-text-soft)" },
-              children: definition.category
-            }
-          ),
-          /* @__PURE__ */ jsx32("div", { className: "mt-1 truncate text-[1.05rem] font-semibold leading-6", children: definition.label }),
-          /* @__PURE__ */ jsx32(
-            "div",
-            {
-              className: "mt-2 text-[10px] uppercase tracking-[0.26em]",
-              style: { color: "var(--wb-builder-text-ghost)" },
-              children: definition.module
-            }
-          )
-        ] })
-      ] })
-    }
-  );
-};
 
 // src/studio/website-builder-studio/use-studio-browser-preferences.ts
 import { useEffect as useEffect10, useState as useState13 } from "react";
@@ -4845,9 +4934,7 @@ var useStudioPersistence = ({
             saveMode: persistedState.saveMode,
             document: cloneWebsiteBuilderValue(persistedState.document),
             resources: cloneWebsiteBuilderValue(persistedState.resources),
-            pageSettings: cloneWebsiteBuilderValue(
-              persistedState.pageSettings
-            ),
+            pageSettings: cloneWebsiteBuilderValue(persistedState.pageSettings),
             site: cloneWebsiteBuilderValue(persistedState.site)
           })
         );
@@ -4886,7 +4973,9 @@ var useStudioPersistence = ({
     syncExternalState({
       initialDocument: cloneWebsiteBuilderValue(lastSavedState.document),
       initialResources: cloneWebsiteBuilderValue(lastSavedState.resources),
-      initialPageSettings: cloneWebsiteBuilderValue(lastSavedState.pageSettings),
+      initialPageSettings: cloneWebsiteBuilderValue(
+        lastSavedState.pageSettings
+      ),
       initialSite: cloneWebsiteBuilderValue(lastSavedState.site),
       workspace: lastSavedState.workspace ?? normalizedWorkspace,
       capabilities: normalizedCapabilities
@@ -4934,93 +5023,6 @@ var useStudioPersistence = ({
     expectedHeadRevisionId: lastSavedState.expectedHeadRevisionId
   };
 };
-
-// src/studio/website-builder-studio/use-studio-site-setting-change.ts
-import { useCallback as useCallback2 } from "react";
-var applyStudioSiteSettingChange = ({
-  path,
-  value,
-  workspace,
-  expectedHeadRevisionId,
-  document: document2,
-  resources,
-  pageSettings,
-  site,
-  currentPage,
-  updateSiteSettingValue,
-  onSiteSettingChange,
-  replaceState
-}) => {
-  updateSiteSettingValue(path, value);
-  if (!onSiteSettingChange) {
-    return;
-  }
-  const replacement = onSiteSettingChange(
-    path,
-    value,
-    createWebsiteBuilderStudioSiteSettingChangeContext({
-      path,
-      value,
-      workspace,
-      expectedHeadRevisionId,
-      document: document2,
-      resources,
-      pageSettings,
-      site,
-      currentPage
-    })
-  );
-  if (!replacement) {
-    return;
-  }
-  replaceState(
-    replacement.document,
-    replacement.resources,
-    replacement.pageSettings,
-    replacement.site
-  );
-};
-var useStudioSiteSettingChange = ({
-  workspace,
-  expectedHeadRevisionId,
-  document: document2,
-  resources,
-  pageSettings,
-  site,
-  currentPage,
-  updateSiteSettingValue,
-  onSiteSettingChange,
-  replaceState
-}) => useCallback2(
-  (path, value) => {
-    applyStudioSiteSettingChange({
-      path,
-      value,
-      workspace,
-      expectedHeadRevisionId,
-      document: document2,
-      resources,
-      pageSettings,
-      site,
-      currentPage,
-      updateSiteSettingValue,
-      onSiteSettingChange,
-      replaceState
-    });
-  },
-  [
-    currentPage,
-    document2,
-    expectedHeadRevisionId,
-    onSiteSettingChange,
-    pageSettings,
-    replaceState,
-    resources,
-    site,
-    updateSiteSettingValue,
-    workspace
-  ]
-);
 
 // src/studio/website-builder-studio/use-studio-sidebars.ts
 import {
@@ -5173,6 +5175,93 @@ var useStudioSidebars = ({ storageKey }) => {
     startResize
   };
 };
+
+// src/studio/website-builder-studio/use-studio-site-setting-change.ts
+import { useCallback as useCallback2 } from "react";
+var applyStudioSiteSettingChange = ({
+  path,
+  value,
+  workspace,
+  expectedHeadRevisionId,
+  document: document2,
+  resources,
+  pageSettings,
+  site,
+  currentPage,
+  updateSiteSettingValue,
+  onSiteSettingChange,
+  replaceState
+}) => {
+  updateSiteSettingValue(path, value);
+  if (!onSiteSettingChange) {
+    return;
+  }
+  const replacement = onSiteSettingChange(
+    path,
+    value,
+    createWebsiteBuilderStudioSiteSettingChangeContext({
+      path,
+      value,
+      workspace,
+      expectedHeadRevisionId,
+      document: document2,
+      resources,
+      pageSettings,
+      site,
+      currentPage
+    })
+  );
+  if (!replacement) {
+    return;
+  }
+  replaceState(
+    replacement.document,
+    replacement.resources,
+    replacement.pageSettings,
+    replacement.site
+  );
+};
+var useStudioSiteSettingChange = ({
+  workspace,
+  expectedHeadRevisionId,
+  document: document2,
+  resources,
+  pageSettings,
+  site,
+  currentPage,
+  updateSiteSettingValue,
+  onSiteSettingChange,
+  replaceState
+}) => useCallback2(
+  (path, value) => {
+    applyStudioSiteSettingChange({
+      path,
+      value,
+      workspace,
+      expectedHeadRevisionId,
+      document: document2,
+      resources,
+      pageSettings,
+      site,
+      currentPage,
+      updateSiteSettingValue,
+      onSiteSettingChange,
+      replaceState
+    });
+  },
+  [
+    currentPage,
+    document2,
+    expectedHeadRevisionId,
+    onSiteSettingChange,
+    pageSettings,
+    replaceState,
+    resources,
+    site,
+    updateSiteSettingValue,
+    workspace
+  ]
+);
 
 // src/studio/website-builder-studio/website-builder-stage.tsx
 import clsx19 from "clsx";
@@ -5509,7 +5598,9 @@ var PageSettingsSurface = ({
     ],
     [siteSettingsSubtabs]
   );
-  const [activeSiteTab, setActiveSiteTab] = useState17(siteSubtabs[0]?.key ?? "design");
+  const [activeSiteTab, setActiveSiteTab] = useState17(
+    siteSubtabs[0]?.key ?? "design"
+  );
   useEffect13(() => {
     if (availableScopes.length === 0) {
       setActiveTab("site");
@@ -5536,8 +5627,12 @@ var PageSettingsSurface = ({
   const primaryRoute = activeScope === "template" ? readString(scopeSettings, "pathPattern") ?? currentPage?.routePattern ?? currentPage?.route : readString(scopeSettings, "path") ?? currentPage?.route;
   const secondaryRoute = activeScope === "template" ? readString(scopeSettings, "currentPath") ?? currentPage?.route : null;
   const sitePanelDescription = "Design sources now belong to website profiles. Use Design to inspect the current profile source, Advanced Design to edit stored runtime tokens, and Locales to manage public/admin locale exposure.";
-  const siteDesignPanel = siteSettingsPanels.find((panel) => panel.key === "design");
-  const siteLocalesPanel = siteSettingsPanels.find((panel) => panel.key === "locales");
+  const siteDesignPanel = siteSettingsPanels.find(
+    (panel) => panel.key === "design"
+  );
+  const siteLocalesPanel = siteSettingsPanels.find(
+    (panel) => panel.key === "locales"
+  );
   const siteWorkspaceSubtab = siteSettingsSubtabs.find(
     (tab) => tab.key === activeSiteTab
   );

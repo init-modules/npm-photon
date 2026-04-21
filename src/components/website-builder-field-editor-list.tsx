@@ -1,7 +1,7 @@
 "use client";
 
-import type { WebsiteBuilderField } from "../types";
 import { FieldEditor } from "../studio/inspector-panel/field-editor";
+import type { WebsiteBuilderField } from "../types";
 
 type WebsiteBuilderFieldEditorListProps = {
 	fields: WebsiteBuilderField[];

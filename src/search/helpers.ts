@@ -1,7 +1,4 @@
-import type {
-	WebsiteBuilderMode,
-	WebsiteBuilderSearchResult,
-} from "../types";
+import type { WebsiteBuilderMode, WebsiteBuilderSearchResult } from "../types";
 import {
 	WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
 	WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
@@ -52,9 +49,7 @@ export const buildWebsiteBuilderSearchResultHref = (
 	},
 ) => {
 	const localePrefix =
-		options?.locale === "en" && !result.route.startsWith("/en")
-			? "/en"
-			: "";
+		options?.locale === "en" && !result.route.startsWith("/en") ? "/en" : "";
 	const url = new URL(
 		`${localePrefix}${result.route}`,
 		"https://website-builder.local",
@@ -99,5 +94,7 @@ export const buildWebsiteBuilderSearchResultHref = (
 
 	const serializedSearch = searchParams.toString();
 
-	return serializedSearch ? `${url.pathname}?${serializedSearch}` : url.pathname;
+	return serializedSearch
+		? `${url.pathname}?${serializedSearch}`
+		: url.pathname;
 };

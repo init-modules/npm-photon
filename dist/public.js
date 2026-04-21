@@ -7,29 +7,29 @@ import {
   resolveWebsiteBuilderPublicSiteDesignSettings,
   siteFooterShellDefinition,
   siteHeaderShellDefinition
-} from "./chunk-5JYE76G2.js";
+} from "./chunk-Q4KY55GU.js";
 import {
   WebsiteBuilderBlockRenderer,
   WebsiteBuilderRenderDepthProvider,
   WebsiteBuilderSearchHighlightEffect,
   WebsiteBuilderSurfaceLayoutProvider,
   useWebsiteBuilderRenderDepth
-} from "./chunk-OURPASIW.js";
+} from "./chunk-N3SPUPCV.js";
 import {
   EditableText,
   getWebsiteBuilderEditableEditorLoader
-} from "./chunk-LEXLLWPP.js";
+} from "./chunk-QVAFUFZV.js";
 import {
   buildWebsiteBuilderSearchTargetId
 } from "./chunk-JWEWJA2O.js";
 import {
   createWebsiteBuilderRuntime
-} from "./chunk-73LA5FDK.js";
+} from "./chunk-JBXEMZUN.js";
 import {
   createWebsiteBuilderAccountTabExtension,
   createWebsiteBuilderSiteFrameExtension,
   resolveWebsiteBuilderAccountTabs
-} from "./chunk-4N2K54N2.js";
+} from "./chunk-2UNKJB65.js";
 import {
   getWebsiteBuilderSurfaceModeStyle
 } from "./chunk-75KJ6L3N.js";
@@ -49,7 +49,7 @@ import {
   useWebsiteBuilderFieldValue,
   useWebsiteBuilderI18n,
   useWebsiteBuilderStore
-} from "./chunk-OWDRVIFG.js";
+} from "./chunk-ZQJWNS6S.js";
 import {
   WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
   createWebsiteBuilderBlockLocalizationSchema,
@@ -58,14 +58,14 @@ import {
   defineWebsiteBuilderBlockDefinition,
   getWebsiteBuilderSurfaceRegionBlocks,
   resolveWebsiteBuilderSurfaceRegionDescriptors
-} from "./chunk-4FGVRZOX.js";
+} from "./chunk-EN3VAWKM.js";
 import {
   getWebsiteBuilderAnchorRel,
   sanitizeWebsiteBuilderLinkHref
-} from "./chunk-M743RWMM.js";
+} from "./chunk-GQSABMVW.js";
 import {
   WEBSITE_BUILDER_EMPTY_TEXT
-} from "./chunk-NYLOTAVT.js";
+} from "./chunk-KUHW6SOQ.js";
 
 // src/public.tsx
 import clsx4 from "clsx";
@@ -179,48 +179,51 @@ var EditableGalleryStatic = ({
   emptyStateClassName,
   emptyStateTitleClassName,
   emptyStateBodyClassName
-}) => /* @__PURE__ */ jsx("div", { "data-testid": "wb-editable-gallery", className, children: /* @__PURE__ */ jsx("div", { className: clsx(columnsClassName, items.length === 0 && "grid-cols-1"), children: items.length === 0 ? /* @__PURE__ */ jsxs(
+}) => /* @__PURE__ */ jsx("div", { "data-testid": "wb-editable-gallery", className, children: /* @__PURE__ */ jsx(
   "div",
   {
-    className: clsx(
-      "rounded-[34px] border border-dashed px-6 py-8 text-center",
-      emptyStateClassName
-    ),
-    style: {
-      borderColor: "var(--wb-gallery-empty-border, rgba(214,211,209,0.9))",
-      background: "var(--wb-gallery-empty-bg, linear-gradient(180deg,rgba(255,255,255,0.98),rgba(245,240,231,0.96)))",
-      color: "var(--wb-gallery-empty-text, rgba(87,83,78,0.84))",
-      boxShadow: "var(--wb-gallery-empty-shadow, 0 18px 40px rgba(120,113,108,0.12))"
-    },
-    children: [
-      /* @__PURE__ */ jsx(
-        "p",
-        {
-          className: clsx(
-            "text-sm font-semibold",
-            emptyStateTitleClassName
+    className: clsx(columnsClassName, items.length === 0 && "grid-cols-1"),
+    children: items.length === 0 ? /* @__PURE__ */ jsxs(
+      "div",
+      {
+        className: clsx(
+          "rounded-[34px] border border-dashed px-6 py-8 text-center",
+          emptyStateClassName
+        ),
+        style: {
+          borderColor: "var(--wb-gallery-empty-border, rgba(214,211,209,0.9))",
+          background: "var(--wb-gallery-empty-bg, linear-gradient(180deg,rgba(255,255,255,0.98),rgba(245,240,231,0.96)))",
+          color: "var(--wb-gallery-empty-text, rgba(87,83,78,0.84))",
+          boxShadow: "var(--wb-gallery-empty-shadow, 0 18px 40px rgba(120,113,108,0.12))"
+        },
+        children: [
+          /* @__PURE__ */ jsx(
+            "p",
+            {
+              className: clsx("text-sm font-semibold", emptyStateTitleClassName),
+              style: { color: "var(--wb-gallery-empty-title, currentColor)" },
+              children: emptyTitle
+            }
           ),
-          style: { color: "var(--wb-gallery-empty-title, currentColor)" },
-          children: emptyTitle
-        }
-      ),
-      /* @__PURE__ */ jsx("p", { className: clsx("mt-2 text-sm", emptyStateBodyClassName), children: emptyBody })
-    ]
+          /* @__PURE__ */ jsx("p", { className: clsx("mt-2 text-sm", emptyStateBodyClassName), children: emptyBody })
+        ]
+      }
+    ) : items.map((item, index) => /* @__PURE__ */ jsx(
+      PublicGalleryItemCard,
+      {
+        item,
+        index,
+        totalItems: items.length,
+        className: itemCardClassName,
+        fallbackClassName: itemFallbackClassName,
+        labelClassName: itemLabelClassName,
+        captionClassName: itemCaptionClassName,
+        fileNameClassName: itemFileNameClassName
+      },
+      item.id ?? `${index}-${resolveWebsiteBuilderMediaPreviewUrl(item.media)}`
+    ))
   }
-) : items.map((item, index) => /* @__PURE__ */ jsx(
-  PublicGalleryItemCard,
-  {
-    item,
-    index,
-    totalItems: items.length,
-    className: itemCardClassName,
-    fallbackClassName: itemFallbackClassName,
-    labelClassName: itemLabelClassName,
-    captionClassName: itemCaptionClassName,
-    fileNameClassName: itemFileNameClassName
-  },
-  item.id ?? `${index}-${resolveWebsiteBuilderMediaPreviewUrl(item.media)}`
-)) }) });
+) });
 var PublicGalleryItemCard = ({
   item,
   index,
@@ -553,19 +556,25 @@ var EditableRichText = ({
       }
     );
   }
-  return /* @__PURE__ */ jsx3("div", { "data-wb-search-target": buildWebsiteBuilderSearchTargetId(blockId, path), children: /* @__PURE__ */ jsx3(
+  return /* @__PURE__ */ jsx3(
     "div",
     {
-      className: clsx2(
-        richTextContentClassName,
-        className,
-        !value && "text-[color:var(--wb-site-muted)] opacity-60"
-      ),
-      dangerouslySetInnerHTML: {
-        __html: renderWebsiteBuilderRichTextHtml(value, placeholder)
-      }
+      "data-wb-search-target": buildWebsiteBuilderSearchTargetId(blockId, path),
+      children: /* @__PURE__ */ jsx3(
+        "div",
+        {
+          className: clsx2(
+            richTextContentClassName,
+            className,
+            !value && "text-[color:var(--wb-site-muted)] opacity-60"
+          ),
+          dangerouslySetInnerHTML: {
+            __html: renderWebsiteBuilderRichTextHtml(value, placeholder)
+          }
+        }
+      )
     }
-  ) });
+  );
 };
 
 // src/modules/system-public.tsx
@@ -587,7 +596,9 @@ var SplitLayout = ({
   renderArea
 }) => {
   const mode = useWebsiteBuilderStore((state) => state.mode);
-  const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
+  const siteDesign = useWebsiteBuilderStore(
+    (state) => state.site.settings.design
+  );
   const columns = block.props.columns ?? [];
   const areas = block.areas ?? [];
   const templateColumns = areas.map((area, index) => getColumnConfig(columns, area, index).width).join(" ");
@@ -644,19 +655,105 @@ var SplitLayout = ({
   );
 };
 var splitLayoutFields = [
-  { path: "eyebrow", label: "Eyebrow", kind: "text", group: "content", localization: "localized" },
-  { path: "title", label: "Title", kind: "text", group: "content", localization: "localized" },
-  { path: "body", label: "Body", kind: "textarea", group: "content", localization: "localized" },
-  { path: "gap", label: "Column gap", kind: "number", min: 12, max: 72, step: 2, group: "layout", localization: "shared" },
-  { path: "surface", label: "Surface", kind: "select", group: "style", localization: "shared", options: [{ label: "Glass", value: "glass" }, { label: "Bright", value: "bright" }, { label: "Ink", value: "ink" }] },
-  { path: "columns.0.areaId", label: "Column 1 area", kind: "text", group: "layout", localization: "shared" },
-  { path: "columns.0.label", label: "Column 1 label", kind: "text", group: "layout", localization: "shared" },
-  { path: "columns.0.width", label: "Column 1 width", kind: "text", group: "layout", localization: "shared" },
-  { path: "columns.0.sticky", label: "Column 1 sticky", kind: "toggle", group: "layout", localization: "shared" },
-  { path: "columns.1.areaId", label: "Column 2 area", kind: "text", group: "layout", localization: "shared" },
-  { path: "columns.1.label", label: "Column 2 label", kind: "text", group: "layout", localization: "shared" },
-  { path: "columns.1.width", label: "Column 2 width", kind: "text", group: "layout", localization: "shared" },
-  { path: "columns.1.sticky", label: "Column 2 sticky", kind: "toggle", group: "layout", localization: "shared" }
+  {
+    path: "eyebrow",
+    label: "Eyebrow",
+    kind: "text",
+    group: "content",
+    localization: "localized"
+  },
+  {
+    path: "title",
+    label: "Title",
+    kind: "text",
+    group: "content",
+    localization: "localized"
+  },
+  {
+    path: "body",
+    label: "Body",
+    kind: "textarea",
+    group: "content",
+    localization: "localized"
+  },
+  {
+    path: "gap",
+    label: "Column gap",
+    kind: "number",
+    min: 12,
+    max: 72,
+    step: 2,
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "surface",
+    label: "Surface",
+    kind: "select",
+    group: "style",
+    localization: "shared",
+    options: [
+      { label: "Glass", value: "glass" },
+      { label: "Bright", value: "bright" },
+      { label: "Ink", value: "ink" }
+    ]
+  },
+  {
+    path: "columns.0.areaId",
+    label: "Column 1 area",
+    kind: "text",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "columns.0.label",
+    label: "Column 1 label",
+    kind: "text",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "columns.0.width",
+    label: "Column 1 width",
+    kind: "text",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "columns.0.sticky",
+    label: "Column 1 sticky",
+    kind: "toggle",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "columns.1.areaId",
+    label: "Column 2 area",
+    kind: "text",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "columns.1.label",
+    label: "Column 2 label",
+    kind: "text",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "columns.1.width",
+    label: "Column 2 width",
+    kind: "text",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "columns.1.sticky",
+    label: "Column 2 sticky",
+    kind: "toggle",
+    group: "layout",
+    localization: "shared"
+  }
 ];
 var websiteBuilderPublicSystemModule = {
   module: "website-builder-system",
@@ -675,14 +772,33 @@ var websiteBuilderPublicSystemModule = {
       category: "Layout",
       icon: "layout-grid",
       defaults: {
-        eyebrow: createWebsiteBuilderLocalizedDefault({ en: "Layout system", ru: "\u0421\u0438\u0441\u0442\u0435\u043C\u0430 layout-\u0431\u043B\u043E\u043A\u043E\u0432" }),
-        title: createWebsiteBuilderLocalizedDefault({ en: "Compose horizontal sections without leaving the live page", ru: "\u0421\u043E\u0431\u0438\u0440\u0430\u0439\u0442\u0435 \u0433\u043E\u0440\u0438\u0437\u043E\u043D\u0442\u0430\u043B\u044C\u043D\u044B\u0435 \u0441\u0435\u043A\u0446\u0438\u0438 \u043F\u0440\u044F\u043C\u043E \u043D\u0430 \u0436\u0438\u0432\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435" }),
-        body: createWebsiteBuilderLocalizedDefault({ en: "Use nested layout containers to pin one side, stack blocks on the other and tune widths directly from the inspector.", ru: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435 \u0432\u043B\u043E\u0436\u0435\u043D\u043D\u044B\u0435 layout-\u043A\u043E\u043D\u0442\u0435\u0439\u043D\u0435\u0440\u044B, \u0447\u0442\u043E\u0431\u044B \u0437\u0430\u0444\u0438\u043A\u0441\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u043E\u0434\u043D\u0443 \u043A\u043E\u043B\u043E\u043D\u043A\u0443, \u0441\u043E\u0431\u0440\u0430\u0442\u044C \u0441\u0442\u0435\u043A \u0431\u043B\u043E\u043A\u043E\u0432 \u0432\u043E \u0432\u0442\u043E\u0440\u043E\u0439 \u0438 \u043D\u0430\u0441\u0442\u0440\u0430\u0438\u0432\u0430\u0442\u044C \u0448\u0438\u0440\u0438\u043D\u044B \u043F\u0440\u044F\u043C\u043E \u0438\u0437 \u0438\u043D\u0441\u043F\u0435\u043A\u0442\u043E\u0440\u0430." }),
+        eyebrow: createWebsiteBuilderLocalizedDefault({
+          en: "Layout system",
+          ru: "\u0421\u0438\u0441\u0442\u0435\u043C\u0430 layout-\u0431\u043B\u043E\u043A\u043E\u0432"
+        }),
+        title: createWebsiteBuilderLocalizedDefault({
+          en: "Compose horizontal sections without leaving the live page",
+          ru: "\u0421\u043E\u0431\u0438\u0440\u0430\u0439\u0442\u0435 \u0433\u043E\u0440\u0438\u0437\u043E\u043D\u0442\u0430\u043B\u044C\u043D\u044B\u0435 \u0441\u0435\u043A\u0446\u0438\u0438 \u043F\u0440\u044F\u043C\u043E \u043D\u0430 \u0436\u0438\u0432\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435"
+        }),
+        body: createWebsiteBuilderLocalizedDefault({
+          en: "Use nested layout containers to pin one side, stack blocks on the other and tune widths directly from the inspector.",
+          ru: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435 \u0432\u043B\u043E\u0436\u0435\u043D\u043D\u044B\u0435 layout-\u043A\u043E\u043D\u0442\u0435\u0439\u043D\u0435\u0440\u044B, \u0447\u0442\u043E\u0431\u044B \u0437\u0430\u0444\u0438\u043A\u0441\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u043E\u0434\u043D\u0443 \u043A\u043E\u043B\u043E\u043D\u043A\u0443, \u0441\u043E\u0431\u0440\u0430\u0442\u044C \u0441\u0442\u0435\u043A \u0431\u043B\u043E\u043A\u043E\u0432 \u0432\u043E \u0432\u0442\u043E\u0440\u043E\u0439 \u0438 \u043D\u0430\u0441\u0442\u0440\u0430\u0438\u0432\u0430\u0442\u044C \u0448\u0438\u0440\u0438\u043D\u044B \u043F\u0440\u044F\u043C\u043E \u0438\u0437 \u0438\u043D\u0441\u043F\u0435\u043A\u0442\u043E\u0440\u0430."
+        }),
         gap: 24,
         surface: "glass",
         columns: [
-          { areaId: "primary", label: "", width: "minmax(280px, 0.38fr)", sticky: true },
-          { areaId: "secondary", label: "", width: "minmax(0, 0.62fr)", sticky: false }
+          {
+            areaId: "primary",
+            label: "",
+            width: "minmax(280px, 0.38fr)",
+            sticky: true
+          },
+          {
+            areaId: "secondary",
+            label: "",
+            width: "minmax(0, 0.62fr)",
+            sticky: false
+          }
         ]
       },
       areas: [
@@ -710,12 +826,7 @@ var WebsiteBuilderPublicBlockItem = ({
     WebsiteBuilderBlockRenderer,
     {
       block,
-      renderArea: (area) => /* @__PURE__ */ jsx5(WebsiteBuilderRenderDepthProvider, { value: renderDepth + 1, children: /* @__PURE__ */ jsx5(
-        WebsiteBuilderPublicBlockList,
-        {
-          blocks: area.blocks
-        }
-      ) })
+      renderArea: (area) => /* @__PURE__ */ jsx5(WebsiteBuilderRenderDepthProvider, { value: renderDepth + 1, children: /* @__PURE__ */ jsx5(WebsiteBuilderPublicBlockList, { blocks: area.blocks }) })
     }
   );
 };
@@ -728,7 +839,10 @@ var WebsiteBuilderPublicSurfaceRegion = ({
 }) => {
   const sectionRef = useRef(null);
   const [surfaceWidth, setSurfaceWidth] = useState3(0);
-  const blocks = getWebsiteBuilderSurfaceRegionBlocks(page.document, region.key);
+  const blocks = getWebsiteBuilderSurfaceRegionBlocks(
+    page.document,
+    region.key
+  );
   const isPageRegion = region.key === WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY;
   const stickySiteHeaderRegion = region.key === "header" && (blocks ?? []).some(
     (block) => block.module === "website-builder-system" && block.type === "site-header-shell" && block.props.sticky === true
@@ -772,12 +886,7 @@ var WebsiteBuilderPublicSurfaceRegion = ({
               style: isPageRegion ? {
                 "--wb-list-gap": "var(--wb-section-gap,2rem)"
               } : void 0,
-              children: /* @__PURE__ */ jsx5(
-                WebsiteBuilderPublicBlockList,
-                {
-                  blocks: blocks ?? []
-                }
-              )
+              children: /* @__PURE__ */ jsx5(WebsiteBuilderPublicBlockList, { blocks: blocks ?? [] })
             }
           )
         }

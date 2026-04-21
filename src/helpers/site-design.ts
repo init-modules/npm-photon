@@ -1,13 +1,11 @@
+import { getWebsiteBuilderSiteColorScheme } from "../modules/system/site/site-color-schemes";
+import { getWebsiteBuilderSiteDesignPreset } from "../modules/system/site/site-design-presets";
 import type {
 	WebsiteBuilderResolvedSiteDesignSettings,
 	WebsiteBuilderSiteComponentVariants,
 	WebsiteBuilderSiteDesignColorTokens,
 	WebsiteBuilderSiteDesignSettings,
 } from "../types";
-import {
-	getWebsiteBuilderSiteDesignPreset,
-} from "../modules/system/site/site-design-presets";
-import { getWebsiteBuilderSiteColorScheme } from "../modules/system/site/site-color-schemes";
 
 const WEBSITE_BUILDER_SITE_DESIGN_TOKEN_KEYS = [
 	"bodyFontFamily",
@@ -41,8 +39,7 @@ const WEBSITE_BUILDER_FRAMELESS_PRESET_IDS = new Set([
 
 export const WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS: WebsiteBuilderSiteDesignSettings =
 	{
-		bodyFontFamily:
-			"var(--font-display, ui-sans-serif), system-ui, sans-serif",
+		bodyFontFamily: "var(--font-display, ui-sans-serif), system-ui, sans-serif",
 		headingFontFamily:
 			"var(--font-display, ui-sans-serif), system-ui, sans-serif",
 		backgroundColor: "#081321",
@@ -87,7 +84,9 @@ const matchesWebsiteBuilderSiteDesignDefaults = (
 	left: WebsiteBuilderSiteDesignSettings,
 	right: WebsiteBuilderSiteDesignSettings,
 ) =>
-	WEBSITE_BUILDER_SITE_DESIGN_TOKEN_KEYS.every((key) => left[key] === right[key]);
+	WEBSITE_BUILDER_SITE_DESIGN_TOKEN_KEYS.every(
+		(key) => left[key] === right[key],
+	);
 
 const hasAnyTokenOverride = (
 	candidate: Record<string, unknown>,
@@ -115,17 +114,20 @@ const normalizeComponentVariants = (
 		return {};
 	}
 
-	return Object.entries(value as Record<string, unknown>).reduce<
-		WebsiteBuilderSiteComponentVariants
-	>((result, [key, candidateValue]) => {
-		const normalizedValue = readNonEmptyString(candidateValue);
+	return Object.entries(
+		value as Record<string, unknown>,
+	).reduce<WebsiteBuilderSiteComponentVariants>(
+		(result, [key, candidateValue]) => {
+			const normalizedValue = readNonEmptyString(candidateValue);
 
-		if (key.trim() !== "" && normalizedValue !== undefined) {
-			result[key] = normalizedValue;
-		}
+			if (key.trim() !== "" && normalizedValue !== undefined) {
+				result[key] = normalizedValue;
+			}
 
-		return result;
-	}, {});
+			return result;
+		},
+		{},
+	);
 };
 
 const pickSiteDesignTokens = (
@@ -211,7 +213,8 @@ export const createWebsiteBuilderSiteDesignSettings = ({
 };
 
 export const isWebsiteBuilderFramelessPreset = (presetId?: string | null) =>
-	typeof presetId === "string" && WEBSITE_BUILDER_FRAMELESS_PRESET_IDS.has(presetId);
+	typeof presetId === "string" &&
+	WEBSITE_BUILDER_FRAMELESS_PRESET_IDS.has(presetId);
 
 export const isWebsiteBuilderFramelessSiteDesign = (value: unknown) =>
 	isWebsiteBuilderFramelessPreset(
@@ -229,7 +232,9 @@ export const applyWebsiteBuilderSiteDesignPreset = (
 	const rawComponentVariants = normalizeComponentVariants(
 		asSiteDesignCandidate(value).componentVariants,
 	);
-	const presetVariantKeys = new Set(Object.keys(preset?.componentVariants ?? {}));
+	const presetVariantKeys = new Set(
+		Object.keys(preset?.componentVariants ?? {}),
+	);
 	const preservedCustomVariants = Object.fromEntries(
 		Object.entries(rawComponentVariants).filter(
 			([key]) => !presetVariantKeys.has(key),

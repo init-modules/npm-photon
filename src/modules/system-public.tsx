@@ -10,8 +10,8 @@ import {
 	defineWebsiteBuilderBlockDefinition,
 } from "../helpers/document";
 import { createWebsiteBuilderKit } from "../helpers/installable";
-import { getWebsiteBuilderSurfaceModeStyle } from "../helpers/surface-layout";
 import { isWebsiteBuilderPublicFramelessSiteDesign } from "../helpers/public-site-design";
+import { getWebsiteBuilderSurfaceModeStyle } from "../helpers/surface-layout";
 import type {
 	WebsiteBuilderArea,
 	WebsiteBuilderBlock,
@@ -66,14 +66,17 @@ const SplitLayout = ({
 	renderArea?: (area: WebsiteBuilderArea, index: number) => ReactNode;
 }) => {
 	const mode = useWebsiteBuilderStore((state) => state.mode);
-	const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
+	const siteDesign = useWebsiteBuilderStore(
+		(state) => state.site.settings.design,
+	);
 	const columns = block.props.columns ?? [];
 	const areas = block.areas ?? [];
 	const templateColumns = areas
 		.map((area, index) => getColumnConfig(columns, area, index).width)
 		.join(" ");
 	const surface = surfaceStyles[block.props.surface] ?? surfaceStyles.glass;
-	const framelessSurface = isWebsiteBuilderPublicFramelessSiteDesign(siteDesign);
+	const framelessSurface =
+		isWebsiteBuilderPublicFramelessSiteDesign(siteDesign);
 	const stickyPreviewEnabled = mode !== "builder";
 
 	return (
@@ -113,7 +116,9 @@ const SplitLayout = ({
 							key={`${block.id}-${area.id}`}
 							className={clsx(
 								"min-w-0",
-								column.sticky && stickyPreviewEnabled && "lg:sticky lg:self-start",
+								column.sticky &&
+									stickyPreviewEnabled &&
+									"lg:sticky lg:self-start",
 							)}
 							style={
 								column.sticky && stickyPreviewEnabled
@@ -138,19 +143,105 @@ const SplitLayout = ({
 };
 
 const splitLayoutFields: WebsiteBuilderField[] = [
-	{ path: "eyebrow", label: "Eyebrow", kind: "text", group: "content", localization: "localized" },
-	{ path: "title", label: "Title", kind: "text", group: "content", localization: "localized" },
-	{ path: "body", label: "Body", kind: "textarea", group: "content", localization: "localized" },
-	{ path: "gap", label: "Column gap", kind: "number", min: 12, max: 72, step: 2, group: "layout", localization: "shared" },
-	{ path: "surface", label: "Surface", kind: "select", group: "style", localization: "shared", options: [{ label: "Glass", value: "glass" }, { label: "Bright", value: "bright" }, { label: "Ink", value: "ink" }] },
-	{ path: "columns.0.areaId", label: "Column 1 area", kind: "text", group: "layout", localization: "shared" },
-	{ path: "columns.0.label", label: "Column 1 label", kind: "text", group: "layout", localization: "shared" },
-	{ path: "columns.0.width", label: "Column 1 width", kind: "text", group: "layout", localization: "shared" },
-	{ path: "columns.0.sticky", label: "Column 1 sticky", kind: "toggle", group: "layout", localization: "shared" },
-	{ path: "columns.1.areaId", label: "Column 2 area", kind: "text", group: "layout", localization: "shared" },
-	{ path: "columns.1.label", label: "Column 2 label", kind: "text", group: "layout", localization: "shared" },
-	{ path: "columns.1.width", label: "Column 2 width", kind: "text", group: "layout", localization: "shared" },
-	{ path: "columns.1.sticky", label: "Column 2 sticky", kind: "toggle", group: "layout", localization: "shared" },
+	{
+		path: "eyebrow",
+		label: "Eyebrow",
+		kind: "text",
+		group: "content",
+		localization: "localized",
+	},
+	{
+		path: "title",
+		label: "Title",
+		kind: "text",
+		group: "content",
+		localization: "localized",
+	},
+	{
+		path: "body",
+		label: "Body",
+		kind: "textarea",
+		group: "content",
+		localization: "localized",
+	},
+	{
+		path: "gap",
+		label: "Column gap",
+		kind: "number",
+		min: 12,
+		max: 72,
+		step: 2,
+		group: "layout",
+		localization: "shared",
+	},
+	{
+		path: "surface",
+		label: "Surface",
+		kind: "select",
+		group: "style",
+		localization: "shared",
+		options: [
+			{ label: "Glass", value: "glass" },
+			{ label: "Bright", value: "bright" },
+			{ label: "Ink", value: "ink" },
+		],
+	},
+	{
+		path: "columns.0.areaId",
+		label: "Column 1 area",
+		kind: "text",
+		group: "layout",
+		localization: "shared",
+	},
+	{
+		path: "columns.0.label",
+		label: "Column 1 label",
+		kind: "text",
+		group: "layout",
+		localization: "shared",
+	},
+	{
+		path: "columns.0.width",
+		label: "Column 1 width",
+		kind: "text",
+		group: "layout",
+		localization: "shared",
+	},
+	{
+		path: "columns.0.sticky",
+		label: "Column 1 sticky",
+		kind: "toggle",
+		group: "layout",
+		localization: "shared",
+	},
+	{
+		path: "columns.1.areaId",
+		label: "Column 2 area",
+		kind: "text",
+		group: "layout",
+		localization: "shared",
+	},
+	{
+		path: "columns.1.label",
+		label: "Column 2 label",
+		kind: "text",
+		group: "layout",
+		localization: "shared",
+	},
+	{
+		path: "columns.1.width",
+		label: "Column 2 width",
+		kind: "text",
+		group: "layout",
+		localization: "shared",
+	},
+	{
+		path: "columns.1.sticky",
+		label: "Column 2 sticky",
+		kind: "toggle",
+		group: "layout",
+		localization: "shared",
+	},
 ];
 
 export const websiteBuilderPublicSystemModule: WebsiteBuilderModule = {
@@ -171,14 +262,33 @@ export const websiteBuilderPublicSystemModule: WebsiteBuilderModule = {
 			category: "Layout",
 			icon: "layout-grid",
 			defaults: {
-				eyebrow: createWebsiteBuilderLocalizedDefault({ en: "Layout system", ru: "Система layout-блоков" }),
-				title: createWebsiteBuilderLocalizedDefault({ en: "Compose horizontal sections without leaving the live page", ru: "Собирайте горизонтальные секции прямо на живой странице" }),
-				body: createWebsiteBuilderLocalizedDefault({ en: "Use nested layout containers to pin one side, stack blocks on the other and tune widths directly from the inspector.", ru: "Используйте вложенные layout-контейнеры, чтобы зафиксировать одну колонку, собрать стек блоков во второй и настраивать ширины прямо из инспектора." }),
+				eyebrow: createWebsiteBuilderLocalizedDefault({
+					en: "Layout system",
+					ru: "Система layout-блоков",
+				}),
+				title: createWebsiteBuilderLocalizedDefault({
+					en: "Compose horizontal sections without leaving the live page",
+					ru: "Собирайте горизонтальные секции прямо на живой странице",
+				}),
+				body: createWebsiteBuilderLocalizedDefault({
+					en: "Use nested layout containers to pin one side, stack blocks on the other and tune widths directly from the inspector.",
+					ru: "Используйте вложенные layout-контейнеры, чтобы зафиксировать одну колонку, собрать стек блоков во второй и настраивать ширины прямо из инспектора.",
+				}),
 				gap: 24,
 				surface: "glass",
 				columns: [
-					{ areaId: "primary", label: "", width: "minmax(280px, 0.38fr)", sticky: true },
-					{ areaId: "secondary", label: "", width: "minmax(0, 0.62fr)", sticky: false },
+					{
+						areaId: "primary",
+						label: "",
+						width: "minmax(280px, 0.38fr)",
+						sticky: true,
+					},
+					{
+						areaId: "secondary",
+						label: "",
+						width: "minmax(0, 0.62fr)",
+						sticky: false,
+					},
 				],
 			},
 			areas: [

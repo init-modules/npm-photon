@@ -1,13 +1,17 @@
 // src/helpers/site-frame-extensions.ts
 var normalizeOrder = (value) => typeof value === "number" && Number.isFinite(value) ? value : 0;
-var byOrderThenLabel = (left, right) => normalizeOrder(left.order) - normalizeOrder(right.order) || (left.label ?? left.title ?? "").localeCompare(right.label ?? right.title ?? "");
+var byOrderThenLabel = (left, right) => normalizeOrder(left.order) - normalizeOrder(right.order) || (left.label ?? left.title ?? "").localeCompare(
+  right.label ?? right.title ?? ""
+);
 var isEnabled = (value) => value.enabled !== false;
 var isNotDisabled = (id, disabledIds) => !id || !disabledIds.has(id);
 var createWebsiteBuilderSiteFrameExtension = (extension) => extension;
 var createWebsiteBuilderAccountTabExtension = (tab) => tab;
 var resolveWebsiteBuilderSiteFrameExtensions = (extensions, disabledExtensionIds = []) => {
   const disabledIds = new Set(disabledExtensionIds);
-  return [...extensions ?? []].filter((extension) => isEnabled(extension) && !disabledIds.has(extension.id)).sort(byOrderThenLabel);
+  return [...extensions ?? []].filter(
+    (extension) => isEnabled(extension) && !disabledIds.has(extension.id)
+  ).sort(byOrderThenLabel);
 };
 var resolveWebsiteBuilderAccountTabs = (tabs, disabledTabIds = []) => {
   const disabledIds = new Set(disabledTabIds);
@@ -26,7 +30,9 @@ var collectWebsiteBuilderFooterExtensionItems = (extensions, disabledItemIds = [
   return {
     navigationColumns: extensions.flatMap((extension) => extension.footer?.navigationColumns ?? []).filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)).map((column) => ({
       ...column,
-      links: column.links.filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)).sort(byOrderThenLabel)
+      links: column.links.filter(
+        (item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)
+      ).sort(byOrderThenLabel)
     })).sort(byOrderThenLabel),
     legalLinks: extensions.flatMap((extension) => extension.footer?.legalLinks ?? []).filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)).sort(byOrderThenLabel)
   };

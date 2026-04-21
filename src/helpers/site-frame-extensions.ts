@@ -9,17 +9,23 @@ import type {
 const normalizeOrder = (value: unknown) =>
 	typeof value === "number" && Number.isFinite(value) ? value : 0;
 
-const byOrderThenLabel = <T extends { order?: number; label?: string; title?: string }>(
+const byOrderThenLabel = <
+	T extends { order?: number; label?: string; title?: string },
+>(
 	left: T,
 	right: T,
 ) =>
 	normalizeOrder(left.order) - normalizeOrder(right.order) ||
-	(left.label ?? left.title ?? "").localeCompare(right.label ?? right.title ?? "");
+	(left.label ?? left.title ?? "").localeCompare(
+		right.label ?? right.title ?? "",
+	);
 
 const isEnabled = (value: { enabled?: boolean }) => value.enabled !== false;
 
-const isNotDisabled = (id: string | undefined, disabledIds: ReadonlySet<string>) =>
-	!id || !disabledIds.has(id);
+const isNotDisabled = (
+	id: string | undefined,
+	disabledIds: ReadonlySet<string>,
+) => !id || !disabledIds.has(id);
 
 export const createWebsiteBuilderSiteFrameExtension = (
 	extension: WebsiteBuilderSiteFrameExtension,
@@ -36,7 +42,9 @@ export const resolveWebsiteBuilderSiteFrameExtensions = (
 	const disabledIds = new Set(disabledExtensionIds);
 
 	return [...(extensions ?? [])]
-		.filter((extension) => isEnabled(extension) && !disabledIds.has(extension.id))
+		.filter(
+			(extension) => isEnabled(extension) && !disabledIds.has(extension.id),
+		)
 		.sort(byOrderThenLabel);
 };
 
@@ -93,7 +101,9 @@ export const collectWebsiteBuilderFooterExtensionItems = (
 			.map((column) => ({
 				...column,
 				links: column.links
-					.filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds))
+					.filter(
+						(item) => isEnabled(item) && isNotDisabled(item.id, disabledIds),
+					)
 					.sort(byOrderThenLabel),
 			}))
 			.sort(byOrderThenLabel),

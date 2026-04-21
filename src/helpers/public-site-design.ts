@@ -32,8 +32,7 @@ const WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_COLOR_TOKEN_KEYS = [
 
 export const WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_DEFAULTS: WebsiteBuilderSiteDesignSettings =
 	{
-		bodyFontFamily:
-			"var(--font-display, ui-sans-serif), system-ui, sans-serif",
+		bodyFontFamily: "var(--font-display, ui-sans-serif), system-ui, sans-serif",
 		headingFontFamily:
 			"var(--font-display, ui-sans-serif), system-ui, sans-serif",
 		backgroundColor: "#081321",
@@ -100,24 +99,28 @@ const normalizeComponentVariants = (
 		return {};
 	}
 
-	return Object.entries(value as Record<string, unknown>).reduce<
-		WebsiteBuilderSiteComponentVariants
-	>((result, [key, candidateValue]) => {
-		const normalizedValue = readNonEmptyString(candidateValue);
+	return Object.entries(
+		value as Record<string, unknown>,
+	).reduce<WebsiteBuilderSiteComponentVariants>(
+		(result, [key, candidateValue]) => {
+			const normalizedValue = readNonEmptyString(candidateValue);
 
-		if (key.trim() !== "" && normalizedValue !== undefined) {
-			result[key] = normalizedValue;
-		}
+			if (key.trim() !== "" && normalizedValue !== undefined) {
+				result[key] = normalizedValue;
+			}
 
-		return result;
-	}, {});
+			return result;
+		},
+		{},
+	);
 };
 
 const matchesPublicFallbackDefaults = (
 	value: WebsiteBuilderSiteDesignSettings,
 ) =>
 	WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_TOKEN_KEYS.every(
-		(key) => value[key] === WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_FALLBACK_DEFAULTS[key],
+		(key) =>
+			value[key] === WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_FALLBACK_DEFAULTS[key],
 	);
 
 export const resolveWebsiteBuilderPublicSiteDesignSettings = (

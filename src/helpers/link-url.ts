@@ -1,10 +1,15 @@
-const safeWebsiteBuilderUrlProtocols = new Set(["http:", "https:", "mailto:", "tel:"]);
+const safeWebsiteBuilderUrlProtocols = new Set([
+	"http:",
+	"https:",
+	"mailto:",
+	"tel:",
+]);
 
 const htmlEntities: Record<string, string> = {
 	amp: "&",
 	lt: "<",
 	gt: ">",
-	quot: "\"",
+	quot: '"',
 	apos: "'",
 	nbsp: " ",
 };
@@ -15,12 +20,16 @@ export const decodeWebsiteBuilderHtmlEntities = (value: string) =>
 
 		if (normalized.startsWith("#x")) {
 			const codePoint = Number.parseInt(normalized.slice(2), 16);
-			return Number.isFinite(codePoint) ? String.fromCodePoint(codePoint) : entity;
+			return Number.isFinite(codePoint)
+				? String.fromCodePoint(codePoint)
+				: entity;
 		}
 
 		if (normalized.startsWith("#")) {
 			const codePoint = Number.parseInt(normalized.slice(1), 10);
-			return Number.isFinite(codePoint) ? String.fromCodePoint(codePoint) : entity;
+			return Number.isFinite(codePoint)
+				? String.fromCodePoint(codePoint)
+				: entity;
 		}
 
 		return htmlEntities[normalized] ?? entity;
@@ -45,7 +54,8 @@ export const sanitizeWebsiteBuilderLinkHref = (
 		return fallback;
 	}
 
-	const protocolCheckValue = normalizeWebsiteBuilderUrlForProtocolCheck(trimmed);
+	const protocolCheckValue =
+		normalizeWebsiteBuilderUrlForProtocolCheck(trimmed);
 
 	if (protocolCheckValue.startsWith("//")) {
 		return fallback;
@@ -65,15 +75,14 @@ export const sanitizeWebsiteBuilderLinkHref = (
 		return trimmed;
 	}
 
-	const protocol = protocolCheckValue.slice(0, protocolSeparatorIndex + 1).toLowerCase();
+	const protocol = protocolCheckValue
+		.slice(0, protocolSeparatorIndex + 1)
+		.toLowerCase();
 
 	return safeWebsiteBuilderUrlProtocols.has(protocol) ? trimmed : fallback;
 };
 
-export const getWebsiteBuilderAnchorRel = (
-	target: unknown,
-	rel: unknown,
-) => {
+export const getWebsiteBuilderAnchorRel = (target: unknown, rel: unknown) => {
 	const relTokens = new Set(
 		typeof rel === "string" ? rel.split(/\s+/).filter(Boolean) : [],
 	);

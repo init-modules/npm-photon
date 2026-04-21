@@ -13,11 +13,11 @@ import {
 	createWebsiteBuilderLocalizedDefault,
 	defineWebsiteBuilderBlockDefinition,
 } from "../../../helpers/document";
+import { isWebsiteBuilderPublicFramelessSiteDesign } from "../../../helpers/public-site-design";
 import {
 	collectWebsiteBuilderFooterExtensionItems,
 	resolveWebsiteBuilderSiteFrameExtensions,
 } from "../../../helpers/site-frame-extensions";
-import { isWebsiteBuilderPublicFramelessSiteDesign } from "../../../helpers/public-site-design";
 import type {
 	WebsiteBuilderBlockComponentProps,
 	WebsiteBuilderField,
@@ -37,7 +37,10 @@ type SiteFooterProps = {
 	subscriptionBody: string;
 	subscriptionPlaceholder: string;
 	subscriptionButtonLabel: string;
-	navigationColumns: Array<{ title: string; links: Array<{ label: string; href: string }> }>;
+	navigationColumns: Array<{
+		title: string;
+		links: Array<{ label: string; href: string }>;
+	}>;
 	contactItems: string[];
 	legalLabel: string;
 	legalHref: string;
@@ -61,9 +64,27 @@ const siteFooterFields: WebsiteBuilderField[] = [
 			{ label: "Minimal air", value: "minimal-air" },
 		],
 	},
-	{ path: "brandTitle", label: "Brand title", kind: "text", group: "content", localization: "localized" },
-	{ path: "brandBody", label: "Brand body", kind: "textarea", group: "content", localization: "localized" },
-	{ path: "logoImage", label: "Logo image", kind: "image", group: "content", localization: "shared" },
+	{
+		path: "brandTitle",
+		label: "Brand title",
+		kind: "text",
+		group: "content",
+		localization: "localized",
+	},
+	{
+		path: "brandBody",
+		label: "Brand body",
+		kind: "textarea",
+		group: "content",
+		localization: "localized",
+	},
+	{
+		path: "logoImage",
+		label: "Logo image",
+		kind: "image",
+		group: "content",
+		localization: "shared",
+	},
 	{
 		path: "subscriptionTitle",
 		label: "Subscription title",
@@ -125,8 +146,20 @@ const siteFooterFields: WebsiteBuilderField[] = [
 		itemLabel: "Contact item",
 		itemField: { label: "Contact item", kind: "text" },
 	},
-	{ path: "legalLabel", label: "Legal label", kind: "text", group: "content", localization: "localized" },
-	{ path: "legalHref", label: "Legal href", kind: "url", group: "content", localization: "shared" },
+	{
+		path: "legalLabel",
+		label: "Legal label",
+		kind: "text",
+		group: "content",
+		localization: "localized",
+	},
+	{
+		path: "legalHref",
+		label: "Legal href",
+		kind: "url",
+		group: "content",
+		localization: "shared",
+	},
 	{
 		path: "copyrightLabel",
 		label: "Copyright label",
@@ -199,7 +232,9 @@ const footerVariantStyles: Record<
 const SiteFooterShell = ({
 	block,
 }: WebsiteBuilderBlockComponentProps<SiteFooterProps>) => {
-	const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
+	const siteDesign = useWebsiteBuilderStore(
+		(state) => state.site.settings.design,
+	);
 	const siteFrameExtensions = useWebsiteBuilderStore(
 		(state) => state.siteFrameExtensions,
 	);
@@ -207,8 +242,7 @@ const SiteFooterShell = ({
 	const footerVariant = framelessSite ? "minimal-air" : block.props.variant;
 	const variant =
 		footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"];
-	const isSoftCardsVariant =
-		footerVariant === "soft-cards" && !framelessSite;
+	const isSoftCardsVariant = footerVariant === "soft-cards" && !framelessSite;
 	const disabledExtensionIds = normalizeWebsiteBuilderSiteStringItems(
 		block.props.disabledExtensionIds,
 	);
@@ -233,253 +267,272 @@ const SiteFooterShell = ({
 	const legalLinks = normalizeWebsiteBuilderSiteLinkItems(
 		footerExtensionItems.legalLinks,
 	);
-	const contactItems = normalizeWebsiteBuilderSiteStringItems(block.props.contactItems);
+	const contactItems = normalizeWebsiteBuilderSiteStringItems(
+		block.props.contactItems,
+	);
 
 	return (
 		<footer
 			className={clsx(
 				"w-full transition-colors duration-300",
-				(footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"])
-					.shell,
+				(
+					footerVariantStyles[footerVariant] ??
+					footerVariantStyles["classic-dark"]
+				).shell,
 			)}
 		>
 			<div className="mx-auto flex w-full max-w-[var(--wb-site-max-width,1280px)] flex-col gap-5 px-[var(--wb-site-gutter,24px)] py-8 pb-12 sm:py-10 sm:pb-14">
-					<div className="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
-						<div
-							className={clsx(
-								footerVariant === "minimal-air"
-									? "rounded-none border-0 border-b border-[var(--wb-site-border)] px-0 pb-6 pt-0 sm:px-0"
-									: "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
-								(footerVariantStyles[footerVariant] ??
-									footerVariantStyles["classic-dark"]).card,
-							)}
-						>
-							<div className="grid gap-5 lg:grid-cols-[auto_minmax(0,1fr)]">
-								<div className="relative h-24 w-24 overflow-hidden rounded-[28px] border border-[var(--wb-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.16),rgba(15,118,110,0.04))]">
-									{block.props.logoImage ? (
-										<EditableImage
+				<div className="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+					<div
+						className={clsx(
+							footerVariant === "minimal-air"
+								? "rounded-none border-0 border-b border-[var(--wb-site-border)] px-0 pb-6 pt-0 sm:px-0"
+								: "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
+							(
+								footerVariantStyles[footerVariant] ??
+								footerVariantStyles["classic-dark"]
+							).card,
+						)}
+					>
+						<div className="grid gap-5 lg:grid-cols-[auto_minmax(0,1fr)]">
+							<div className="relative h-24 w-24 overflow-hidden rounded-[28px] border border-[var(--wb-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.16),rgba(15,118,110,0.04))]">
+								{block.props.logoImage ? (
+									<EditableImage
+										blockId={block.id}
+										path="logoImage"
+										className="h-full w-full rounded-[28px]"
+										imageClassName="h-full w-full object-contain p-3"
+										fallbackAlt={block.props.brandTitle}
+									/>
+								) : (
+									<div className="flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--wb-site-accent)]">
+										<EditableText
 											blockId={block.id}
-											path="logoImage"
-											className="h-full w-full rounded-[28px]"
-											imageClassName="h-full w-full object-contain p-3"
-											fallbackAlt={block.props.brandTitle}
+											path="brandTitle"
+											className="text-[var(--wb-site-accent)]"
 										/>
-									) : (
-										<div className="flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--wb-site-accent)]">
-											<EditableText
-												blockId={block.id}
-												path="brandTitle"
-												className="text-[var(--wb-site-accent)]"
-											/>
-										</div>
-									)}
-								</div>
-								<div className="min-w-0">
-									<EditableText
-										blockId={block.id}
-										path="brandTitle"
-										as="h2"
-										className={clsx(
-											"[font-family:var(--wb-site-heading-font)] text-3xl font-semibold tracking-[-0.05em]",
-											variant.text,
-										)}
-									/>
-									<EditableTextarea
-										blockId={block.id}
-										path="brandBody"
-										className={clsx("mt-4 leading-7", variant.muted)}
-									/>
-								</div>
+									</div>
+								)}
 							</div>
-						</div>
-
-						<div
-							className={clsx(
-								footerVariant === "minimal-air"
-									? "rounded-none border-0 px-0 py-0 sm:px-0"
-									: "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
-								block.props.variant === "soft-cards" && !framelessSite
-									? "border-transparent bg-[linear-gradient(135deg,var(--wb-site-accent),color-mix(in srgb,var(--wb-site-accent) 72%, white))] text-white shadow-[0_28px_60px_rgba(15,118,110,0.24)]"
-									: (footerVariantStyles[footerVariant] ??
-											footerVariantStyles["classic-dark"]).card,
-							)}
-						>
-							<div className="max-w-xl">
+							<div className="min-w-0">
 								<EditableText
 									blockId={block.id}
-									path="subscriptionTitle"
-									as="h3"
-									className="[font-family:var(--wb-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
+									path="brandTitle"
+									as="h2"
+									className={clsx(
+										"[font-family:var(--wb-site-heading-font)] text-3xl font-semibold tracking-[-0.05em]",
+										variant.text,
+									)}
 								/>
 								<EditableTextarea
 									blockId={block.id}
-									path="subscriptionBody"
-									className={clsx(
-										"mt-3 leading-7",
-										isSoftCardsVariant
-											? "text-white/82"
-											: variant.muted,
-									)}
+									path="brandBody"
+									className={clsx("mt-4 leading-7", variant.muted)}
 								/>
-							</div>
-							<div className="mt-5 flex flex-col gap-3 sm:flex-row">
-								<div
-									className={clsx(
-										"flex min-h-14 flex-1 items-center px-4",
-										footerVariant === "minimal-air"
-											? "rounded-full border border-[var(--wb-site-border)] bg-white/72"
-											: "rounded-full border border-white/20 bg-white/10 backdrop-blur-sm",
-									)}
-								>
-									<EditableText
-										blockId={block.id}
-										path="subscriptionPlaceholder"
-										className={clsx(
-											"text-sm",
-											isSoftCardsVariant
-												? "text-white/74"
-												: variant.muted,
-										)}
-									/>
-								</div>
-								<button
-									type="button"
-									className={clsx(
-										"inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold shadow-[0_18px_34px_rgba(15,23,42,0.12)]",
-										isSoftCardsVariant
-											? "bg-white text-[var(--wb-site-accent)]"
-											: "bg-[var(--wb-site-accent)] text-white",
-									)}
-								>
-									<Send className="h-4 w-4" />
-									<EditableText
-										blockId={block.id}
-										path="subscriptionButtonLabel"
-										className={clsx(
-											isSoftCardsVariant
-												? "text-[var(--wb-site-accent)]"
-												: "text-white",
-										)}
-									/>
-								</button>
 							</div>
 						</div>
 					</div>
 
-					<div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
-						<div
-							className={clsx(
-								footerVariant === "minimal-air"
-									? "rounded-none border-0 border-b border-[var(--wb-site-border)] px-0 pb-6 pt-0 sm:px-0"
-									: "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
-								(footerVariantStyles[footerVariant] ??
-									footerVariantStyles["classic-dark"]).card,
-							)}
-						>
-							<div className="grid gap-6 md:grid-cols-2">
-								{navigationColumns.map((column) => (
-									<div key={column.title} className="space-y-3">
-										<div className={clsx("text-sm font-semibold", variant.text)}>
-											{column.title}
-										</div>
-										<div className="space-y-2">
-											{column.links.map((link) => (
+					<div
+						className={clsx(
+							footerVariant === "minimal-air"
+								? "rounded-none border-0 px-0 py-0 sm:px-0"
+								: "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
+							block.props.variant === "soft-cards" && !framelessSite
+								? "border-transparent bg-[linear-gradient(135deg,var(--wb-site-accent),color-mix(in srgb,var(--wb-site-accent) 72%, white))] text-white shadow-[0_28px_60px_rgba(15,118,110,0.24)]"
+								: (
+										footerVariantStyles[footerVariant] ??
+										footerVariantStyles["classic-dark"]
+									).card,
+						)}
+					>
+						<div className="max-w-xl">
+							<EditableText
+								blockId={block.id}
+								path="subscriptionTitle"
+								as="h3"
+								className="[font-family:var(--wb-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
+							/>
+							<EditableTextarea
+								blockId={block.id}
+								path="subscriptionBody"
+								className={clsx(
+									"mt-3 leading-7",
+									isSoftCardsVariant ? "text-white/82" : variant.muted,
+								)}
+							/>
+						</div>
+						<div className="mt-5 flex flex-col gap-3 sm:flex-row">
+							<div
+								className={clsx(
+									"flex min-h-14 flex-1 items-center px-4",
+									footerVariant === "minimal-air"
+										? "rounded-full border border-[var(--wb-site-border)] bg-white/72"
+										: "rounded-full border border-white/20 bg-white/10 backdrop-blur-sm",
+								)}
+							>
+								<EditableText
+									blockId={block.id}
+									path="subscriptionPlaceholder"
+									className={clsx(
+										"text-sm",
+										isSoftCardsVariant ? "text-white/74" : variant.muted,
+									)}
+								/>
+							</div>
+							<button
+								type="button"
+								className={clsx(
+									"inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold shadow-[0_18px_34px_rgba(15,23,42,0.12)]",
+									isSoftCardsVariant
+										? "bg-white text-[var(--wb-site-accent)]"
+										: "bg-[var(--wb-site-accent)] text-white",
+								)}
+							>
+								<Send className="h-4 w-4" />
+								<EditableText
+									blockId={block.id}
+									path="subscriptionButtonLabel"
+									className={clsx(
+										isSoftCardsVariant
+											? "text-[var(--wb-site-accent)]"
+											: "text-white",
+									)}
+								/>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+					<div
+						className={clsx(
+							footerVariant === "minimal-air"
+								? "rounded-none border-0 border-b border-[var(--wb-site-border)] px-0 pb-6 pt-0 sm:px-0"
+								: "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
+							(
+								footerVariantStyles[footerVariant] ??
+								footerVariantStyles["classic-dark"]
+							).card,
+						)}
+					>
+						<div className="grid gap-6 md:grid-cols-2">
+							{navigationColumns.map((column) => (
+								<div key={column.title} className="space-y-3">
+									<div className={clsx("text-sm font-semibold", variant.text)}>
+										{column.title}
+									</div>
+									<div className="space-y-2">
+										{column.links.map((link) => (
 											<WebsiteBuilderLink
 												key={`${column.title}:${link.label}:${link.href}`}
 												href={link.href}
 												className={clsx(
 													"block text-sm transition hover:text-[var(--wb-site-accent)]",
 													variant.muted,
-													)}
-												>
-													{link.label}
-												</WebsiteBuilderLink>
-											))}
-										</div>
+												)}
+											>
+												{link.label}
+											</WebsiteBuilderLink>
+										))}
 									</div>
-								))}
-							</div>
-						</div>
-
-						<div
-							className={clsx(
-								footerVariant === "minimal-air"
-									? "rounded-none border-0 px-0 pt-0 sm:px-0"
-									: "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
-								(footerVariantStyles[footerVariant] ??
-									footerVariantStyles["classic-dark"]).card,
-							)}
-						>
-							<div className={clsx("text-sm font-semibold", variant.text)}>
-								Contacts
-							</div>
-							<div className="mt-4 space-y-3">
-								{contactItems.map((item) => (
-									<div key={item} className={clsx("text-sm leading-7", variant.muted)}>
-										{item}
-									</div>
-								))}
-							</div>
+								</div>
+							))}
 						</div>
 					</div>
 
 					<div
-							className={clsx(
-								"flex flex-col gap-4 border-t pt-5 text-sm md:flex-row md:items-center md:justify-between",
-								footerVariant === "classic-dark"
-									? "border-white/10"
-									: "border-[var(--wb-site-border)]",
-							)}
-						>
-							<EditableText
-								blockId={block.id}
-								path="copyrightLabel"
-								className={
-									(footerVariantStyles[footerVariant] ??
-										footerVariantStyles["classic-dark"]).muted
-								}
-							/>
-						<div className="flex flex-wrap items-center gap-4">
-							<WebsiteBuilderLink
-								href={block.props.legalHref}
-								className={clsx(
-									"inline-flex items-center gap-2 transition hover:text-[var(--wb-site-accent)]",
-									(footerVariantStyles[footerVariant] ??
-										footerVariantStyles["classic-dark"]).muted,
-								)}
-							>
-								<EditableText blockId={block.id} path="legalLabel" />
-								<ArrowRight className="h-4 w-4" />
-							</WebsiteBuilderLink>
-							{legalLinks.map((link) => (
-								<WebsiteBuilderLink
-									key={`${link.label}:${link.href}`}
-									href={link.href}
-									target={link.target}
-									rel={link.rel}
-									className={clsx(
-										"inline-flex items-center gap-2 transition hover:text-[var(--wb-site-accent)]",
-										(footerVariantStyles[footerVariant] ??
-											footerVariantStyles["classic-dark"]).muted,
-									)}
+						className={clsx(
+							footerVariant === "minimal-air"
+								? "rounded-none border-0 px-0 pt-0 sm:px-0"
+								: "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
+							(
+								footerVariantStyles[footerVariant] ??
+								footerVariantStyles["classic-dark"]
+							).card,
+						)}
+					>
+						<div className={clsx("text-sm font-semibold", variant.text)}>
+							Contacts
+						</div>
+						<div className="mt-4 space-y-3">
+							{contactItems.map((item) => (
+								<div
+									key={item}
+									className={clsx("text-sm leading-7", variant.muted)}
 								>
-									{link.label}
-									<ArrowRight className="h-4 w-4" />
-								</WebsiteBuilderLink>
+									{item}
+								</div>
 							))}
-							<WebsiteBuilderLink
-								href={block.props.developerHref}
-								className={clsx(
-									"font-semibold transition hover:text-[var(--wb-site-accent)]",
-									(footerVariantStyles[footerVariant] ??
-										footerVariantStyles["classic-dark"]).text,
-								)}
-							>
-								<EditableText blockId={block.id} path="developerLabel" />
-							</WebsiteBuilderLink>
 						</div>
 					</div>
 				</div>
+
+				<div
+					className={clsx(
+						"flex flex-col gap-4 border-t pt-5 text-sm md:flex-row md:items-center md:justify-between",
+						footerVariant === "classic-dark"
+							? "border-white/10"
+							: "border-[var(--wb-site-border)]",
+					)}
+				>
+					<EditableText
+						blockId={block.id}
+						path="copyrightLabel"
+						className={
+							(
+								footerVariantStyles[footerVariant] ??
+								footerVariantStyles["classic-dark"]
+							).muted
+						}
+					/>
+					<div className="flex flex-wrap items-center gap-4">
+						<WebsiteBuilderLink
+							href={block.props.legalHref}
+							className={clsx(
+								"inline-flex items-center gap-2 transition hover:text-[var(--wb-site-accent)]",
+								(
+									footerVariantStyles[footerVariant] ??
+									footerVariantStyles["classic-dark"]
+								).muted,
+							)}
+						>
+							<EditableText blockId={block.id} path="legalLabel" />
+							<ArrowRight className="h-4 w-4" />
+						</WebsiteBuilderLink>
+						{legalLinks.map((link) => (
+							<WebsiteBuilderLink
+								key={`${link.label}:${link.href}`}
+								href={link.href}
+								target={link.target}
+								rel={link.rel}
+								className={clsx(
+									"inline-flex items-center gap-2 transition hover:text-[var(--wb-site-accent)]",
+									(
+										footerVariantStyles[footerVariant] ??
+										footerVariantStyles["classic-dark"]
+									).muted,
+								)}
+							>
+								{link.label}
+								<ArrowRight className="h-4 w-4" />
+							</WebsiteBuilderLink>
+						))}
+						<WebsiteBuilderLink
+							href={block.props.developerHref}
+							className={clsx(
+								"font-semibold transition hover:text-[var(--wb-site-accent)]",
+								(
+									footerVariantStyles[footerVariant] ??
+									footerVariantStyles["classic-dark"]
+								).text,
+							)}
+						>
+							<EditableText blockId={block.id} path="developerLabel" />
+						</WebsiteBuilderLink>
+					</div>
+				</div>
+			</div>
 		</footer>
 	);
 };
@@ -559,16 +612,8 @@ export const siteFooterShellDefinition = defineWebsiteBuilderBlockDefinition({
 			],
 		}),
 		contactItems: createWebsiteBuilderLocalizedDefault({
-			en: [
-				"+7 (707) 040-43-43",
-				"hello@example.test",
-				"Almaty, Kazakhstan",
-			],
-			ru: [
-				"+7 (707) 040-43-43",
-				"hello@example.test",
-				"Алматы, Казахстан",
-			],
+			en: ["+7 (707) 040-43-43", "hello@example.test", "Almaty, Kazakhstan"],
+			ru: ["+7 (707) 040-43-43", "hello@example.test", "Алматы, Казахстан"],
 		}),
 		legalLabel: createWebsiteBuilderLocalizedDefault({
 			en: "Privacy policy",

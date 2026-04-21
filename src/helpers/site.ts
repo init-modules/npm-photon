@@ -43,8 +43,9 @@ const isWebsiteBuilderSurfaceRegionBlock = (
 const getWebsiteBuilderSurfaceRegionArea = (
 	block: WebsiteBuilderBlock,
 ): WebsiteBuilderArea | null =>
-	block.areas?.find((area) => area.id === WEBSITE_BUILDER_SURFACE_REGION_AREA_ID) ??
-	null;
+	block.areas?.find(
+		(area) => area.id === WEBSITE_BUILDER_SURFACE_REGION_AREA_ID,
+	) ?? null;
 
 const getWebsiteBuilderSiteRegionDescriptors = (
 	site: WebsiteBuilderSite,
@@ -258,7 +259,9 @@ export const getWebsiteBuilderSurfaceRegionListId = (regionKey: string) =>
 		WEBSITE_BUILDER_SURFACE_REGION_AREA_ID,
 	);
 
-const findFirstEditableBlockId = (blocks: WebsiteBuilderBlock[]): string | null => {
+const findFirstEditableBlockId = (
+	blocks: WebsiteBuilderBlock[],
+): string | null => {
 	for (const block of blocks) {
 		if (isWebsiteBuilderSurfaceRegionBlock(block)) {
 			const area = getWebsiteBuilderSurfaceRegionArea(block);

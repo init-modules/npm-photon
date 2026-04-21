@@ -1,10 +1,13 @@
 export type WebsiteBuilderModeLike = "preview" | "content" | "builder";
 
-export type WebsiteBuilderWorkspaceSelectionLike = Partial<{
-	profileId: string;
-	branch: string;
-	revisionId: null | string;
-}> | null | undefined;
+export type WebsiteBuilderWorkspaceSelectionLike =
+	| Partial<{
+			profileId: string;
+			branch: string;
+			revisionId: null | string;
+	  }>
+	| null
+	| undefined;
 
 export const resolveWebsiteBuilderMode = (
 	mode: string | string[] | null | undefined,

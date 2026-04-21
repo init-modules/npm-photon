@@ -5,13 +5,13 @@ import type { CSSProperties, ReactNode } from "react";
 import { EditableText } from "../components/editable/editable-text";
 import { EditableTextarea } from "../components/editable/editable-textarea";
 import { useWebsiteBuilderStore } from "../context/website-builder-context";
-import { getWebsiteBuilderSurfaceModeStyle } from "../helpers/surface-layout";
-import { isWebsiteBuilderFramelessSiteDesign } from "../helpers/site-design";
 import {
 	createWebsiteBuilderLocalizedDefault,
 	defineWebsiteBuilderBlockDefinition,
 } from "../helpers/document";
 import { createWebsiteBuilderKit } from "../helpers/installable";
+import { isWebsiteBuilderFramelessSiteDesign } from "../helpers/site-design";
+import { getWebsiteBuilderSurfaceModeStyle } from "../helpers/surface-layout";
 import type {
 	WebsiteBuilderArea,
 	WebsiteBuilderBlock,
@@ -19,11 +19,13 @@ import type {
 	WebsiteBuilderInstallableKit,
 	WebsiteBuilderModule,
 } from "../types";
+
 export * from "./system/site/site-color-schemes";
 export * from "./system/site/site-design-presets";
+
+import { siteDesignSettingsPanel } from "./system/site/site-design-settings-panel";
 import { siteFooterShellDefinition } from "./system/site/site-footer-shell-definition";
 import { siteHeaderShellDefinition } from "./system/site/site-header-shell-definition";
-import { siteDesignSettingsPanel } from "./system/site/site-design-settings-panel";
 
 type SplitLayoutColumn = {
 	areaId: string;
@@ -69,7 +71,9 @@ const SplitLayout = ({
 	renderArea?: (area: WebsiteBuilderArea, index: number) => ReactNode;
 }) => {
 	const mode = useWebsiteBuilderStore((state) => state.mode);
-	const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
+	const siteDesign = useWebsiteBuilderStore(
+		(state) => state.site.settings.design,
+	);
 	const columns = block.props.columns ?? [];
 	const areas = block.areas ?? [];
 	const templateColumns = areas
@@ -103,8 +107,8 @@ const SplitLayout = ({
 						framelessSurface
 							? "text-[var(--wb-site-muted)]"
 							: block.props.surface === "bright"
-							? "text-slate-500"
-							: "text-cyan-100/70",
+								? "text-slate-500"
+								: "text-cyan-100/70",
 					)}
 				/>
 				<EditableText
@@ -128,8 +132,8 @@ const SplitLayout = ({
 						framelessSurface
 							? "text-[var(--wb-site-muted)]"
 							: block.props.surface === "bright"
-							? "text-slate-600"
-							: "text-slate-300",
+								? "text-slate-600"
+								: "text-slate-300",
 					)}
 				/>
 			</div>
@@ -151,7 +155,9 @@ const SplitLayout = ({
 							key={`${block.id}-${area.id}`}
 							className={clsx(
 								"min-w-0",
-								column.sticky && stickyPreviewEnabled && "lg:sticky lg:self-start",
+								column.sticky &&
+									stickyPreviewEnabled &&
+									"lg:sticky lg:self-start",
 							)}
 							style={
 								column.sticky && stickyPreviewEnabled
@@ -167,8 +173,8 @@ const SplitLayout = ({
 									framelessSurface
 										? "rounded-none border-0 bg-transparent shadow-none"
 										: block.props.surface === "bright"
-										? "border-0 bg-transparent shadow-none"
-										: "border-0 bg-transparent shadow-none",
+											? "border-0 bg-transparent shadow-none"
+											: "border-0 bg-transparent shadow-none",
 								)}
 							>
 								{column.label?.trim() ? (
@@ -178,8 +184,8 @@ const SplitLayout = ({
 											framelessSurface
 												? "text-[var(--wb-site-muted)]"
 												: block.props.surface === "bright"
-												? "text-slate-500"
-												: "text-white/40",
+													? "text-slate-500"
+													: "text-white/40",
 										)}
 									>
 										{column.label}

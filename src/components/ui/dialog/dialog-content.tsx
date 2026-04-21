@@ -16,7 +16,9 @@ export const DialogContent = forwardRef<
 	const builderThemeRoot =
 		typeof document === "undefined"
 			? null
-			: document.querySelector<HTMLElement>('[data-testid="wb-builder-theme-root"]');
+			: document.querySelector<HTMLElement>(
+					'[data-testid="wb-builder-theme-root"]',
+				);
 
 	return (
 		<DialogPrimitive.Portal container={builderThemeRoot ?? undefined}>

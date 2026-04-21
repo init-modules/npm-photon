@@ -142,7 +142,10 @@ export const WebsiteBuilderForm = ({
 		}
 
 		event.preventDefault();
-		await onSubmitValues(readWebsiteBuilderFormValues(event.currentTarget, resolvedFields), event);
+		await onSubmitValues(
+			readWebsiteBuilderFormValues(event.currentTarget, resolvedFields),
+			event,
+		);
 	};
 
 	return (
@@ -152,7 +155,12 @@ export const WebsiteBuilderForm = ({
 			{...props}
 		>
 			{resolvedFields.map((field) => {
-				const label = renderFieldLabel(field, blockId, fieldsPath, classNames?.label);
+				const label = renderFieldLabel(
+					field,
+					blockId,
+					fieldsPath,
+					classNames?.label,
+				);
 				const helpText = renderFieldHelpText(
 					field,
 					blockId,
@@ -165,7 +173,8 @@ export const WebsiteBuilderForm = ({
 					required: field.required,
 					disabled: disabled || field.disabled,
 					defaultValue:
-						typeof field.defaultValue === "string" || typeof field.defaultValue === "number"
+						typeof field.defaultValue === "string" ||
+						typeof field.defaultValue === "number"
 							? field.defaultValue
 							: undefined,
 					placeholder: field.placeholder,
@@ -212,7 +221,7 @@ export const WebsiteBuilderForm = ({
 					<label
 						className={clsx(
 							field.type === "checkbox"
-								? classNames?.checkboxField ?? classNames?.field
+								? (classNames?.checkboxField ?? classNames?.field)
 								: classNames?.field,
 						)}
 						htmlFor={field.id}

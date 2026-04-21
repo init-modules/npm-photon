@@ -5,9 +5,9 @@ import {
 	isWebsiteBuilderMediaValue,
 	resolveWebsiteBuilderMediaPreviewUrl,
 } from "../../helpers/media";
+import type { EditableGalleryItem } from "./editable-gallery-types";
 import { MediaStateChip } from "./media-state-chip";
 import { builderInputClassName } from "./shared";
-import type { EditableGalleryItem } from "./editable-gallery-types";
 
 type EditableGalleryItemCardProps = {
 	blockId: string;
@@ -52,12 +52,10 @@ export const EditableGalleryItemCard = ({
 				isHeroItem && "md:col-span-2",
 			)}
 			style={{
-				borderColor:
-					"var(--wb-gallery-card-border, rgba(255,255,255,0.1))",
+				borderColor: "var(--wb-gallery-card-border, rgba(255,255,255,0.1))",
 				background:
 					"var(--wb-gallery-card-bg, radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_48%),linear-gradient(180deg,rgba(8,17,30,0.97),rgba(5,11,20,0.99)))",
-				boxShadow:
-					"var(--wb-gallery-card-shadow, 0 24px 56px rgba(0,0,0,0.2))",
+				boxShadow: "var(--wb-gallery-card-shadow, 0 24px 56px rgba(0,0,0,0.2))",
 			}}
 		>
 			<div
@@ -81,8 +79,7 @@ export const EditableGalleryItemCard = ({
 						style={{
 							background:
 								"var(--wb-gallery-fallback-bg, radial-gradient(circle_at_top,rgba(34,211,238,0.12),transparent_28%),linear-gradient(180deg,rgba(7,17,31,0.92),rgba(5,11,20,0.98)))",
-							color:
-								"var(--wb-gallery-fallback-text, rgba(255,255,255,0.48))",
+							color: "var(--wb-gallery-fallback-text, rgba(255,255,255,0.48))",
 						}}
 					>
 						Media slot
@@ -116,10 +113,8 @@ export const EditableGalleryItemCard = ({
 							style={{
 								borderColor:
 									"var(--wb-gallery-control-border, rgba(0,0,0,0.2))",
-								background:
-									"var(--wb-gallery-control-bg, rgba(2,6,23,0.88))",
-								color:
-									"var(--wb-gallery-control-text, rgba(255,255,255,0.55))",
+								background: "var(--wb-gallery-control-bg, rgba(2,6,23,0.88))",
+								color: "var(--wb-gallery-control-text, rgba(255,255,255,0.55))",
 							}}
 						>
 							Prev
@@ -144,10 +139,8 @@ export const EditableGalleryItemCard = ({
 							style={{
 								borderColor:
 									"var(--wb-gallery-control-border, rgba(0,0,0,0.2))",
-								background:
-									"var(--wb-gallery-control-bg, rgba(2,6,23,0.88))",
-								color:
-									"var(--wb-gallery-control-text, rgba(255,255,255,0.55))",
+								background: "var(--wb-gallery-control-bg, rgba(2,6,23,0.88))",
+								color: "var(--wb-gallery-control-text, rgba(255,255,255,0.55))",
 							}}
 						>
 							Next
@@ -166,8 +159,7 @@ export const EditableGalleryItemCard = ({
 									"var(--wb-gallery-remove-border, rgba(253,164,175,0.18))",
 								background:
 									"var(--wb-gallery-remove-bg, rgba(253,164,175,0.1))",
-								color:
-									"var(--wb-gallery-remove-text, rgb(255 228 230))",
+								color: "var(--wb-gallery-remove-text, rgb(255 228 230))",
 							}}
 						>
 							Remove
@@ -225,21 +217,16 @@ export const EditableGalleryItemCard = ({
 								labelClassName,
 							)}
 							style={{
-								color:
-									"var(--wb-gallery-label, rgba(207,250,254,0.56))",
+								color: "var(--wb-gallery-label, rgba(207,250,254,0.56))",
 							}}
 						>
 							{item.alt?.trim() ? item.alt : `Gallery image ${index + 1}`}
 						</div>
 						<div
 							data-testid="wb-editable-gallery-item-caption"
-							className={clsx(
-								"text-sm leading-7",
-								captionClassName,
-							)}
+							className={clsx("text-sm leading-7", captionClassName)}
 							style={{
-								color:
-									"var(--wb-gallery-caption, rgba(203,213,225,0.92))",
+								color: "var(--wb-gallery-caption, rgba(203,213,225,0.92))",
 							}}
 						>
 							{item.caption?.trim()
@@ -258,8 +245,7 @@ export const EditableGalleryItemCard = ({
 										"var(--wb-gallery-file-border, rgba(255,255,255,0.08))",
 									background:
 										"var(--wb-gallery-file-bg, rgba(255,255,255,0.03))",
-									color:
-										"var(--wb-gallery-file-text, rgba(255,255,255,0.4))",
+									color: "var(--wb-gallery-file-text, rgba(255,255,255,0.4))",
 								}}
 							>
 								{mediaValue?.fileName ?? mediaValue?.name}

@@ -4,10 +4,10 @@ import {
 import {
   useWebsiteBuilderCanEdit,
   useWebsiteBuilderFieldValue
-} from "./chunk-OWDRVIFG.js";
+} from "./chunk-ZQJWNS6S.js";
 import {
   WEBSITE_BUILDER_EMPTY_TEXT
-} from "./chunk-NYLOTAVT.js";
+} from "./chunk-KUHW6SOQ.js";
 
 // src/components/public/public-editable-text.tsx
 import clsx from "clsx";

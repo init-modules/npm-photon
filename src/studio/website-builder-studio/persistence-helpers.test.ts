@@ -146,10 +146,7 @@ test("draft storage keys are namespaced by workspace identity", () => {
 		},
 	});
 
-	assert.equal(
-		draftKeyA,
-		"website-builder:draft:profile-a:main:head",
-	);
+	assert.equal(draftKeyA, "website-builder:draft:profile-a:main:head");
 	assert.equal(
 		draftKeyB,
 		"website-builder:draft:profile-a:feature/redesign:head",
@@ -180,10 +177,7 @@ test("persisted draft envelopes retain workspace keys", () => {
 		document.updatedAt,
 	);
 
-	assert.equal(
-		parsed?.workspaceKey,
-		"profile-a:feature/redesign:head",
-	);
+	assert.equal(parsed?.workspaceKey, "profile-a:feature/redesign:head");
 	assert.deepEqual(parsed?.payload.document, document);
 	assert.deepEqual(parsed?.payload.resources, {
 		record: {

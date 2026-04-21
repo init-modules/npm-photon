@@ -9,18 +9,16 @@ import {
 	useWebsiteBuilderStore,
 	WebsiteBuilderLink,
 } from "../../../context/website-builder-context";
-import { useWebsiteBuilderI18n } from "../../../i18n/website-builder-i18n-context";
 import {
 	createWebsiteBuilderLocalizedDefault,
 	defineWebsiteBuilderBlockDefinition,
 } from "../../../helpers/document";
+import { isWebsiteBuilderPublicFramelessSiteDesign } from "../../../helpers/public-site-design";
 import {
 	collectWebsiteBuilderHeaderExtensionItems,
 	resolveWebsiteBuilderSiteFrameExtensions,
 } from "../../../helpers/site-frame-extensions";
-import {
-	isWebsiteBuilderPublicFramelessSiteDesign,
-} from "../../../helpers/public-site-design";
+import { useWebsiteBuilderI18n } from "../../../i18n/website-builder-i18n-context";
 import { WebsiteBuilderSiteSearch } from "../../../search/website-builder-site-search";
 import type {
 	WebsiteBuilderBlockComponentProps,
@@ -84,9 +82,27 @@ const siteHeaderFields: WebsiteBuilderField[] = [
 			{ label: "Showcase card", value: "showcase-card" },
 		],
 	},
-	{ path: "brandLabel", label: "Brand label", kind: "text", group: "content", localization: "localized" },
-	{ path: "brandHref", label: "Brand href", kind: "url", group: "content", localization: "shared" },
-	{ path: "logoImage", label: "Logo image", kind: "image", group: "content", localization: "shared" },
+	{
+		path: "brandLabel",
+		label: "Brand label",
+		kind: "text",
+		group: "content",
+		localization: "localized",
+	},
+	{
+		path: "brandHref",
+		label: "Brand href",
+		kind: "url",
+		group: "content",
+		localization: "shared",
+	},
+	{
+		path: "logoImage",
+		label: "Logo image",
+		kind: "image",
+		group: "content",
+		localization: "shared",
+	},
 	{
 		path: "utilityLinks",
 		label: "Utility links",
@@ -227,11 +243,15 @@ const SiteHeaderShell = ({
 	const isAdmin = useWebsiteBuilderStore((state) => state.isAdmin);
 	const mode = useWebsiteBuilderStore((state) => state.mode);
 	const currentRoute = useWebsiteBuilderStore((state) => state.document.route);
-	const currentBlocks = useWebsiteBuilderStore((state) => state.document.blocks);
+	const currentBlocks = useWebsiteBuilderStore(
+		(state) => state.document.blocks,
+	);
 	const requestAuth = useWebsiteBuilderStore((state) => state.requestAuth);
 	const resources = useWebsiteBuilderStore((state) => state.resources);
 	const siteRegions = useWebsiteBuilderStore((state) => state.site.regions);
-	const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
+	const siteDesign = useWebsiteBuilderStore(
+		(state) => state.site.settings.design,
+	);
 	const siteFrameExtensions = useWebsiteBuilderStore(
 		(state) => state.siteFrameExtensions,
 	);
@@ -314,7 +334,8 @@ const SiteHeaderShell = ({
 			...rawUtilityLinks,
 		]);
 	const extensionActions = rawExtensionActions.filter(
-		(action) => !isCartLinkHref(getHeaderActionVisibleHref(action, authenticatedUser)),
+		(action) =>
+			!isCartLinkHref(getHeaderActionVisibleHref(action, authenticatedUser)),
 	);
 	const hasExtensionAuthAction = extensionActions.some(
 		(action) => (action.kind ?? "link") === "auth",
@@ -328,8 +349,10 @@ const SiteHeaderShell = ({
 		normalizeHeaderHref(block.props.secondaryCtaHref) !== "" &&
 		!isCartLinkHref(block.props.secondaryCtaHref) &&
 		!extensionActionLinkKeys.has(secondaryCtaLinkKey) &&
-		!((hasExtensionAuthAction || !authenticatedUser) &&
-			isProtectedAccountHref(block.props.secondaryCtaHref));
+		!(
+			(hasExtensionAuthAction || !authenticatedUser) &&
+			isProtectedAccountHref(block.props.secondaryCtaHref)
+		);
 	const shouldRenderPrimaryCta =
 		normalizeHeaderHref(block.props.primaryCtaHref) !== "" &&
 		!isCartLinkHref(block.props.primaryCtaHref) &&
@@ -579,13 +602,13 @@ const SiteHeaderShell = ({
 									"bg-[color-mix(in_srgb,var(--wb-site-surface)_96%,white)] shadow-[0_18px_40px_rgba(15,23,42,0.08)]",
 							)
 						: isShowcaseCard
-						? "mx-auto max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] rounded-[calc(var(--wb-site-radius,24px)+10px)] border shadow-[0_28px_70px_rgba(15,23,42,0.08)]"
-						: clsx(
-								"rounded-none border-x-0 border-t-0 bg-[var(--wb-site-surface)] shadow-[0_18px_40px_rgba(15,23,42,0.06)]",
-								block.props.sticky &&
-									compact &&
-									"shadow-[0_20px_54px_rgba(15,23,42,0.12)]",
-							),
+							? "mx-auto max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] rounded-[calc(var(--wb-site-radius,24px)+10px)] border shadow-[0_28px_70px_rgba(15,23,42,0.08)]"
+							: clsx(
+									"rounded-none border-x-0 border-t-0 bg-[var(--wb-site-surface)] shadow-[0_18px_40px_rgba(15,23,42,0.06)]",
+									block.props.sticky &&
+										compact &&
+										"shadow-[0_20px_54px_rgba(15,23,42,0.12)]",
+								),
 				)}
 			>
 				<div
@@ -596,12 +619,12 @@ const SiteHeaderShell = ({
 								? "px-[var(--wb-site-gutter,24px)] py-3"
 								: "px-[var(--wb-site-gutter,24px)] py-4"
 							: isShowcaseCard
-							? compact
-								? "px-4 py-3"
-								: "px-5 py-4 sm:px-6"
-							: compact
-								? "px-[var(--wb-site-gutter,24px)] py-3"
-								: "px-[var(--wb-site-gutter,24px)] py-4",
+								? compact
+									? "px-4 py-3"
+									: "px-5 py-4 sm:px-6"
+								: compact
+									? "px-[var(--wb-site-gutter,24px)] py-3"
+									: "px-[var(--wb-site-gutter,24px)] py-4",
 					)}
 				>
 					<div className="flex flex-col gap-4">
@@ -800,7 +823,7 @@ const SiteHeaderShell = ({
 					>
 						<div className="mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] px-[var(--wb-site-gutter,24px)] py-4">
 							<div className="flex flex-wrap gap-2">
-								{categoryLinks.map((link) => (
+								{categoryLinks.map((link) =>
 									renderSmartLink(
 										link,
 										clsx(
@@ -813,8 +836,8 @@ const SiteHeaderShell = ({
 											isCartLinkHref(link.href) && "h-10 w-10 px-0 py-0",
 										),
 										`${link.label}:${link.href}`,
-									)
-								))}
+									),
+								)}
 							</div>
 						</div>
 					</div>

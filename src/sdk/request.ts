@@ -23,9 +23,7 @@ export const resolveWebsiteBuilderWorkspaceParams = (
 				workspace: {
 					profileId: workspace.profileId,
 					branch: workspace.branch ?? "main",
-					...(workspace.revisionId
-						? { revisionId: workspace.revisionId }
-						: {}),
+					...(workspace.revisionId ? { revisionId: workspace.revisionId } : {}),
 				},
 			}
 		: {};

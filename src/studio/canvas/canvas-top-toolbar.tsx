@@ -77,9 +77,7 @@ export const CanvasTopToolbar = ({
 		<div
 			className={clsx(
 				"pointer-events-none fixed z-40 hidden transition-[opacity,transform] duration-300 ease-out lg:block",
-				visible
-					? "translate-y-0 opacity-100"
-					: "-translate-y-2 opacity-0",
+				visible ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0",
 			)}
 			style={{
 				top: topOffset,

@@ -61,15 +61,18 @@ export type WebsiteBuilderNestedField = {
 	defaultItem?: unknown;
 };
 
-export type WebsiteBuilderDefaultable<T> = T extends Array<infer Item>
-	? Array<WebsiteBuilderDefaultable<Item>> | WebsiteBuilderLocalizedDefaultValue<T>
-	: T extends Record<string, unknown>
+export type WebsiteBuilderDefaultable<T> =
+	T extends Array<infer Item>
 		?
-				| {
-						[K in keyof T]: WebsiteBuilderDefaultable<T[K]>;
-				  }
+				| Array<WebsiteBuilderDefaultable<Item>>
 				| WebsiteBuilderLocalizedDefaultValue<T>
-		: T | WebsiteBuilderLocalizedDefaultValue<T>;
+		: T extends Record<string, unknown>
+			?
+					| {
+							[K in keyof T]: WebsiteBuilderDefaultable<T[K]>;
+					  }
+					| WebsiteBuilderLocalizedDefaultValue<T>
+			: T | WebsiteBuilderLocalizedDefaultValue<T>;
 
 export type WebsiteBuilderBlockDefaults<
 	Props extends WebsiteBuilderBlockProps = WebsiteBuilderBlockProps,
@@ -214,13 +217,12 @@ export type WebsiteBuilderSiteDesignColorTokens = Pick<
 	| "borderColor"
 >;
 
-export type WebsiteBuilderSiteDesignValue = Partial<
-	WebsiteBuilderSiteDesignSettings
-> & {
-	presetId?: string;
-	colorSchemeId?: string;
-	componentVariants?: WebsiteBuilderSiteComponentVariants;
-};
+export type WebsiteBuilderSiteDesignValue =
+	Partial<WebsiteBuilderSiteDesignSettings> & {
+		presetId?: string;
+		colorSchemeId?: string;
+		componentVariants?: WebsiteBuilderSiteComponentVariants;
+	};
 
 export type WebsiteBuilderResolvedSiteDesignSettings =
 	WebsiteBuilderSiteDesignSettings & {
@@ -598,9 +600,7 @@ export type WebsiteBuilderRegistry = {
 		moduleName: string,
 		blockType: string,
 	) => WebsiteBuilderAnyBlockDefinition | undefined;
-	getBindingAdapter: (
-		key: string,
-	) => WebsiteBuilderBindingAdapter | undefined;
+	getBindingAdapter: (key: string) => WebsiteBuilderBindingAdapter | undefined;
 	getPageSettingsPanels: () => WebsiteBuilderPageSettingsPanelDefinition[];
 	getSiteSettingsPanels: () => WebsiteBuilderSiteSettingsPanelDefinition[];
 	getPaletteBlocks: () => Array<

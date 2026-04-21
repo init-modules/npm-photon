@@ -8,7 +8,10 @@ export type WebsiteBuilderEditableEditorLoaderKey =
 	| "textarea";
 
 export type WebsiteBuilderEditableEditorLoaders = Partial<
-	Record<WebsiteBuilderEditableEditorLoaderKey, () => Promise<ComponentType<any>>>
+	Record<
+		WebsiteBuilderEditableEditorLoaderKey,
+		() => Promise<ComponentType<any>>
+	>
 >;
 
 declare global {
@@ -20,4 +23,3 @@ declare global {
 export const getWebsiteBuilderEditableEditorLoader = (
 	key: WebsiteBuilderEditableEditorLoaderKey,
 ) => globalThis.__websiteBuilderEditableEditorLoaders?.[key] ?? null;
-

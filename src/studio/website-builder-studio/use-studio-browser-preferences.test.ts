@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import type {
+	getStudioStorageItem,
+	setStudioStorageItem,
+} from "./studio-browser-storage";
 import {
 	isStudioManualSaveShortcut,
 	loadStudioBuilderSurfacePreference,
@@ -9,13 +13,10 @@ import {
 	registerStudioManualSaveShortcut,
 	resolveStudioBrowserPreferenceStorageKeys,
 } from "./use-studio-browser-preferences";
-import type {
-	getStudioStorageItem,
-	setStudioStorageItem,
-} from "./studio-browser-storage";
 
 test("mode hydration prefers URL mode over stored mode", async () => {
-	const { modeStorageKey } = resolveStudioBrowserPreferenceStorageKeys("draft-key");
+	const { modeStorageKey } =
+		resolveStudioBrowserPreferenceStorageKeys("draft-key");
 	const readStorage: typeof getStudioStorageItem = async <T>() =>
 		"content" as T;
 	const { preferredMode } = await loadStudioModePreference({
@@ -31,7 +32,8 @@ test("mode hydration prefers URL mode over stored mode", async () => {
 });
 
 test("mode hydration can be disabled when the host router owns mode", async () => {
-	const { modeStorageKey } = resolveStudioBrowserPreferenceStorageKeys("draft-key");
+	const { modeStorageKey } =
+		resolveStudioBrowserPreferenceStorageKeys("draft-key");
 	const readStorage: typeof getStudioStorageItem = async <T>() =>
 		"builder" as T;
 	const { preferredMode } = await loadStudioModePreference({

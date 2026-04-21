@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import type { WebsiteBuilderMediaUploadHandler } from "../../types";
 import {
 	isWebsiteBuilderMediaValue,
 	resolveWebsiteBuilderMediaPreviewUrl,
 	resolveWebsiteBuilderMediaUrl,
 	updateWebsiteBuilderMediaUrl,
 } from "../../helpers/media";
+import type { WebsiteBuilderMediaUploadHandler } from "../../types";
 import { inputClassName } from "../shared";
 import { formatMediaFileSize } from "./shared";
 

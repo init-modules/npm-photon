@@ -2,8 +2,8 @@ import type { WebsiteBuilderBlockDefinition } from "../../types";
 import type {
 	InspectorDefinitionMeta,
 	InspectorGroups,
-	PaletteFamilyGroup,
 	PaletteDefinition,
+	PaletteFamilyGroup,
 } from "../types";
 
 const resolvePaletteFamily = (definition: PaletteDefinition) => {
@@ -114,8 +114,7 @@ export const groupPaletteDefinitions = (
 			groups: new Map<string, PaletteDefinition[]>(),
 		};
 		familyEntry.packageOptions.add(definition.package);
-		const groupDefinitions =
-			familyEntry.groups.get(definition.group) ?? [];
+		const groupDefinitions = familyEntry.groups.get(definition.group) ?? [];
 		groupDefinitions.push(definition);
 		familyEntry.groups.set(definition.group, groupDefinitions);
 		families.set(definition.family, familyEntry);
@@ -153,7 +152,7 @@ export const createInspectorDefinitionMeta = ({
 	module: string;
 }): InspectorDefinitionMeta | null =>
 	definition
-	? {
+		? {
 				label: definition.label,
 				labelKey: definition.labelKey,
 				description: definition.description,

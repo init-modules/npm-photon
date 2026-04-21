@@ -370,8 +370,7 @@ export const WebsiteBuilderSiteSearch = ({
 															? {
 																	profileId: workspace.ref.profileId,
 																	branch: workspace.ref.branch,
-																	revisionId:
-																		workspace.ref.revisionId ?? null,
+																	revisionId: workspace.ref.revisionId ?? null,
 																}
 															: null,
 													},

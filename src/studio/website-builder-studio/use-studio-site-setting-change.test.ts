@@ -79,7 +79,10 @@ test("site setting changes can replace the full studio state via the callback co
 		"replace:paper-flow",
 	]);
 	assert.ok(replacementState);
-	assert.equal((replacementState?.[0] as { name: string }).name, "Updated Home");
+	assert.equal(
+		(replacementState?.[0] as { name: string }).name,
+		"Updated Home",
+	);
 	assert.equal(
 		(replacementState?.[3] as { settings: { design: { presetId: string } } })
 			.settings.design.presetId,

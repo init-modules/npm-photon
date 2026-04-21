@@ -1,6 +1,6 @@
 "use client";
 
-import { openDB, type DBSchema, type IDBPDatabase } from "idb";
+import { type DBSchema, type IDBPDatabase, openDB } from "idb";
 
 type WebsiteBuilderStudioStorageSchema = DBSchema & {
 	values: {
@@ -17,9 +17,9 @@ type LegacyStorageOptions<T> = {
 const DATABASE_NAME = "website-builder-studio";
 const STORE_NAME = "values";
 
-let databasePromise:
-	| Promise<IDBPDatabase<WebsiteBuilderStudioStorageSchema>>
-	| null = null;
+let databasePromise: Promise<
+	IDBPDatabase<WebsiteBuilderStudioStorageSchema>
+> | null = null;
 
 const parseJsonLegacyValue = <T>(rawValue: string): T | null => {
 	try {
@@ -126,8 +126,7 @@ export const setStudioStorageItem = async <T>(
 	}
 
 	const serializeLegacy =
-		options.serializeLegacy ??
-		((candidate: T) => JSON.stringify(candidate));
+		options.serializeLegacy ?? ((candidate: T) => JSON.stringify(candidate));
 
 	window.localStorage.setItem(key, serializeLegacy(value));
 };

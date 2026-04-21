@@ -172,7 +172,9 @@ const EditableGalleryStatic = ({
 	emptyStateBodyClassName?: string;
 }) => (
 	<div data-testid="wb-editable-gallery" className={className}>
-		<div className={clsx(columnsClassName, items.length === 0 && "grid-cols-1")}>
+		<div
+			className={clsx(columnsClassName, items.length === 0 && "grid-cols-1")}
+		>
 			{items.length === 0 ? (
 				<div
 					className={clsx(
@@ -190,10 +192,7 @@ const EditableGalleryStatic = ({
 					}}
 				>
 					<p
-						className={clsx(
-							"text-sm font-semibold",
-							emptyStateTitleClassName,
-						)}
+						className={clsx("text-sm font-semibold", emptyStateTitleClassName)}
 						style={{ color: "var(--wb-gallery-empty-title, currentColor)" }}
 					>
 						{emptyTitle}
@@ -205,7 +204,10 @@ const EditableGalleryStatic = ({
 			) : (
 				items.map((item, index) => (
 					<PublicGalleryItemCard
-						key={item.id ?? `${index}-${resolveWebsiteBuilderMediaPreviewUrl(item.media)}`}
+						key={
+							item.id ??
+							`${index}-${resolveWebsiteBuilderMediaPreviewUrl(item.media)}`
+						}
 						item={item}
 						index={index}
 						totalItems={items.length}
@@ -255,8 +257,7 @@ const PublicGalleryItemCard = ({
 				borderColor: "var(--wb-gallery-card-border, rgba(255,255,255,0.1))",
 				background:
 					"var(--wb-gallery-card-bg, radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_48%),linear-gradient(180deg,rgba(8,17,30,0.97),rgba(5,11,20,0.99)))",
-				boxShadow:
-					"var(--wb-gallery-card-shadow, 0 24px 56px rgba(0,0,0,0.2))",
+				boxShadow: "var(--wb-gallery-card-shadow, 0 24px 56px rgba(0,0,0,0.2))",
 			}}
 		>
 			<div
@@ -280,8 +281,7 @@ const PublicGalleryItemCard = ({
 						style={{
 							background:
 								"var(--wb-gallery-fallback-bg, radial-gradient(circle_at_top,rgba(34,211,238,0.12),transparent_28%),linear-gradient(180deg,rgba(7,17,31,0.92),rgba(5,11,20,0.98)))",
-							color:
-								"var(--wb-gallery-fallback-text, rgba(255,255,255,0.48))",
+							color: "var(--wb-gallery-fallback-text, rgba(255,255,255,0.48))",
 						}}
 					>
 						Media slot
@@ -317,10 +317,8 @@ const PublicGalleryItemCard = ({
 						style={{
 							borderColor:
 								"var(--wb-gallery-file-border, rgba(255,255,255,0.08))",
-							background:
-								"var(--wb-gallery-file-bg, rgba(255,255,255,0.05))",
-							color:
-								"var(--wb-gallery-file-text, rgba(255,255,255,0.5))",
+							background: "var(--wb-gallery-file-bg, rgba(255,255,255,0.05))",
+							color: "var(--wb-gallery-file-text, rgba(255,255,255,0.5))",
 						}}
 					>
 						{item.media}

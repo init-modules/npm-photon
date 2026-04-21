@@ -5,20 +5,10 @@ export { a0 as WebsiteBuilderBindingAdapter, a as WebsiteBuilderBlock, a1 as Web
 import { ElementType, HTMLAttributes } from 'react';
 export { W as WebsiteBuilderLink, a as WebsiteBuilderSiteSearch, u as useWebsiteBuilder, b as useWebsiteBuilderCanEdit, c as useWebsiteBuilderI18n, d as useWebsiteBuilderRenderDepth, e as useWebsiteBuilderStore, f as useWebsiteBuilderValueAtPath } from './website-builder-site-search-DgqPIWez.js';
 export { c as createWebsiteBuilderBlockLocalizationSchema, a as createWebsiteBuilderKit, b as createWebsiteBuilderLocalizedDefault, d as createWebsiteBuilderRuntime, e as defineWebsiteBuilderBlockDefinition } from './runtime-Led5emTV.js';
-export { g as getWebsiteBuilderSurfaceModeStyle } from './surface-layout-p8WBJh3f.js';
 export { c as createWebsiteBuilderAccountTabExtension, a as createWebsiteBuilderSiteFrameExtension, r as resolveWebsiteBuilderAccountTabs } from './site-frame-extensions-CljWsZYY.js';
+export { g as getWebsiteBuilderSurfaceModeStyle } from './surface-layout-p8WBJh3f.js';
 export { W as WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM, a as WEBSITE_BUILDER_SEARCH_QUERY_PARAM, b as WEBSITE_BUILDER_SEARCH_TARGET_PARAM } from './constants-DenT-L3W.js';
 import 'zustand/vanilla';
-
-type PublicEditableImageProps = {
-    blockId: string;
-    path: string;
-    altPath?: string;
-    className?: string;
-    imageClassName?: string;
-    fallbackAlt?: string;
-};
-declare const EditableImage: ({ blockId, path, altPath, className, imageClassName, fallbackAlt, }: PublicEditableImageProps) => react_jsx_runtime.JSX.Element;
 
 type PublicEditableGalleryProps = {
     blockId: string;
@@ -42,6 +32,16 @@ type PublicEditableGalleryProps = {
     addCardButtonClassName?: string;
 };
 declare const EditableGallery: ({ blockId, path, className, emptyTitle, emptyBody, columnsClassName, itemCardClassName, itemFallbackClassName, itemLabelClassName, itemCaptionClassName, itemFileNameClassName, emptyStateClassName, emptyStateTitleClassName, emptyStateBodyClassName, emptyStateButtonClassName, addCardClassName, addCardTitleClassName, addCardBodyClassName, addCardButtonClassName, }: PublicEditableGalleryProps) => react_jsx_runtime.JSX.Element;
+
+type PublicEditableImageProps = {
+    blockId: string;
+    path: string;
+    altPath?: string;
+    className?: string;
+    imageClassName?: string;
+    fallbackAlt?: string;
+};
+declare const EditableImage: ({ blockId, path, altPath, className, imageClassName, fallbackAlt, }: PublicEditableImageProps) => react_jsx_runtime.JSX.Element;
 
 type PublicEditableRepeaterValueProps = {
     blockId: string;
@@ -82,8 +82,9 @@ declare const renderWebsiteBuilderRichTextHtml: (value: string, placeholder: str
 declare const websiteBuilderPublicSystemModule: WebsiteBuilderModule;
 declare const websiteBuilderPublicSystemKit: WebsiteBuilderInstallableKit;
 
+type WebsiteBuilderPublicRuntimePageValue = Pick<WebsiteBuilderResolvedPage, "page" | "document" | "resources" | "pageSettings" | "runtimeData" | "site">;
 type WebsiteBuilderPublicPageProps = {
-    page: WebsiteBuilderResolvedPage;
+    page: WebsiteBuilderPublicRuntimePageValue;
     registry: WebsiteBuilderRegistry;
     i18n?: WebsiteBuilderI18nValue | null;
     linkComponent?: WebsiteBuilderLinkComponent;
@@ -94,4 +95,4 @@ type WebsiteBuilderPublicPageProps = {
 };
 declare const WebsiteBuilderPublicPage: ({ page, registry, i18n, linkComponent, siteFrameExtensions, accountTabs, requestAuth, activeSearchHighlight, }: WebsiteBuilderPublicPageProps) => react_jsx_runtime.JSX.Element;
 
-export { EditableGallery, EditableImage, EditableRepeaterValue, EditableRichText, EditableText, EditableTextarea, WebsiteBuilderAccountTabExtension, WebsiteBuilderInstallableKit, WebsiteBuilderModule, WebsiteBuilderPublicPage, WebsiteBuilderSiteFrameExtension, renderWebsiteBuilderRichTextHtml, sanitizeWebsiteBuilderRichTextHtml, websiteBuilderPublicSystemKit as websiteBuilderSystemKit, websiteBuilderPublicSystemModule as websiteBuilderSystemModule };
+export { EditableGallery, EditableImage, EditableRepeaterValue, EditableRichText, EditableText, EditableTextarea, WebsiteBuilderAccountTabExtension, WebsiteBuilderInstallableKit, WebsiteBuilderModule, WebsiteBuilderPublicPage, type WebsiteBuilderPublicRuntimePageValue, WebsiteBuilderSiteFrameExtension, renderWebsiteBuilderRichTextHtml, sanitizeWebsiteBuilderRichTextHtml, websiteBuilderPublicSystemKit as websiteBuilderSystemKit, websiteBuilderPublicSystemModule as websiteBuilderSystemModule };

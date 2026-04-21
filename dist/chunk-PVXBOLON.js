@@ -1,6 +1,6 @@
 import {
   WEBSITE_BUILDER_EMPTY_TEXT
-} from "./chunk-NYLOTAVT.js";
+} from "./chunk-KUHW6SOQ.js";
 
 // src/components/rich-text-editor.tsx
 import Placeholder from "@tiptap/extension-placeholder";

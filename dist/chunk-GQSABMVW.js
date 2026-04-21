@@ -1,5 +1,10 @@
 // src/helpers/link-url.ts
-var safeWebsiteBuilderUrlProtocols = /* @__PURE__ */ new Set(["http:", "https:", "mailto:", "tel:"]);
+var safeWebsiteBuilderUrlProtocols = /* @__PURE__ */ new Set([
+  "http:",
+  "https:",
+  "mailto:",
+  "tel:"
+]);
 var htmlEntities = {
   amp: "&",
   lt: "<",

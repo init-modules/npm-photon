@@ -1,18 +1,18 @@
 import type {
-	WebsiteBuilderBindingAdapter,
 	WebsiteBuilderAnyBlockDefinition,
+	WebsiteBuilderBindingAdapter,
 	WebsiteBuilderBlock,
-	WebsiteBuilderBlockLocalizationSchema,
 	WebsiteBuilderBlockDefinition,
+	WebsiteBuilderBlockLocalizationSchema,
 	WebsiteBuilderBlockProps,
 	WebsiteBuilderDocument,
 	WebsiteBuilderLocalizedDefaultValue,
 	WebsiteBuilderModule,
+	WebsiteBuilderNestedField,
 	WebsiteBuilderPageSettingsPanelDefinition,
 	WebsiteBuilderRegistry,
 	WebsiteBuilderRegistryEntry,
 	WebsiteBuilderSiteSettingsPanelDefinition,
-	WebsiteBuilderNestedField,
 } from "../types";
 import { resolveWebsiteBuilderModules } from "./installable";
 import { cloneWebsiteBuilderValue } from "./path";
@@ -53,26 +53,25 @@ export const createWebsiteBuilderRegistry = (
 		});
 	});
 
-	pageSettingsPanels.sort(
-		(left, right) => {
-			const scopeOrder = {
-				page: 0,
-				template: 1,
-				record: 2,
-			} as const;
+	pageSettingsPanels.sort((left, right) => {
+		const scopeOrder = {
+			page: 0,
+			template: 1,
+			record: 2,
+		} as const;
 
-			const byScope =
-				scopeOrder[left.scope] - scopeOrder[right.scope];
+		const byScope = scopeOrder[left.scope] - scopeOrder[right.scope];
 
-			if (byScope !== 0) {
-				return byScope;
-			}
+		if (byScope !== 0) {
+			return byScope;
+		}
 
-			return (left.order ?? 0) - (right.order ?? 0);
-		},
+		return (left.order ?? 0) - (right.order ?? 0);
+	});
+
+	siteSettingsPanels.sort(
+		(left, right) => (left.order ?? 0) - (right.order ?? 0),
 	);
-
-	siteSettingsPanels.sort((left, right) => (left.order ?? 0) - (right.order ?? 0));
 
 	return {
 		modules,
@@ -109,7 +108,7 @@ export const createWebsiteBuilderRegistry = (
 	};
 };
 
-export const createWebsiteBuilderLocalizedDefault = <T,>(
+export const createWebsiteBuilderLocalizedDefault = <T>(
 	values: Record<string, T>,
 ): WebsiteBuilderLocalizedDefaultValue<T> => ({
 	__wbLocalizedDefault: true,
@@ -223,7 +222,9 @@ const collectWebsiteBuilderFieldLocalization = (
 	}
 
 	if (!currentPath) {
-		throw new Error("Website Builder field localization requires a concrete path.");
+		throw new Error(
+			"Website Builder field localization requires a concrete path.",
+		);
 	}
 
 	if (!effectiveLocalization) {

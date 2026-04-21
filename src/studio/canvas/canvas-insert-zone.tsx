@@ -52,9 +52,7 @@ export const CanvasInsertZone = ({
 			<div
 				className={clsx(
 					"absolute inset-x-0 top-1/2 -translate-y-1/2 rounded-[22px] border border-dashed transition-[height,background-color,border-color,box-shadow] duration-200 ease-out",
-					isDragging
-						? "h-14"
-						: "h-6 border-transparent bg-transparent",
+					isDragging ? "h-14" : "h-6 border-transparent bg-transparent",
 				)}
 				style={{
 					borderColor:

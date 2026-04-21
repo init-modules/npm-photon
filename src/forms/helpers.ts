@@ -8,7 +8,10 @@ import type {
 	WebsiteBuilderResolvedFormField,
 } from "./types";
 
-const fieldTypeOptions: Array<{ label: string; value: WebsiteBuilderFormFieldType }> = [
+const fieldTypeOptions: Array<{
+	label: string;
+	value: WebsiteBuilderFormFieldType;
+}> = [
 	{ label: "Text", value: "text" },
 	{ label: "Email", value: "email" },
 	{ label: "Phone", value: "phone" },
@@ -26,14 +29,18 @@ const widthOptions = [
 	{ label: "Third", value: "third" },
 ];
 
-const normalizeFieldKey = (field: Pick<WebsiteBuilderFormFieldDefinition, "id" | "name">) =>
-	field.id.trim() || field.name.trim();
+const normalizeFieldKey = (
+	field: Pick<WebsiteBuilderFormFieldDefinition, "id" | "name">,
+) => field.id.trim() || field.name.trim();
 
 const isAllowedByPolicy = (
 	field: WebsiteBuilderFormFieldDefinition,
 	policy: WebsiteBuilderFormPolicy = {},
 ) => {
-	if (policy.allowedFieldTypes?.length && !policy.allowedFieldTypes.includes(field.type)) {
+	if (
+		policy.allowedFieldTypes?.length &&
+		!policy.allowedFieldTypes.includes(field.type)
+	) {
 		return false;
 	}
 
@@ -83,7 +90,9 @@ export const createWebsiteBuilderFormFieldsField = (
 	} = {},
 ): WebsiteBuilderField => {
 	const typeOptions = options.allowedFieldTypes?.length
-		? fieldTypeOptions.filter((item) => options.allowedFieldTypes?.includes(item.value))
+		? fieldTypeOptions.filter((item) =>
+				options.allowedFieldTypes?.includes(item.value),
+			)
 		: fieldTypeOptions;
 
 	return {
@@ -95,22 +104,26 @@ export const createWebsiteBuilderFormFieldsField = (
 		description: options.description,
 		itemLabelPath: "label",
 		addLabel: options.addLabel ?? "Add form field",
-		defaultItem:
-			options.defaultItem ?? {
-				id: "field",
-				name: "field",
-				type: "text",
-				label: "Field",
-				placeholder: "",
-				helpText: "",
-				required: false,
-				width: "full",
-				locked: false,
-				removable: true,
-			},
+		defaultItem: options.defaultItem ?? {
+			id: "field",
+			name: "field",
+			type: "text",
+			label: "Field",
+			placeholder: "",
+			helpText: "",
+			required: false,
+			width: "full",
+			locked: false,
+			removable: true,
+		},
 		fields: [
 			{ path: "id", label: "Field id", kind: "text", localization: "shared" },
-			{ path: "name", label: "Input name", kind: "text", localization: "shared" },
+			{
+				path: "name",
+				label: "Input name",
+				kind: "text",
+				localization: "shared",
+			},
 			{
 				path: "type",
 				label: "Type",
@@ -118,7 +131,12 @@ export const createWebsiteBuilderFormFieldsField = (
 				localization: "shared",
 				options: typeOptions,
 			},
-			{ path: "label", label: "Label", kind: "text", localization: "localized" },
+			{
+				path: "label",
+				label: "Label",
+				kind: "text",
+				localization: "localized",
+			},
 			{
 				path: "placeholder",
 				label: "Placeholder",
@@ -131,7 +149,12 @@ export const createWebsiteBuilderFormFieldsField = (
 				kind: "textarea",
 				localization: "localized",
 			},
-			{ path: "required", label: "Required", kind: "toggle", localization: "shared" },
+			{
+				path: "required",
+				label: "Required",
+				kind: "toggle",
+				localization: "shared",
+			},
 			{
 				path: "width",
 				label: "Width",
@@ -139,8 +162,18 @@ export const createWebsiteBuilderFormFieldsField = (
 				localization: "shared",
 				options: widthOptions,
 			},
-			{ path: "locked", label: "Locked", kind: "toggle", localization: "shared" },
-			{ path: "removable", label: "Removable", kind: "toggle", localization: "shared" },
+			{
+				path: "locked",
+				label: "Locked",
+				kind: "toggle",
+				localization: "shared",
+			},
+			{
+				path: "removable",
+				label: "Removable",
+				kind: "toggle",
+				localization: "shared",
+			},
 			{
 				path: "options",
 				label: "Options",
@@ -150,8 +183,18 @@ export const createWebsiteBuilderFormFieldsField = (
 				addLabel: "Add option",
 				defaultItem: { label: "Option", value: "option" },
 				fields: [
-					{ path: "label", label: "Label", kind: "text", localization: "localized" },
-					{ path: "value", label: "Value", kind: "text", localization: "shared" },
+					{
+						path: "label",
+						label: "Label",
+						kind: "text",
+						localization: "localized",
+					},
+					{
+						path: "value",
+						label: "Value",
+						kind: "text",
+						localization: "shared",
+					},
 				],
 			},
 		],
@@ -169,7 +212,10 @@ export const resolveWebsiteBuilderFormFields = (
 		definition.defaultFields.map((field) => [normalizeFieldKey(field), field]),
 	);
 	const incomingByKey = new Map(
-		incoming.map((field, index) => [normalizeFieldKey(field), { field, index }]),
+		incoming.map((field, index) => [
+			normalizeFieldKey(field),
+			{ field, index },
+		]),
 	);
 	const requiredFieldIds = new Set([
 		...(policy.requiredFieldIds ?? []),
@@ -178,17 +224,25 @@ export const resolveWebsiteBuilderFormFields = (
 			: []),
 	]);
 	const lockedFieldIds = new Set(policy.lockedFieldIds ?? []);
-	const allowAddFields = mode === "freeform" ? true : policy.allowAddFields !== false;
-	const allowReorder = mode === "freeform" ? true : policy.allowReorder !== false;
+	const allowAddFields =
+		mode === "freeform" ? true : policy.allowAddFields !== false;
+	const allowReorder =
+		mode === "freeform" ? true : policy.allowReorder !== false;
 	const sourceItems =
 		mode === "fixed"
 			? definition.defaultFields.map((field) =>
-					mergeEditableFieldParts(field, incomingByKey.get(normalizeFieldKey(field))?.field, policy),
+					mergeEditableFieldParts(
+						field,
+						incomingByKey.get(normalizeFieldKey(field))?.field,
+						policy,
+					),
 				)
 			: [
 					...incoming,
 					...definition.defaultFields.filter(
-						(field) => !incomingByKey.has(normalizeFieldKey(field)) && requiredFieldIds.has(normalizeFieldKey(field)),
+						(field) =>
+							!incomingByKey.has(normalizeFieldKey(field)) &&
+							requiredFieldIds.has(normalizeFieldKey(field)),
 					),
 				];
 	const filtered = sourceItems.filter((field) => {
@@ -206,9 +260,17 @@ export const resolveWebsiteBuilderFormFields = (
 		? filtered
 		: [
 				...definition.defaultFields
-					.map((field) => filtered.find((item) => normalizeFieldKey(item) === normalizeFieldKey(field)))
-					.filter((field): field is WebsiteBuilderFormFieldDefinition => Boolean(field)),
-				...filtered.filter((field) => !defaultByKey.has(normalizeFieldKey(field))),
+					.map((field) =>
+						filtered.find(
+							(item) => normalizeFieldKey(item) === normalizeFieldKey(field),
+						),
+					)
+					.filter((field): field is WebsiteBuilderFormFieldDefinition =>
+						Boolean(field),
+					),
+				...filtered.filter(
+					(field) => !defaultByKey.has(normalizeFieldKey(field)),
+				),
 			];
 
 	return ordered.map((field) => {
@@ -217,10 +279,13 @@ export const resolveWebsiteBuilderFormFields = (
 
 		return {
 			...field,
-			locked: field.locked || lockedFieldIds.has(key) || requiredFieldIds.has(key),
+			locked:
+				field.locked || lockedFieldIds.has(key) || requiredFieldIds.has(key),
 			removable:
 				field.removable ??
-				(policy.removableFieldIds ? policy.removableFieldIds.includes(key) : !requiredFieldIds.has(key)),
+				(policy.removableFieldIds
+					? policy.removableFieldIds.includes(key)
+					: !requiredFieldIds.has(key)),
 			sourceIndex,
 		};
 	});
@@ -244,7 +309,8 @@ export const readWebsiteBuilderFormValues = (
 		}
 
 		const value = formData.get(field.name);
-		values[field.name] = value instanceof File ? value : value?.toString() ?? "";
+		values[field.name] =
+			value instanceof File ? value : (value?.toString() ?? "");
 	}
 
 	return values;

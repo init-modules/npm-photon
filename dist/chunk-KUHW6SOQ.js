@@ -63,110 +63,6 @@ var setValueAtPath = (target, path, value) => {
   return draft;
 };
 
-// src/helpers/workspace.ts
-var DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF = {
-  profileId: "default",
-  branch: "main",
-  readonly: false
-};
-var DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES = {
-  canEdit: true,
-  canCommit: true,
-  canBranch: true,
-  canMerge: true,
-  canEditMain: true,
-  isReadonlyRevision: false,
-  isMainLocked: false
-};
-var normalizeWebsiteBuilderWorkspaceRef = (workspace) => {
-  const normalizedWorkspace = {
-    ...DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
-    ...workspace ?? {}
-  };
-  if (normalizedWorkspace.revisionId?.trim()) {
-    normalizedWorkspace.readonly = true;
-  }
-  return normalizedWorkspace;
-};
-var normalizeWebsiteBuilderWorkspaceCapabilities = (capabilities) => ({
-  ...DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
-  ...capabilities ?? {}
-});
-var normalizeWebsiteBuilderWorkspaceDescriptor = (workspace) => ({
-  ref: normalizeWebsiteBuilderWorkspaceRef(workspace?.ref),
-  headRevisionId: workspace?.headRevisionId ?? null,
-  profileName: workspace?.profileName ?? null,
-  branchLabel: workspace?.branchLabel ?? null,
-  revisionLabel: workspace?.revisionLabel ?? null,
-  readonlyReason: workspace?.readonlyReason ?? (workspace?.ref?.revisionId?.trim() ? "revision" : null)
-});
-var extractWebsiteBuilderWorkspaceRef = (workspace) => {
-  if (!workspace) {
-    return null;
-  }
-  return "ref" in workspace ? workspace.ref : workspace;
-};
-var getWebsiteBuilderWorkspaceKey = (workspace) => {
-  const descriptor = workspace && "ref" in workspace ? normalizeWebsiteBuilderWorkspaceDescriptor(workspace) : {
-    ref: normalizeWebsiteBuilderWorkspaceRef(
-      extractWebsiteBuilderWorkspaceRef(workspace)
-    ),
-    headRevisionId: null,
-    profileName: null,
-    branchLabel: null,
-    revisionLabel: null,
-    readonlyReason: null
-  };
-  return [
-    descriptor.ref.profileId,
-    descriptor.ref.branch,
-    descriptor.ref.revisionId?.trim() || "head",
-    descriptor.ref.readonly ? "readonly" : "writable",
-    descriptor.headRevisionId?.trim() || "unknown-head"
-  ].join(":");
-};
-var getWebsiteBuilderWorkspaceIdentityKey = (workspace) => {
-  const descriptor = workspace && "ref" in workspace ? normalizeWebsiteBuilderWorkspaceDescriptor(workspace) : {
-    ref: normalizeWebsiteBuilderWorkspaceRef(
-      extractWebsiteBuilderWorkspaceRef(workspace)
-    ),
-    headRevisionId: null,
-    profileName: null,
-    branchLabel: null,
-    revisionLabel: null,
-    readonlyReason: null
-  };
-  return [
-    descriptor.ref.profileId,
-    descriptor.ref.branch,
-    descriptor.ref.revisionId?.trim() || "head"
-  ].join(":");
-};
-var isWebsiteBuilderWorkspaceReadonly = (workspace, capabilities) => {
-  const normalizedWorkspace = workspace && "ref" in workspace ? normalizeWebsiteBuilderWorkspaceDescriptor(workspace) : {
-    ref: normalizeWebsiteBuilderWorkspaceRef(
-      extractWebsiteBuilderWorkspaceRef(workspace)
-    ),
-    headRevisionId: null,
-    profileName: null,
-    branchLabel: null,
-    revisionLabel: null,
-    readonlyReason: null
-  };
-  const normalizedCapabilities = normalizeWebsiteBuilderWorkspaceCapabilities(capabilities);
-  return Boolean(
-    normalizedWorkspace.ref.readonly || normalizedCapabilities.isReadonlyRevision || !normalizedCapabilities.canEdit
-  );
-};
-var canEditWebsiteBuilderWorkspace = (workspace, capabilities) => !isWebsiteBuilderWorkspaceReadonly(workspace, capabilities);
-var canSaveWebsiteBuilderWorkspace = ({
-  isAdmin,
-  workspace,
-  capabilities
-}) => Boolean(
-  isAdmin && !isWebsiteBuilderWorkspaceReadonly(workspace, capabilities) && normalizeWebsiteBuilderWorkspaceCapabilities(capabilities).canCommit
-);
-
 // src/helpers/tree.ts
 var WEBSITE_BUILDER_ROOT_LIST_ID = "root";
 var createWebsiteBuilderAreaListId = (blockId, areaId) => `area:${blockId}:${areaId}`;
@@ -302,7 +198,12 @@ var removeBlockFromList = (blocks, blockId, listId) => {
         (candidate) => candidate.id === block.id ? {
           ...candidate,
           areas: nextAreas.map((area) => {
-            const { __removed, __sourceListId, __sourceIndex, ...cleanArea } = area;
+            const {
+              __removed,
+              __sourceListId,
+              __sourceIndex,
+              ...cleanArea
+            } = area;
             return cleanArea;
           })
         } : candidate
@@ -441,21 +342,115 @@ var moveWebsiteBuilderBlockInDocument = (document, blockId, targetListId, target
   return nextDocument;
 };
 
+// src/helpers/workspace.ts
+var DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF = {
+  profileId: "default",
+  branch: "main",
+  readonly: false
+};
+var DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES = {
+  canEdit: true,
+  canCommit: true,
+  canBranch: true,
+  canMerge: true,
+  canEditMain: true,
+  isReadonlyRevision: false,
+  isMainLocked: false
+};
+var normalizeWebsiteBuilderWorkspaceRef = (workspace) => {
+  const normalizedWorkspace = {
+    ...DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
+    ...workspace ?? {}
+  };
+  if (normalizedWorkspace.revisionId?.trim()) {
+    normalizedWorkspace.readonly = true;
+  }
+  return normalizedWorkspace;
+};
+var normalizeWebsiteBuilderWorkspaceCapabilities = (capabilities) => ({
+  ...DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
+  ...capabilities ?? {}
+});
+var normalizeWebsiteBuilderWorkspaceDescriptor = (workspace) => ({
+  ref: normalizeWebsiteBuilderWorkspaceRef(workspace?.ref),
+  headRevisionId: workspace?.headRevisionId ?? null,
+  profileName: workspace?.profileName ?? null,
+  branchLabel: workspace?.branchLabel ?? null,
+  revisionLabel: workspace?.revisionLabel ?? null,
+  readonlyReason: workspace?.readonlyReason ?? (workspace?.ref?.revisionId?.trim() ? "revision" : null)
+});
+var extractWebsiteBuilderWorkspaceRef = (workspace) => {
+  if (!workspace) {
+    return null;
+  }
+  return "ref" in workspace ? workspace.ref : workspace;
+};
+var getWebsiteBuilderWorkspaceKey = (workspace) => {
+  const descriptor = workspace && "ref" in workspace ? normalizeWebsiteBuilderWorkspaceDescriptor(workspace) : {
+    ref: normalizeWebsiteBuilderWorkspaceRef(
+      extractWebsiteBuilderWorkspaceRef(workspace)
+    ),
+    headRevisionId: null,
+    profileName: null,
+    branchLabel: null,
+    revisionLabel: null,
+    readonlyReason: null
+  };
+  return [
+    descriptor.ref.profileId,
+    descriptor.ref.branch,
+    descriptor.ref.revisionId?.trim() || "head",
+    descriptor.ref.readonly ? "readonly" : "writable",
+    descriptor.headRevisionId?.trim() || "unknown-head"
+  ].join(":");
+};
+var getWebsiteBuilderWorkspaceIdentityKey = (workspace) => {
+  const descriptor = workspace && "ref" in workspace ? normalizeWebsiteBuilderWorkspaceDescriptor(workspace) : {
+    ref: normalizeWebsiteBuilderWorkspaceRef(
+      extractWebsiteBuilderWorkspaceRef(workspace)
+    ),
+    headRevisionId: null,
+    profileName: null,
+    branchLabel: null,
+    revisionLabel: null,
+    readonlyReason: null
+  };
+  return [
+    descriptor.ref.profileId,
+    descriptor.ref.branch,
+    descriptor.ref.revisionId?.trim() || "head"
+  ].join(":");
+};
+var isWebsiteBuilderWorkspaceReadonly = (workspace, capabilities) => {
+  const normalizedWorkspace = workspace && "ref" in workspace ? normalizeWebsiteBuilderWorkspaceDescriptor(workspace) : {
+    ref: normalizeWebsiteBuilderWorkspaceRef(
+      extractWebsiteBuilderWorkspaceRef(workspace)
+    ),
+    headRevisionId: null,
+    profileName: null,
+    branchLabel: null,
+    revisionLabel: null,
+    readonlyReason: null
+  };
+  const normalizedCapabilities = normalizeWebsiteBuilderWorkspaceCapabilities(capabilities);
+  return Boolean(
+    normalizedWorkspace.ref.readonly || normalizedCapabilities.isReadonlyRevision || !normalizedCapabilities.canEdit
+  );
+};
+var canEditWebsiteBuilderWorkspace = (workspace, capabilities) => !isWebsiteBuilderWorkspaceReadonly(workspace, capabilities);
+var canSaveWebsiteBuilderWorkspace = ({
+  isAdmin,
+  workspace,
+  capabilities
+}) => Boolean(
+  isAdmin && !isWebsiteBuilderWorkspaceReadonly(workspace, capabilities) && normalizeWebsiteBuilderWorkspaceCapabilities(capabilities).canCommit
+);
+
 export {
   WEBSITE_BUILDER_EMPTY_TEXT,
   cloneWebsiteBuilderValue,
   getValueAtPath,
   setValueAtPath,
-  DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
-  DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
-  normalizeWebsiteBuilderWorkspaceRef,
-  normalizeWebsiteBuilderWorkspaceCapabilities,
-  normalizeWebsiteBuilderWorkspaceDescriptor,
-  getWebsiteBuilderWorkspaceKey,
-  getWebsiteBuilderWorkspaceIdentityKey,
-  isWebsiteBuilderWorkspaceReadonly,
-  canEditWebsiteBuilderWorkspace,
-  canSaveWebsiteBuilderWorkspace,
   WEBSITE_BUILDER_ROOT_LIST_ID,
   createWebsiteBuilderAreaListId,
   createWebsiteBuilderNodeId,
@@ -467,5 +462,15 @@ export {
   insertWebsiteBuilderBlockInDocument,
   removeWebsiteBuilderBlockFromDocument,
   duplicateWebsiteBuilderBlockInDocument,
-  moveWebsiteBuilderBlockInDocument
+  moveWebsiteBuilderBlockInDocument,
+  DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
+  DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
+  normalizeWebsiteBuilderWorkspaceRef,
+  normalizeWebsiteBuilderWorkspaceCapabilities,
+  normalizeWebsiteBuilderWorkspaceDescriptor,
+  getWebsiteBuilderWorkspaceKey,
+  getWebsiteBuilderWorkspaceIdentityKey,
+  isWebsiteBuilderWorkspaceReadonly,
+  canEditWebsiteBuilderWorkspace,
+  canSaveWebsiteBuilderWorkspace
 };

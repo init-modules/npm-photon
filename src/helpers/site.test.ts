@@ -74,7 +74,10 @@ test("composeWebsiteBuilderSurfaceDocument strips duplicated header and footer s
 		},
 	};
 
-	const surfaceDocument = composeWebsiteBuilderSurfaceDocument(pageDocument, site);
+	const surfaceDocument = composeWebsiteBuilderSurfaceDocument(
+		pageDocument,
+		site,
+	);
 	const pageBlocks =
 		getWebsiteBuilderSurfaceRegionBlocks(
 			surfaceDocument,

@@ -65,9 +65,10 @@ export type WebsiteBuilderFormDefinition = {
 	policy?: WebsiteBuilderFormPolicy;
 };
 
-export type WebsiteBuilderResolvedFormField = WebsiteBuilderFormFieldDefinition & {
-	sourceIndex: number | null;
-};
+export type WebsiteBuilderResolvedFormField =
+	WebsiteBuilderFormFieldDefinition & {
+		sourceIndex: number | null;
+	};
 
 export type WebsiteBuilderFormValues = Record<string, unknown>;
 

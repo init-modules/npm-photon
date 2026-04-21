@@ -349,55 +349,59 @@ const PalettePanelComponent = ({
 							{collapsedFamilies.includes(familyGroup.family)
 								? null
 								: familyGroup.groups.map(({ group, definitions }) => {
-								const key = `${familyGroup.family}:${group}`;
-								const collapsed = collapsedGroups.includes(key);
+										const key = `${familyGroup.family}:${group}`;
+										const collapsed = collapsedGroups.includes(key);
 
-								return (
-									<section key={key} className="space-y-2">
-										<button
-											type="button"
-											onClick={() => onToggleGroup(key)}
-											className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-[18px] px-2 py-1.5 text-left transition"
-											style={{ color: "var(--wb-builder-text)" }}
-										>
-											<div className="flex items-center gap-3">
-												<div
-													className="text-[11px] uppercase tracking-[0.28em]"
-													style={{ color: "var(--wb-builder-text-soft)" }}
+										return (
+											<section key={key} className="space-y-2">
+												<button
+													type="button"
+													onClick={() => onToggleGroup(key)}
+													className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-[18px] px-2 py-1.5 text-left transition"
+													style={{ color: "var(--wb-builder-text)" }}
 												>
-													{translateWebsiteBuilderPaletteCategory(
-														group,
-														translate,
-													)}
-												</div>
-												<span className="font-mono text-[10px] uppercase tracking-[0.24em]">
-													{definitions.length}
-												</span>
-											</div>
-											<div style={{ color: "var(--wb-builder-text-ghost)" }}>
-												{collapsed ? (
-													<ChevronRight className="h-4 w-4" />
-												) : (
-													<ChevronDown className="h-4 w-4" />
+													<div className="flex items-center gap-3">
+														<div
+															className="text-[11px] uppercase tracking-[0.28em]"
+															style={{ color: "var(--wb-builder-text-soft)" }}
+														>
+															{translateWebsiteBuilderPaletteCategory(
+																group,
+																translate,
+															)}
+														</div>
+														<span className="font-mono text-[10px] uppercase tracking-[0.24em]">
+															{definitions.length}
+														</span>
+													</div>
+													<div
+														style={{ color: "var(--wb-builder-text-ghost)" }}
+													>
+														{collapsed ? (
+															<ChevronRight className="h-4 w-4" />
+														) : (
+															<ChevronDown className="h-4 w-4" />
+														)}
+													</div>
+												</button>
+												{collapsed ? null : (
+													<div className="space-y-2">
+														{definitions.map((definition) => (
+															<PaletteCard
+																key={definition.key}
+																definition={definition}
+																isSelected={
+																	selectedDefinitionKey === definition.key
+																}
+																onSelect={onSelectDefinition}
+																onInsert={onInsert}
+															/>
+														))}
+													</div>
 												)}
-											</div>
-										</button>
-										{collapsed ? null : (
-											<div className="space-y-2">
-												{definitions.map((definition) => (
-													<PaletteCard
-														key={definition.key}
-														definition={definition}
-														isSelected={selectedDefinitionKey === definition.key}
-														onSelect={onSelectDefinition}
-														onInsert={onInsert}
-													/>
-												))}
-											</div>
-										)}
-									</section>
-								);
-							})}
+											</section>
+										);
+									})}
 						</section>
 					))}
 				</div>

@@ -69,7 +69,10 @@ export const JsonFieldEditor = ({
 					Apply JSON
 				</button>
 				{error ? (
-					<div className="text-xs" style={{ color: "var(--wb-builder-accent)" }}>
+					<div
+						className="text-xs"
+						style={{ color: "var(--wb-builder-accent)" }}
+					>
 						{error}
 					</div>
 				) : null}

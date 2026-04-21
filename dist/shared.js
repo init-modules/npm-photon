@@ -12,7 +12,7 @@ import {
   isWebsiteBuilderFramelessSiteDesign,
   isWebsiteBuilderSiteDesignPresetApplied,
   resolveWebsiteBuilderSiteDesignSettings
-} from "./chunk-7A32BINR.js";
+} from "./chunk-KEOML5B2.js";
 import {
   WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
   WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
@@ -23,7 +23,7 @@ import {
   getWebsiteBuilderAnchorRel,
   normalizeWebsiteBuilderUrlForProtocolCheck,
   sanitizeWebsiteBuilderLinkHref
-} from "./chunk-M743RWMM.js";
+} from "./chunk-GQSABMVW.js";
 import {
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
@@ -48,7 +48,7 @@ import {
   normalizeWebsiteBuilderWorkspaceRef,
   removeWebsiteBuilderBlockFromDocument,
   updateWebsiteBuilderBlockInDocument
-} from "./chunk-NYLOTAVT.js";
+} from "./chunk-KUHW6SOQ.js";
 export {
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,

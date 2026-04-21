@@ -2,7 +2,7 @@ import {
   cloneWebsiteBuilderValue,
   createWebsiteBuilderAreaListId,
   createWebsiteBuilderNodeId
-} from "./chunk-NYLOTAVT.js";
+} from "./chunk-KUHW6SOQ.js";
 
 // src/helpers/site.ts
 var WEBSITE_BUILDER_SURFACE_REGION_AREA_ID = "content";
@@ -19,7 +19,9 @@ var isWebsiteBuilderSurfaceRegionBlock = (block, regionKey) => {
   }
   return regionKey ? block.id === createWebsiteBuilderSurfaceRegionBlockId(regionKey) : true;
 };
-var getWebsiteBuilderSurfaceRegionArea = (block) => block.areas?.find((area) => area.id === WEBSITE_BUILDER_SURFACE_REGION_AREA_ID) ?? null;
+var getWebsiteBuilderSurfaceRegionArea = (block) => block.areas?.find(
+  (area) => area.id === WEBSITE_BUILDER_SURFACE_REGION_AREA_ID
+) ?? null;
 var getWebsiteBuilderSiteRegionDescriptors = (site) => Object.values(site.regions).sort((left, right) => left.order - right.order).map((region) => ({
   key: region.key,
   label: region.label,
@@ -270,21 +272,21 @@ var createWebsiteBuilderRegistry = (entries) => {
       siteSettingsPanels.push(panel);
     });
   });
-  pageSettingsPanels.sort(
-    (left, right) => {
-      const scopeOrder = {
-        page: 0,
-        template: 1,
-        record: 2
-      };
-      const byScope = scopeOrder[left.scope] - scopeOrder[right.scope];
-      if (byScope !== 0) {
-        return byScope;
-      }
-      return (left.order ?? 0) - (right.order ?? 0);
+  pageSettingsPanels.sort((left, right) => {
+    const scopeOrder = {
+      page: 0,
+      template: 1,
+      record: 2
+    };
+    const byScope = scopeOrder[left.scope] - scopeOrder[right.scope];
+    if (byScope !== 0) {
+      return byScope;
     }
+    return (left.order ?? 0) - (right.order ?? 0);
+  });
+  siteSettingsPanels.sort(
+    (left, right) => (left.order ?? 0) - (right.order ?? 0)
   );
-  siteSettingsPanels.sort((left, right) => (left.order ?? 0) - (right.order ?? 0));
   return {
     modules,
     definitions,
@@ -404,7 +406,9 @@ var collectWebsiteBuilderFieldLocalization = (field, schema, basePath, inherited
     return;
   }
   if (!currentPath) {
-    throw new Error("Website Builder field localization requires a concrete path.");
+    throw new Error(
+      "Website Builder field localization requires a concrete path."
+    );
   }
   if (!effectiveLocalization) {
     throw new Error(

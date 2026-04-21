@@ -23,8 +23,8 @@ import type {
 	InspectorGroups,
 	PageSettingsPanelDefinition,
 	PaletteDefinition,
-	SiteSettingsSubtabDefinition,
 	SiteSettingsPanelDefinition,
+	SiteSettingsSubtabDefinition,
 } from "../types";
 import { BuilderMobilePanels } from "./builder-mobile-panels";
 import { BuilderSidebars } from "./builder-sidebars";

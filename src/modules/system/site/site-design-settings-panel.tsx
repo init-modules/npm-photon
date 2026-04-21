@@ -176,17 +176,18 @@ const SiteDesignSettingsPanelBody = ({
 	viewMode,
 }: WebsiteBuilderSiteSettingsPanelProps) => {
 	const { translate } = useWebsiteBuilderI18n();
-	const resolvedSettings = resolveWebsiteBuilderSiteDesignSettings(scopeSettings);
+	const resolvedSettings =
+		resolveWebsiteBuilderSiteDesignSettings(scopeSettings);
 	const isAdvancedView = viewMode === "advanced";
 	const activePreset = resolvedSettings.presetId
-		? websiteBuilderSiteDesignPresets.find(
+		? (websiteBuilderSiteDesignPresets.find(
 				(candidate) => candidate.id === resolvedSettings.presetId,
-			) ?? null
+			) ?? null)
 		: null;
 	const activeColorScheme = resolvedSettings.colorSchemeId
-		? websiteBuilderSiteColorSchemes.find(
+		? (websiteBuilderSiteColorSchemes.find(
 				(candidate) => candidate.id === resolvedSettings.colorSchemeId,
-			) ?? null
+			) ?? null)
 		: null;
 
 	if (isAdvancedView) {
@@ -396,13 +397,14 @@ const SiteDesignSettingsPanelBody = ({
 	);
 };
 
-export const siteDesignSettingsPanel: WebsiteBuilderSiteSettingsPanelDefinition = {
-	key: "design",
-	label: "Design",
-	labelKey: "websiteBuilder.system.design.panel.label",
-	description:
-		"Profile source metadata and stored runtime design tokens for the current branch.",
-	descriptionKey: "websiteBuilder.system.design.panel.description",
-	order: 10,
-	component: (props) => <SiteDesignSettingsPanelBody {...props} />,
-};
+export const siteDesignSettingsPanel: WebsiteBuilderSiteSettingsPanelDefinition =
+	{
+		key: "design",
+		label: "Design",
+		labelKey: "websiteBuilder.system.design.panel.label",
+		description:
+			"Profile source metadata and stored runtime design tokens for the current branch.",
+		descriptionKey: "websiteBuilder.system.design.panel.description",
+		order: 10,
+		component: (props) => <SiteDesignSettingsPanelBody {...props} />,
+	};

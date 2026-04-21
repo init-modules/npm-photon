@@ -12,7 +12,7 @@ import {
   createWebsiteBuilderSiteFrameExtension,
   resolveWebsiteBuilderAccountTabs,
   resolveWebsiteBuilderSiteFrameExtensions
-} from "./chunk-4N2K54N2.js";
+} from "./chunk-2UNKJB65.js";
 export {
   collectWebsiteBuilderFooterExtensionItems,
   collectWebsiteBuilderHeaderExtensionItems,

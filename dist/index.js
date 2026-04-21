@@ -1,29 +1,29 @@
 import {
   EditableImage
-} from "./chunk-MLFQUPPU.js";
+} from "./chunk-KTGPTN7J.js";
 import {
   EditableRichText
-} from "./chunk-AUDECFAA.js";
+} from "./chunk-JGS37X2F.js";
 import {
   EditableText
-} from "./chunk-H45OKBHC.js";
+} from "./chunk-RX4FBNFE.js";
 import {
   EditableTextarea
-} from "./chunk-EYMSWDJE.js";
+} from "./chunk-EL5UNIVL.js";
 import {
   WebsiteBuilderFieldEditorList,
   WebsiteBuilderStudio
-} from "./chunk-6A7Z662L.js";
+} from "./chunk-T7JSQIFT.js";
 import {
   WebsiteBuilderRichTextEditor,
   renderWebsiteBuilderRichTextHtml,
   websiteBuilderRichTextContentClassName
-} from "./chunk-RHGH5BX2.js";
+} from "./chunk-PVXBOLON.js";
 import {
   WebsiteBuilderSiteSearch,
   siteFooterShellDefinition,
   siteHeaderShellDefinition
-} from "./chunk-5JYE76G2.js";
+} from "./chunk-Q4KY55GU.js";
 import {
   KeyboardMenuList,
   WebsiteBuilderBlockRenderer,
@@ -31,8 +31,8 @@ import {
   WebsiteBuilderSearchHighlightEffect,
   useKeyboardMenuController,
   useWebsiteBuilderRenderDepth
-} from "./chunk-OURPASIW.js";
-import "./chunk-LEXLLWPP.js";
+} from "./chunk-N3SPUPCV.js";
+import "./chunk-QVAFUFZV.js";
 import {
   buildWebsiteBuilderSearchResultHref,
   buildWebsiteBuilderSearchTargetId
@@ -46,7 +46,7 @@ import {
 } from "./chunk-NIL7BFDU.js";
 import {
   createWebsiteBuilderRuntime
-} from "./chunk-73LA5FDK.js";
+} from "./chunk-JBXEMZUN.js";
 import {
   collectWebsiteBuilderFooterExtensionItems,
   collectWebsiteBuilderHeaderExtensionItems,
@@ -54,7 +54,7 @@ import {
   createWebsiteBuilderSiteFrameExtension,
   resolveWebsiteBuilderAccountTabs,
   resolveWebsiteBuilderSiteFrameExtensions
-} from "./chunk-4N2K54N2.js";
+} from "./chunk-2UNKJB65.js";
 import {
   getWebsiteBuilderSurfaceModeStyle
 } from "./chunk-75KJ6L3N.js";
@@ -74,7 +74,7 @@ import {
   resolveWebsiteBuilderSiteDesignSettings,
   websiteBuilderSiteColorSchemes,
   websiteBuilderSiteDesignPresets
-} from "./chunk-7A32BINR.js";
+} from "./chunk-KEOML5B2.js";
 import {
   WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
   WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
@@ -82,7 +82,7 @@ import {
 } from "./chunk-HFEMF2E3.js";
 import {
   EditableGallery
-} from "./chunk-EMAOBTRS.js";
+} from "./chunk-CRF7Y4WX.js";
 import "./chunk-LGQN6FEA.js";
 import "./chunk-DUTVWY2H.js";
 import {
@@ -103,7 +103,7 @@ import {
   useWebsiteBuilderPersistedState,
   useWebsiteBuilderStore,
   useWebsiteBuilderStoreApi
-} from "./chunk-OWDRVIFG.js";
+} from "./chunk-ZQJWNS6S.js";
 import {
   WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
   collectWebsiteBuilderAccountTabs,
@@ -129,13 +129,13 @@ import {
   resolveWebsiteBuilderSurfaceRegionDescriptors,
   resolveWebsiteBuilderSurfaceRegionForBlockId,
   resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-4FGVRZOX.js";
+} from "./chunk-EN3VAWKM.js";
 import {
   decodeWebsiteBuilderHtmlEntities,
   getWebsiteBuilderAnchorRel,
   normalizeWebsiteBuilderUrlForProtocolCheck,
   sanitizeWebsiteBuilderLinkHref
-} from "./chunk-M743RWMM.js";
+} from "./chunk-GQSABMVW.js";
 import {
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
@@ -163,7 +163,7 @@ import {
   removeWebsiteBuilderBlockFromDocument,
   setValueAtPath,
   updateWebsiteBuilderBlockInDocument
-} from "./chunk-NYLOTAVT.js";
+} from "./chunk-KUHW6SOQ.js";
 
 // src/helpers/register-editable-editor-loaders.ts
 var registerLoader = (key, loader) => {
@@ -174,31 +174,31 @@ var registerLoader = (key, loader) => {
 };
 registerLoader(
   "gallery",
-  () => import("./editable-gallery-XDVIRYWH.js").then(
+  () => import("./editable-gallery-RQVHMIZO.js").then(
     (module) => module.EditableGallery
   )
 );
 registerLoader(
   "image",
-  () => import("./editable-image-J6DP5LPU.js").then(
+  () => import("./editable-image-M6R22IBX.js").then(
     (module) => module.EditableImage
   )
 );
 registerLoader(
   "richText",
-  () => import("./editable-rich-text-OAOMYXS6.js").then(
+  () => import("./editable-rich-text-XRNLRPV6.js").then(
     (module) => module.EditableRichText
   )
 );
 registerLoader(
   "text",
-  () => import("./editable-text-PGPBEXAP.js").then(
+  () => import("./editable-text-WG4VYV6G.js").then(
     (module) => module.EditableText
   )
 );
 registerLoader(
   "textarea",
-  () => import("./editable-textarea-IVKJ4OB3.js").then(
+  () => import("./editable-textarea-UBDGI6YP.js").then(
     (module) => module.EditableTextarea
   )
 );
@@ -729,7 +729,9 @@ var SplitLayout = ({
   renderArea
 }) => {
   const mode = useWebsiteBuilderStore((state) => state.mode);
-  const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
+  const siteDesign = useWebsiteBuilderStore(
+    (state) => state.site.settings.design
+  );
   const columns = block.props.columns ?? [];
   const areas = block.areas ?? [];
   const templateColumns = areas.map((area, index) => getColumnConfig(columns, area, index).width).join(" ");

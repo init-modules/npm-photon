@@ -5,11 +5,11 @@ import {
   KeyboardMenuList,
   Root,
   useKeyboardMenuController
-} from "./chunk-OURPASIW.js";
+} from "./chunk-N3SPUPCV.js";
 import {
   EditableText,
   getWebsiteBuilderEditableEditorLoader
-} from "./chunk-LEXLLWPP.js";
+} from "./chunk-QVAFUFZV.js";
 import {
   buildWebsiteBuilderSearchResultHref,
   buildWebsiteBuilderSearchTargetId
@@ -18,7 +18,7 @@ import {
   collectWebsiteBuilderFooterExtensionItems,
   collectWebsiteBuilderHeaderExtensionItems,
   resolveWebsiteBuilderSiteFrameExtensions
-} from "./chunk-4N2K54N2.js";
+} from "./chunk-2UNKJB65.js";
 import {
   resolveWebsiteBuilderMediaPreviewUrl
 } from "./chunk-NZ4V64SZ.js";
@@ -28,14 +28,14 @@ import {
   useWebsiteBuilderFieldValue,
   useWebsiteBuilderI18n,
   useWebsiteBuilderStore
-} from "./chunk-OWDRVIFG.js";
+} from "./chunk-ZQJWNS6S.js";
 import {
   createWebsiteBuilderLocalizedDefault,
   defineWebsiteBuilderBlockDefinition
-} from "./chunk-4FGVRZOX.js";
+} from "./chunk-EN3VAWKM.js";
 import {
   WEBSITE_BUILDER_EMPTY_TEXT
-} from "./chunk-NYLOTAVT.js";
+} from "./chunk-KUHW6SOQ.js";
 
 // src/components/public/public-editable-image.tsx
 import clsx from "clsx";
@@ -218,13 +218,18 @@ var normalizeComponentVariants = (value) => {
   if (typeof value !== "object" || value === null) {
     return {};
   }
-  return Object.entries(value).reduce((result, [key, candidateValue]) => {
-    const normalizedValue = readNonEmptyString(candidateValue);
-    if (key.trim() !== "" && normalizedValue !== void 0) {
-      result[key] = normalizedValue;
-    }
-    return result;
-  }, {});
+  return Object.entries(
+    value
+  ).reduce(
+    (result, [key, candidateValue]) => {
+      const normalizedValue = readNonEmptyString(candidateValue);
+      if (key.trim() !== "" && normalizedValue !== void 0) {
+        result[key] = normalizedValue;
+      }
+      return result;
+    },
+    {}
+  );
 };
 var matchesPublicFallbackDefaults = (value) => WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_TOKEN_KEYS.every(
   (key) => value[key] === WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_FALLBACK_DEFAULTS[key]
@@ -651,9 +656,27 @@ var siteFooterFields = [
       { label: "Minimal air", value: "minimal-air" }
     ]
   },
-  { path: "brandTitle", label: "Brand title", kind: "text", group: "content", localization: "localized" },
-  { path: "brandBody", label: "Brand body", kind: "textarea", group: "content", localization: "localized" },
-  { path: "logoImage", label: "Logo image", kind: "image", group: "content", localization: "shared" },
+  {
+    path: "brandTitle",
+    label: "Brand title",
+    kind: "text",
+    group: "content",
+    localization: "localized"
+  },
+  {
+    path: "brandBody",
+    label: "Brand body",
+    kind: "textarea",
+    group: "content",
+    localization: "localized"
+  },
+  {
+    path: "logoImage",
+    label: "Logo image",
+    kind: "image",
+    group: "content",
+    localization: "shared"
+  },
   {
     path: "subscriptionTitle",
     label: "Subscription title",
@@ -715,8 +738,20 @@ var siteFooterFields = [
     itemLabel: "Contact item",
     itemField: { label: "Contact item", kind: "text" }
   },
-  { path: "legalLabel", label: "Legal label", kind: "text", group: "content", localization: "localized" },
-  { path: "legalHref", label: "Legal href", kind: "url", group: "content", localization: "shared" },
+  {
+    path: "legalLabel",
+    label: "Legal label",
+    kind: "text",
+    group: "content",
+    localization: "localized"
+  },
+  {
+    path: "legalHref",
+    label: "Legal href",
+    kind: "url",
+    group: "content",
+    localization: "shared"
+  },
   {
     path: "copyrightLabel",
     label: "Copyright label",
@@ -776,7 +811,9 @@ var footerVariantStyles = {
 var SiteFooterShell = ({
   block
 }) => {
-  const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
+  const siteDesign = useWebsiteBuilderStore(
+    (state) => state.site.settings.design
+  );
   const siteFrameExtensions = useWebsiteBuilderStore(
     (state) => state.siteFrameExtensions
   );
@@ -808,7 +845,9 @@ var SiteFooterShell = ({
   const legalLinks = normalizeWebsiteBuilderSiteLinkItems(
     footerExtensionItems.legalLinks
   );
-  const contactItems = normalizeWebsiteBuilderSiteStringItems(block.props.contactItems);
+  const contactItems = normalizeWebsiteBuilderSiteStringItems(
+    block.props.contactItems
+  );
   return /* @__PURE__ */ jsx4(
     "footer",
     {
@@ -981,7 +1020,14 @@ var SiteFooterShell = ({
               ),
               children: [
                 /* @__PURE__ */ jsx4("div", { className: clsx4("text-sm font-semibold", variant.text), children: "Contacts" }),
-                /* @__PURE__ */ jsx4("div", { className: "mt-4 space-y-3", children: contactItems.map((item) => /* @__PURE__ */ jsx4("div", { className: clsx4("text-sm leading-7", variant.muted), children: item }, item)) })
+                /* @__PURE__ */ jsx4("div", { className: "mt-4 space-y-3", children: contactItems.map((item) => /* @__PURE__ */ jsx4(
+                  "div",
+                  {
+                    className: clsx4("text-sm leading-7", variant.muted),
+                    children: item
+                  },
+                  item
+                )) })
               ]
             }
           )
@@ -1127,16 +1173,8 @@ var siteFooterShellDefinition = defineWebsiteBuilderBlockDefinition({
       ]
     }),
     contactItems: createWebsiteBuilderLocalizedDefault({
-      en: [
-        "+7 (707) 040-43-43",
-        "hello@example.test",
-        "Almaty, Kazakhstan"
-      ],
-      ru: [
-        "+7 (707) 040-43-43",
-        "hello@example.test",
-        "\u0410\u043B\u043C\u0430\u0442\u044B, \u041A\u0430\u0437\u0430\u0445\u0441\u0442\u0430\u043D"
-      ]
+      en: ["+7 (707) 040-43-43", "hello@example.test", "Almaty, Kazakhstan"],
+      ru: ["+7 (707) 040-43-43", "hello@example.test", "\u0410\u043B\u043C\u0430\u0442\u044B, \u041A\u0430\u0437\u0430\u0445\u0441\u0442\u0430\u043D"]
     }),
     legalLabel: createWebsiteBuilderLocalizedDefault({
       en: "Privacy policy",
@@ -1243,9 +1281,27 @@ var siteHeaderFields = [
       { label: "Showcase card", value: "showcase-card" }
     ]
   },
-  { path: "brandLabel", label: "Brand label", kind: "text", group: "content", localization: "localized" },
-  { path: "brandHref", label: "Brand href", kind: "url", group: "content", localization: "shared" },
-  { path: "logoImage", label: "Logo image", kind: "image", group: "content", localization: "shared" },
+  {
+    path: "brandLabel",
+    label: "Brand label",
+    kind: "text",
+    group: "content",
+    localization: "localized"
+  },
+  {
+    path: "brandHref",
+    label: "Brand href",
+    kind: "url",
+    group: "content",
+    localization: "shared"
+  },
+  {
+    path: "logoImage",
+    label: "Logo image",
+    kind: "image",
+    group: "content",
+    localization: "shared"
+  },
   {
     path: "utilityLinks",
     label: "Utility links",
@@ -1385,11 +1441,15 @@ var SiteHeaderShell = ({
   const isAdmin = useWebsiteBuilderStore((state) => state.isAdmin);
   const mode = useWebsiteBuilderStore((state) => state.mode);
   const currentRoute = useWebsiteBuilderStore((state) => state.document.route);
-  const currentBlocks = useWebsiteBuilderStore((state) => state.document.blocks);
+  const currentBlocks = useWebsiteBuilderStore(
+    (state) => state.document.blocks
+  );
   const requestAuth = useWebsiteBuilderStore((state) => state.requestAuth);
   const resources = useWebsiteBuilderStore((state) => state.resources);
   const siteRegions = useWebsiteBuilderStore((state) => state.site.regions);
-  const siteDesign = useWebsiteBuilderStore((state) => state.site.settings.design);
+  const siteDesign = useWebsiteBuilderStore(
+    (state) => state.site.settings.design
+  );
   const siteFrameExtensions = useWebsiteBuilderStore(
     (state) => state.siteFrameExtensions
   );
@@ -1874,15 +1934,17 @@ var SiteHeaderShell = ({
                   "border-t border-[var(--wb-site-border)]",
                   framelessSite && "bg-transparent"
                 ),
-                children: /* @__PURE__ */ jsx5("div", { className: "mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] px-[var(--wb-site-gutter,24px)] py-4", children: /* @__PURE__ */ jsx5("div", { className: "flex flex-wrap gap-2", children: categoryLinks.map((link) => renderSmartLink(
-                  link,
-                  clsx5(
-                    "rounded-full border border-[var(--wb-site-border)] px-4 py-2 text-sm text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
-                    framelessSite ? "bg-transparent" : isShowcaseCard ? "bg-[var(--wb-site-background)]" : "bg-white/0",
-                    isCartLinkHref(link.href) && "h-10 w-10 px-0 py-0"
-                  ),
-                  `${link.label}:${link.href}`
-                )) }) })
+                children: /* @__PURE__ */ jsx5("div", { className: "mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] px-[var(--wb-site-gutter,24px)] py-4", children: /* @__PURE__ */ jsx5("div", { className: "flex flex-wrap gap-2", children: categoryLinks.map(
+                  (link) => renderSmartLink(
+                    link,
+                    clsx5(
+                      "rounded-full border border-[var(--wb-site-border)] px-4 py-2 text-sm text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
+                      framelessSite ? "bg-transparent" : isShowcaseCard ? "bg-[var(--wb-site-background)]" : "bg-white/0",
+                      isCartLinkHref(link.href) && "h-10 w-10 px-0 py-0"
+                    ),
+                    `${link.label}:${link.href}`
+                  )
+                ) }) })
               }
             ) : null
           ]

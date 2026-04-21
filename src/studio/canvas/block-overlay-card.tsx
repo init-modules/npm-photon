@@ -21,10 +21,7 @@ export const BlockOverlayCard = ({ block }: { block: WebsiteBuilderBlock }) => {
 				{block.module}
 			</div>
 			<div className="mt-2 font-semibold">{block.type}</div>
-			<div
-				className="mt-1"
-				style={{ color: "var(--wb-builder-text-muted)" }}
-			>
+			<div className="mt-1" style={{ color: "var(--wb-builder-text-muted)" }}>
 				Move block into any visible insert zone.
 			</div>
 		</div>

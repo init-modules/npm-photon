@@ -1,24 +1,24 @@
 import type { ReactNode } from "react";
 import type {
-	WebsiteBuilderI18nValue,
+	WebsiteBuilderAccountTabExtension,
+	WebsiteBuilderBranchPolicyState,
 	WebsiteBuilderDocument,
 	WebsiteBuilderField,
+	WebsiteBuilderI18nValue,
 	WebsiteBuilderLinkComponent,
 	WebsiteBuilderMediaUploadHandler,
+	WebsiteBuilderMergePreview,
 	WebsiteBuilderMode,
 	WebsiteBuilderPageCatalogItem,
 	WebsiteBuilderPageSettings,
 	WebsiteBuilderPageSettingsPanelDefinition,
-	WebsiteBuilderRevisionDescriptor,
 	WebsiteBuilderRegistry,
 	WebsiteBuilderResources,
+	WebsiteBuilderRevisionDescriptor,
 	WebsiteBuilderSearchHandler,
 	WebsiteBuilderSearchHighlight,
-	WebsiteBuilderMergePreview,
-	WebsiteBuilderBranchPolicyState,
 	WebsiteBuilderSite,
 	WebsiteBuilderSiteFrameExtension,
-	WebsiteBuilderAccountTabExtension,
 	WebsiteBuilderSiteSettingsPanelDefinition,
 	WebsiteBuilderWorkspaceCapabilities,
 	WebsiteBuilderWorkspaceDescriptor,
@@ -152,8 +152,10 @@ export type PaletteFamilyGroup = {
 	}>;
 };
 
-export type PageSettingsPanelDefinition = WebsiteBuilderPageSettingsPanelDefinition;
-export type SiteSettingsPanelDefinition = WebsiteBuilderSiteSettingsPanelDefinition;
+export type PageSettingsPanelDefinition =
+	WebsiteBuilderPageSettingsPanelDefinition;
+export type SiteSettingsPanelDefinition =
+	WebsiteBuilderSiteSettingsPanelDefinition;
 export type SiteSettingsSubtabDefinition = {
 	key: string;
 	label: string;

@@ -10,19 +10,21 @@ import {
 	useRef,
 } from "react";
 import { useStore } from "zustand";
+import {
+	getWebsiteBuilderAnchorRel,
+	sanitizeWebsiteBuilderLinkHref,
+} from "../helpers/link-url";
 import { cloneWebsiteBuilderValue } from "../helpers/path";
+import { decomposeWebsiteBuilderSurfaceDocument } from "../helpers/site";
 import {
 	canEditWebsiteBuilderWorkspace,
 	normalizeWebsiteBuilderWorkspaceCapabilities,
 	normalizeWebsiteBuilderWorkspaceDescriptor,
 } from "../helpers/workspace";
-import {
-	WebsiteBuilderI18nProvider,
-} from "../i18n/website-builder-i18n-context";
-import { decomposeWebsiteBuilderSurfaceDocument } from "../helpers/site";
+import { WebsiteBuilderI18nProvider } from "../i18n/website-builder-i18n-context";
 import type {
-	WebsiteBuilderI18nValue,
 	WebsiteBuilderAccountTabExtension,
+	WebsiteBuilderI18nValue,
 	WebsiteBuilderLinkComponent,
 	WebsiteBuilderLinkComponentProps,
 	WebsiteBuilderMediaUploadHandler,
@@ -36,6 +38,7 @@ import type {
 	WebsiteBuilderWorkspaceCapabilities,
 	WebsiteBuilderWorkspaceDescriptor,
 } from "../types";
+import { getWebsiteBuilderExternalStateFingerprint } from "./external-state";
 import {
 	createWebsiteBuilderStore,
 	getWebsiteBuilderFieldValue,
@@ -43,11 +46,6 @@ import {
 	type WebsiteBuilderStoreInit,
 	type WebsiteBuilderStoreState,
 } from "./website-builder-store";
-import { getWebsiteBuilderExternalStateFingerprint } from "./external-state";
-import {
-	getWebsiteBuilderAnchorRel,
-	sanitizeWebsiteBuilderLinkHref,
-} from "../helpers/link-url";
 
 const WebsiteBuilderContext = createContext<WebsiteBuilderStore | null>(null);
 
@@ -173,7 +171,15 @@ export const WebsiteBuilderProvider = ({
 				normalizeWebsiteBuilderWorkspaceCapabilities(capabilities),
 			),
 		});
-	}, [externalStateFingerprint, capabilities, initialDocument, initialPageSettings, initialResources, initialSite, workspace]);
+	}, [
+		externalStateFingerprint,
+		capabilities,
+		initialDocument,
+		initialPageSettings,
+		initialResources,
+		initialSite,
+		workspace,
+	]);
 
 	useEffect(() => {
 		storeRef.current?.setState((state) => {
@@ -221,8 +227,7 @@ export const WebsiteBuilderProvider = ({
 				accountTabs: cloneWebsiteBuilderValue(accountTabs),
 				contentLocale: i18n?.contentLocale ?? state.contentLocale,
 				defaultLocale: i18n?.defaultLocale ?? state.defaultLocale,
-				mode:
-					nextEditable || nextMode === "preview" ? nextMode : "preview",
+				mode: nextEditable || nextMode === "preview" ? nextMode : "preview",
 			};
 		});
 	}, [

@@ -58,7 +58,10 @@ export const normalizeWebsiteBuilderWorkspaceDescriptor = (
 });
 
 const extractWebsiteBuilderWorkspaceRef = (
-	workspace?: WebsiteBuilderWorkspaceDescriptor | WebsiteBuilderWorkspaceRef | null,
+	workspace?:
+		| WebsiteBuilderWorkspaceDescriptor
+		| WebsiteBuilderWorkspaceRef
+		| null,
 ): WebsiteBuilderWorkspaceRef | null => {
 	if (!workspace) {
 		return null;
@@ -68,7 +71,10 @@ const extractWebsiteBuilderWorkspaceRef = (
 };
 
 export const getWebsiteBuilderWorkspaceKey = (
-	workspace?: WebsiteBuilderWorkspaceDescriptor | WebsiteBuilderWorkspaceRef | null,
+	workspace?:
+		| WebsiteBuilderWorkspaceDescriptor
+		| WebsiteBuilderWorkspaceRef
+		| null,
 ) => {
 	const descriptor =
 		workspace && "ref" in workspace
@@ -94,7 +100,10 @@ export const getWebsiteBuilderWorkspaceKey = (
 };
 
 export const getWebsiteBuilderWorkspaceIdentityKey = (
-	workspace?: WebsiteBuilderWorkspaceDescriptor | WebsiteBuilderWorkspaceRef | null,
+	workspace?:
+		| WebsiteBuilderWorkspaceDescriptor
+		| WebsiteBuilderWorkspaceRef
+		| null,
 ) => {
 	const descriptor =
 		workspace && "ref" in workspace
@@ -118,7 +127,10 @@ export const getWebsiteBuilderWorkspaceIdentityKey = (
 };
 
 export const isWebsiteBuilderWorkspaceReadonly = (
-	workspace?: WebsiteBuilderWorkspaceDescriptor | WebsiteBuilderWorkspaceRef | null,
+	workspace?:
+		| WebsiteBuilderWorkspaceDescriptor
+		| WebsiteBuilderWorkspaceRef
+		| null,
 	capabilities?: Partial<WebsiteBuilderWorkspaceCapabilities> | null,
 ) => {
 	const normalizedWorkspace =
@@ -145,7 +157,10 @@ export const isWebsiteBuilderWorkspaceReadonly = (
 };
 
 export const canEditWebsiteBuilderWorkspace = (
-	workspace?: WebsiteBuilderWorkspaceDescriptor | WebsiteBuilderWorkspaceRef | null,
+	workspace?:
+		| WebsiteBuilderWorkspaceDescriptor
+		| WebsiteBuilderWorkspaceRef
+		| null,
 	capabilities?: Partial<WebsiteBuilderWorkspaceCapabilities> | null,
 ) => !isWebsiteBuilderWorkspaceReadonly(workspace, capabilities);
 
@@ -155,7 +170,10 @@ export const canSaveWebsiteBuilderWorkspace = ({
 	capabilities,
 }: {
 	isAdmin: boolean;
-	workspace?: WebsiteBuilderWorkspaceDescriptor | WebsiteBuilderWorkspaceRef | null;
+	workspace?:
+		| WebsiteBuilderWorkspaceDescriptor
+		| WebsiteBuilderWorkspaceRef
+		| null;
 	capabilities?: Partial<WebsiteBuilderWorkspaceCapabilities> | null;
 }) =>
 	Boolean(
