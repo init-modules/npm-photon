@@ -23,6 +23,7 @@ export type {
 } from "./types";
 export * from "./search/constants";
 export * from "./helpers/site-design";
+export * from "./helpers/link-url";
 export * from "./helpers/surface-layout";
 export * from "./helpers/tree";
 export * from "./helpers/workspace";

@@ -1,3 +1,5 @@
+import "./helpers/register-editable-editor-loaders";
+
 export * from "./components/block-renderer";
 export * from "./components/editable";
 export * from "./components/rich-text-editor";
@@ -10,6 +12,7 @@ export * from "./i18n/website-builder-i18n-context";
 export * from "./helpers/binding";
 export * from "./helpers/document";
 export * from "./helpers/installable";
+export * from "./helpers/link-url";
 export * from "./helpers/media";
 export * from "./helpers/path";
 export * from "./helpers/runtime";

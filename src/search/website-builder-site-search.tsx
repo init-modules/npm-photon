@@ -10,7 +10,7 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { EditableText } from "../components/editable";
+import { EditableText } from "../components/public/public-editable-text";
 import {
 	Dialog,
 	DialogContent,

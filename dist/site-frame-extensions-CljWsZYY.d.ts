@@ -1,4 +1,4 @@
-import { u as WebsiteBuilderSiteFrameExtension, v as WebsiteBuilderSiteFrameNavigationColumn, w as WebsiteBuilderSiteFrameLinkItem, x as WebsiteBuilderSiteFrameActionItem, y as WebsiteBuilderAccountTabExtension } from './types-B_tR-sKT.js';
+import { u as WebsiteBuilderSiteFrameExtension, v as WebsiteBuilderSiteFrameNavigationColumn, w as WebsiteBuilderSiteFrameLinkItem, x as WebsiteBuilderSiteFrameActionItem, y as WebsiteBuilderAccountTabExtension } from './types-CuFDrLWO.js';
 
 declare const createWebsiteBuilderSiteFrameExtension: (extension: WebsiteBuilderSiteFrameExtension) => WebsiteBuilderSiteFrameExtension;
 declare const createWebsiteBuilderAccountTabExtension: (tab: WebsiteBuilderAccountTabExtension) => WebsiteBuilderAccountTabExtension;
@@ -14,4 +14,4 @@ declare const collectWebsiteBuilderFooterExtensionItems: (extensions: readonly W
     legalLinks: WebsiteBuilderSiteFrameLinkItem[];
 };
 
-export { collectWebsiteBuilderHeaderExtensionItems as a, createWebsiteBuilderAccountTabExtension as b, collectWebsiteBuilderFooterExtensionItems as c, createWebsiteBuilderSiteFrameExtension as d, resolveWebsiteBuilderSiteFrameExtensions as e, resolveWebsiteBuilderAccountTabs as r };
+export { createWebsiteBuilderSiteFrameExtension as a, collectWebsiteBuilderFooterExtensionItems as b, createWebsiteBuilderAccountTabExtension as c, collectWebsiteBuilderHeaderExtensionItems as d, resolveWebsiteBuilderSiteFrameExtensions as e, resolveWebsiteBuilderAccountTabs as r };

@@ -6,10 +6,15 @@ import {
   getFirstWebsiteBuilderSurfaceEditableBlockId,
   getWebsiteBuilderDocumentFingerprint,
   getWebsiteBuilderSurfaceRegionListId
-} from "./chunk-GBIC56HN.js";
+} from "./chunk-4FGVRZOX.js";
+import {
+  getWebsiteBuilderAnchorRel,
+  sanitizeWebsiteBuilderLinkHref
+} from "./chunk-M743RWMM.js";
 import {
   canEditWebsiteBuilderWorkspace,
   cloneWebsiteBuilderValue,
+  collectBlockIds,
   duplicateWebsiteBuilderBlockInDocument,
   findWebsiteBuilderBlock,
   getValueAtPath,
@@ -21,7 +26,7 @@ import {
   removeWebsiteBuilderBlockFromDocument,
   setValueAtPath,
   updateWebsiteBuilderBlockInDocument
-} from "./chunk-IEZXES2I.js";
+} from "./chunk-NYLOTAVT.js";
 
 // src/i18n/website-builder-i18n-context.tsx
 import {
@@ -77,179 +82,6 @@ import { useStore } from "zustand";
 
 // src/context/website-builder-store.ts
 import { createStore } from "zustand/vanilla";
-
-// src/studio/shared/constants.ts
-import {
-  closestCenter,
-  pointerWithin,
-  rectIntersection
-} from "@dnd-kit/core";
-import clsx from "clsx";
-import {
-  BadgeCheck,
-  LayoutGrid,
-  Newspaper,
-  PanelsTopLeft,
-  Sparkles
-} from "lucide-react";
-var FIELD_GROUP_LABELS = {
-  content: "websiteBuilder.fieldGroups.content",
-  style: "websiteBuilder.fieldGroups.style",
-  layout: "websiteBuilder.fieldGroups.layout",
-  data: "websiteBuilder.fieldGroups.data",
-  misc: "websiteBuilder.fieldGroups.misc"
-};
-var STUDIO_ICONS = {
-  "badge-check": BadgeCheck,
-  "layout-grid": LayoutGrid,
-  newspaper: Newspaper,
-  "panels-top-left": PanelsTopLeft,
-  sparkles: Sparkles
-};
-var createInsertionZoneId = (listId, index) => `insert:${listId}:${index}`;
-var INSERT_ZONE_PROXIMITY_HEIGHT = 160;
-var INSERT_ZONE_PROXIMITY_WIDTH = 96;
-var getRectArea = (rect) => rect ? rect.width * rect.height : Number.POSITIVE_INFINITY;
-var getPointerDistanceToRect = (pointerCoordinates, rect) => {
-  if (!pointerCoordinates || !rect) {
-    return Number.POSITIVE_INFINITY;
-  }
-  const deltaX = pointerCoordinates.x < rect.left ? rect.left - pointerCoordinates.x : pointerCoordinates.x > rect.right ? pointerCoordinates.x - rect.right : 0;
-  const deltaY = pointerCoordinates.y < rect.top ? rect.top - pointerCoordinates.y : pointerCoordinates.y > rect.bottom ? pointerCoordinates.y - rect.bottom : 0;
-  return Math.hypot(deltaX, deltaY);
-};
-var sortInsertZoneCollisions = (collisions, {
-  droppableRects,
-  pointerCoordinates,
-  prioritizeValue = false
-}) => [...collisions].sort((left, right) => {
-  const leftValue = typeof left.data?.value === "number" ? left.data.value : Number.NEGATIVE_INFINITY;
-  const rightValue = typeof right.data?.value === "number" ? right.data.value : Number.NEGATIVE_INFINITY;
-  if (prioritizeValue && rightValue !== leftValue) {
-    return rightValue - leftValue;
-  }
-  const leftRect = droppableRects.get(left.id);
-  const rightRect = droppableRects.get(right.id);
-  const leftDistance = getPointerDistanceToRect(pointerCoordinates, leftRect);
-  const rightDistance = getPointerDistanceToRect(pointerCoordinates, rightRect);
-  if (leftDistance !== rightDistance) {
-    return leftDistance - rightDistance;
-  }
-  if (!prioritizeValue && rightValue !== leftValue) {
-    return rightValue - leftValue;
-  }
-  return getRectArea(leftRect) - getRectArea(rightRect);
-});
-var createPointerProximityRect = (pointerCoordinates) => {
-  if (!pointerCoordinates) {
-    return null;
-  }
-  return {
-    top: pointerCoordinates.y - INSERT_ZONE_PROXIMITY_HEIGHT / 2,
-    bottom: pointerCoordinates.y + INSERT_ZONE_PROXIMITY_HEIGHT / 2,
-    left: pointerCoordinates.x - INSERT_ZONE_PROXIMITY_WIDTH / 2,
-    right: pointerCoordinates.x + INSERT_ZONE_PROXIMITY_WIDTH / 2,
-    width: INSERT_ZONE_PROXIMITY_WIDTH,
-    height: INSERT_ZONE_PROXIMITY_HEIGHT
-  };
-};
-var websiteBuilderCollisionDetection = (args) => {
-  const activeKind = args.active.data.current?.kind;
-  const insertZoneContainers = args.droppableContainers.filter(
-    (container) => container.data.current?.kind === "insert-zone"
-  );
-  const collisionArgs = {
-    ...args,
-    droppableContainers: insertZoneContainers
-  };
-  const pointerHits = pointerWithin(collisionArgs);
-  if (pointerHits.length > 0) {
-    return sortInsertZoneCollisions(pointerHits, {
-      droppableRects: args.droppableRects,
-      pointerCoordinates: args.pointerCoordinates
-    });
-  }
-  const overlayHits = rectIntersection(collisionArgs);
-  if (overlayHits.length > 0) {
-    return sortInsertZoneCollisions(overlayHits, {
-      droppableRects: args.droppableRects,
-      pointerCoordinates: args.pointerCoordinates,
-      prioritizeValue: true
-    });
-  }
-  const pointerProximityRect = createPointerProximityRect(args.pointerCoordinates);
-  if (pointerProximityRect) {
-    const proximityHits = rectIntersection({
-      ...collisionArgs,
-      collisionRect: pointerProximityRect
-    });
-    if (proximityHits.length > 0) {
-      return sortInsertZoneCollisions(proximityHits, {
-        droppableRects: args.droppableRects,
-        pointerCoordinates: args.pointerCoordinates,
-        prioritizeValue: true
-      });
-    }
-  }
-  if (activeKind === "palette") {
-    return [];
-  }
-  return sortInsertZoneCollisions(
-    closestCenter({
-      ...collisionArgs,
-      collisionRect: pointerProximityRect ?? args.collisionRect
-    }),
-    {
-      droppableRects: args.droppableRects,
-      pointerCoordinates: args.pointerCoordinates
-    }
-  );
-};
-var parseInsertTargetFromZoneId = (zoneId) => {
-  if (!zoneId.startsWith("insert:")) {
-    return null;
-  }
-  const payload = zoneId.slice("insert:".length);
-  const separatorIndex = payload.lastIndexOf(":");
-  if (separatorIndex === -1) {
-    return null;
-  }
-  const listId = payload.slice(0, separatorIndex);
-  const index = Number(payload.slice(separatorIndex + 1));
-  if (!Number.isFinite(index)) {
-    return null;
-  }
-  return { listId, index };
-};
-var resolveInsertTarget = (event) => {
-  const overData = event.over?.data.current;
-  if (overData?.kind === "insert-zone") {
-    return {
-      listId: String(overData.listId),
-      index: Number(overData.index)
-    };
-  }
-  const collisionTarget = event.collisions?.map((collision) => parseInsertTargetFromZoneId(String(collision.id))).find((target) => target !== null);
-  return collisionTarget ?? null;
-};
-var matchesTarget = (target, listId, index) => target?.listId === listId && target.index === index;
-var collectBlockIds = (blocks) => {
-  const ids = [];
-  for (const block of blocks) {
-    ids.push(block.id);
-    for (const area of block.areas ?? []) {
-      ids.push(...collectBlockIds(area.blocks));
-    }
-  }
-  return ids;
-};
-var inputClassName = clsx(
-  "w-full rounded-[20px] border px-4 py-3",
-  "text-sm outline-none transition placeholder:text-[color:var(--wb-builder-text-ghost)]",
-  "border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] text-[color:var(--wb-builder-text)] focus:border-[color:var(--wb-builder-border-strong)]"
-);
-
-// src/context/website-builder-store.ts
 var PAGE_SETTINGS_FIELD_SCOPE = "__page_settings__";
 var SITE_SETTINGS_FIELD_SCOPE = "__site_settings__";
 var normalizeWebsiteBuilderMode = (mode, isAdmin) => isAdmin ? mode : "preview";
@@ -733,8 +565,9 @@ var DefaultWebsiteBuilderLinkComponent = ({
 }) => createElement(
   "a",
   {
-    href,
-    ...props
+    ...props,
+    href: sanitizeWebsiteBuilderLinkHref(href),
+    rel: getWebsiteBuilderAnchorRel(props.target, props.rel)
   },
   children
 );
@@ -940,13 +773,6 @@ export {
   WebsiteBuilderI18nProvider,
   useWebsiteBuilderI18n,
   resolveWebsiteBuilderText,
-  FIELD_GROUP_LABELS,
-  STUDIO_ICONS,
-  createInsertionZoneId,
-  websiteBuilderCollisionDetection,
-  resolveInsertTarget,
-  matchesTarget,
-  inputClassName,
   WebsiteBuilderProvider,
   useWebsiteBuilderStoreApi,
   useWebsiteBuilderStore,

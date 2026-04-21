@@ -1,15 +1,29 @@
-import * as react_jsx_runtime from 'react/jsx-runtime';
 import * as react from 'react';
-import { ReactNode, ElementType, HTMLAttributes, CSSProperties, KeyboardEvent } from 'react';
-import { a as WebsiteBuilderBlock, W as WebsiteBuilderArea, z as WebsiteBuilderSurfaceMode, J as WebsiteBuilderField, b as WebsiteBuilderDocument, m as WebsiteBuilderResources, k as WebsiteBuilderPageSettings, p as WebsiteBuilderSite, A as WebsiteBuilderRegistry, t as WebsiteBuilderWorkspaceDescriptor, s as WebsiteBuilderWorkspaceCapabilities, E as WebsiteBuilderMode, F as WebsiteBuilderMediaUploadHandler, G as WebsiteBuilderSearchHandler, H as WebsiteBuilderLinkComponent, u as WebsiteBuilderSiteFrameExtension, y as WebsiteBuilderAccountTabExtension, Q as WebsiteBuilderSelectedField, d as WebsiteBuilderFieldBinding, R as WebsiteBuilderLinkComponentProps, I as WebsiteBuilderI18nValue, S as WebsiteBuilderBindingAdapter, h as WebsiteBuilderMediaValue, T as WebsiteBuilderInstallableKit, U as WebsiteBuilderModule, o as WebsiteBuilderSearchResult, n as WebsiteBuilderSearchHighlight } from './types-B_tR-sKT.js';
-export { V as WebsiteBuilderActorSummary, X as WebsiteBuilderAnyBlockDefinition, Y as WebsiteBuilderBindingMode, Z as WebsiteBuilderBlockComponent, _ as WebsiteBuilderBlockComponentProps, $ as WebsiteBuilderBlockDefaults, a0 as WebsiteBuilderBlockDefinition, a1 as WebsiteBuilderBlockLocalizationSchema, a2 as WebsiteBuilderBlockProps, C as WebsiteBuilderBranchPolicyState, a3 as WebsiteBuilderDefaultable, c as WebsiteBuilderDocumentsMap, a4 as WebsiteBuilderFieldKind, a5 as WebsiteBuilderFieldLocalization, a6 as WebsiteBuilderFieldOption, a7 as WebsiteBuilderInterfaceLocaleOption, e as WebsiteBuilderLocaleDescriptor, f as WebsiteBuilderLocaleStatus, a8 as WebsiteBuilderLocalizedDefaultValue, g as WebsiteBuilderMediaUploadInput, a9 as WebsiteBuilderMergeConflict, aa as WebsiteBuilderMergeDiffItem, D as WebsiteBuilderMergePreview, ab as WebsiteBuilderMergeResolutionStrategy, ac as WebsiteBuilderNestedField, i as WebsiteBuilderPageCatalogItem, j as WebsiteBuilderPageRuntimeData, K as WebsiteBuilderPageSettingsPanelDefinition, ad as WebsiteBuilderPageSettingsPanelProps, ae as WebsiteBuilderPageSettingsScope, af as WebsiteBuilderRegistryEntry, l as WebsiteBuilderResolvedPage, N as WebsiteBuilderResolvedSiteDesignSettings, ag as WebsiteBuilderRevisionChangeSummaryItem, B as WebsiteBuilderRevisionDescriptor, ah as WebsiteBuilderRuntime, ai as WebsiteBuilderSearchInput, aj as WebsiteBuilderSiteColorSchemeDefinition, O as WebsiteBuilderSiteComponentVariants, ak as WebsiteBuilderSiteDesignAppearance, al as WebsiteBuilderSiteDesignColorTokens, am as WebsiteBuilderSiteDesignPresetDefinition, M as WebsiteBuilderSiteDesignSettings, an as WebsiteBuilderSiteDesignValue, x as WebsiteBuilderSiteFrameActionItem, ao as WebsiteBuilderSiteFrameActionKind, w as WebsiteBuilderSiteFrameLinkItem, v as WebsiteBuilderSiteFrameNavigationColumn, q as WebsiteBuilderSiteRegion, r as WebsiteBuilderSiteSettings, L as WebsiteBuilderSiteSettingsPanelDefinition, ap as WebsiteBuilderSiteSettingsPanelProps, P as WebsiteBuilderWorkspaceRef } from './types-B_tR-sKT.js';
-import { StoreApi } from 'zustand/vanilla';
-export { WEBSITE_BUILDER_DEFAULT_SITE_DESIGN_PRESET_ID, WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY, collectWebsiteBuilderAccountTabs, collectWebsiteBuilderDocuments, collectWebsiteBuilderSiteFrameExtensions, composeWebsiteBuilderSurfaceDocument, createWebsiteBuilderBlock, createWebsiteBuilderBlockLocalizationSchema, createWebsiteBuilderKit, createWebsiteBuilderLocalizationManifest, createWebsiteBuilderLocalizedDefault, createWebsiteBuilderRegistry, createWebsiteBuilderRuntime, decomposeWebsiteBuilderSurfaceDocument, defineWebsiteBuilderBlockDefinition, getFirstWebsiteBuilderSurfaceEditableBlockId, getWebsiteBuilderDefinitionKey, getWebsiteBuilderDocumentFingerprint, getWebsiteBuilderSiteColorScheme, getWebsiteBuilderSiteDesignPreset, getWebsiteBuilderSurfaceRegionBlocks, getWebsiteBuilderSurfaceRegionListId, isWebsiteBuilderInstallableKit, moveWebsiteBuilderArrayItem, resolveWebsiteBuilderModules, resolveWebsiteBuilderSurfaceRegionDescriptors, resolveWebsiteBuilderSurfaceRegionForBlockId, resolveWebsiteBuilderSurfaceRegionForListId, websiteBuilderSiteColorSchemes, websiteBuilderSiteDesignPresets } from './server.js';
-export { D as DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES, a as DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF, I as WEBSITE_BUILDER_EMPTY_TEXT, W as WEBSITE_BUILDER_ROOT_LIST_ID, b as WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM, c as WEBSITE_BUILDER_SEARCH_QUERY_PARAM, d as WEBSITE_BUILDER_SEARCH_TARGET_PARAM, e as WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS, f as WEBSITE_BUILDER_SITE_DESIGN_FALLBACK_DEFAULTS, g as applyWebsiteBuilderSiteColorScheme, h as applyWebsiteBuilderSiteDesignPreset, i as canEditWebsiteBuilderWorkspace, j as canSaveWebsiteBuilderWorkspace, k as cloneWebsiteBuilderBlockTreeWithNewIds, l as cloneWebsiteBuilderValue, m as createWebsiteBuilderAreaListId, n as createWebsiteBuilderNodeId, o as createWebsiteBuilderSiteDesignSettings, p as duplicateWebsiteBuilderBlockInDocument, q as findWebsiteBuilderBlock, r as getFirstWebsiteBuilderBlockId, J as getValueAtPath, s as getWebsiteBuilderWorkspaceIdentityKey, t as getWebsiteBuilderWorkspaceKey, u as hasWebsiteBuilderSiteDesignPresetCustomization, v as insertWebsiteBuilderBlockInDocument, w as isWebsiteBuilderFramelessPreset, x as isWebsiteBuilderFramelessSiteDesign, y as isWebsiteBuilderSiteDesignPresetApplied, z as isWebsiteBuilderWorkspaceReadonly, A as moveWebsiteBuilderBlockInDocument, B as normalizeWebsiteBuilderWorkspaceCapabilities, C as normalizeWebsiteBuilderWorkspaceDescriptor, E as normalizeWebsiteBuilderWorkspaceRef, F as removeWebsiteBuilderBlockFromDocument, G as resolveWebsiteBuilderSiteDesignSettings, K as setValueAtPath, H as updateWebsiteBuilderBlockInDocument } from './constants-LhDa7x3c.js';
-export { c as collectWebsiteBuilderFooterExtensionItems, a as collectWebsiteBuilderHeaderExtensionItems, b as createWebsiteBuilderAccountTabExtension, d as createWebsiteBuilderSiteFrameExtension, r as resolveWebsiteBuilderAccountTabs, e as resolveWebsiteBuilderSiteFrameExtensions } from './site-frame-extensions-UY5JyB2Z.js';
-export { g as getWebsiteBuilderSurfaceModeStyle } from './surface-layout-C5-Ykvzo.js';
+import { ComponentType, ReactNode, ElementType, HTMLAttributes, CSSProperties, KeyboardEvent } from 'react';
+import * as react_jsx_runtime from 'react/jsx-runtime';
+import { a as WebsiteBuilderBlock, W as WebsiteBuilderArea, z as WebsiteBuilderSurfaceMode, J as WebsiteBuilderField, a0 as WebsiteBuilderBindingAdapter, h as WebsiteBuilderMediaValue, T as WebsiteBuilderInstallableKit, P as WebsiteBuilderModule, o as WebsiteBuilderSearchResult, E as WebsiteBuilderMode, n as WebsiteBuilderSearchHighlight } from './types-CuFDrLWO.js';
+export { y as WebsiteBuilderAccountTabExtension, a4 as WebsiteBuilderAccountTabMatch, a5 as WebsiteBuilderActorSummary, a6 as WebsiteBuilderAnyBlockDefinition, a7 as WebsiteBuilderBindingMode, a8 as WebsiteBuilderBlockComponent, a1 as WebsiteBuilderBlockComponentProps, a9 as WebsiteBuilderBlockDefaults, M as WebsiteBuilderBlockDefinition, O as WebsiteBuilderBlockLocalizationSchema, S as WebsiteBuilderBlockProps, C as WebsiteBuilderBranchPolicyState, aa as WebsiteBuilderDefaultable, b as WebsiteBuilderDocument, c as WebsiteBuilderDocumentsMap, d as WebsiteBuilderFieldBinding, ab as WebsiteBuilderFieldKind, ac as WebsiteBuilderFieldLocalization, a2 as WebsiteBuilderFieldOption, I as WebsiteBuilderI18nValue, ad as WebsiteBuilderInterfaceLocaleOption, H as WebsiteBuilderLinkComponent, $ as WebsiteBuilderLinkComponentProps, e as WebsiteBuilderLocaleDescriptor, f as WebsiteBuilderLocaleStatus, Q as WebsiteBuilderLocalizedDefaultValue, F as WebsiteBuilderMediaUploadHandler, g as WebsiteBuilderMediaUploadInput, ae as WebsiteBuilderMergeConflict, af as WebsiteBuilderMergeDiffItem, D as WebsiteBuilderMergePreview, ag as WebsiteBuilderMergeResolutionStrategy, N as WebsiteBuilderNestedField, i as WebsiteBuilderPageCatalogItem, j as WebsiteBuilderPageRuntimeData, k as WebsiteBuilderPageSettings, K as WebsiteBuilderPageSettingsPanelDefinition, ah as WebsiteBuilderPageSettingsPanelProps, a3 as WebsiteBuilderPageSettingsScope, A as WebsiteBuilderRegistry, R as WebsiteBuilderRegistryEntry, l as WebsiteBuilderResolvedPage, X as WebsiteBuilderResolvedSiteDesignSettings, m as WebsiteBuilderResources, ai as WebsiteBuilderRevisionChangeSummaryItem, B as WebsiteBuilderRevisionDescriptor, U as WebsiteBuilderRuntime, G as WebsiteBuilderSearchHandler, aj as WebsiteBuilderSearchInput, _ as WebsiteBuilderSelectedField, p as WebsiteBuilderSite, ak as WebsiteBuilderSiteColorSchemeDefinition, Y as WebsiteBuilderSiteComponentVariants, al as WebsiteBuilderSiteDesignAppearance, am as WebsiteBuilderSiteDesignColorTokens, an as WebsiteBuilderSiteDesignPresetDefinition, V as WebsiteBuilderSiteDesignSettings, ao as WebsiteBuilderSiteDesignValue, x as WebsiteBuilderSiteFrameActionItem, ap as WebsiteBuilderSiteFrameActionKind, u as WebsiteBuilderSiteFrameExtension, w as WebsiteBuilderSiteFrameLinkItem, v as WebsiteBuilderSiteFrameNavigationColumn, q as WebsiteBuilderSiteRegion, r as WebsiteBuilderSiteSettings, L as WebsiteBuilderSiteSettingsPanelDefinition, aq as WebsiteBuilderSiteSettingsPanelProps, s as WebsiteBuilderWorkspaceCapabilities, t as WebsiteBuilderWorkspaceDescriptor, Z as WebsiteBuilderWorkspaceRef } from './types-CuFDrLWO.js';
+export { g as WebsiteBuilderI18nProvider, W as WebsiteBuilderLink, h as WebsiteBuilderProvider, i as WebsiteBuilderRenderDepthProvider, a as WebsiteBuilderSiteSearch, r as resolveWebsiteBuilderText, u as useWebsiteBuilder, b as useWebsiteBuilderCanEdit, f as useWebsiteBuilderFieldValue, c as useWebsiteBuilderI18n, j as useWebsiteBuilderPersistedState, d as useWebsiteBuilderRenderDepth, e as useWebsiteBuilderStore, k as useWebsiteBuilderStoreApi } from './website-builder-site-search-DgqPIWez.js';
+export { f as collectWebsiteBuilderAccountTabs, g as collectWebsiteBuilderDocuments, h as collectWebsiteBuilderSiteFrameExtensions, i as createWebsiteBuilderBlock, c as createWebsiteBuilderBlockLocalizationSchema, a as createWebsiteBuilderKit, j as createWebsiteBuilderLocalizationManifest, b as createWebsiteBuilderLocalizedDefault, k as createWebsiteBuilderRegistry, d as createWebsiteBuilderRuntime, e as defineWebsiteBuilderBlockDefinition, l as getWebsiteBuilderDefinitionKey, m as getWebsiteBuilderDocumentFingerprint, n as isWebsiteBuilderInstallableKit, o as moveWebsiteBuilderArrayItem, r as resolveWebsiteBuilderModules } from './runtime-Led5emTV.js';
+export { d as decodeWebsiteBuilderHtmlEntities, g as getWebsiteBuilderAnchorRel, n as normalizeWebsiteBuilderUrlForProtocolCheck, s as sanitizeWebsiteBuilderLinkHref } from './link-url-CBOXlDl0.js';
+export { D as DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES, a as DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF, G as WEBSITE_BUILDER_EMPTY_TEXT, W as WEBSITE_BUILDER_ROOT_LIST_ID, b as WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS, c as WEBSITE_BUILDER_SITE_DESIGN_FALLBACK_DEFAULTS, d as applyWebsiteBuilderSiteColorScheme, e as applyWebsiteBuilderSiteDesignPreset, f as canEditWebsiteBuilderWorkspace, g as canSaveWebsiteBuilderWorkspace, h as cloneWebsiteBuilderBlockTreeWithNewIds, i as cloneWebsiteBuilderValue, j as collectBlockIds, k as createWebsiteBuilderAreaListId, l as createWebsiteBuilderNodeId, m as createWebsiteBuilderSiteDesignSettings, n as duplicateWebsiteBuilderBlockInDocument, o as findWebsiteBuilderBlock, p as getFirstWebsiteBuilderBlockId, H as getValueAtPath, q as getWebsiteBuilderWorkspaceIdentityKey, r as getWebsiteBuilderWorkspaceKey, s as hasWebsiteBuilderSiteDesignPresetCustomization, t as insertWebsiteBuilderBlockInDocument, u as isWebsiteBuilderFramelessPreset, v as isWebsiteBuilderFramelessSiteDesign, w as isWebsiteBuilderSiteDesignPresetApplied, x as isWebsiteBuilderWorkspaceReadonly, y as moveWebsiteBuilderBlockInDocument, z as normalizeWebsiteBuilderWorkspaceCapabilities, A as normalizeWebsiteBuilderWorkspaceDescriptor, B as normalizeWebsiteBuilderWorkspaceRef, C as removeWebsiteBuilderBlockFromDocument, E as resolveWebsiteBuilderSiteDesignSettings, I as setValueAtPath, F as updateWebsiteBuilderBlockInDocument } from './workspace-DYMiajiz.js';
+export { b as collectWebsiteBuilderFooterExtensionItems, d as collectWebsiteBuilderHeaderExtensionItems, c as createWebsiteBuilderAccountTabExtension, a as createWebsiteBuilderSiteFrameExtension, r as resolveWebsiteBuilderAccountTabs, e as resolveWebsiteBuilderSiteFrameExtensions } from './site-frame-extensions-CljWsZYY.js';
+export { g as getWebsiteBuilderSurfaceModeStyle } from './surface-layout-p8WBJh3f.js';
+export { WEBSITE_BUILDER_DEFAULT_SITE_DESIGN_PRESET_ID, WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY, composeWebsiteBuilderSurfaceDocument, decomposeWebsiteBuilderSurfaceDocument, getFirstWebsiteBuilderSurfaceEditableBlockId, getWebsiteBuilderSiteColorScheme, getWebsiteBuilderSiteDesignPreset, getWebsiteBuilderSurfaceRegionBlocks, getWebsiteBuilderSurfaceRegionListId, resolveWebsiteBuilderSurfaceRegionDescriptors, resolveWebsiteBuilderSurfaceRegionForBlockId, resolveWebsiteBuilderSurfaceRegionForListId, websiteBuilderSiteColorSchemes, websiteBuilderSiteDesignPresets } from './server.js';
+export { W as WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM, a as WEBSITE_BUILDER_SEARCH_QUERY_PARAM, b as WEBSITE_BUILDER_SEARCH_TARGET_PARAM } from './constants-DenT-L3W.js';
 export { WebsiteBuilderAccessAuthStateLike, WebsiteBuilderModeLike, WebsiteBuilderWorkspaceSelectionLike, normalizeWebsiteBuilderSelectionForMode, resolveWebsiteBuilderAccess, resolveWebsiteBuilderMode, resolveWebsiteBuilderRequestHeaders, resolveWebsiteBuilderWorkspaceParams } from './sdk.js';
-export { I as InsertTarget, a as InspectorDefinitionMeta, b as InspectorGroups, P as PageSettingsPanelDefinition, c as PaletteDefinition, d as PaletteFamilyGroup, S as SiteSettingsPanelDefinition, e as SiteSettingsSubtabDefinition, W as WebsiteBuilderStudio, f as WebsiteBuilderStudioProps, g as WebsiteBuilderStudioSavePayload, h as WebsiteBuilderStudioSaveReason, i as WebsiteBuilderStudioSiteSettingChangeContext } from './website-builder-studio-CPBYwjlq.js';
+export { I as InsertTarget, a as InspectorDefinitionMeta, b as InspectorGroups, P as PageSettingsPanelDefinition, c as PaletteDefinition, d as PaletteFamilyGroup, S as SiteSettingsPanelDefinition, e as SiteSettingsSubtabDefinition, W as WebsiteBuilderStudio, f as WebsiteBuilderStudioProps, g as WebsiteBuilderStudioSavePayload, h as WebsiteBuilderStudioSaveReason, i as WebsiteBuilderStudioSiteSettingChangeContext } from './website-builder-studio-DMX6zQCo.js';
+import 'zustand/vanilla';
+
+type WebsiteBuilderEditableEditorLoaderKey = "gallery" | "image" | "richText" | "text" | "textarea";
+type WebsiteBuilderEditableEditorLoaders = Partial<Record<WebsiteBuilderEditableEditorLoaderKey, () => Promise<ComponentType<any>>>>;
+declare global {
+    var __websiteBuilderEditableEditorLoaders: WebsiteBuilderEditableEditorLoaders | undefined;
+}
+
+declare global {
+    var __websiteBuilderEditableEditorLoaders: WebsiteBuilderEditableEditorLoaders | undefined;
+}
 
 type WebsiteBuilderBlockRendererProps = {
     block: WebsiteBuilderBlock;
@@ -171,143 +185,6 @@ type WebsiteBuilderFieldEditorListProps = {
 };
 declare const WebsiteBuilderFieldEditorList: ({ fields, subjectId, getValue, onChange, onFocus, }: WebsiteBuilderFieldEditorListProps) => react_jsx_runtime.JSX.Element;
 
-type InsertBlockInput = {
-    module: string;
-    type: string;
-    listId?: string;
-    index?: number;
-};
-type WebsiteBuilderStoreState = {
-    document: WebsiteBuilderDocument;
-    resources: WebsiteBuilderResources;
-    pageSettings: WebsiteBuilderPageSettings;
-    site: WebsiteBuilderSite;
-    workspace: WebsiteBuilderWorkspaceDescriptor;
-    capabilities: WebsiteBuilderWorkspaceCapabilities;
-    initialDocument: WebsiteBuilderDocument;
-    initialResources: WebsiteBuilderResources;
-    initialPageSettings: WebsiteBuilderPageSettings;
-    initialSite: WebsiteBuilderSite;
-    initialWorkspace: WebsiteBuilderWorkspaceDescriptor;
-    initialCapabilities: WebsiteBuilderWorkspaceCapabilities;
-    registry: WebsiteBuilderRegistry;
-    mode: WebsiteBuilderMode;
-    isAdmin: boolean;
-    selectedBlockId: string | null;
-    selectedField: WebsiteBuilderSelectedField;
-    uploadMedia?: WebsiteBuilderMediaUploadHandler;
-    searchSite?: WebsiteBuilderSearchHandler;
-    requestAuth?: () => void;
-    linkComponent: WebsiteBuilderLinkComponent;
-    siteFrameExtensions: WebsiteBuilderSiteFrameExtension[];
-    accountTabs: WebsiteBuilderAccountTabExtension[];
-    contentLocale: string;
-    defaultLocale: string;
-    contentRevision: number;
-    collapsedBlockIds: Record<string, true>;
-    setMode: (nextMode: WebsiteBuilderMode) => void;
-    selectBlock: (blockId: string | null) => void;
-    selectField: (blockId: string, path: string) => void;
-    clearSelectedField: () => void;
-    selectPageSettingField: (path: string) => void;
-    selectSiteSettingField: (path: string) => void;
-    updateFieldValue: (blockId: string, path: string, value: unknown) => void;
-    getFieldValue: (blockId: string, path: string) => unknown;
-    updatePageSettingValue: (path: string, value: unknown) => void;
-    getPageSettingValue: (path: string) => unknown;
-    updateSiteSettingValue: (path: string, value: unknown) => void;
-    getSiteSettingValue: (path: string) => unknown;
-    getFieldBinding: (blockId: string, path: string) => WebsiteBuilderFieldBinding | null;
-    insertBlock: (input: InsertBlockInput) => void;
-    duplicateBlock: (blockId: string) => void;
-    removeBlock: (blockId: string) => void;
-    moveBlock: (activeBlockId: string, targetListId: string, targetIndex: number) => void;
-    replaceState: (nextDocument: WebsiteBuilderDocument, nextResources?: WebsiteBuilderResources, nextPageSettings?: WebsiteBuilderPageSettings, nextSite?: WebsiteBuilderSite, options?: {
-        workspace?: WebsiteBuilderWorkspaceDescriptor;
-        capabilities?: Partial<WebsiteBuilderWorkspaceCapabilities>;
-    }) => void;
-    syncExternalState: (input: {
-        initialDocument: WebsiteBuilderDocument;
-        initialResources?: WebsiteBuilderResources;
-        initialPageSettings?: WebsiteBuilderPageSettings;
-        initialSite?: WebsiteBuilderSite;
-        workspace?: WebsiteBuilderWorkspaceDescriptor;
-        capabilities?: Partial<WebsiteBuilderWorkspaceCapabilities>;
-    }) => void;
-    resetDocument: () => void;
-    toggleBlockCollapse: (blockId: string) => void;
-    collapseAllBlocks: () => void;
-    expandAllBlocks: () => void;
-};
-type WebsiteBuilderStore = StoreApi<WebsiteBuilderStoreState>;
-type WebsiteBuilderStoreInit = {
-    initialDocument: WebsiteBuilderDocument;
-    initialResources?: WebsiteBuilderResources;
-    initialPageSettings?: WebsiteBuilderPageSettings;
-    initialSite?: WebsiteBuilderSite;
-    registry: WebsiteBuilderRegistry;
-    workspace?: WebsiteBuilderWorkspaceDescriptor;
-    capabilities?: Partial<WebsiteBuilderWorkspaceCapabilities>;
-    initialMode?: WebsiteBuilderMode;
-    isAdmin?: boolean;
-    uploadMedia?: WebsiteBuilderMediaUploadHandler;
-    searchSite?: WebsiteBuilderSearchHandler;
-    requestAuth?: () => void;
-    linkComponent: WebsiteBuilderLinkComponent;
-    siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
-    accountTabs?: WebsiteBuilderAccountTabExtension[];
-    i18n?: {
-        contentLocale?: string;
-        defaultLocale?: string;
-    };
-};
-
-type WebsiteBuilderProviderProps = {
-    children: ReactNode;
-    initialDocument: WebsiteBuilderStoreInit["initialDocument"];
-    initialResources?: WebsiteBuilderResources;
-    initialPageSettings?: WebsiteBuilderPageSettings;
-    initialSite?: WebsiteBuilderSite;
-    registry: WebsiteBuilderRegistry;
-    workspace?: WebsiteBuilderWorkspaceDescriptor;
-    capabilities?: Partial<WebsiteBuilderWorkspaceCapabilities>;
-    initialMode?: WebsiteBuilderMode;
-    isAdmin?: boolean;
-    i18n?: WebsiteBuilderI18nValue | null;
-    uploadMedia?: WebsiteBuilderMediaUploadHandler;
-    searchSite?: WebsiteBuilderSearchHandler;
-    requestAuth?: () => void;
-    linkComponent?: WebsiteBuilderLinkComponent;
-    siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
-    accountTabs?: WebsiteBuilderAccountTabExtension[];
-};
-declare const WebsiteBuilderProvider: ({ children, initialDocument, initialResources, initialPageSettings, initialSite, registry, workspace, capabilities, initialMode, isAdmin, i18n, uploadMedia, searchSite, requestAuth, linkComponent, siteFrameExtensions, accountTabs, }: WebsiteBuilderProviderProps) => react_jsx_runtime.JSX.Element;
-declare const useWebsiteBuilderStoreApi: () => WebsiteBuilderStore;
-declare const useWebsiteBuilderStore: <T>(selector: (state: WebsiteBuilderStoreState) => T) => T;
-declare const useWebsiteBuilder: () => WebsiteBuilderStoreState;
-declare const useWebsiteBuilderFieldValue: (blockId: string, path: string) => unknown;
-declare const useWebsiteBuilderCanEdit: () => boolean;
-declare const useWebsiteBuilderPersistedState: () => {
-    document: WebsiteBuilderDocument;
-    resources: WebsiteBuilderResources;
-    pageSettings: WebsiteBuilderPageSettings;
-    site: WebsiteBuilderSite;
-};
-type WebsiteBuilderLinkProps = WebsiteBuilderLinkComponentProps & {
-    navigateInPreviewOnly?: boolean;
-};
-declare const WebsiteBuilderLink: ({ navigateInPreviewOnly, onClick, ...props }: WebsiteBuilderLinkProps) => react_jsx_runtime.JSX.Element;
-
-declare const WebsiteBuilderRenderDepthProvider: react.Provider<number>;
-declare const useWebsiteBuilderRenderDepth: () => number;
-
-declare const WebsiteBuilderI18nProvider: ({ children, value, }: {
-    children: ReactNode;
-    value?: Partial<WebsiteBuilderI18nValue> | null;
-}) => react_jsx_runtime.JSX.Element;
-declare const useWebsiteBuilderI18n: () => WebsiteBuilderI18nValue;
-declare const resolveWebsiteBuilderText: (value: string, translate: WebsiteBuilderI18nValue["translate"], fallback?: string) => string;
-
 declare const createWebsiteBuilderTiptapJsonBindingAdapter: (key: string) => WebsiteBuilderBindingAdapter;
 
 declare const isWebsiteBuilderMediaValue: (value: unknown) => value is WebsiteBuilderMediaValue;
@@ -335,11 +212,4 @@ type WebsiteBuilderSearchHighlightEffectProps = {
 };
 declare const WebsiteBuilderSearchHighlightEffect: ({ activeHighlight, }: WebsiteBuilderSearchHighlightEffectProps) => null;
 
-type WebsiteBuilderSiteSearchProps = {
-    blockId: string;
-    placeholderPath: string;
-    className?: string;
-};
-declare const WebsiteBuilderSiteSearch: ({ blockId, placeholderPath, className, }: WebsiteBuilderSiteSearchProps) => react_jsx_runtime.JSX.Element;
-
-export { EditableGallery, EditableImage, EditableRepeaterValue, EditableRichText, EditableText, EditableTextarea, type KeyboardMenuController, KeyboardMenuList, type KeyboardMenuSection, WebsiteBuilderAccountTabExtension, WebsiteBuilderArea, WebsiteBuilderBindingAdapter, WebsiteBuilderBlock, WebsiteBuilderBlockRenderer, WebsiteBuilderDocument, WebsiteBuilderField, WebsiteBuilderFieldBinding, WebsiteBuilderFieldEditorList, WebsiteBuilderI18nProvider, WebsiteBuilderI18nValue, WebsiteBuilderInstallableKit, WebsiteBuilderLink, WebsiteBuilderLinkComponent, WebsiteBuilderLinkComponentProps, WebsiteBuilderMediaUploadHandler, WebsiteBuilderMediaValue, WebsiteBuilderMode, WebsiteBuilderModule, WebsiteBuilderPageSettings, WebsiteBuilderProvider, WebsiteBuilderRegistry, WebsiteBuilderRenderDepthProvider, WebsiteBuilderResources, WebsiteBuilderRichTextEditor, WebsiteBuilderSearchHandler, WebsiteBuilderSearchHighlight, WebsiteBuilderSearchHighlightEffect, WebsiteBuilderSearchResult, WebsiteBuilderSelectedField, WebsiteBuilderSite, WebsiteBuilderSiteFrameExtension, WebsiteBuilderSiteSearch, WebsiteBuilderSurfaceMode, WebsiteBuilderSurfaceSection, WebsiteBuilderWorkspaceCapabilities, WebsiteBuilderWorkspaceDescriptor, buildWebsiteBuilderSearchResultHref, buildWebsiteBuilderSearchTargetId, createWebsiteBuilderTiptapJsonBindingAdapter, isWebsiteBuilderMediaValue, renderWebsiteBuilderRichTextHtml, resolveWebsiteBuilderMediaPreviewUrl, resolveWebsiteBuilderMediaUrl, resolveWebsiteBuilderText, updateWebsiteBuilderMediaUrl, useKeyboardMenuController, useWebsiteBuilder, useWebsiteBuilderCanEdit, useWebsiteBuilderFieldValue, useWebsiteBuilderI18n, useWebsiteBuilderPersistedState, useWebsiteBuilderRenderDepth, useWebsiteBuilderStore, useWebsiteBuilderStoreApi, useWebsiteBuilderValueAtPath, websiteBuilderRichTextContentClassName, websiteBuilderSystemKit, websiteBuilderSystemModule };
+export { EditableGallery, EditableImage, EditableRepeaterValue, EditableRichText, EditableText, EditableTextarea, type KeyboardMenuController, KeyboardMenuList, type KeyboardMenuSection, WebsiteBuilderArea, WebsiteBuilderBindingAdapter, WebsiteBuilderBlock, WebsiteBuilderBlockRenderer, WebsiteBuilderField, WebsiteBuilderFieldEditorList, WebsiteBuilderInstallableKit, WebsiteBuilderMediaValue, WebsiteBuilderMode, WebsiteBuilderModule, WebsiteBuilderRichTextEditor, WebsiteBuilderSearchHighlight, WebsiteBuilderSearchHighlightEffect, WebsiteBuilderSearchResult, WebsiteBuilderSurfaceMode, WebsiteBuilderSurfaceSection, buildWebsiteBuilderSearchResultHref, buildWebsiteBuilderSearchTargetId, createWebsiteBuilderTiptapJsonBindingAdapter, isWebsiteBuilderMediaValue, renderWebsiteBuilderRichTextHtml, resolveWebsiteBuilderMediaPreviewUrl, resolveWebsiteBuilderMediaUrl, updateWebsiteBuilderMediaUrl, useKeyboardMenuController, useWebsiteBuilderValueAtPath, websiteBuilderRichTextContentClassName, websiteBuilderSystemKit, websiteBuilderSystemModule };

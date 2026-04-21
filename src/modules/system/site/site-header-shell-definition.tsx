@@ -3,7 +3,8 @@
 import clsx from "clsx";
 import { ArrowRight, CircleUserRound, LogIn, ShoppingCart } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { EditableImage, EditableText } from "../../../components/editable";
+import { EditableImage } from "../../../components/public/public-editable-image";
+import { EditableText } from "../../../components/public/public-editable-text";
 import {
 	useWebsiteBuilderStore,
 	WebsiteBuilderLink,
@@ -18,8 +19,8 @@ import {
 	resolveWebsiteBuilderSiteFrameExtensions,
 } from "../../../helpers/site-frame-extensions";
 import {
-	isWebsiteBuilderFramelessSiteDesign,
-} from "../../../helpers/site-design";
+	isWebsiteBuilderPublicFramelessSiteDesign,
+} from "../../../helpers/public-site-design";
 import { WebsiteBuilderSiteSearch } from "../../../search/website-builder-site-search";
 import type {
 	WebsiteBuilderBlockComponentProps,
@@ -37,6 +38,7 @@ import {
 	getHeaderCartLink,
 	getHeaderCartQuantity,
 	getHeaderLinkDedupeKey,
+	getHeaderLinkPathname,
 	hasAuthenticatedUser,
 	hasCommerceBlock,
 	hasCommerceRuntimeResource,
@@ -277,7 +279,7 @@ const SiteHeaderShell = ({
 	const variant = block.props.variant ?? "commerce-inline";
 	const liveSurfaceMode = mode !== "builder";
 	const compact = liveSurfaceMode && block.props.compactOnScroll && isCompact;
-	const framelessSite = isWebsiteBuilderFramelessSiteDesign(siteDesign);
+	const framelessSite = isWebsiteBuilderPublicFramelessSiteDesign(siteDesign);
 	const isShowcaseCard = variant === "showcase-card" && !framelessSite;
 	const localeSwitcherVisible =
 		block.props.showLocaleSwitcher !== false && publicLocales.length > 1;

@@ -205,6 +205,16 @@ var findWebsiteBuilderBlock = (blocks, blockId) => {
   }
   return null;
 };
+var collectBlockIds = (blocks) => {
+  const ids = [];
+  for (const block of blocks) {
+    ids.push(block.id);
+    for (const area of block.areas ?? []) {
+      ids.push(...collectBlockIds(area.blocks));
+    }
+  }
+  return ids;
+};
 var updateBlocks = (blocks, blockId, updater) => {
   let updated = false;
   const nextBlocks = blocks.map((block) => {
@@ -452,6 +462,7 @@ export {
   cloneWebsiteBuilderBlockTreeWithNewIds,
   getFirstWebsiteBuilderBlockId,
   findWebsiteBuilderBlock,
+  collectBlockIds,
   updateWebsiteBuilderBlockInDocument,
   insertWebsiteBuilderBlockInDocument,
   removeWebsiteBuilderBlockFromDocument,

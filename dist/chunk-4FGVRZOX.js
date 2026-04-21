@@ -2,7 +2,7 @@ import {
   cloneWebsiteBuilderValue,
   createWebsiteBuilderAreaListId,
   createWebsiteBuilderNodeId
-} from "./chunk-IEZXES2I.js";
+} from "./chunk-NYLOTAVT.js";
 
 // src/helpers/site.ts
 var WEBSITE_BUILDER_SURFACE_REGION_AREA_ID = "content";

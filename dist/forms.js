@@ -1,10 +1,12 @@
 import {
-  EditableRepeaterValue
-} from "./chunk-GVJ4Q7EE.js";
-import "./chunk-QQ25VPZM.js";
-import "./chunk-GBIC56HN.js";
+  EditableText
+} from "./chunk-LEXLLWPP.js";
+import "./chunk-JWEWJA2O.js";
 import "./chunk-HFEMF2E3.js";
-import "./chunk-IEZXES2I.js";
+import "./chunk-OWDRVIFG.js";
+import "./chunk-4FGVRZOX.js";
+import "./chunk-M743RWMM.js";
+import "./chunk-NYLOTAVT.js";
 
 // src/forms/helpers.ts
 var fieldTypeOptions = [
@@ -216,11 +218,11 @@ var renderFieldLabel = (field, blockId, fieldsPath, className) => {
     return /* @__PURE__ */ jsx("span", { className, children: field.label });
   }
   return /* @__PURE__ */ jsx(
-    EditableRepeaterValue,
+    EditableText,
     {
       blockId,
       path: labelPath,
-      fallback: field.label,
+      placeholder: field.label,
       className
     }
   );
@@ -234,11 +236,11 @@ var renderFieldHelpText = (field, blockId, fieldsPath, className) => {
     return /* @__PURE__ */ jsx("span", { className, children: field.helpText });
   }
   return /* @__PURE__ */ jsx(
-    EditableRepeaterValue,
+    EditableText,
     {
       blockId,
       path: helpPath,
-      fallback: field.helpText,
+      placeholder: field.helpText,
       className
     }
   );

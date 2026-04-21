@@ -1,5 +1,5 @@
-export { c as collectWebsiteBuilderFooterExtensionItems, a as collectWebsiteBuilderHeaderExtensionItems, b as createWebsiteBuilderAccountTabExtension, d as createWebsiteBuilderSiteFrameExtension, r as resolveWebsiteBuilderAccountTabs, e as resolveWebsiteBuilderSiteFrameExtensions } from './site-frame-extensions-UY5JyB2Z.js';
-import './types-B_tR-sKT.js';
+export { b as collectWebsiteBuilderFooterExtensionItems, d as collectWebsiteBuilderHeaderExtensionItems, c as createWebsiteBuilderAccountTabExtension, a as createWebsiteBuilderSiteFrameExtension, r as resolveWebsiteBuilderAccountTabs, e as resolveWebsiteBuilderSiteFrameExtensions } from './site-frame-extensions-CljWsZYY.js';
+import './types-CuFDrLWO.js';
 import 'react';
 
 type WebsiteBuilderAccessAuthStateLike = {

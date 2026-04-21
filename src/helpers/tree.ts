@@ -67,6 +67,20 @@ export const findWebsiteBuilderBlock = (
   return null;
 };
 
+export const collectBlockIds = (blocks: WebsiteBuilderBlock[]): string[] => {
+  const ids: string[] = [];
+
+  for (const block of blocks) {
+    ids.push(block.id);
+
+    for (const area of block.areas ?? []) {
+      ids.push(...collectBlockIds(area.blocks));
+    }
+  }
+
+  return ids;
+};
+
 type UpdateResult = {
   blocks: WebsiteBuilderBlock[];
   updated: boolean;

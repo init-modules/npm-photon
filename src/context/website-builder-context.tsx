@@ -44,6 +44,10 @@ import {
 	type WebsiteBuilderStoreState,
 } from "./website-builder-store";
 import { getWebsiteBuilderExternalStateFingerprint } from "./external-state";
+import {
+	getWebsiteBuilderAnchorRel,
+	sanitizeWebsiteBuilderLinkHref,
+} from "../helpers/link-url";
 
 const WebsiteBuilderContext = createContext<WebsiteBuilderStore | null>(null);
 
@@ -76,8 +80,9 @@ const DefaultWebsiteBuilderLinkComponent: WebsiteBuilderLinkComponent = ({
 	createElement(
 		"a",
 		{
-			href,
 			...props,
+			href: sanitizeWebsiteBuilderLinkHref(href),
+			rel: getWebsiteBuilderAnchorRel(props.target, props.rel),
 		},
 		children,
 	);

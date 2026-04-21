@@ -19,6 +19,12 @@ import {
   WEBSITE_BUILDER_SEARCH_TARGET_PARAM
 } from "./chunk-HFEMF2E3.js";
 import {
+  decodeWebsiteBuilderHtmlEntities,
+  getWebsiteBuilderAnchorRel,
+  normalizeWebsiteBuilderUrlForProtocolCheck,
+  sanitizeWebsiteBuilderLinkHref
+} from "./chunk-M743RWMM.js";
+import {
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
   WEBSITE_BUILDER_ROOT_LIST_ID,
@@ -26,6 +32,7 @@ import {
   canSaveWebsiteBuilderWorkspace,
   cloneWebsiteBuilderBlockTreeWithNewIds,
   cloneWebsiteBuilderValue,
+  collectBlockIds,
   createWebsiteBuilderAreaListId,
   createWebsiteBuilderNodeId,
   duplicateWebsiteBuilderBlockInDocument,
@@ -41,7 +48,7 @@ import {
   normalizeWebsiteBuilderWorkspaceRef,
   removeWebsiteBuilderBlockFromDocument,
   updateWebsiteBuilderBlockInDocument
-} from "./chunk-IEZXES2I.js";
+} from "./chunk-NYLOTAVT.js";
 export {
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
@@ -57,12 +64,15 @@ export {
   canSaveWebsiteBuilderWorkspace,
   cloneWebsiteBuilderBlockTreeWithNewIds,
   cloneWebsiteBuilderValue,
+  collectBlockIds,
   createWebsiteBuilderAreaListId,
   createWebsiteBuilderNodeId,
   createWebsiteBuilderSiteDesignSettings,
+  decodeWebsiteBuilderHtmlEntities,
   duplicateWebsiteBuilderBlockInDocument,
   findWebsiteBuilderBlock,
   getFirstWebsiteBuilderBlockId,
+  getWebsiteBuilderAnchorRel,
   getWebsiteBuilderSurfaceModeStyle,
   getWebsiteBuilderWorkspaceIdentityKey,
   getWebsiteBuilderWorkspaceKey,
@@ -73,10 +83,12 @@ export {
   isWebsiteBuilderSiteDesignPresetApplied,
   isWebsiteBuilderWorkspaceReadonly,
   moveWebsiteBuilderBlockInDocument,
+  normalizeWebsiteBuilderUrlForProtocolCheck,
   normalizeWebsiteBuilderWorkspaceCapabilities,
   normalizeWebsiteBuilderWorkspaceDescriptor,
   normalizeWebsiteBuilderWorkspaceRef,
   removeWebsiteBuilderBlockFromDocument,
   resolveWebsiteBuilderSiteDesignSettings,
+  sanitizeWebsiteBuilderLinkHref,
   updateWebsiteBuilderBlockInDocument
 };

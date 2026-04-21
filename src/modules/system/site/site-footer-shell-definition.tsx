@@ -2,7 +2,9 @@
 
 import clsx from "clsx";
 import { ArrowRight, Send } from "lucide-react";
-import { EditableImage, EditableText, EditableTextarea } from "../../../components/editable";
+import { EditableImage } from "../../../components/public/public-editable-image";
+import { EditableText } from "../../../components/public/public-editable-text";
+import { EditableTextarea } from "../../../components/public/public-editable-textarea";
 import {
 	useWebsiteBuilderStore,
 	WebsiteBuilderLink,
@@ -15,7 +17,7 @@ import {
 	collectWebsiteBuilderFooterExtensionItems,
 	resolveWebsiteBuilderSiteFrameExtensions,
 } from "../../../helpers/site-frame-extensions";
-import { isWebsiteBuilderFramelessSiteDesign } from "../../../helpers/site-design";
+import { isWebsiteBuilderPublicFramelessSiteDesign } from "../../../helpers/public-site-design";
 import type {
 	WebsiteBuilderBlockComponentProps,
 	WebsiteBuilderField,
@@ -201,7 +203,7 @@ const SiteFooterShell = ({
 	const siteFrameExtensions = useWebsiteBuilderStore(
 		(state) => state.siteFrameExtensions,
 	);
-	const framelessSite = isWebsiteBuilderFramelessSiteDesign(siteDesign);
+	const framelessSite = isWebsiteBuilderPublicFramelessSiteDesign(siteDesign);
 	const footerVariant = framelessSite ? "minimal-air" : block.props.variant;
 	const variant =
 		footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"];

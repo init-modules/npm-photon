@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import type { ComponentProps, FormEvent, ReactNode } from "react";
-import { EditableRepeaterValue } from "../components/editable/editable-repeater-value";
+import { EditableText } from "../components/public/public-editable-text";
 import {
 	readWebsiteBuilderFormValues,
 	resolveWebsiteBuilderFormFields,
@@ -78,10 +78,10 @@ const renderFieldLabel = (
 	}
 
 	return (
-		<EditableRepeaterValue
+		<EditableText
 			blockId={blockId}
 			path={labelPath}
-			fallback={field.label}
+			placeholder={field.label}
 			className={className}
 		/>
 	);
@@ -107,10 +107,10 @@ const renderFieldHelpText = (
 	}
 
 	return (
-		<EditableRepeaterValue
+		<EditableText
 			blockId={blockId}
 			path={helpPath}
-			fallback={field.helpText}
+			placeholder={field.helpText}
 			className={className}
 		/>
 	);

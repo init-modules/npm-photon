@@ -2,7 +2,8 @@
 
 import clsx from "clsx";
 import type { CSSProperties, ReactNode } from "react";
-import { EditableText, EditableTextarea } from "../components/editable";
+import { EditableText } from "../components/editable/editable-text";
+import { EditableTextarea } from "../components/editable/editable-textarea";
 import { useWebsiteBuilderStore } from "../context/website-builder-context";
 import { getWebsiteBuilderSurfaceModeStyle } from "../helpers/surface-layout";
 import { isWebsiteBuilderFramelessSiteDesign } from "../helpers/site-design";
@@ -20,9 +21,9 @@ import type {
 } from "../types";
 export * from "./system/site/site-color-schemes";
 export * from "./system/site/site-design-presets";
-import { siteDesignSettingsPanel } from "./system/site/site-design-settings-panel";
 import { siteFooterShellDefinition } from "./system/site/site-footer-shell-definition";
 import { siteHeaderShellDefinition } from "./system/site/site-header-shell-definition";
+import { siteDesignSettingsPanel } from "./system/site/site-design-settings-panel";
 
 type SplitLayoutColumn = {
 	areaId: string;

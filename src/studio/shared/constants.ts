@@ -235,20 +235,6 @@ export const matchesTarget = (
 	index: number,
 ) => target?.listId === listId && target.index === index;
 
-export const collectBlockIds = (blocks: WebsiteBuilderBlock[]): string[] => {
-	const ids: string[] = [];
-
-	for (const block of blocks) {
-		ids.push(block.id);
-
-		for (const area of block.areas ?? []) {
-			ids.push(...collectBlockIds(area.blocks));
-		}
-	}
-
-	return ids;
-};
-
 export const inputClassName = clsx(
 	"w-full rounded-[20px] border px-4 py-3",
 	"text-sm outline-none transition placeholder:text-[color:var(--wb-builder-text-ghost)]",

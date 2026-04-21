@@ -306,10 +306,22 @@ export type WebsiteBuilderSiteFrameExtension = {
 	};
 };
 
+export type WebsiteBuilderAccountTabMatch =
+	| {
+			type: "exact";
+			href: string;
+	  }
+	| {
+			type: "prefix";
+			href: string;
+	  };
+
 export type WebsiteBuilderAccountTabExtension = {
 	id: string;
 	label: string;
 	href?: string;
+	icon?: string;
+	match?: WebsiteBuilderAccountTabMatch;
 	order?: number;
 	enabled?: boolean;
 };

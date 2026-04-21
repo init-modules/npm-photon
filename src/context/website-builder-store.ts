@@ -26,8 +26,8 @@ import {
 	moveWebsiteBuilderBlockInDocument,
 	removeWebsiteBuilderBlockFromDocument,
 	updateWebsiteBuilderBlockInDocument,
+	collectBlockIds,
 } from "../helpers/tree";
-import { collectBlockIds } from "../studio/shared/constants";
 import type {
 	WebsiteBuilderBlock,
 	WebsiteBuilderAccountTabExtension,

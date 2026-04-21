@@ -1,32 +1,6 @@
 import {
   createWebsiteBuilderRuntime
-} from "./chunk-3KPICIZ6.js";
-import {
-  WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
-  collectWebsiteBuilderAccountTabs,
-  collectWebsiteBuilderDocuments,
-  collectWebsiteBuilderSiteFrameExtensions,
-  composeWebsiteBuilderSurfaceDocument,
-  createWebsiteBuilderBlock,
-  createWebsiteBuilderBlockLocalizationSchema,
-  createWebsiteBuilderKit,
-  createWebsiteBuilderLocalizationManifest,
-  createWebsiteBuilderLocalizedDefault,
-  createWebsiteBuilderRegistry,
-  decomposeWebsiteBuilderSurfaceDocument,
-  defineWebsiteBuilderBlockDefinition,
-  getFirstWebsiteBuilderSurfaceEditableBlockId,
-  getWebsiteBuilderDefinitionKey,
-  getWebsiteBuilderDocumentFingerprint,
-  getWebsiteBuilderSurfaceRegionBlocks,
-  getWebsiteBuilderSurfaceRegionListId,
-  isWebsiteBuilderInstallableKit,
-  moveWebsiteBuilderArrayItem,
-  resolveWebsiteBuilderModules,
-  resolveWebsiteBuilderSurfaceRegionDescriptors,
-  resolveWebsiteBuilderSurfaceRegionForBlockId,
-  resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-GBIC56HN.js";
+} from "./chunk-73LA5FDK.js";
 import {
   collectWebsiteBuilderFooterExtensionItems,
   collectWebsiteBuilderHeaderExtensionItems,
@@ -58,6 +32,32 @@ import {
   WEBSITE_BUILDER_SEARCH_TARGET_PARAM
 } from "./chunk-HFEMF2E3.js";
 import {
+  WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
+  collectWebsiteBuilderAccountTabs,
+  collectWebsiteBuilderDocuments,
+  collectWebsiteBuilderSiteFrameExtensions,
+  composeWebsiteBuilderSurfaceDocument,
+  createWebsiteBuilderBlock,
+  createWebsiteBuilderBlockLocalizationSchema,
+  createWebsiteBuilderKit,
+  createWebsiteBuilderLocalizationManifest,
+  createWebsiteBuilderLocalizedDefault,
+  createWebsiteBuilderRegistry,
+  decomposeWebsiteBuilderSurfaceDocument,
+  defineWebsiteBuilderBlockDefinition,
+  getFirstWebsiteBuilderSurfaceEditableBlockId,
+  getWebsiteBuilderDefinitionKey,
+  getWebsiteBuilderDocumentFingerprint,
+  getWebsiteBuilderSurfaceRegionBlocks,
+  getWebsiteBuilderSurfaceRegionListId,
+  isWebsiteBuilderInstallableKit,
+  moveWebsiteBuilderArrayItem,
+  resolveWebsiteBuilderModules,
+  resolveWebsiteBuilderSurfaceRegionDescriptors,
+  resolveWebsiteBuilderSurfaceRegionForBlockId,
+  resolveWebsiteBuilderSurfaceRegionForListId
+} from "./chunk-4FGVRZOX.js";
+import {
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
   WEBSITE_BUILDER_EMPTY_TEXT,
@@ -66,6 +66,7 @@ import {
   canSaveWebsiteBuilderWorkspace,
   cloneWebsiteBuilderBlockTreeWithNewIds,
   cloneWebsiteBuilderValue,
+  collectBlockIds,
   createWebsiteBuilderAreaListId,
   createWebsiteBuilderNodeId,
   duplicateWebsiteBuilderBlockInDocument,
@@ -83,7 +84,7 @@ import {
   removeWebsiteBuilderBlockFromDocument,
   setValueAtPath,
   updateWebsiteBuilderBlockInDocument
-} from "./chunk-IEZXES2I.js";
+} from "./chunk-NYLOTAVT.js";
 export {
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
   DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
@@ -102,6 +103,7 @@ export {
   canSaveWebsiteBuilderWorkspace,
   cloneWebsiteBuilderBlockTreeWithNewIds,
   cloneWebsiteBuilderValue,
+  collectBlockIds,
   collectWebsiteBuilderAccountTabs,
   collectWebsiteBuilderDocuments,
   collectWebsiteBuilderFooterExtensionItems,
