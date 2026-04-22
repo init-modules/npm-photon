@@ -1,6 +1,6 @@
 "use client";
 
-export type WebsiteBuilderSiteLinkItem = {
+export type PhotonSiteLinkItem = {
 	id?: string;
 	label: string;
 	href: string;
@@ -8,17 +8,17 @@ export type WebsiteBuilderSiteLinkItem = {
 	rel?: string;
 };
 
-export type WebsiteBuilderSiteNavigationColumn = {
+export type PhotonSiteNavigationColumn = {
 	title: string;
-	links: WebsiteBuilderSiteLinkItem[];
+	links: PhotonSiteLinkItem[];
 };
 
 const normalizeString = (value: unknown) =>
 	typeof value === "string" ? value : "";
 
-export const normalizeWebsiteBuilderSiteLinkItems = (
+export const normalizePhotonSiteLinkItems = (
 	value: unknown,
-): WebsiteBuilderSiteLinkItem[] =>
+): PhotonSiteLinkItem[] =>
 	Array.isArray(value)
 		? value.flatMap((candidate) =>
 				typeof candidate === "object" &&
@@ -47,9 +47,9 @@ export const normalizeWebsiteBuilderSiteLinkItems = (
 			)
 		: [];
 
-export const normalizeWebsiteBuilderSiteNavigationColumns = (
+export const normalizePhotonSiteNavigationColumns = (
 	value: unknown,
-): WebsiteBuilderSiteNavigationColumn[] =>
+): PhotonSiteNavigationColumn[] =>
 	Array.isArray(value)
 		? value.flatMap((candidate) =>
 				typeof candidate === "object" &&
@@ -58,7 +58,7 @@ export const normalizeWebsiteBuilderSiteNavigationColumns = (
 					? [
 							{
 								title: normalizeString((candidate as { title: unknown }).title),
-								links: normalizeWebsiteBuilderSiteLinkItems(
+								links: normalizePhotonSiteLinkItems(
 									(candidate as { links?: unknown }).links ?? [],
 								),
 							},
@@ -67,7 +67,7 @@ export const normalizeWebsiteBuilderSiteNavigationColumns = (
 			)
 		: [];
 
-export const normalizeWebsiteBuilderSiteStringItems = (
+export const normalizePhotonSiteStringItems = (
 	value: unknown,
 ): string[] =>
 	Array.isArray(value)

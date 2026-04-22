@@ -1,19 +1,19 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useWebsiteBuilderStore } from "../context/website-builder-context";
-import type { WebsiteBuilderArea, WebsiteBuilderBlock } from "../types";
+import { usePhotonStore } from "../context/photon-context";
+import type { PhotonArea, PhotonBlock } from "../types";
 
-type WebsiteBuilderBlockRendererProps = {
-	block: WebsiteBuilderBlock;
-	renderArea?: (area: WebsiteBuilderArea, index: number) => ReactNode;
+type PhotonBlockRendererProps = {
+	block: PhotonBlock;
+	renderArea?: (area: PhotonArea, index: number) => ReactNode;
 };
 
-export const WebsiteBuilderBlockRenderer = ({
+export const PhotonBlockRenderer = ({
 	block,
 	renderArea,
-}: WebsiteBuilderBlockRendererProps) => {
-	const registry = useWebsiteBuilderStore((state) => state.registry);
+}: PhotonBlockRendererProps) => {
+	const registry = usePhotonStore((state) => state.registry);
 	const definition = registry.getDefinition(block.module, block.type);
 
 	if (!definition) {

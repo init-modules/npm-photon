@@ -13,8 +13,8 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
-import { useWebsiteBuilderI18n } from "../../i18n/website-builder-i18n-context";
-import { translateWebsiteBuilderPaletteCategory } from "../../i18n/website-builder-labels";
+import { usePhotonI18n } from "../../i18n/photon-i18n-context";
+import { translatePhotonPaletteCategory } from "../../i18n/photon-labels";
 import type {
 	InsertTarget,
 	PaletteDefinition,
@@ -61,7 +61,7 @@ const PalettePanelComponent = ({
 	manualInsertTarget: _manualInsertTarget,
 	onCollapse,
 }: PalettePanelProps) => {
-	const { translate } = useWebsiteBuilderI18n();
+	const { translate } = usePhotonI18n();
 	const normalizedSearch = search.trim().toLowerCase();
 	const matchesSearch = (definition: PaletteDefinition) =>
 		!normalizedSearch ||
@@ -120,14 +120,14 @@ const PalettePanelComponent = ({
 		<div className="flex h-full flex-col">
 			<div
 				className="border-b px-5 py-5"
-				style={{ borderColor: "var(--wb-builder-border)" }}
+				style={{ borderColor: "var(--photon-builder-border)" }}
 			>
 				<div className="flex items-center justify-between gap-3">
 					<div
 						className="text-[11px] uppercase tracking-[0.28em]"
-						style={{ color: "var(--wb-builder-text-soft)" }}
+						style={{ color: "var(--photon-builder-text-soft)" }}
 					>
-						{translate("websiteBuilder.palette.title", "Palette")}
+						{translate("photon.palette.title", "Palette")}
 					</div>
 					{onCollapse ? (
 						<button
@@ -135,9 +135,9 @@ const PalettePanelComponent = ({
 							onClick={onCollapse}
 							className="cursor-pointer rounded-full border p-2 transition"
 							style={{
-								borderColor: "var(--wb-builder-border)",
-								background: "var(--wb-builder-panel-muted)",
-								color: "var(--wb-builder-text-soft)",
+								borderColor: "var(--photon-builder-border)",
+								background: "var(--photon-builder-panel-muted)",
+								color: "var(--photon-builder-text-soft)",
 							}}
 						>
 							<ChevronLeft className="h-4 w-4" />
@@ -147,20 +147,20 @@ const PalettePanelComponent = ({
 				<div className="relative mt-4">
 					<Search
 						className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2"
-						style={{ color: "var(--wb-builder-text-soft)" }}
+						style={{ color: "var(--photon-builder-text-soft)" }}
 					/>
 					<input
 						value={search}
 						onChange={(event) => onSearchChange(event.currentTarget.value)}
 						placeholder={translate(
-							"websiteBuilder.palette.searchPlaceholder",
+							"photon.palette.searchPlaceholder",
 							"Find blocks, categories, modules",
 						)}
 						className="w-full rounded-[22px] border py-3 pl-10 pr-4 text-sm outline-none transition"
 						style={{
-							borderColor: "var(--wb-builder-border)",
-							background: "var(--wb-builder-field)",
-							color: "var(--wb-builder-text)",
+							borderColor: "var(--photon-builder-border)",
+							background: "var(--photon-builder-field)",
+							color: "var(--photon-builder-text)",
 						}}
 					/>
 					<div className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -171,12 +171,12 @@ const PalettePanelComponent = ({
 									aria-label="Open palette filters"
 									className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border transition"
 									style={{
-										borderColor: "var(--wb-builder-border)",
+										borderColor: "var(--photon-builder-border)",
 										background:
 											paletteFamily !== "all" || palettePackage !== "all"
-												? "var(--wb-builder-card-selected)"
-												: "var(--wb-builder-panel-muted)",
-										color: "var(--wb-builder-text-soft)",
+												? "var(--photon-builder-card-selected)"
+												: "var(--photon-builder-panel-muted)",
+										color: "var(--photon-builder-text-soft)",
 									}}
 								>
 									<SlidersHorizontal className="h-4 w-4" />
@@ -189,7 +189,7 @@ const PalettePanelComponent = ({
 								<div className="space-y-2">
 									<div
 										className="text-[11px] font-semibold uppercase tracking-[0.24em]"
-										style={{ color: "var(--wb-builder-text-soft)" }}
+										style={{ color: "var(--photon-builder-text-soft)" }}
 									>
 										Family
 									</div>
@@ -201,13 +201,13 @@ const PalettePanelComponent = ({
 											style={{
 												borderColor:
 													paletteFamily === "all"
-														? "var(--wb-builder-border-strong)"
-														: "var(--wb-builder-border)",
+														? "var(--photon-builder-border-strong)"
+														: "var(--photon-builder-border)",
 												background:
 													paletteFamily === "all"
-														? "var(--wb-builder-card-selected)"
-														: "var(--wb-builder-field)",
-												color: "var(--wb-builder-text)",
+														? "var(--photon-builder-card-selected)"
+														: "var(--photon-builder-field)",
+												color: "var(--photon-builder-text)",
 											}}
 										>
 											All
@@ -226,15 +226,15 @@ const PalettePanelComponent = ({
 												style={{
 													borderColor:
 														paletteFamily === family.value
-															? "var(--wb-builder-border-strong)"
-															: "var(--wb-builder-border)",
+															? "var(--photon-builder-border-strong)"
+															: "var(--photon-builder-border)",
 													background:
 														paletteFamily === family.value
-															? "var(--wb-builder-card-selected)"
-															: "var(--wb-builder-field)",
+															? "var(--photon-builder-card-selected)"
+															: "var(--photon-builder-field)",
 													color: family.enabled
-														? "var(--wb-builder-text)"
-														: "var(--wb-builder-text-ghost)",
+														? "var(--photon-builder-text)"
+														: "var(--photon-builder-text-ghost)",
 													opacity: family.enabled ? 1 : 0.55,
 												}}
 											>
@@ -246,7 +246,7 @@ const PalettePanelComponent = ({
 								<div className="space-y-2">
 									<div
 										className="text-[11px] font-semibold uppercase tracking-[0.24em]"
-										style={{ color: "var(--wb-builder-text-soft)" }}
+										style={{ color: "var(--photon-builder-text-soft)" }}
 									>
 										Package
 									</div>
@@ -258,13 +258,13 @@ const PalettePanelComponent = ({
 											style={{
 												borderColor:
 													palettePackage === "all"
-														? "var(--wb-builder-border-strong)"
-														: "var(--wb-builder-border)",
+														? "var(--photon-builder-border-strong)"
+														: "var(--photon-builder-border)",
 												background:
 													palettePackage === "all"
-														? "var(--wb-builder-card-selected)"
-														: "var(--wb-builder-field)",
-												color: "var(--wb-builder-text-soft)",
+														? "var(--photon-builder-card-selected)"
+														: "var(--photon-builder-field)",
+												color: "var(--photon-builder-text-soft)",
 											}}
 										>
 											All
@@ -283,15 +283,15 @@ const PalettePanelComponent = ({
 												style={{
 													borderColor:
 														palettePackage === pkg.value
-															? "var(--wb-builder-border-strong)"
-															: "var(--wb-builder-border)",
+															? "var(--photon-builder-border-strong)"
+															: "var(--photon-builder-border)",
 													background:
 														palettePackage === pkg.value
-															? "var(--wb-builder-card-selected)"
-															: "var(--wb-builder-field)",
+															? "var(--photon-builder-card-selected)"
+															: "var(--photon-builder-field)",
 													color: pkg.enabled
-														? "var(--wb-builder-text-soft)"
-														: "var(--wb-builder-text-ghost)",
+														? "var(--photon-builder-text-soft)"
+														: "var(--photon-builder-text-ghost)",
 													opacity: pkg.enabled ? 1 : 0.55,
 												}}
 											>
@@ -315,30 +315,30 @@ const PalettePanelComponent = ({
 								onClick={() => onToggleFamily(familyGroup.family)}
 								className="sticky top-0 z-10 flex w-full cursor-pointer items-center justify-between gap-3 rounded-[20px] border px-3 py-2.5 text-left shadow-[0_14px_34px_-26px_rgba(15,23,42,0.45)] backdrop-blur-xl transition"
 								style={{
-									color: "var(--wb-builder-text)",
-									borderColor: "var(--wb-builder-border)",
-									background: "var(--wb-builder-panel-muted)",
+									color: "var(--photon-builder-text)",
+									borderColor: "var(--photon-builder-border)",
+									background: "var(--photon-builder-panel-muted)",
 								}}
 							>
 								<div className="flex items-center gap-3">
 									<div
 										className="rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.3em]"
 										style={{
-											color: "var(--wb-builder-text-soft)",
-											borderColor: "var(--wb-builder-border)",
-											background: "var(--wb-builder-card)",
+											color: "var(--photon-builder-text-soft)",
+											borderColor: "var(--photon-builder-border)",
+											background: "var(--photon-builder-card)",
 										}}
 									>
 										{familyGroup.family}
 									</div>
-									<span className="font-mono text-[11px] uppercase tracking-[0.24em] text-[color:var(--wb-builder-text-ghost)]">
+									<span className="font-mono text-[11px] uppercase tracking-[0.24em] text-[color:var(--photon-builder-text-ghost)]">
 										{familyGroup.groups.reduce(
 											(total, group) => total + group.definitions.length,
 											0,
 										)}
 									</span>
 								</div>
-								<div style={{ color: "var(--wb-builder-text-ghost)" }}>
+								<div style={{ color: "var(--photon-builder-text-ghost)" }}>
 									{collapsedFamilies.includes(familyGroup.family) ? (
 										<ChevronRight className="h-4 w-4" />
 									) : (
@@ -358,14 +358,14 @@ const PalettePanelComponent = ({
 													type="button"
 													onClick={() => onToggleGroup(key)}
 													className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-[18px] px-2 py-1.5 text-left transition"
-													style={{ color: "var(--wb-builder-text)" }}
+													style={{ color: "var(--photon-builder-text)" }}
 												>
 													<div className="flex items-center gap-3">
 														<div
 															className="text-[11px] uppercase tracking-[0.28em]"
-															style={{ color: "var(--wb-builder-text-soft)" }}
+															style={{ color: "var(--photon-builder-text-soft)" }}
 														>
-															{translateWebsiteBuilderPaletteCategory(
+															{translatePhotonPaletteCategory(
 																group,
 																translate,
 															)}
@@ -375,7 +375,7 @@ const PalettePanelComponent = ({
 														</span>
 													</div>
 													<div
-														style={{ color: "var(--wb-builder-text-ghost)" }}
+														style={{ color: "var(--photon-builder-text-ghost)" }}
 													>
 														{collapsed ? (
 															<ChevronRight className="h-4 w-4" />

@@ -1,4 +1,4 @@
 "use client";
 
-export * from "./context/website-builder-surface-layout-context";
-export * from "./studio/website-builder-studio";
+export * from "./context/photon-surface-layout-context";
+export * from "./studio/photon-studio";

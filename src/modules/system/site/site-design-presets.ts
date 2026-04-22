@@ -1,6 +1,6 @@
-import type { WebsiteBuilderSiteDesignPresetDefinition } from "../../../types";
+import type { PhotonSiteDesignPresetDefinition } from "../../../types";
 
-export const WEBSITE_BUILDER_DEFAULT_SITE_DESIGN_PRESET_ID = "aurora-current";
+export const PHOTON_DEFAULT_SITE_DESIGN_PRESET_ID = "aurora-current";
 
 const createMarketingDemoComponentVariants = (variant: string) => ({
 	"hero-spotlight": variant,
@@ -21,10 +21,10 @@ const createMarketingDemoComponentVariants = (variant: string) => ({
 	"marketing-demo/command-center-cta": variant,
 });
 
-export const websiteBuilderSiteDesignPresets: WebsiteBuilderSiteDesignPresetDefinition[] =
+export const photonSiteDesignPresets: PhotonSiteDesignPresetDefinition[] =
 	[
 		{
-			id: WEBSITE_BUILDER_DEFAULT_SITE_DESIGN_PRESET_ID,
+			id: PHOTON_DEFAULT_SITE_DESIGN_PRESET_ID,
 			label: "Aurora Current",
 			appearance: "dark",
 			description:
@@ -111,8 +111,8 @@ export const websiteBuilderSiteDesignPresets: WebsiteBuilderSiteDesignPresetDefi
 	];
 
 const siteDesignPresetMap = new Map(
-	websiteBuilderSiteDesignPresets.map((preset) => [preset.id, preset]),
+	photonSiteDesignPresets.map((preset) => [preset.id, preset]),
 );
 
-export const getWebsiteBuilderSiteDesignPreset = (id: string) =>
+export const getPhotonSiteDesignPreset = (id: string) =>
 	siteDesignPresetMap.get(id);

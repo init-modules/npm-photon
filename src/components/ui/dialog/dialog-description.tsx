@@ -18,7 +18,7 @@ export const DialogDescription = forwardRef<
 			data-slot="dialog-description"
 			className={cn("text-sm leading-6", className)}
 			style={{
-				color: "var(--wb-builder-text-muted, rgb(255 255 255 / 0.62))",
+				color: "var(--photon-builder-text-muted, rgb(255 255 255 / 0.62))",
 			}}
 			{...props}
 		/>

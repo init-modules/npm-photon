@@ -1,6 +1,6 @@
-import type { WebsiteBuilderSiteColorSchemeDefinition } from "../../../types";
+import type { PhotonSiteColorSchemeDefinition } from "../../../types";
 
-export const websiteBuilderSiteColorSchemes: WebsiteBuilderSiteColorSchemeDefinition[] =
+export const photonSiteColorSchemes: PhotonSiteColorSchemeDefinition[] =
 	[
 		{
 			id: "midnight-aqua",
@@ -95,8 +95,8 @@ export const websiteBuilderSiteColorSchemes: WebsiteBuilderSiteColorSchemeDefini
 	];
 
 const siteColorSchemeMap = new Map(
-	websiteBuilderSiteColorSchemes.map((scheme) => [scheme.id, scheme]),
+	photonSiteColorSchemes.map((scheme) => [scheme.id, scheme]),
 );
 
-export const getWebsiteBuilderSiteColorScheme = (id: string) =>
+export const getPhotonSiteColorScheme = (id: string) =>
 	siteColorSchemeMap.get(id);

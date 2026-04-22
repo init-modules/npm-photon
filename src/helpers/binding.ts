@@ -1,8 +1,8 @@
 import { generateHTML, generateJSON } from "@tiptap/html";
 import StarterKit from "@tiptap/starter-kit";
-import type { WebsiteBuilderBindingAdapter } from "../types";
+import type { PhotonBindingAdapter } from "../types";
 
-const websiteBuilderBindingExtensions = [StarterKit];
+const photonBindingExtensions = [StarterKit];
 
 const normalizeRichTextHtml = (value: string) => {
 	const trimmed = value.trim();
@@ -10,9 +10,9 @@ const normalizeRichTextHtml = (value: string) => {
 	return trimmed === "" ? "<p></p>" : trimmed;
 };
 
-export const createWebsiteBuilderTiptapJsonBindingAdapter = (
+export const createPhotonTiptapJsonBindingAdapter = (
 	key: string,
-): WebsiteBuilderBindingAdapter => ({
+): PhotonBindingAdapter => ({
 	key,
 	read: (value) => {
 		if (typeof value === "string") {
@@ -26,7 +26,7 @@ export const createWebsiteBuilderTiptapJsonBindingAdapter = (
 		try {
 			return generateHTML(
 				value as Record<string, unknown>,
-				websiteBuilderBindingExtensions,
+				photonBindingExtensions,
 			);
 		} catch {
 			return "";
@@ -40,7 +40,7 @@ export const createWebsiteBuilderTiptapJsonBindingAdapter = (
 		try {
 			const parsed = generateJSON(
 				normalizeRichTextHtml(value),
-				websiteBuilderBindingExtensions,
+				photonBindingExtensions,
 			);
 			const blocks = Array.isArray(parsed.content) ? parsed.content : [];
 

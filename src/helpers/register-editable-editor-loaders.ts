@@ -1,21 +1,21 @@
 import type { ComponentType } from "react";
 import type {
-	WebsiteBuilderEditableEditorLoaderKey,
-	WebsiteBuilderEditableEditorLoaders,
+	PhotonEditableEditorLoaderKey,
+	PhotonEditableEditorLoaders,
 } from "./editable-editor-loaders";
 
 declare global {
-	var __websiteBuilderEditableEditorLoaders:
-		| WebsiteBuilderEditableEditorLoaders
+	var __photonEditableEditorLoaders:
+		| PhotonEditableEditorLoaders
 		| undefined;
 }
 
 const registerLoader = (
-	key: WebsiteBuilderEditableEditorLoaderKey,
+	key: PhotonEditableEditorLoaderKey,
 	loader: () => Promise<ComponentType<any>>,
 ) => {
-	globalThis.__websiteBuilderEditableEditorLoaders = {
-		...globalThis.__websiteBuilderEditableEditorLoaders,
+	globalThis.__photonEditableEditorLoaders = {
+		...globalThis.__photonEditableEditorLoaders,
 		[key]: loader,
 	};
 };

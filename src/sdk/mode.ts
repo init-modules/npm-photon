@@ -1,6 +1,6 @@
-export type WebsiteBuilderModeLike = "preview" | "content" | "builder";
+export type PhotonModeLike = "preview" | "content" | "builder";
 
-export type WebsiteBuilderWorkspaceSelectionLike =
+export type PhotonWorkspaceSelectionLike =
 	| Partial<{
 			profileId: string;
 			branch: string;
@@ -9,11 +9,11 @@ export type WebsiteBuilderWorkspaceSelectionLike =
 	| null
 	| undefined;
 
-export const resolveWebsiteBuilderMode = (
+export const resolvePhotonMode = (
 	mode: string | string[] | null | undefined,
 	canManage: boolean,
-	fallback: WebsiteBuilderModeLike = "preview",
-): WebsiteBuilderModeLike => {
+	fallback: PhotonModeLike = "preview",
+): PhotonModeLike => {
 	const candidate = Array.isArray(mode) ? mode[0] : mode;
 
 	return canManage &&
@@ -24,10 +24,10 @@ export const resolveWebsiteBuilderMode = (
 		: fallback;
 };
 
-export const normalizeWebsiteBuilderSelectionForMode = (
-	selection: WebsiteBuilderWorkspaceSelectionLike,
-	mode: WebsiteBuilderModeLike,
-): WebsiteBuilderWorkspaceSelectionLike => {
+export const normalizePhotonSelectionForMode = (
+	selection: PhotonWorkspaceSelectionLike,
+	mode: PhotonModeLike,
+): PhotonWorkspaceSelectionLike => {
 	if (!selection) {
 		return selection;
 	}

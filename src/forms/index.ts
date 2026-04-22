@@ -1,3 +1,3 @@
 export * from "./helpers";
 export * from "./types";
-export * from "./website-builder-form";
+export * from "./photon-form";

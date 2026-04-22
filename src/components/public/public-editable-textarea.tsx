@@ -4,12 +4,12 @@ import clsx from "clsx";
 import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
 import {
-	useWebsiteBuilderCanEdit,
-	useWebsiteBuilderFieldValue,
-} from "../../context/website-builder-context";
-import { getWebsiteBuilderEditableEditorLoader } from "../../helpers/editable-editor-loaders";
-import { WEBSITE_BUILDER_EMPTY_TEXT } from "../../helpers/path";
-import { buildWebsiteBuilderSearchTargetId } from "../../search/helpers";
+	usePhotonCanEdit,
+	usePhotonFieldValue,
+} from "../../context/photon-context";
+import { getPhotonEditableEditorLoader } from "../../helpers/editable-editor-loaders";
+import { PHOTON_EMPTY_TEXT } from "../../helpers/path";
+import { buildPhotonSearchTargetId } from "../../search/helpers";
 
 type PublicEditableTextareaProps = {
 	blockId: string;
@@ -25,10 +25,10 @@ export const EditableTextarea = ({
 	blockId,
 	path,
 	className,
-	placeholder = WEBSITE_BUILDER_EMPTY_TEXT,
+	placeholder = PHOTON_EMPTY_TEXT,
 }: PublicEditableTextareaProps) => {
-	const canEdit = useWebsiteBuilderCanEdit();
-	const value = String(useWebsiteBuilderFieldValue(blockId, path) ?? "");
+	const canEdit = usePhotonCanEdit();
+	const value = String(usePhotonFieldValue(blockId, path) ?? "");
 	const [EditableTextareaEditor, setEditableTextareaEditor] =
 		useState<EditableTextareaEditorComponent | null>(null);
 
@@ -39,7 +39,7 @@ export const EditableTextarea = ({
 
 		let cancelled = false;
 
-		const loadEditor = getWebsiteBuilderEditableEditorLoader("textarea");
+		const loadEditor = getPhotonEditableEditorLoader("textarea");
 
 		if (!loadEditor) {
 			return;
@@ -71,7 +71,7 @@ export const EditableTextarea = ({
 
 	return (
 		<div
-			data-wb-search-target={buildWebsiteBuilderSearchTargetId(blockId, path)}
+			data-photon-search-target={buildPhotonSearchTargetId(blockId, path)}
 			className={clsx(className, !value && "opacity-60")}
 		>
 			{value || placeholder}

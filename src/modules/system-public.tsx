@@ -4,20 +4,20 @@ import clsx from "clsx";
 import type { CSSProperties, ReactNode } from "react";
 import { EditableText } from "../components/public/public-editable-text";
 import { EditableTextarea } from "../components/public/public-editable-textarea";
-import { useWebsiteBuilderStore } from "../context/website-builder-context";
+import { usePhotonStore } from "../context/photon-context";
 import {
-	createWebsiteBuilderLocalizedDefault,
-	defineWebsiteBuilderBlockDefinition,
+	createPhotonLocalizedDefault,
+	definePhotonBlockDefinition,
 } from "../helpers/document";
-import { createWebsiteBuilderKit } from "../helpers/installable";
-import { isWebsiteBuilderPublicFramelessSiteDesign } from "../helpers/public-site-design";
-import { getWebsiteBuilderSurfaceModeStyle } from "../helpers/surface-layout";
+import { createPhotonKit } from "../helpers/installable";
+import { isPhotonPublicFramelessSiteDesign } from "../helpers/public-site-design";
+import { getPhotonSurfaceModeStyle } from "../helpers/surface-layout";
 import type {
-	WebsiteBuilderArea,
-	WebsiteBuilderBlock,
-	WebsiteBuilderField,
-	WebsiteBuilderInstallableKit,
-	WebsiteBuilderModule,
+	PhotonArea,
+	PhotonBlock,
+	PhotonField,
+	PhotonInstallableKit,
+	PhotonModule,
 } from "../types";
 import { siteFooterShellDefinition } from "./system/site/site-footer-shell-definition";
 import { siteHeaderShellDefinition } from "./system/site/site-header-shell-definition";
@@ -48,7 +48,7 @@ const surfaceStyles: Record<SplitLayoutProps["surface"], string> = {
 
 const getColumnConfig = (
 	columns: SplitLayoutColumn[],
-	area: WebsiteBuilderArea,
+	area: PhotonArea,
 	index: number,
 ) =>
 	columns.find((column) => column.areaId === area.id) ?? {
@@ -62,11 +62,11 @@ const SplitLayout = ({
 	block,
 	renderArea,
 }: {
-	block: WebsiteBuilderBlock<SplitLayoutProps>;
-	renderArea?: (area: WebsiteBuilderArea, index: number) => ReactNode;
+	block: PhotonBlock<SplitLayoutProps>;
+	renderArea?: (area: PhotonArea, index: number) => ReactNode;
 }) => {
-	const mode = useWebsiteBuilderStore((state) => state.mode);
-	const siteDesign = useWebsiteBuilderStore(
+	const mode = usePhotonStore((state) => state.mode);
+	const siteDesign = usePhotonStore(
 		(state) => state.site.settings.design,
 	);
 	const columns = block.props.columns ?? [];
@@ -76,7 +76,7 @@ const SplitLayout = ({
 		.join(" ");
 	const surface = surfaceStyles[block.props.surface] ?? surfaceStyles.glass;
 	const framelessSurface =
-		isWebsiteBuilderPublicFramelessSiteDesign(siteDesign);
+		isPhotonPublicFramelessSiteDesign(siteDesign);
 	const stickyPreviewEnabled = mode !== "builder";
 
 	return (
@@ -84,13 +84,13 @@ const SplitLayout = ({
 			className={clsx(
 				"min-w-0 px-6 py-8 sm:px-8 sm:py-10",
 				framelessSurface
-					? "rounded-none border-0 bg-transparent text-[var(--wb-site-text)] shadow-none"
+					? "rounded-none border-0 bg-transparent text-[var(--photon-site-text)] shadow-none"
 					: "rounded-[38px] border shadow-[0_28px_90px_rgba(2,12,27,0.16)]",
 				!framelessSurface && surface,
 			)}
 			style={
 				framelessSurface
-					? (getWebsiteBuilderSurfaceModeStyle("bleed") as CSSProperties)
+					? (getPhotonSurfaceModeStyle("bleed") as CSSProperties)
 					: undefined
 			}
 		>
@@ -100,11 +100,11 @@ const SplitLayout = ({
 				<EditableTextarea blockId={block.id} path="body" />
 			</div>
 			<div
-				className="mt-8 grid grid-cols-1 items-start gap-[var(--wb-layout-gap)] lg:[grid-template-columns:var(--wb-layout-columns)]"
+				className="mt-8 grid grid-cols-1 items-start gap-[var(--photon-layout-gap)] lg:[grid-template-columns:var(--photon-layout-columns)]"
 				style={
 					{
-						"--wb-layout-columns": templateColumns || "minmax(0,1fr)",
-						"--wb-layout-gap": `${block.props.gap || 24}px`,
+						"--photon-layout-columns": templateColumns || "minmax(0,1fr)",
+						"--photon-layout-gap": `${block.props.gap || 24}px`,
 					} as CSSProperties
 				}
 			>
@@ -123,7 +123,7 @@ const SplitLayout = ({
 							style={
 								column.sticky && stickyPreviewEnabled
 									? {
-											top: "calc(var(--wb-dock-offset, 0px) + var(--wb-site-header-offset, 0px) + var(--wb-site-header-height, 0px) + 0.75rem)",
+											top: "calc(var(--photon-dock-offset, 0px) + var(--photon-site-header-offset, 0px) + var(--photon-site-header-height, 0px) + 0.75rem)",
 										}
 									: undefined
 							}
@@ -142,7 +142,7 @@ const SplitLayout = ({
 	);
 };
 
-const splitLayoutFields: WebsiteBuilderField[] = [
+const splitLayoutFields: PhotonField[] = [
 	{
 		path: "eyebrow",
 		label: "Eyebrow",
@@ -244,33 +244,33 @@ const splitLayoutFields: WebsiteBuilderField[] = [
 	},
 ];
 
-export const websiteBuilderPublicSystemModule: WebsiteBuilderModule = {
-	module: "website-builder-system",
-	label: "Website Builder System",
-	labelKey: "websiteBuilder.system.module.label",
+export const photonPublicSystemModule: PhotonModule = {
+	module: "photon-system",
+	label: "Photon System",
+	labelKey: "photon.system.module.label",
 	version: "0.2.0",
 	blocks: [
 		siteHeaderShellDefinition,
 		siteFooterShellDefinition,
-		defineWebsiteBuilderBlockDefinition({
+		definePhotonBlockDefinition({
 			type: "split-layout",
 			label: "Split Layout",
-			labelKey: "websiteBuilder.system.splitLayout.label",
+			labelKey: "photon.system.splitLayout.label",
 			description:
 				"Nested horizontal layout container with independent sticky columns and stackable child blocks.",
-			descriptionKey: "websiteBuilder.system.splitLayout.description",
+			descriptionKey: "photon.system.splitLayout.description",
 			category: "Layout",
 			icon: "layout-grid",
 			defaults: {
-				eyebrow: createWebsiteBuilderLocalizedDefault({
+				eyebrow: createPhotonLocalizedDefault({
 					en: "Layout system",
 					ru: "Система layout-блоков",
 				}),
-				title: createWebsiteBuilderLocalizedDefault({
+				title: createPhotonLocalizedDefault({
 					en: "Compose horizontal sections without leaving the live page",
 					ru: "Собирайте горизонтальные секции прямо на живой странице",
 				}),
-				body: createWebsiteBuilderLocalizedDefault({
+				body: createPhotonLocalizedDefault({
 					en: "Use nested layout containers to pin one side, stack blocks on the other and tune widths directly from the inspector.",
 					ru: "Используйте вложенные layout-контейнеры, чтобы зафиксировать одну колонку, собрать стек блоков во второй и настраивать ширины прямо из инспектора.",
 				}),
@@ -301,9 +301,9 @@ export const websiteBuilderPublicSystemModule: WebsiteBuilderModule = {
 	],
 };
 
-export const websiteBuilderPublicSystemKit: WebsiteBuilderInstallableKit =
-	createWebsiteBuilderKit({
-		key: "website-builder-system",
-		label: "Website Builder System",
-		modules: [websiteBuilderPublicSystemModule],
+export const photonPublicSystemKit: PhotonInstallableKit =
+	createPhotonKit({
+		key: "photon-system",
+		label: "Photon System",
+		modules: [photonPublicSystemModule],
 	});

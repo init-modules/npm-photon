@@ -25,21 +25,21 @@ export const EditableGalleryEmptyState = ({
 }: EditableGalleryEmptyStateProps) => {
 	return (
 		<div
-			data-testid="wb-editable-gallery-empty-state"
+			data-testid="photon-editable-gallery-empty-state"
 			className={`flex min-h-[18rem] flex-col items-center justify-center gap-3 rounded-[34px] border border-dashed px-6 py-8 text-center ${className ?? ""}`}
 			style={{
-				borderColor: "var(--wb-gallery-empty-border, rgba(255,255,255,0.12))",
+				borderColor: "var(--photon-gallery-empty-border, rgba(255,255,255,0.12))",
 				background:
-					"var(--wb-gallery-empty-bg, radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_44%),linear-gradient(180deg,rgba(9,18,31,0.92),rgba(6,12,22,0.98)))",
-				color: "var(--wb-gallery-empty-text, rgba(255,255,255,0.55))",
+					"var(--photon-gallery-empty-bg, radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_44%),linear-gradient(180deg,rgba(9,18,31,0.92),rgba(6,12,22,0.98)))",
+				color: "var(--photon-gallery-empty-text, rgba(255,255,255,0.55))",
 				boxShadow:
-					"var(--wb-gallery-empty-shadow, 0 24px 54px rgba(0,0,0,0.2))",
+					"var(--photon-gallery-empty-shadow, 0 24px 54px rgba(0,0,0,0.2))",
 			}}
 		>
 			<div
 				className={`text-base font-semibold ${titleClassName ?? ""}`}
 				style={{
-					color: "var(--wb-gallery-empty-title, rgba(255,255,255,0.82))",
+					color: "var(--photon-gallery-empty-title, rgba(255,255,255,0.82))",
 				}}
 			>
 				{emptyTitle}
@@ -47,7 +47,7 @@ export const EditableGalleryEmptyState = ({
 			<div
 				className={`max-w-sm text-sm leading-7 ${bodyClassName ?? ""}`}
 				style={{
-					color: "var(--wb-gallery-empty-body, rgba(255,255,255,0.48))",
+					color: "var(--photon-gallery-empty-body, rgba(255,255,255,0.48))",
 				}}
 			>
 				{emptyBody}
@@ -58,10 +58,10 @@ export const EditableGalleryEmptyState = ({
 						className={`rounded-full border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] ${buttonClassName ?? ""}`}
 						style={{
 							borderColor:
-								"var(--wb-gallery-empty-button-border, rgba(34,211,238,0.18))",
+								"var(--photon-gallery-empty-button-border, rgba(34,211,238,0.18))",
 							background:
-								"var(--wb-gallery-empty-button-bg, rgba(34,211,238,0.1))",
-							color: "var(--wb-gallery-empty-button-text, rgb(207 250 254))",
+								"var(--photon-gallery-empty-button-bg, rgba(34,211,238,0.1))",
+							color: "var(--photon-gallery-empty-button-text, rgb(207 250 254))",
 						}}
 					>
 						{isUploading ? "Uploading..." : "Add media"}

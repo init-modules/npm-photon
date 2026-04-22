@@ -3,7 +3,7 @@
 import clsx from "clsx";
 import { ChevronDown, ChevronUp, History } from "lucide-react";
 import type { ReactNode } from "react";
-import { useWebsiteBuilderI18n } from "../../i18n/website-builder-i18n-context";
+import { usePhotonI18n } from "../../i18n/photon-i18n-context";
 import { CanvasSurfaceModeToggle } from "./canvas-surface-mode-toggle";
 
 type CanvasTopToolbarProps = {
@@ -39,19 +39,19 @@ const CanvasTopToolbarButton = ({
 			aria-label={label}
 			className="group relative inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-[9px] border transition disabled:pointer-events-none disabled:opacity-35"
 			style={{
-				borderColor: "var(--wb-builder-border)",
-				background: "var(--wb-builder-field)",
-				color: "var(--wb-builder-text-muted)",
+				borderColor: "var(--photon-builder-border)",
+				background: "var(--photon-builder-field)",
+				color: "var(--photon-builder-text-muted)",
 			}}
 		>
 			{children}
 			<span
 				className="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md border px-2 py-1 text-[10px] font-semibold opacity-0 transition duration-150 group-hover:-translate-y-0.5 group-hover:opacity-100"
 				style={{
-					borderColor: "var(--wb-builder-border)",
-					background: "var(--wb-builder-panel-solid)",
-					color: "var(--wb-builder-text)",
-					boxShadow: "var(--wb-builder-shadow)",
+					borderColor: "var(--photon-builder-border)",
+					background: "var(--photon-builder-panel-solid)",
+					color: "var(--photon-builder-text)",
+					boxShadow: "var(--photon-builder-shadow)",
 				}}
 			>
 				{label}
@@ -72,7 +72,7 @@ export const CanvasTopToolbar = ({
 	onCollapseAll,
 	onExpandAll,
 }: CanvasTopToolbarProps) => {
-	const { translate } = useWebsiteBuilderI18n();
+	const { translate } = usePhotonI18n();
 	return (
 		<div
 			className={clsx(
@@ -84,15 +84,15 @@ export const CanvasTopToolbar = ({
 				left: leftOffset,
 				right: rightOffset,
 			}}
-			data-testid="wb-canvas-toolbar"
+			data-testid="photon-canvas-toolbar"
 		>
 			<div
 				className="border-b backdrop-blur-xl"
 				style={{
-					borderColor: "var(--wb-builder-border)",
+					borderColor: "var(--photon-builder-border)",
 					background:
-						"linear-gradient(180deg, var(--wb-builder-panel-solid), var(--wb-builder-panel))",
-					boxShadow: "var(--wb-builder-shadow)",
+						"linear-gradient(180deg, var(--photon-builder-panel-solid), var(--photon-builder-panel))",
+					boxShadow: "var(--photon-builder-shadow)",
 				}}
 			>
 				<div className="flex h-10 items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
@@ -109,14 +109,14 @@ export const CanvasTopToolbar = ({
 								: "pointer-events-none opacity-35",
 						)}
 						style={{
-							borderColor: "var(--wb-builder-border)",
-							background: "var(--wb-builder-field)",
-							boxShadow: "var(--wb-builder-shadow)",
+							borderColor: "var(--photon-builder-border)",
+							background: "var(--photon-builder-field)",
+							boxShadow: "var(--photon-builder-shadow)",
 						}}
 					>
 						<CanvasTopToolbarButton
 							label={translate(
-								"websiteBuilder.toolbar.revertDraft",
+								"photon.toolbar.revertDraft",
 								"Revert local draft",
 							)}
 							onClick={onReset}
@@ -126,7 +126,7 @@ export const CanvasTopToolbar = ({
 						</CanvasTopToolbarButton>
 						<CanvasTopToolbarButton
 							label={translate(
-								"websiteBuilder.toolbar.collapseAll",
+								"photon.toolbar.collapseAll",
 								"Collapse all blocks",
 							)}
 							onClick={onCollapseAll}
@@ -136,7 +136,7 @@ export const CanvasTopToolbar = ({
 						</CanvasTopToolbarButton>
 						<CanvasTopToolbarButton
 							label={translate(
-								"websiteBuilder.toolbar.expandAll",
+								"photon.toolbar.expandAll",
 								"Expand all blocks",
 							)}
 							onClick={onExpandAll}

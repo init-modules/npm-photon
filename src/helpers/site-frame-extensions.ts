@@ -1,9 +1,9 @@
 import type {
-	WebsiteBuilderAccountTabExtension,
-	WebsiteBuilderSiteFrameActionItem,
-	WebsiteBuilderSiteFrameExtension,
-	WebsiteBuilderSiteFrameLinkItem,
-	WebsiteBuilderSiteFrameNavigationColumn,
+	PhotonAccountTabExtension,
+	PhotonSiteFrameActionItem,
+	PhotonSiteFrameExtension,
+	PhotonSiteFrameLinkItem,
+	PhotonSiteFrameNavigationColumn,
 } from "../types";
 
 const normalizeOrder = (value: unknown) =>
@@ -27,18 +27,18 @@ const isNotDisabled = (
 	disabledIds: ReadonlySet<string>,
 ) => !id || !disabledIds.has(id);
 
-export const createWebsiteBuilderSiteFrameExtension = (
-	extension: WebsiteBuilderSiteFrameExtension,
-): WebsiteBuilderSiteFrameExtension => extension;
+export const createPhotonSiteFrameExtension = (
+	extension: PhotonSiteFrameExtension,
+): PhotonSiteFrameExtension => extension;
 
-export const createWebsiteBuilderAccountTabExtension = (
-	tab: WebsiteBuilderAccountTabExtension,
-): WebsiteBuilderAccountTabExtension => tab;
+export const createPhotonAccountTabExtension = (
+	tab: PhotonAccountTabExtension,
+): PhotonAccountTabExtension => tab;
 
-export const resolveWebsiteBuilderSiteFrameExtensions = (
-	extensions: readonly WebsiteBuilderSiteFrameExtension[] | undefined,
+export const resolvePhotonSiteFrameExtensions = (
+	extensions: readonly PhotonSiteFrameExtension[] | undefined,
 	disabledExtensionIds: readonly string[] = [],
-): WebsiteBuilderSiteFrameExtension[] => {
+): PhotonSiteFrameExtension[] => {
 	const disabledIds = new Set(disabledExtensionIds);
 
 	return [...(extensions ?? [])]
@@ -48,10 +48,10 @@ export const resolveWebsiteBuilderSiteFrameExtensions = (
 		.sort(byOrderThenLabel);
 };
 
-export const resolveWebsiteBuilderAccountTabs = (
-	tabs: readonly WebsiteBuilderAccountTabExtension[] | undefined,
+export const resolvePhotonAccountTabs = (
+	tabs: readonly PhotonAccountTabExtension[] | undefined,
 	disabledTabIds: readonly string[] = [],
-): WebsiteBuilderAccountTabExtension[] => {
+): PhotonAccountTabExtension[] => {
 	const disabledIds = new Set(disabledTabIds);
 
 	return [...(tabs ?? [])]
@@ -59,13 +59,13 @@ export const resolveWebsiteBuilderAccountTabs = (
 		.sort(byOrderThenLabel);
 };
 
-export const collectWebsiteBuilderHeaderExtensionItems = (
-	extensions: readonly WebsiteBuilderSiteFrameExtension[],
+export const collectPhotonHeaderExtensionItems = (
+	extensions: readonly PhotonSiteFrameExtension[],
 	disabledItemIds: readonly string[] = [],
 ): {
-	utilityLinks: WebsiteBuilderSiteFrameLinkItem[];
-	categoryLinks: WebsiteBuilderSiteFrameLinkItem[];
-	actions: WebsiteBuilderSiteFrameActionItem[];
+	utilityLinks: PhotonSiteFrameLinkItem[];
+	categoryLinks: PhotonSiteFrameLinkItem[];
+	actions: PhotonSiteFrameActionItem[];
 } => {
 	const disabledIds = new Set(disabledItemIds);
 
@@ -85,12 +85,12 @@ export const collectWebsiteBuilderHeaderExtensionItems = (
 	};
 };
 
-export const collectWebsiteBuilderFooterExtensionItems = (
-	extensions: readonly WebsiteBuilderSiteFrameExtension[],
+export const collectPhotonFooterExtensionItems = (
+	extensions: readonly PhotonSiteFrameExtension[],
 	disabledItemIds: readonly string[] = [],
 ): {
-	navigationColumns: WebsiteBuilderSiteFrameNavigationColumn[];
-	legalLinks: WebsiteBuilderSiteFrameLinkItem[];
+	navigationColumns: PhotonSiteFrameNavigationColumn[];
+	legalLinks: PhotonSiteFrameLinkItem[];
 } => {
 	const disabledIds = new Set(disabledItemIds);
 

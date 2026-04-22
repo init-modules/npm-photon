@@ -10,10 +10,10 @@ import {
 	Trash2,
 } from "lucide-react";
 import { memo, type ReactNode, useEffect, useState } from "react";
-import type { WebsiteBuilderBlock } from "../../types";
+import type { PhotonBlock } from "../../types";
 
 type CanvasBlockShellProps = {
-	block: WebsiteBuilderBlock;
+	block: PhotonBlock;
 	blockLabel: string;
 	blockModule: string;
 	chromeStyle?: "default" | "edge-to-edge";
@@ -63,8 +63,8 @@ const CanvasBlockShellComponent = ({
 	const chromeBorderClassName = clsx(
 		"border transition",
 		isSelected
-			? "border-[color:var(--wb-builder-border-strong)] shadow-[0_0_0_1px_var(--wb-builder-accent-strong)]"
-			: "border-[color:var(--wb-builder-border)] group-hover:border-[color:var(--wb-builder-border-strong)]",
+			? "border-[color:var(--photon-builder-border-strong)] shadow-[0_0_0_1px_var(--photon-builder-accent-strong)]"
+			: "border-[color:var(--photon-builder-border)] group-hover:border-[color:var(--photon-builder-border-strong)]",
 	);
 
 	const chromeBadges = builderEnabled ? (
@@ -72,9 +72,9 @@ const CanvasBlockShellComponent = ({
 			<div
 				className="rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em]"
 				style={{
-					borderColor: "var(--wb-builder-border)",
-					background: "var(--wb-builder-panel-solid)",
-					color: "var(--wb-builder-text-muted)",
+					borderColor: "var(--photon-builder-border)",
+					background: "var(--photon-builder-panel-solid)",
+					color: "var(--photon-builder-text-muted)",
 				}}
 			>
 				{blockLabel}
@@ -82,9 +82,9 @@ const CanvasBlockShellComponent = ({
 			<div
 				className="rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]"
 				style={{
-					borderColor: "var(--wb-builder-border)",
-					background: "var(--wb-builder-panel-solid)",
-					color: "var(--wb-builder-text-ghost)",
+					borderColor: "var(--photon-builder-border)",
+					background: "var(--photon-builder-panel-solid)",
+					color: "var(--photon-builder-text-ghost)",
 				}}
 			>
 				{blockModule}
@@ -102,9 +102,9 @@ const CanvasBlockShellComponent = ({
 				}}
 				className="rounded-full border p-2 transition"
 				style={{
-					borderColor: "var(--wb-builder-border)",
-					background: "var(--wb-builder-panel-solid)",
-					color: "var(--wb-builder-text-muted)",
+					borderColor: "var(--photon-builder-border)",
+					background: "var(--photon-builder-panel-solid)",
+					color: "var(--photon-builder-text-muted)",
 				}}
 			>
 				{isCollapsed ? (
@@ -123,9 +123,9 @@ const CanvasBlockShellComponent = ({
 						}}
 						className="rounded-full border p-2 transition"
 						style={{
-							borderColor: "var(--wb-builder-border)",
-							background: "var(--wb-builder-panel-solid)",
-							color: "var(--wb-builder-text-muted)",
+							borderColor: "var(--photon-builder-border)",
+							background: "var(--photon-builder-panel-solid)",
+							color: "var(--photon-builder-text-muted)",
 						}}
 					>
 						<Copy className="h-4 w-4" />
@@ -138,9 +138,9 @@ const CanvasBlockShellComponent = ({
 						}}
 						className="rounded-full border p-2 transition"
 						style={{
-							borderColor: "var(--wb-builder-border)",
-							background: "var(--wb-builder-panel-solid)",
-							color: "var(--wb-builder-text-muted)",
+							borderColor: "var(--photon-builder-border)",
+							background: "var(--photon-builder-panel-solid)",
+							color: "var(--photon-builder-text-muted)",
 						}}
 					>
 						<Trash2 className="h-4 w-4" />
@@ -152,9 +152,9 @@ const CanvasBlockShellComponent = ({
 						onClick={(event) => event.stopPropagation()}
 						className="rounded-full border p-2 transition"
 						style={{
-							borderColor: "var(--wb-builder-border)",
-							background: "var(--wb-builder-panel-solid)",
-							color: "var(--wb-builder-text-muted)",
+							borderColor: "var(--photon-builder-border)",
+							background: "var(--photon-builder-panel-solid)",
+							color: "var(--photon-builder-text-muted)",
 						}}
 					>
 						<GripVertical className="h-4 w-4" />

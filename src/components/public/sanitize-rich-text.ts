@@ -1,6 +1,6 @@
 import {
-	getWebsiteBuilderAnchorRel,
-	sanitizeWebsiteBuilderLinkHref,
+	getPhotonAnchorRel,
+	sanitizePhotonLinkHref,
 } from "../../helpers/link-url";
 
 const allowedTags = new Set([
@@ -42,7 +42,7 @@ const sanitizeAttributeValue = (
 	value: string,
 ) => {
 	if (name === "href") {
-		const sanitizedHref = sanitizeWebsiteBuilderLinkHref(value, "");
+		const sanitizedHref = sanitizePhotonLinkHref(value, "");
 
 		return sanitizedHref === "" ? null : sanitizedHref;
 	}
@@ -101,7 +101,7 @@ const sanitizeWithDomParser = (html: string) => {
 		if (tagName === "a") {
 			cleanElement.setAttribute(
 				"rel",
-				getWebsiteBuilderAnchorRel(
+				getPhotonAnchorRel(
 					cleanElement.getAttribute("target"),
 					cleanElement.getAttribute("rel"),
 				) ?? "noopener noreferrer",
@@ -213,7 +213,7 @@ const sanitizeWithoutDomParser = (html: string) => {
 	return output;
 };
 
-export const sanitizeWebsiteBuilderRichTextHtml = (value: string) => {
+export const sanitizePhotonRichTextHtml = (value: string) => {
 	if (typeof DOMParser === "undefined") {
 		return sanitizeWithoutDomParser(value);
 	}
@@ -221,7 +221,7 @@ export const sanitizeWebsiteBuilderRichTextHtml = (value: string) => {
 	return sanitizeWithDomParser(value);
 };
 
-export const renderWebsiteBuilderRichTextHtml = (
+export const renderPhotonRichTextHtml = (
 	value: string,
 	placeholder: string,
 ) => {
@@ -235,5 +235,5 @@ export const renderWebsiteBuilderRichTextHtml = (
 		return `<p>${escapeHtml(trimmed)}</p>`;
 	}
 
-	return sanitizeWebsiteBuilderRichTextHtml(trimmed);
+	return sanitizePhotonRichTextHtml(trimmed);
 };

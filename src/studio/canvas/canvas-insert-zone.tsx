@@ -57,22 +57,22 @@ export const CanvasInsertZone = ({
 				style={{
 					borderColor:
 						isActive || isOver
-							? "var(--wb-builder-border-strong)"
+							? "var(--photon-builder-border-strong)"
 							: isManual
-								? "var(--wb-builder-border)"
+								? "var(--photon-builder-border)"
 								: isDragging
-									? "var(--wb-builder-border)"
+									? "var(--photon-builder-border)"
 									: "transparent",
 					background:
 						isActive || isOver
-							? "var(--wb-builder-accent-strong)"
+							? "var(--photon-builder-accent-strong)"
 							: isManual
-								? "color-mix(in srgb, var(--wb-builder-accent) 8%, transparent)"
+								? "color-mix(in srgb, var(--photon-builder-accent) 8%, transparent)"
 								: isDragging
-									? "var(--wb-builder-panel-muted)"
+									? "var(--photon-builder-panel-muted)"
 									: "transparent",
 					boxShadow:
-						isActive || isOver ? "var(--wb-builder-card-shadow)" : "none",
+						isActive || isOver ? "var(--photon-builder-card-shadow)" : "none",
 				}}
 			/>
 			<div
@@ -82,10 +82,10 @@ export const CanvasInsertZone = ({
 				style={{
 					background:
 						isActive || isOver
-							? "var(--wb-builder-border-strong)"
+							? "var(--photon-builder-border-strong)"
 							: isManual
-								? "var(--wb-builder-border)"
-								: "var(--wb-builder-border)",
+								? "var(--photon-builder-border)"
+								: "var(--photon-builder-border)",
 				}}
 			/>
 			<button
@@ -98,22 +98,22 @@ export const CanvasInsertZone = ({
 				style={{
 					borderColor:
 						isActive || isOver
-							? "var(--wb-builder-border-strong)"
+							? "var(--photon-builder-border-strong)"
 							: isManual
-								? "var(--wb-builder-border)"
-								: "var(--wb-builder-border)",
+								? "var(--photon-builder-border)"
+								: "var(--photon-builder-border)",
 					background:
 						isActive || isOver
-							? "var(--wb-builder-accent-soft)"
+							? "var(--photon-builder-accent-soft)"
 							: isManual
-								? "color-mix(in srgb, var(--wb-builder-accent) 10%, var(--wb-builder-panel-solid))"
-								: "var(--wb-builder-panel-solid)",
+								? "color-mix(in srgb, var(--photon-builder-accent) 10%, var(--photon-builder-panel-solid))"
+								: "var(--photon-builder-panel-solid)",
 					color:
 						isActive || isOver
-							? "var(--wb-builder-accent-text)"
+							? "var(--photon-builder-accent-text)"
 							: isManual
-								? "var(--wb-builder-text)"
-								: "var(--wb-builder-text-muted)",
+								? "var(--photon-builder-text)"
+								: "var(--photon-builder-text-muted)",
 				}}
 			>
 				<Plus className="h-3.5 w-3.5" />

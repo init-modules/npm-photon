@@ -4,11 +4,11 @@ import clsx from "clsx";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
-	useWebsiteBuilderCanEdit,
-	useWebsiteBuilderFieldValue,
-	useWebsiteBuilderStore,
-} from "../../context/website-builder-context";
-import { createWebsiteBuilderNodeId } from "../../helpers/tree";
+	usePhotonCanEdit,
+	usePhotonFieldValue,
+	usePhotonStore,
+} from "../../context/photon-context";
+import { createPhotonNodeId } from "../../helpers/tree";
 import { EditableGalleryAddCard } from "./editable-gallery-add-card";
 import { EditableGalleryEmptyState } from "./editable-gallery-empty-state";
 import { EditableGalleryItemCard } from "./editable-gallery-item-card";
@@ -58,19 +58,19 @@ export const EditableGallery = ({
 	addCardBodyClassName,
 	addCardButtonClassName,
 }: EditableGalleryProps) => {
-	const documentId = useWebsiteBuilderStore((state) => state.document.id);
-	const selectedField = useWebsiteBuilderStore((state) => state.selectedField);
-	const selectField = useWebsiteBuilderStore((state) => state.selectField);
-	const updateFieldValue = useWebsiteBuilderStore(
+	const documentId = usePhotonStore((state) => state.document.id);
+	const selectedField = usePhotonStore((state) => state.selectedField);
+	const selectField = usePhotonStore((state) => state.selectField);
+	const updateFieldValue = usePhotonStore(
 		(state) => state.updateFieldValue,
 	);
-	const uploadMedia = useWebsiteBuilderStore((state) => state.uploadMedia);
+	const uploadMedia = usePhotonStore((state) => state.uploadMedia);
 	const [isUploading, setIsUploading] = useState(false);
-	const galleryValue = useWebsiteBuilderFieldValue(blockId, path);
+	const galleryValue = usePhotonFieldValue(blockId, path);
 	const items = Array.isArray(galleryValue)
 		? (galleryValue as EditableGalleryItem[])
 		: [];
-	const isEditable = useWebsiteBuilderCanEdit();
+	const isEditable = usePhotonCanEdit();
 	const isActive =
 		selectedField?.blockId === blockId && selectedField.path === path;
 
@@ -89,7 +89,7 @@ export const EditableGallery = ({
 			updateItems([
 				...items,
 				...selectedFiles.map((file) => ({
-					id: createWebsiteBuilderNodeId(),
+					id: createPhotonNodeId(),
 					media: URL.createObjectURL(file),
 					alt: file.name.replace(/\.[^.]+$/, ""),
 					caption: "",
@@ -103,7 +103,7 @@ export const EditableGallery = ({
 		try {
 			const uploadedItems = await Promise.all(
 				selectedFiles.map(async (file) => ({
-					id: createWebsiteBuilderNodeId(),
+					id: createPhotonNodeId(),
 					media: await uploadMedia({
 						file,
 						documentId,
@@ -131,7 +131,7 @@ export const EditableGallery = ({
 	return (
 		<div
 			{...createActivationProps(isEditable, () => selectField(blockId, path))}
-			data-testid="wb-editable-gallery"
+			data-testid="photon-editable-gallery"
 			className={editableFrameClassName({ isActive, isEditable, className })}
 		>
 			<div

@@ -1,21 +1,21 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
-export { W as WebsiteBuilderStudio } from './website-builder-studio-DMX6zQCo.js';
-export { g as getWebsiteBuilderSurfaceModeStyle } from './surface-layout-p8WBJh3f.js';
-import './types-CuFDrLWO.js';
+export { P as PhotonStudio } from './photon-studio-DpeIHvJs.js';
+export { g as getPhotonSurfaceModeStyle } from './surface-layout-DTo_L0tV.js';
+import './types-S6aNsw9R.js';
 
-type WebsiteBuilderSurfaceLayoutMetrics = {
+type PhotonSurfaceLayoutMetrics = {
     builderEnabled: boolean;
     kind: "page" | "site";
     regionKey: string;
     width: number;
 };
-declare const WebsiteBuilderSurfaceLayoutProvider: ({ children, value, }: {
+declare const PhotonSurfaceLayoutProvider: ({ children, value, }: {
     children: ReactNode;
-    value: WebsiteBuilderSurfaceLayoutMetrics;
+    value: PhotonSurfaceLayoutMetrics;
 }) => react_jsx_runtime.JSX.Element;
-declare const useWebsiteBuilderSurfaceLayoutMetrics: () => WebsiteBuilderSurfaceLayoutMetrics | null;
-declare const useWebsiteBuilderSurfaceBreakpoints: () => {
+declare const usePhotonSurfaceLayoutMetrics: () => PhotonSurfaceLayoutMetrics | null;
+declare const usePhotonSurfaceBreakpoints: () => {
     width: number;
     atLeastSm: boolean;
     atLeastMd: boolean;
@@ -23,4 +23,4 @@ declare const useWebsiteBuilderSurfaceBreakpoints: () => {
     atLeastXl: boolean;
 };
 
-export { type WebsiteBuilderSurfaceLayoutMetrics, WebsiteBuilderSurfaceLayoutProvider, useWebsiteBuilderSurfaceBreakpoints, useWebsiteBuilderSurfaceLayoutMetrics };
+export { type PhotonSurfaceLayoutMetrics, PhotonSurfaceLayoutProvider, usePhotonSurfaceBreakpoints, usePhotonSurfaceLayoutMetrics };

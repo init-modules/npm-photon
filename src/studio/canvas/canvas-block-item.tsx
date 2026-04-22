@@ -1,15 +1,15 @@
 "use client";
 
 import { Fragment, memo } from "react";
-import { WebsiteBuilderBlockRenderer } from "../../components/block-renderer";
-import { useWebsiteBuilderStore } from "../../context/website-builder-context";
+import { PhotonBlockRenderer } from "../../components/block-renderer";
+import { usePhotonStore } from "../../context/photon-context";
 import {
-	useWebsiteBuilderRenderDepth,
-	WebsiteBuilderRenderDepthProvider,
-} from "../../context/website-builder-render-depth-context";
-import { createWebsiteBuilderAreaListId } from "../../helpers/tree";
-import { useWebsiteBuilderI18n } from "../../i18n/website-builder-i18n-context";
-import type { WebsiteBuilderBlock } from "../../types";
+	usePhotonRenderDepth,
+	PhotonRenderDepthProvider,
+} from "../../context/photon-render-depth-context";
+import { createPhotonAreaListId } from "../../helpers/tree";
+import { usePhotonI18n } from "../../i18n/photon-i18n-context";
+import type { PhotonBlock } from "../../types";
 import { matchesTarget } from "../shared";
 import type { InsertTarget } from "../types";
 import { CanvasBlockList } from "./canvas-block-list";
@@ -18,7 +18,7 @@ import { CanvasInsertZone } from "./canvas-insert-zone";
 import { CollapsedBlockPreview } from "./collapsed-block-preview";
 
 type CanvasBlockItemProps = {
-	block: WebsiteBuilderBlock;
+	block: PhotonBlock;
 	index: number;
 	listId: string;
 	builderEnabled: boolean;
@@ -42,21 +42,21 @@ const CanvasBlockItemComponent = ({
 	dropTarget,
 	onActivateInsertTarget,
 }: CanvasBlockItemProps) => {
-	const renderDepth = useWebsiteBuilderRenderDepth();
-	const { translate } = useWebsiteBuilderI18n();
-	const registry = useWebsiteBuilderStore((state) => state.registry);
-	const isSelected = useWebsiteBuilderStore(
+	const renderDepth = usePhotonRenderDepth();
+	const { translate } = usePhotonI18n();
+	const registry = usePhotonStore((state) => state.registry);
+	const isSelected = usePhotonStore(
 		(state) => state.selectedBlockId === block.id,
 	);
-	const isCollapsed = useWebsiteBuilderStore((state) =>
+	const isCollapsed = usePhotonStore((state) =>
 		Boolean(state.collapsedBlockIds[block.id]),
 	);
-	const selectBlock = useWebsiteBuilderStore((state) => state.selectBlock);
-	const duplicateBlock = useWebsiteBuilderStore(
+	const selectBlock = usePhotonStore((state) => state.selectBlock);
+	const duplicateBlock = usePhotonStore(
 		(state) => state.duplicateBlock,
 	);
-	const removeBlock = useWebsiteBuilderStore((state) => state.removeBlock);
-	const toggleBlockCollapse = useWebsiteBuilderStore(
+	const removeBlock = usePhotonStore((state) => state.removeBlock);
+	const toggleBlockCollapse = usePhotonStore(
 		(state) => state.toggleBlockCollapse,
 	);
 	const definition = registry.getDefinition(block.module, block.type);
@@ -85,13 +85,13 @@ const CanvasBlockItemComponent = ({
 				{respectsCollapsedState && isCollapsed ? (
 					<CollapsedBlockPreview block={block} />
 				) : (
-					<WebsiteBuilderBlockRenderer
+					<PhotonBlockRenderer
 						block={block}
 						renderArea={(area) => (
-							<WebsiteBuilderRenderDepthProvider value={renderDepth + 1}>
+							<PhotonRenderDepthProvider value={renderDepth + 1}>
 								<CanvasBlockList
 									blocks={area.blocks}
-									listId={createWebsiteBuilderAreaListId(block.id, area.id)}
+									listId={createPhotonAreaListId(block.id, area.id)}
 									builderEnabled={builderEnabled}
 									collapseControlsEnabled={collapseControlsEnabled}
 									respectsCollapsedState={respectsCollapsedState}
@@ -100,7 +100,7 @@ const CanvasBlockItemComponent = ({
 									dropTarget={dropTarget}
 									onActivateInsertTarget={onActivateInsertTarget}
 								/>
-							</WebsiteBuilderRenderDepthProvider>
+							</PhotonRenderDepthProvider>
 						)}
 					/>
 				)}

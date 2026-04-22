@@ -1,7 +1,7 @@
 {
-	"name": "@init-modules/website-builder",
+	"name": "@init/photon",
 	"version": "0.1.0",
-	"description": "Foundation runtime and editing primitives for the package-first website builder.",
+	"description": "Foundation runtime and editing primitives for the package-first photon.",
 	"type": "module",
 	"files": [
 		"dist",

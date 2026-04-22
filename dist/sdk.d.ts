@@ -1,36 +1,36 @@
-export { b as collectWebsiteBuilderFooterExtensionItems, d as collectWebsiteBuilderHeaderExtensionItems, c as createWebsiteBuilderAccountTabExtension, a as createWebsiteBuilderSiteFrameExtension, r as resolveWebsiteBuilderAccountTabs, e as resolveWebsiteBuilderSiteFrameExtensions } from './site-frame-extensions-CljWsZYY.js';
-import './types-CuFDrLWO.js';
+export { b as collectPhotonFooterExtensionItems, d as collectPhotonHeaderExtensionItems, c as createPhotonAccountTabExtension, a as createPhotonSiteFrameExtension, r as resolvePhotonAccountTabs, e as resolvePhotonSiteFrameExtensions } from './site-frame-extensions-MxazF6mP.js';
+import './types-S6aNsw9R.js';
 import 'react';
 
-type WebsiteBuilderAccessAuthStateLike = {
+type PhotonAccessAuthStateLike = {
     user?: {
         permissions?: string[] | null;
         role?: string | null;
     } | null;
 } | null;
-declare const resolveWebsiteBuilderAccess: (authState: WebsiteBuilderAccessAuthStateLike, options?: {
+declare const resolvePhotonAccess: (authState: PhotonAccessAuthStateLike, options?: {
     demoAccessAllowed?: boolean;
 }) => {
     canManage: boolean;
     isDemoAccess: boolean;
 };
 
-type WebsiteBuilderModeLike = "preview" | "content" | "builder";
-type WebsiteBuilderWorkspaceSelectionLike = Partial<{
+type PhotonModeLike = "preview" | "content" | "builder";
+type PhotonWorkspaceSelectionLike = Partial<{
     profileId: string;
     branch: string;
     revisionId: null | string;
 }> | null | undefined;
-declare const resolveWebsiteBuilderMode: (mode: string | string[] | null | undefined, canManage: boolean, fallback?: WebsiteBuilderModeLike) => WebsiteBuilderModeLike;
-declare const normalizeWebsiteBuilderSelectionForMode: (selection: WebsiteBuilderWorkspaceSelectionLike, mode: WebsiteBuilderModeLike) => WebsiteBuilderWorkspaceSelectionLike;
+declare const resolvePhotonMode: (mode: string | string[] | null | undefined, canManage: boolean, fallback?: PhotonModeLike) => PhotonModeLike;
+declare const normalizePhotonSelectionForMode: (selection: PhotonWorkspaceSelectionLike, mode: PhotonModeLike) => PhotonWorkspaceSelectionLike;
 
-declare const resolveWebsiteBuilderRequestHeaders: (options?: {
+declare const resolvePhotonRequestHeaders: (options?: {
     locale?: string;
 }) => {
     "X-Locale": string;
     "Accept-Language": string;
 } | undefined;
-declare const resolveWebsiteBuilderWorkspaceParams: (workspace?: WebsiteBuilderWorkspaceSelectionLike) => {
+declare const resolvePhotonWorkspaceParams: (workspace?: PhotonWorkspaceSelectionLike) => {
     workspace: {
         revisionId?: string | undefined;
         profileId: string;
@@ -40,4 +40,4 @@ declare const resolveWebsiteBuilderWorkspaceParams: (workspace?: WebsiteBuilderW
     workspace?: undefined;
 };
 
-export { type WebsiteBuilderAccessAuthStateLike, type WebsiteBuilderModeLike, type WebsiteBuilderWorkspaceSelectionLike, normalizeWebsiteBuilderSelectionForMode, resolveWebsiteBuilderAccess, resolveWebsiteBuilderMode, resolveWebsiteBuilderRequestHeaders, resolveWebsiteBuilderWorkspaceParams };
+export { type PhotonAccessAuthStateLike, type PhotonModeLike, type PhotonWorkspaceSelectionLike, normalizePhotonSelectionForMode, resolvePhotonAccess, resolvePhotonMode, resolvePhotonRequestHeaders, resolvePhotonWorkspaceParams };

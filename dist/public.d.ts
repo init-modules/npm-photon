@@ -1,13 +1,13 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
-export { g as getWebsiteBuilderAnchorRel, s as sanitizeWebsiteBuilderLinkHref } from './link-url-CBOXlDl0.js';
-import { T as WebsiteBuilderInstallableKit, P as WebsiteBuilderModule, l as WebsiteBuilderResolvedPage, A as WebsiteBuilderRegistry, I as WebsiteBuilderI18nValue, H as WebsiteBuilderLinkComponent, u as WebsiteBuilderSiteFrameExtension, y as WebsiteBuilderAccountTabExtension, G as WebsiteBuilderSearchHandler, n as WebsiteBuilderSearchHighlight } from './types-CuFDrLWO.js';
-export { a0 as WebsiteBuilderBindingAdapter, a as WebsiteBuilderBlock, a1 as WebsiteBuilderBlockComponentProps, M as WebsiteBuilderBlockDefinition, O as WebsiteBuilderBlockLocalizationSchema, b as WebsiteBuilderDocument, c as WebsiteBuilderDocumentsMap, J as WebsiteBuilderField, a2 as WebsiteBuilderFieldOption, $ as WebsiteBuilderLinkComponentProps, e as WebsiteBuilderLocaleDescriptor, f as WebsiteBuilderLocaleStatus, K as WebsiteBuilderPageSettingsPanelDefinition, a3 as WebsiteBuilderPageSettingsScope, L as WebsiteBuilderSiteSettingsPanelDefinition } from './types-CuFDrLWO.js';
+export { g as getPhotonAnchorRel, s as sanitizePhotonLinkHref } from './link-url-XwgBLvA0.js';
+import { U as PhotonInstallableKit, Q as PhotonModule, l as PhotonResolvedPage, A as PhotonRegistry, I as PhotonI18nValue, H as PhotonLinkComponent, u as PhotonSiteFrameExtension, y as PhotonAccountTabExtension, G as PhotonSearchHandler, n as PhotonSearchHighlight } from './types-S6aNsw9R.js';
+export { a0 as PhotonBindingAdapter, a as PhotonBlock, a1 as PhotonBlockComponentProps, M as PhotonBlockDefinition, O as PhotonBlockLocalizationSchema, b as PhotonDocument, c as PhotonDocumentsMap, J as PhotonField, a2 as PhotonFieldOption, $ as PhotonLinkComponentProps, e as PhotonLocaleDescriptor, f as PhotonLocaleStatus, K as PhotonPageSettingsPanelDefinition, a3 as PhotonPageSettingsScope, L as PhotonSiteSettingsPanelDefinition } from './types-S6aNsw9R.js';
 import { ElementType, HTMLAttributes } from 'react';
-export { W as WebsiteBuilderLink, a as WebsiteBuilderSiteSearch, u as useWebsiteBuilder, b as useWebsiteBuilderCanEdit, c as useWebsiteBuilderI18n, d as useWebsiteBuilderRenderDepth, e as useWebsiteBuilderStore, f as useWebsiteBuilderValueAtPath } from './website-builder-site-search-DgqPIWez.js';
-export { c as createWebsiteBuilderBlockLocalizationSchema, a as createWebsiteBuilderKit, b as createWebsiteBuilderLocalizedDefault, d as createWebsiteBuilderRuntime, e as defineWebsiteBuilderBlockDefinition } from './runtime-Led5emTV.js';
-export { c as createWebsiteBuilderAccountTabExtension, a as createWebsiteBuilderSiteFrameExtension, r as resolveWebsiteBuilderAccountTabs } from './site-frame-extensions-CljWsZYY.js';
-export { g as getWebsiteBuilderSurfaceModeStyle } from './surface-layout-p8WBJh3f.js';
-export { W as WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM, a as WEBSITE_BUILDER_SEARCH_QUERY_PARAM, b as WEBSITE_BUILDER_SEARCH_TARGET_PARAM } from './constants-DenT-L3W.js';
+export { P as PhotonLink, a as PhotonSiteSearch, u as usePhoton, b as usePhotonCanEdit, c as usePhotonI18n, d as usePhotonRenderDepth, e as usePhotonStore, f as usePhotonValueAtPath } from './photon-site-search-CyOGWrWo.js';
+export { c as createPhotonBlockLocalizationSchema, a as createPhotonKit, b as createPhotonLocalizedDefault, d as createPhotonRuntime, e as definePhotonBlockDefinition } from './runtime-B8vjSNTE.js';
+export { c as createPhotonAccountTabExtension, a as createPhotonSiteFrameExtension, r as resolvePhotonAccountTabs } from './site-frame-extensions-MxazF6mP.js';
+export { g as getPhotonSurfaceModeStyle } from './surface-layout-DTo_L0tV.js';
+export { P as PHOTON_SEARCH_OCCURRENCE_PARAM, a as PHOTON_SEARCH_QUERY_PARAM, b as PHOTON_SEARCH_TARGET_PARAM } from './constants-Bu7HPDAC.js';
 import 'zustand/vanilla';
 
 type PublicEditableGalleryProps = {
@@ -76,24 +76,24 @@ type PublicEditableTextareaProps = {
 };
 declare const EditableTextarea: ({ blockId, path, className, placeholder, }: PublicEditableTextareaProps) => react_jsx_runtime.JSX.Element;
 
-declare const sanitizeWebsiteBuilderRichTextHtml: (value: string) => string;
-declare const renderWebsiteBuilderRichTextHtml: (value: string, placeholder: string) => string;
+declare const sanitizePhotonRichTextHtml: (value: string) => string;
+declare const renderPhotonRichTextHtml: (value: string, placeholder: string) => string;
 
-declare const websiteBuilderPublicSystemModule: WebsiteBuilderModule;
-declare const websiteBuilderPublicSystemKit: WebsiteBuilderInstallableKit;
+declare const photonPublicSystemModule: PhotonModule;
+declare const photonPublicSystemKit: PhotonInstallableKit;
 
-type WebsiteBuilderPublicRuntimePageValue = Pick<WebsiteBuilderResolvedPage, "page" | "document" | "resources" | "pageSettings" | "runtimeData" | "site">;
-type WebsiteBuilderPublicPageProps = {
-    page: WebsiteBuilderPublicRuntimePageValue;
-    registry: WebsiteBuilderRegistry;
-    i18n?: WebsiteBuilderI18nValue | null;
-    linkComponent?: WebsiteBuilderLinkComponent;
-    siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
-    accountTabs?: WebsiteBuilderAccountTabExtension[];
+type PhotonPublicRuntimePageValue = Pick<PhotonResolvedPage, "page" | "document" | "resources" | "pageSettings" | "runtimeData" | "site">;
+type PhotonPublicPageProps = {
+    page: PhotonPublicRuntimePageValue;
+    registry: PhotonRegistry;
+    i18n?: PhotonI18nValue | null;
+    linkComponent?: PhotonLinkComponent;
+    siteFrameExtensions?: PhotonSiteFrameExtension[];
+    accountTabs?: PhotonAccountTabExtension[];
     requestAuth?: () => void;
-    searchSite?: WebsiteBuilderSearchHandler;
-    activeSearchHighlight?: WebsiteBuilderSearchHighlight | null;
+    searchSite?: PhotonSearchHandler;
+    activeSearchHighlight?: PhotonSearchHighlight | null;
 };
-declare const WebsiteBuilderPublicPage: ({ page, registry, i18n, linkComponent, siteFrameExtensions, accountTabs, requestAuth, searchSite, activeSearchHighlight, }: WebsiteBuilderPublicPageProps) => react_jsx_runtime.JSX.Element;
+declare const PhotonPublicPage: ({ page, registry, i18n, linkComponent, siteFrameExtensions, accountTabs, requestAuth, searchSite, activeSearchHighlight, }: PhotonPublicPageProps) => react_jsx_runtime.JSX.Element;
 
-export { EditableGallery, EditableImage, EditableRepeaterValue, EditableRichText, EditableText, EditableTextarea, WebsiteBuilderAccountTabExtension, WebsiteBuilderInstallableKit, WebsiteBuilderModule, WebsiteBuilderPublicPage, type WebsiteBuilderPublicRuntimePageValue, WebsiteBuilderSiteFrameExtension, renderWebsiteBuilderRichTextHtml, sanitizeWebsiteBuilderRichTextHtml, websiteBuilderPublicSystemKit as websiteBuilderSystemKit, websiteBuilderPublicSystemModule as websiteBuilderSystemModule };
+export { EditableGallery, EditableImage, EditableRepeaterValue, EditableRichText, EditableText, EditableTextarea, PhotonAccountTabExtension, PhotonInstallableKit, PhotonModule, PhotonPublicPage, type PhotonPublicRuntimePageValue, PhotonSiteFrameExtension, photonPublicSystemKit as photonSystemKit, photonPublicSystemModule as photonSystemModule, renderPhotonRichTextHtml, sanitizePhotonRichTextHtml };

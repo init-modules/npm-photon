@@ -9,11 +9,11 @@ import {
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
-import type { WebsiteBuilderMode } from "../../types";
+import type { PhotonMode } from "../../types";
 
 const MODE_OPTIONS: Array<{
 	label: string;
-	value: WebsiteBuilderMode;
+	value: PhotonMode;
 	icon: typeof Eye;
 }> = [
 	{ label: "Preview", value: "preview", icon: Eye },
@@ -22,8 +22,8 @@ const MODE_OPTIONS: Array<{
 ];
 
 type EditorModeSelectProps = {
-	value: WebsiteBuilderMode;
-	onChange: (mode: WebsiteBuilderMode) => void;
+	value: PhotonMode;
+	onChange: (mode: PhotonMode) => void;
 };
 
 export const EditorModeSelect = ({
@@ -33,7 +33,7 @@ export const EditorModeSelect = ({
 	const activeValue =
 		MODE_OPTIONS.find((option) => option.value === value)?.value ?? "preview";
 	const [optimisticValue, setOptimisticValue] =
-		useState<WebsiteBuilderMode>(activeValue);
+		useState<PhotonMode>(activeValue);
 	const activeOption =
 		MODE_OPTIONS.find((option) => option.value === optimisticValue) ??
 		MODE_OPTIONS[0];
@@ -52,13 +52,13 @@ export const EditorModeSelect = ({
 		<button
 			type="button"
 			aria-label="Editing mode"
-			className="inline-flex h-11 min-w-[10.25rem] cursor-pointer items-center justify-between gap-3 rounded-full border px-4 text-sm font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[border-color,background-color,box-shadow,color] duration-200 ease-out outline-none border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] text-[color:var(--wb-builder-text)] hover:border-[color:var(--wb-builder-border-strong)] hover:bg-[color:var(--wb-builder-field)] focus-visible:border-[color:var(--wb-builder-border-strong)] focus-visible:bg-[color:var(--wb-builder-accent-strong)]"
+			className="inline-flex h-11 min-w-[10.25rem] cursor-pointer items-center justify-between gap-3 rounded-full border px-4 text-sm font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[border-color,background-color,box-shadow,color] duration-200 ease-out outline-none border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] text-[color:var(--photon-builder-text)] hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-field)] focus-visible:border-[color:var(--photon-builder-border-strong)] focus-visible:bg-[color:var(--photon-builder-accent-strong)]"
 		>
 			<span className="flex min-w-0 items-center gap-2.5">
-				<ActiveIcon className="h-4 w-4 text-[color:var(--wb-builder-accent)]" />
+				<ActiveIcon className="h-4 w-4 text-[color:var(--photon-builder-accent)]" />
 				<span>{activeOption.label}</span>
 			</span>
-			<ChevronDown className="h-4 w-4 text-[color:var(--wb-builder-text-soft)] transition-transform duration-200 ease-out" />
+			<ChevronDown className="h-4 w-4 text-[color:var(--photon-builder-text-soft)] transition-transform duration-200 ease-out" />
 		</button>
 	);
 
@@ -73,7 +73,7 @@ export const EditorModeSelect = ({
 				<DropdownMenuRadioGroup
 					value={optimisticValue}
 					onValueChange={(nextMode) => {
-						const resolvedMode = nextMode as WebsiteBuilderMode;
+						const resolvedMode = nextMode as PhotonMode;
 						setOptimisticValue(resolvedMode);
 						onChange(resolvedMode);
 					}}
@@ -84,7 +84,7 @@ export const EditorModeSelect = ({
 						return (
 							<DropdownMenuRadioItem key={option.value} value={option.value}>
 								<span className="flex items-center gap-2.5">
-									<OptionIcon className="h-4 w-4 text-[color:var(--wb-builder-accent)]" />
+									<OptionIcon className="h-4 w-4 text-[color:var(--photon-builder-accent)]" />
 									<span>{option.label}</span>
 								</span>
 							</DropdownMenuRadioItem>

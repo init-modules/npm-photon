@@ -47,7 +47,7 @@ export const createActivationProps = (
 		: {};
 
 export const builderInputClassName =
-	"w-full rounded-[24px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] px-4 py-3 text-sm text-[color:var(--wb-builder-text)] outline-none ring-0 transition placeholder:text-[color:var(--wb-builder-text-ghost)] focus:border-[color:var(--wb-builder-border-strong)]";
+	"w-full rounded-[24px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] px-4 py-3 text-sm text-[color:var(--photon-builder-text)] outline-none ring-0 transition placeholder:text-[color:var(--photon-builder-text-ghost)] focus:border-[color:var(--photon-builder-border-strong)]";
 
 export const formatMediaFileSize = (size?: number | null) => {
 	if (!size || size <= 0) {

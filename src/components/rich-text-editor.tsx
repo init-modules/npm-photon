@@ -5,9 +5,9 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import clsx from "clsx";
 import { useEffect } from "react";
-import { WEBSITE_BUILDER_EMPTY_TEXT } from "../helpers/path";
+import { PHOTON_EMPTY_TEXT } from "../helpers/path";
 
-type WebsiteBuilderRichTextEditorProps = {
+type PhotonRichTextEditorProps = {
 	value: string;
 	onChange: (value: string) => void;
 	onFocus?: () => void;
@@ -18,8 +18,8 @@ type WebsiteBuilderRichTextEditorProps = {
 	surfaceClassName?: string;
 };
 
-export const websiteBuilderRichTextContentClassName =
-	"text-[var(--wb-site-text)] [&_blockquote]:my-5 [&_blockquote]:border-l-2 [&_blockquote]:border-[var(--wb-site-border)] [&_blockquote]:pl-4 [&_blockquote]:text-[var(--wb-site-muted-text)] [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-[-0.04em] [&_h2]:text-[var(--wb-site-text)] [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:tracking-[-0.03em] [&_h3]:text-[var(--wb-site-text)] [&_li]:text-[var(--wb-site-text)] [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-8 [&_p]:text-[var(--wb-site-text)] [&_p+p]:mt-4 [&_strong]:font-semibold [&_strong]:text-[var(--wb-site-text)] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-5";
+export const photonRichTextContentClassName =
+	"text-[var(--photon-site-text)] [&_blockquote]:my-5 [&_blockquote]:border-l-2 [&_blockquote]:border-[var(--photon-site-border)] [&_blockquote]:pl-4 [&_blockquote]:text-[var(--photon-site-muted-text)] [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-[-0.04em] [&_h2]:text-[var(--photon-site-text)] [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:tracking-[-0.03em] [&_h3]:text-[var(--photon-site-text)] [&_li]:text-[var(--photon-site-text)] [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-8 [&_p]:text-[var(--photon-site-text)] [&_p+p]:mt-4 [&_strong]:font-semibold [&_strong]:text-[var(--photon-site-text)] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-5";
 
 const escapeRichTextHtml = (value: string) =>
 	value
@@ -45,13 +45,13 @@ const richTextToolbarButtonClassName = (isActive: boolean) =>
 	clsx(
 		"rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] transition",
 		isActive
-			? "border-[color:var(--wb-builder-border-strong)] bg-[color:var(--wb-builder-accent-soft)] text-[color:var(--wb-builder-accent-text)]"
-			: "border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] text-[color:var(--wb-builder-text-soft)] hover:border-[color:var(--wb-builder-border-strong)] hover:text-[color:var(--wb-builder-text)]",
+			? "border-[color:var(--photon-builder-border-strong)] bg-[color:var(--photon-builder-accent-soft)] text-[color:var(--photon-builder-accent-text)]"
+			: "border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] text-[color:var(--photon-builder-text-soft)] hover:border-[color:var(--photon-builder-border-strong)] hover:text-[color:var(--photon-builder-text)]",
 	);
 
-export const renderWebsiteBuilderRichTextHtml = (
+export const renderPhotonRichTextHtml = (
 	value: string,
-	placeholder = WEBSITE_BUILDER_EMPTY_TEXT,
+	placeholder = PHOTON_EMPTY_TEXT,
 ) => {
 	if (value.trim()) {
 		return normalizeRichTextValue(value);
@@ -60,16 +60,16 @@ export const renderWebsiteBuilderRichTextHtml = (
 	return `<p>${escapeRichTextHtml(placeholder)}</p>`;
 };
 
-export const WebsiteBuilderRichTextEditor = ({
+export const PhotonRichTextEditor = ({
 	value,
 	onChange,
 	onFocus,
 	onBlur,
 	onEscape,
-	placeholder = WEBSITE_BUILDER_EMPTY_TEXT,
+	placeholder = PHOTON_EMPTY_TEXT,
 	className,
 	surfaceClassName,
-}: WebsiteBuilderRichTextEditorProps) => {
+}: PhotonRichTextEditorProps) => {
 	const normalizedValue = normalizeRichTextValue(value);
 	const editor = useEditor({
 		immediatelyRender: false,
@@ -88,7 +88,7 @@ export const WebsiteBuilderRichTextEditor = ({
 			attributes: {
 				class: clsx(
 					"min-h-[10rem] text-inherit outline-none",
-					websiteBuilderRichTextContentClassName,
+					photonRichTextContentClassName,
 					className,
 				),
 			},
@@ -197,7 +197,7 @@ export const WebsiteBuilderRichTextEditor = ({
 
 			<div
 				className={clsx(
-					"rounded-[1.75rem] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] px-4 py-4 text-[color:var(--wb-builder-text)]",
+					"rounded-[1.75rem] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] px-4 py-4 text-[color:var(--photon-builder-text)]",
 					surfaceClassName,
 				)}
 			>

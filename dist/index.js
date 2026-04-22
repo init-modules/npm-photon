@@ -1,204 +1,204 @@
 import {
   EditableImage
-} from "./chunk-KTGPTN7J.js";
+} from "./chunk-XWBKVCN2.js";
 import {
   EditableRichText
-} from "./chunk-ANXVEJZX.js";
+} from "./chunk-FTCWOC6H.js";
 import {
   EditableText
-} from "./chunk-Y6D4BGPA.js";
+} from "./chunk-YGQQJGCV.js";
 import {
   EditableTextarea
-} from "./chunk-66WWIKR4.js";
+} from "./chunk-6FPSLTGA.js";
 import {
-  WebsiteBuilderFieldEditorList,
-  WebsiteBuilderStudio
-} from "./chunk-FNCMHNHC.js";
+  PhotonFieldEditorList,
+  PhotonStudio
+} from "./chunk-H36T2QZ5.js";
 import {
-  WebsiteBuilderRichTextEditor,
-  renderWebsiteBuilderRichTextHtml,
-  websiteBuilderRichTextContentClassName
-} from "./chunk-PVXBOLON.js";
+  PhotonRichTextEditor,
+  photonRichTextContentClassName,
+  renderPhotonRichTextHtml
+} from "./chunk-TM2YIVFS.js";
 import {
-  WebsiteBuilderSiteSearch,
+  PhotonSiteSearch,
   siteFooterShellDefinition,
   siteHeaderShellDefinition
-} from "./chunk-IVZCBRYA.js";
+} from "./chunk-SNFVUC4N.js";
 import {
   KeyboardMenuList,
-  WebsiteBuilderBlockRenderer,
-  WebsiteBuilderRenderDepthProvider,
-  WebsiteBuilderSearchHighlightEffect,
+  PhotonBlockRenderer,
+  PhotonRenderDepthProvider,
+  PhotonSearchHighlightEffect,
   useKeyboardMenuController,
-  useWebsiteBuilderRenderDepth
-} from "./chunk-4OY27MEO.js";
-import "./chunk-5SCOZJAS.js";
+  usePhotonRenderDepth
+} from "./chunk-57U64XQ4.js";
+import "./chunk-KBISSZIA.js";
 import {
-  buildWebsiteBuilderSearchResultHref,
-  buildWebsiteBuilderSearchTargetId
-} from "./chunk-VDE2PPT5.js";
+  buildPhotonSearchResultHref,
+  buildPhotonSearchTargetId
+} from "./chunk-FRFYYFDJ.js";
 import {
-  normalizeWebsiteBuilderSelectionForMode,
-  resolveWebsiteBuilderAccess,
-  resolveWebsiteBuilderMode,
-  resolveWebsiteBuilderRequestHeaders,
-  resolveWebsiteBuilderWorkspaceParams
-} from "./chunk-NIL7BFDU.js";
+  normalizePhotonSelectionForMode,
+  resolvePhotonAccess,
+  resolvePhotonMode,
+  resolvePhotonRequestHeaders,
+  resolvePhotonWorkspaceParams
+} from "./chunk-LOTB3E2O.js";
 import {
-  createWebsiteBuilderRuntime
-} from "./chunk-JBXEMZUN.js";
+  createPhotonRuntime
+} from "./chunk-HHFFJ7R4.js";
 import {
-  collectWebsiteBuilderFooterExtensionItems,
-  collectWebsiteBuilderHeaderExtensionItems,
-  createWebsiteBuilderAccountTabExtension,
-  createWebsiteBuilderSiteFrameExtension,
-  resolveWebsiteBuilderAccountTabs,
-  resolveWebsiteBuilderSiteFrameExtensions
-} from "./chunk-2UNKJB65.js";
+  collectPhotonFooterExtensionItems,
+  collectPhotonHeaderExtensionItems,
+  createPhotonAccountTabExtension,
+  createPhotonSiteFrameExtension,
+  resolvePhotonAccountTabs,
+  resolvePhotonSiteFrameExtensions
+} from "./chunk-JSXMWVKI.js";
 import {
-  getWebsiteBuilderSurfaceModeStyle
-} from "./chunk-75KJ6L3N.js";
+  getPhotonSurfaceModeStyle
+} from "./chunk-IOB5G6YT.js";
 import {
-  WEBSITE_BUILDER_DEFAULT_SITE_DESIGN_PRESET_ID,
-  WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS,
-  WEBSITE_BUILDER_SITE_DESIGN_FALLBACK_DEFAULTS,
-  applyWebsiteBuilderSiteColorScheme,
-  applyWebsiteBuilderSiteDesignPreset,
-  createWebsiteBuilderSiteDesignSettings,
-  getWebsiteBuilderSiteColorScheme,
-  getWebsiteBuilderSiteDesignPreset,
-  hasWebsiteBuilderSiteDesignPresetCustomization,
-  isWebsiteBuilderFramelessPreset,
-  isWebsiteBuilderFramelessSiteDesign,
-  isWebsiteBuilderSiteDesignPresetApplied,
-  resolveWebsiteBuilderSiteDesignSettings,
-  websiteBuilderSiteColorSchemes,
-  websiteBuilderSiteDesignPresets
-} from "./chunk-KEOML5B2.js";
+  PHOTON_DEFAULT_SITE_DESIGN_PRESET_ID,
+  PHOTON_SITE_DESIGN_DEFAULTS,
+  PHOTON_SITE_DESIGN_FALLBACK_DEFAULTS,
+  applyPhotonSiteColorScheme,
+  applyPhotonSiteDesignPreset,
+  createPhotonSiteDesignSettings,
+  getPhotonSiteColorScheme,
+  getPhotonSiteDesignPreset,
+  hasPhotonSiteDesignPresetCustomization,
+  isPhotonFramelessPreset,
+  isPhotonFramelessSiteDesign,
+  isPhotonSiteDesignPresetApplied,
+  photonSiteColorSchemes,
+  photonSiteDesignPresets,
+  resolvePhotonSiteDesignSettings
+} from "./chunk-UVEN3EYU.js";
 import {
-  WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
-  WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
-  WEBSITE_BUILDER_SEARCH_TARGET_PARAM
-} from "./chunk-HFEMF2E3.js";
+  PHOTON_SEARCH_OCCURRENCE_PARAM,
+  PHOTON_SEARCH_QUERY_PARAM,
+  PHOTON_SEARCH_TARGET_PARAM
+} from "./chunk-CZ47CC3D.js";
 import {
   EditableGallery
-} from "./chunk-CRF7Y4WX.js";
-import "./chunk-LGQN6FEA.js";
-import "./chunk-DUTVWY2H.js";
+} from "./chunk-EYJFFZTO.js";
+import "./chunk-RLJXTXGN.js";
+import "./chunk-K6EYZM4G.js";
 import {
-  isWebsiteBuilderMediaValue,
-  resolveWebsiteBuilderMediaPreviewUrl,
-  resolveWebsiteBuilderMediaUrl,
-  updateWebsiteBuilderMediaUrl
-} from "./chunk-NZ4V64SZ.js";
+  isPhotonMediaValue,
+  resolvePhotonMediaPreviewUrl,
+  resolvePhotonMediaUrl,
+  updatePhotonMediaUrl
+} from "./chunk-QQDDM7OM.js";
 import {
-  WebsiteBuilderI18nProvider,
-  WebsiteBuilderLink,
-  WebsiteBuilderProvider,
-  resolveWebsiteBuilderText,
-  useWebsiteBuilder,
-  useWebsiteBuilderCanEdit,
-  useWebsiteBuilderFieldValue,
-  useWebsiteBuilderI18n,
-  useWebsiteBuilderPersistedState,
-  useWebsiteBuilderStore,
-  useWebsiteBuilderStoreApi
-} from "./chunk-ZQJWNS6S.js";
+  PhotonI18nProvider,
+  PhotonLink,
+  PhotonProvider,
+  resolvePhotonText,
+  usePhoton,
+  usePhotonCanEdit,
+  usePhotonFieldValue,
+  usePhotonI18n,
+  usePhotonPersistedState,
+  usePhotonStore,
+  usePhotonStoreApi
+} from "./chunk-XOQNSI7G.js";
 import {
-  WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
-  collectWebsiteBuilderAccountTabs,
-  collectWebsiteBuilderDocuments,
-  collectWebsiteBuilderSiteFrameExtensions,
-  composeWebsiteBuilderSurfaceDocument,
-  createWebsiteBuilderBlock,
-  createWebsiteBuilderBlockLocalizationSchema,
-  createWebsiteBuilderKit,
-  createWebsiteBuilderLocalizationManifest,
-  createWebsiteBuilderLocalizedDefault,
-  createWebsiteBuilderRegistry,
-  decomposeWebsiteBuilderSurfaceDocument,
-  defineWebsiteBuilderBlockDefinition,
-  getFirstWebsiteBuilderSurfaceEditableBlockId,
-  getWebsiteBuilderDefinitionKey,
-  getWebsiteBuilderDocumentFingerprint,
-  getWebsiteBuilderSurfaceRegionBlocks,
-  getWebsiteBuilderSurfaceRegionListId,
-  isWebsiteBuilderInstallableKit,
-  moveWebsiteBuilderArrayItem,
-  resolveWebsiteBuilderModules,
-  resolveWebsiteBuilderSurfaceRegionDescriptors,
-  resolveWebsiteBuilderSurfaceRegionForBlockId,
-  resolveWebsiteBuilderSurfaceRegionForListId
-} from "./chunk-EN3VAWKM.js";
+  PHOTON_PAGE_SURFACE_REGION_KEY,
+  collectPhotonAccountTabs,
+  collectPhotonDocuments,
+  collectPhotonSiteFrameExtensions,
+  composePhotonSurfaceDocument,
+  createPhotonBlock,
+  createPhotonBlockLocalizationSchema,
+  createPhotonKit,
+  createPhotonLocalizationManifest,
+  createPhotonLocalizedDefault,
+  createPhotonRegistry,
+  decomposePhotonSurfaceDocument,
+  definePhotonBlockDefinition,
+  getFirstPhotonSurfaceEditableBlockId,
+  getPhotonDefinitionKey,
+  getPhotonDocumentFingerprint,
+  getPhotonSurfaceRegionBlocks,
+  getPhotonSurfaceRegionListId,
+  isPhotonInstallableKit,
+  movePhotonArrayItem,
+  resolvePhotonModules,
+  resolvePhotonSurfaceRegionDescriptors,
+  resolvePhotonSurfaceRegionForBlockId,
+  resolvePhotonSurfaceRegionForListId
+} from "./chunk-U33YWAMI.js";
 import {
-  decodeWebsiteBuilderHtmlEntities,
-  getWebsiteBuilderAnchorRel,
-  normalizeWebsiteBuilderUrlForProtocolCheck,
-  sanitizeWebsiteBuilderLinkHref
-} from "./chunk-GQSABMVW.js";
+  decodePhotonHtmlEntities,
+  getPhotonAnchorRel,
+  normalizePhotonUrlForProtocolCheck,
+  sanitizePhotonLinkHref
+} from "./chunk-V7CN23YR.js";
 import {
-  DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
-  DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
-  WEBSITE_BUILDER_EMPTY_TEXT,
-  WEBSITE_BUILDER_ROOT_LIST_ID,
-  canEditWebsiteBuilderWorkspace,
-  canSaveWebsiteBuilderWorkspace,
-  cloneWebsiteBuilderBlockTreeWithNewIds,
-  cloneWebsiteBuilderValue,
+  DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
+  DEFAULT_PHOTON_WORKSPACE_REF,
+  PHOTON_EMPTY_TEXT,
+  PHOTON_ROOT_LIST_ID,
+  canEditPhotonWorkspace,
+  canSavePhotonWorkspace,
+  clonePhotonBlockTreeWithNewIds,
+  clonePhotonValue,
   collectBlockIds,
-  createWebsiteBuilderAreaListId,
-  createWebsiteBuilderNodeId,
-  duplicateWebsiteBuilderBlockInDocument,
-  findWebsiteBuilderBlock,
-  getFirstWebsiteBuilderBlockId,
+  createPhotonAreaListId,
+  createPhotonNodeId,
+  duplicatePhotonBlockInDocument,
+  findPhotonBlock,
+  getFirstPhotonBlockId,
+  getPhotonWorkspaceIdentityKey,
+  getPhotonWorkspaceKey,
   getValueAtPath,
-  getWebsiteBuilderWorkspaceIdentityKey,
-  getWebsiteBuilderWorkspaceKey,
-  insertWebsiteBuilderBlockInDocument,
-  isWebsiteBuilderWorkspaceReadonly,
-  moveWebsiteBuilderBlockInDocument,
-  normalizeWebsiteBuilderWorkspaceCapabilities,
-  normalizeWebsiteBuilderWorkspaceDescriptor,
-  normalizeWebsiteBuilderWorkspaceRef,
-  removeWebsiteBuilderBlockFromDocument,
+  insertPhotonBlockInDocument,
+  isPhotonWorkspaceReadonly,
+  movePhotonBlockInDocument,
+  normalizePhotonWorkspaceCapabilities,
+  normalizePhotonWorkspaceDescriptor,
+  normalizePhotonWorkspaceRef,
+  removePhotonBlockFromDocument,
   setValueAtPath,
-  updateWebsiteBuilderBlockInDocument
-} from "./chunk-KUHW6SOQ.js";
+  updatePhotonBlockInDocument
+} from "./chunk-5MWE2CZQ.js";
 
 // src/helpers/register-editable-editor-loaders.ts
 var registerLoader = (key, loader) => {
-  globalThis.__websiteBuilderEditableEditorLoaders = {
-    ...globalThis.__websiteBuilderEditableEditorLoaders,
+  globalThis.__photonEditableEditorLoaders = {
+    ...globalThis.__photonEditableEditorLoaders,
     [key]: loader
   };
 };
 registerLoader(
   "gallery",
-  () => import("./editable-gallery-RQVHMIZO.js").then(
+  () => import("./editable-gallery-MI4FFM4P.js").then(
     (module) => module.EditableGallery
   )
 );
 registerLoader(
   "image",
-  () => import("./editable-image-M6R22IBX.js").then(
+  () => import("./editable-image-6RF3MWXT.js").then(
     (module) => module.EditableImage
   )
 );
 registerLoader(
   "richText",
-  () => import("./editable-rich-text-463NPRLF.js").then(
+  () => import("./editable-rich-text-GNQ4NBGO.js").then(
     (module) => module.EditableRichText
   )
 );
 registerLoader(
   "text",
-  () => import("./editable-text-UQ5CBASI.js").then(
+  () => import("./editable-text-MJE6VSHQ.js").then(
     (module) => module.EditableText
   )
 );
 registerLoader(
   "textarea",
-  () => import("./editable-textarea-FEEVUOGG.js").then(
+  () => import("./editable-textarea-RCKERRCB.js").then(
     (module) => module.EditableTextarea
   )
 );
@@ -224,16 +224,16 @@ var EditableRepeaterValue = ({
   );
 };
 
-// src/components/editable/use-website-builder-value-at-path.ts
-var useWebsiteBuilderValueAtPath = (blockId, path) => {
-  return useWebsiteBuilderFieldValue(blockId, path);
+// src/components/editable/use-photon-value-at-path.ts
+var usePhotonValueAtPath = (blockId, path) => {
+  return usePhotonFieldValue(blockId, path);
 };
 
 // src/components/surface-section.tsx
 import {
   createElement
 } from "react";
-var WebsiteBuilderSurfaceSection = ({
+var PhotonSurfaceSection = ({
   as,
   children,
   className,
@@ -241,13 +241,13 @@ var WebsiteBuilderSurfaceSection = ({
   surfaceMode = "contained"
 }) => {
   const Component = as ?? "section";
-  const surfaceStyle = getWebsiteBuilderSurfaceModeStyle(surfaceMode);
+  const surfaceStyle = getPhotonSurfaceModeStyle(surfaceMode);
   return createElement(
     Component,
     {
       className,
       style: surfaceStyle ? { ...surfaceStyle, ...style } : style,
-      "data-wb-surface-mode": surfaceMode
+      "data-photon-surface-mode": surfaceMode
     },
     children
   );
@@ -256,12 +256,12 @@ var WebsiteBuilderSurfaceSection = ({
 // src/helpers/binding.ts
 import { generateHTML, generateJSON } from "@tiptap/html";
 import StarterKit from "@tiptap/starter-kit";
-var websiteBuilderBindingExtensions = [StarterKit];
+var photonBindingExtensions = [StarterKit];
 var normalizeRichTextHtml = (value) => {
   const trimmed = value.trim();
   return trimmed === "" ? "<p></p>" : trimmed;
 };
-var createWebsiteBuilderTiptapJsonBindingAdapter = (key) => ({
+var createPhotonTiptapJsonBindingAdapter = (key) => ({
   key,
   read: (value) => {
     if (typeof value === "string") {
@@ -273,7 +273,7 @@ var createWebsiteBuilderTiptapJsonBindingAdapter = (key) => ({
     try {
       return generateHTML(
         value,
-        websiteBuilderBindingExtensions
+        photonBindingExtensions
       );
     } catch {
       return "";
@@ -286,7 +286,7 @@ var createWebsiteBuilderTiptapJsonBindingAdapter = (key) => ({
     try {
       const parsed = generateJSON(
         normalizeRichTextHtml(value),
-        websiteBuilderBindingExtensions
+        photonBindingExtensions
       );
       const blocks = Array.isArray(parsed.content) ? parsed.content : [];
       return blocks.length === 0 ? null : parsed;
@@ -305,110 +305,110 @@ var designFields = [
   {
     path: "bodyFontFamily",
     label: "Body font family",
-    labelKey: "websiteBuilder.system.design.bodyFontFamily.label",
+    labelKey: "photon.system.design.bodyFontFamily.label",
     kind: "text",
     description: "Any valid CSS font-family stack.",
-    descriptionKey: "websiteBuilder.system.design.bodyFontFamily.description"
+    descriptionKey: "photon.system.design.bodyFontFamily.description"
   },
   {
     path: "headingFontFamily",
     label: "Heading font family",
-    labelKey: "websiteBuilder.system.design.headingFontFamily.label",
+    labelKey: "photon.system.design.headingFontFamily.label",
     kind: "text",
     description: "Used by system header/footer shells and any package that opts into the shared site tokens.",
-    descriptionKey: "websiteBuilder.system.design.headingFontFamily.description"
+    descriptionKey: "photon.system.design.headingFontFamily.description"
   },
   {
     path: "backgroundColor",
     label: "Page background",
-    labelKey: "websiteBuilder.system.design.backgroundColor.label",
+    labelKey: "photon.system.design.backgroundColor.label",
     kind: "color"
   },
   {
     path: "surfaceColor",
     label: "Surface color",
-    labelKey: "websiteBuilder.system.design.surfaceColor.label",
+    labelKey: "photon.system.design.surfaceColor.label",
     kind: "color"
   },
   {
     path: "textColor",
     label: "Text color",
-    labelKey: "websiteBuilder.system.design.textColor.label",
+    labelKey: "photon.system.design.textColor.label",
     kind: "color"
   },
   {
     path: "mutedTextColor",
     label: "Muted text color",
-    labelKey: "websiteBuilder.system.design.mutedTextColor.label",
+    labelKey: "photon.system.design.mutedTextColor.label",
     kind: "color"
   },
   {
     path: "accentColor",
     label: "Accent color",
-    labelKey: "websiteBuilder.system.design.accentColor.label",
+    labelKey: "photon.system.design.accentColor.label",
     kind: "color"
   },
   {
     path: "borderColor",
     label: "Border color",
-    labelKey: "websiteBuilder.system.design.borderColor.label",
+    labelKey: "photon.system.design.borderColor.label",
     kind: "color"
   },
   {
     path: "siteMaxWidth",
     label: "Site max width",
-    labelKey: "websiteBuilder.system.design.siteMaxWidth.label",
+    labelKey: "photon.system.design.siteMaxWidth.label",
     kind: "text",
     description: "CSS width value used by the main content rail, for example 1280px or 92rem.",
-    descriptionKey: "websiteBuilder.system.design.siteMaxWidth.description"
+    descriptionKey: "photon.system.design.siteMaxWidth.description"
   },
   {
     path: "pageGutter",
     label: "Page gutter",
-    labelKey: "websiteBuilder.system.design.pageGutter.label",
+    labelKey: "photon.system.design.pageGutter.label",
     kind: "text",
     description: "Horizontal spacing applied around the live page surface.",
-    descriptionKey: "websiteBuilder.system.design.pageGutter.description"
+    descriptionKey: "photon.system.design.pageGutter.description"
   },
   {
     path: "sectionGap",
     label: "Section gap",
-    labelKey: "websiteBuilder.system.design.sectionGap.label",
+    labelKey: "photon.system.design.sectionGap.label",
     kind: "text",
     description: "Vertical spacing between top-level blocks in the page region.",
-    descriptionKey: "websiteBuilder.system.design.sectionGap.description"
+    descriptionKey: "photon.system.design.sectionGap.description"
   },
   {
     path: "radius",
     label: "Radius",
-    labelKey: "websiteBuilder.system.design.radius.label",
+    labelKey: "photon.system.design.radius.label",
     kind: "text",
     description: "Shared radius token consumed by the system shells.",
-    descriptionKey: "websiteBuilder.system.design.radius.description"
+    descriptionKey: "photon.system.design.radius.description"
   },
   {
     path: "headerOffset",
     label: "Header offset",
-    labelKey: "websiteBuilder.system.design.headerOffset.label",
+    labelKey: "photon.system.design.headerOffset.label",
     kind: "text",
     description: "Extra top offset applied to sticky site headers on top of the builder dock.",
-    descriptionKey: "websiteBuilder.system.design.headerOffset.description"
+    descriptionKey: "photon.system.design.headerOffset.description"
   }
 ];
 var summaryCardStyle = {
-  borderColor: "var(--wb-builder-border)",
-  background: "var(--wb-builder-panel-muted)",
-  color: "var(--wb-builder-text)"
+  borderColor: "var(--photon-builder-border)",
+  background: "var(--photon-builder-panel-muted)",
+  color: "var(--photon-builder-text)"
 };
 var highlightCardStyle = {
-  borderColor: "var(--wb-builder-border-strong)",
-  background: "linear-gradient(180deg, color-mix(in srgb, var(--wb-builder-accent) 10%, transparent), var(--wb-builder-panel-muted))",
-  color: "var(--wb-builder-text)"
+  borderColor: "var(--photon-builder-border-strong)",
+  background: "linear-gradient(180deg, color-mix(in srgb, var(--photon-builder-accent) 10%, transparent), var(--photon-builder-panel-muted))",
+  color: "var(--photon-builder-text)"
 };
 var badgeStyle = {
-  borderColor: "var(--wb-builder-border)",
-  background: "var(--wb-builder-panel-solid)",
-  color: "var(--wb-builder-text-soft)"
+  borderColor: "var(--photon-builder-border)",
+  background: "var(--photon-builder-panel-solid)",
+  color: "var(--photon-builder-text-soft)"
 };
 var tokenPreviewItems = [
   {
@@ -451,25 +451,25 @@ var SiteDesignSettingsPanelBody = ({
   focusField,
   viewMode
 }) => {
-  const { translate } = useWebsiteBuilderI18n();
-  const resolvedSettings = resolveWebsiteBuilderSiteDesignSettings(scopeSettings);
+  const { translate } = usePhotonI18n();
+  const resolvedSettings = resolvePhotonSiteDesignSettings(scopeSettings);
   const isAdvancedView = viewMode === "advanced";
-  const activePreset = resolvedSettings.presetId ? websiteBuilderSiteDesignPresets.find(
+  const activePreset = resolvedSettings.presetId ? photonSiteDesignPresets.find(
     (candidate) => candidate.id === resolvedSettings.presetId
   ) ?? null : null;
-  const activeColorScheme = resolvedSettings.colorSchemeId ? websiteBuilderSiteColorSchemes.find(
+  const activeColorScheme = resolvedSettings.colorSchemeId ? photonSiteColorSchemes.find(
     (candidate) => candidate.id === resolvedSettings.colorSchemeId
   ) ?? null : null;
   if (isAdvancedView) {
-    return /* @__PURE__ */ jsxs("section", { className: "space-y-4", "data-testid": "wb-design-manual-tokens", children: [
+    return /* @__PURE__ */ jsxs("section", { className: "space-y-4", "data-testid": "photon-design-manual-tokens", children: [
       /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
         /* @__PURE__ */ jsx2(
           "div",
           {
             className: "text-sm font-semibold",
-            style: { color: "var(--wb-builder-text)" },
+            style: { color: "var(--photon-builder-text)" },
             children: translate(
-              "websiteBuilder.system.design.manual.sectionTitle",
+              "photon.system.design.manual.sectionTitle",
               "Manual tokens"
             )
           }
@@ -478,16 +478,16 @@ var SiteDesignSettingsPanelBody = ({
           "div",
           {
             className: "text-sm leading-6",
-            style: { color: "var(--wb-builder-text-muted)" },
+            style: { color: "var(--photon-builder-text-muted)" },
             children: translate(
-              "websiteBuilder.system.design.manual.sectionDescription",
+              "photon.system.design.manual.sectionDescription",
               "Edit the active profile tokens directly here. These overrides live inside the selected profile branch and revision."
             )
           }
         )
       ] }),
       /* @__PURE__ */ jsx2(
-        WebsiteBuilderFieldEditorList,
+        PhotonFieldEditorList,
         {
           fields: designFields,
           subjectId: "site-design-settings",
@@ -498,7 +498,7 @@ var SiteDesignSettingsPanelBody = ({
       )
     ] });
   }
-  return /* @__PURE__ */ jsxs("div", { className: "space-y-6", "data-testid": "wb-design-profile-source-summary", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "space-y-6", "data-testid": "photon-design-profile-source-summary", children: [
     /* @__PURE__ */ jsxs(
       "section",
       {
@@ -510,9 +510,9 @@ var SiteDesignSettingsPanelBody = ({
               "div",
               {
                 className: "text-sm font-semibold",
-                style: { color: "var(--wb-builder-text)" },
+                style: { color: "var(--photon-builder-text)" },
                 children: translate(
-                  "websiteBuilder.system.design.profileSource.sectionTitle",
+                  "photon.system.design.profileSource.sectionTitle",
                   "Profile source"
                 )
               }
@@ -521,9 +521,9 @@ var SiteDesignSettingsPanelBody = ({
               "div",
               {
                 className: "text-sm leading-6",
-                style: { color: "var(--wb-builder-text-muted)" },
+                style: { color: "var(--photon-builder-text-muted)" },
                 children: translate(
-                  "websiteBuilder.system.design.profileSource.sectionDescription",
+                  "photon.system.design.profileSource.sectionDescription",
                   "Starter presets and design templates are chosen when a website profile is created. This tab shows the current profile source metadata, while token editing lives in Advanced Design."
                 )
               }
@@ -535,15 +535,15 @@ var SiteDesignSettingsPanelBody = ({
               {
                 className: "rounded-[22px] border p-4",
                 style: summaryCardStyle,
-                "data-testid": "wb-design-source-preset",
+                "data-testid": "photon-design-source-preset",
                 children: [
                   /* @__PURE__ */ jsx2(
                     "div",
                     {
                       className: "text-[11px] uppercase tracking-[0.28em]",
-                      style: { color: "var(--wb-builder-text-soft)" },
+                      style: { color: "var(--photon-builder-text-soft)" },
                       children: translate(
-                        "websiteBuilder.system.design.profileSource.presetLabel",
+                        "photon.system.design.profileSource.presetLabel",
                         "Starter preset"
                       )
                     }
@@ -552,9 +552,9 @@ var SiteDesignSettingsPanelBody = ({
                     "div",
                     {
                       className: "mt-3 text-lg font-semibold",
-                      style: { color: "var(--wb-builder-text)" },
+                      style: { color: "var(--photon-builder-text)" },
                       children: activePreset?.label ?? translate(
-                        "websiteBuilder.system.design.profileSource.blankPreset",
+                        "photon.system.design.profileSource.blankPreset",
                         "Blank or migrated profile"
                       )
                     }
@@ -563,9 +563,9 @@ var SiteDesignSettingsPanelBody = ({
                     "div",
                     {
                       className: "mt-2 text-sm leading-6",
-                      style: { color: "var(--wb-builder-text-muted)" },
+                      style: { color: "var(--photon-builder-text-muted)" },
                       children: activePreset?.description ?? translate(
-                        "websiteBuilder.system.design.profileSource.blankPresetDescription",
+                        "photon.system.design.profileSource.blankPresetDescription",
                         "This profile has no starter preset metadata. Its current appearance is defined entirely by the stored design tokens below and the active branch history."
                       )
                     }
@@ -575,13 +575,13 @@ var SiteDesignSettingsPanelBody = ({
                       DetailBadge,
                       {
                         label: activePreset?.appearance === "dark" ? translate(
-                          "websiteBuilder.system.design.appearance.dark",
+                          "photon.system.design.appearance.dark",
                           "Dark"
                         ) : activePreset?.appearance === "light" ? translate(
-                          "websiteBuilder.system.design.appearance.light",
+                          "photon.system.design.appearance.light",
                           "Light"
                         ) : translate(
-                          "websiteBuilder.system.design.profileSource.customized",
+                          "photon.system.design.profileSource.customized",
                           "Custom"
                         )
                       }
@@ -597,15 +597,15 @@ var SiteDesignSettingsPanelBody = ({
               {
                 className: "rounded-[22px] border p-4",
                 style: summaryCardStyle,
-                "data-testid": "wb-design-source-color-scheme",
+                "data-testid": "photon-design-source-color-scheme",
                 children: [
                   /* @__PURE__ */ jsx2(
                     "div",
                     {
                       className: "text-[11px] uppercase tracking-[0.28em]",
-                      style: { color: "var(--wb-builder-text-soft)" },
+                      style: { color: "var(--photon-builder-text-soft)" },
                       children: translate(
-                        "websiteBuilder.system.design.profileSource.schemeLabel",
+                        "photon.system.design.profileSource.schemeLabel",
                         "Stored palette"
                       )
                     }
@@ -614,9 +614,9 @@ var SiteDesignSettingsPanelBody = ({
                     "div",
                     {
                       className: "mt-3 text-lg font-semibold",
-                      style: { color: "var(--wb-builder-text)" },
+                      style: { color: "var(--photon-builder-text)" },
                       children: activeColorScheme?.label ?? translate(
-                        "websiteBuilder.system.design.profileSource.customPalette",
+                        "photon.system.design.profileSource.customPalette",
                         "Manual palette"
                       )
                     }
@@ -625,9 +625,9 @@ var SiteDesignSettingsPanelBody = ({
                     "div",
                     {
                       className: "mt-2 text-sm leading-6",
-                      style: { color: "var(--wb-builder-text-muted)" },
+                      style: { color: "var(--photon-builder-text-muted)" },
                       children: activeColorScheme?.description ?? translate(
-                        "websiteBuilder.system.design.profileSource.customPaletteDescription",
+                        "photon.system.design.profileSource.customPaletteDescription",
                         "The current branch stores color tokens directly, so no named palette is attached to this profile state."
                       )
                     }
@@ -636,7 +636,7 @@ var SiteDesignSettingsPanelBody = ({
                     "div",
                     {
                       className: "mt-4 flex flex-wrap gap-2",
-                      "data-testid": "wb-design-runtime-palette",
+                      "data-testid": "photon-design-runtime-palette",
                       children: tokenPreviewItems.map(({ key, label }) => /* @__PURE__ */ jsxs(
                         "span",
                         {
@@ -649,7 +649,7 @@ var SiteDesignSettingsPanelBody = ({
                                 className: "h-3 w-3 rounded-full border",
                                 style: {
                                   backgroundColor: resolvedSettings[key],
-                                  borderColor: "var(--wb-builder-border)"
+                                  borderColor: "var(--photon-builder-border)"
                                 }
                               }
                             ),
@@ -672,15 +672,15 @@ var SiteDesignSettingsPanelBody = ({
       {
         className: "rounded-[24px] border p-4 sm:p-5",
         style: summaryCardStyle,
-        "data-testid": "wb-design-workspace-guidance",
+        "data-testid": "photon-design-workspace-guidance",
         children: [
           /* @__PURE__ */ jsx2(
             "div",
             {
               className: "text-sm font-semibold",
-              style: { color: "var(--wb-builder-text)" },
+              style: { color: "var(--photon-builder-text)" },
               children: translate(
-                "websiteBuilder.system.design.workspaceGuidance.title",
+                "photon.system.design.workspaceGuidance.title",
                 "How to change the source"
               )
             }
@@ -689,9 +689,9 @@ var SiteDesignSettingsPanelBody = ({
             "div",
             {
               className: "mt-2 text-sm leading-6",
-              style: { color: "var(--wb-builder-text-muted)" },
+              style: { color: "var(--photon-builder-text-muted)" },
               children: translate(
-                "websiteBuilder.system.design.workspaceGuidance.description",
+                "photon.system.design.workspaceGuidance.description",
                 "To start from another preset or immutable design template, create a new website profile from the workspace panel. To evolve the current profile, keep editing the stored tokens in Advanced Design."
               )
             }
@@ -704,9 +704,9 @@ var SiteDesignSettingsPanelBody = ({
 var siteDesignSettingsPanel = {
   key: "design",
   label: "Design",
-  labelKey: "websiteBuilder.system.design.panel.label",
+  labelKey: "photon.system.design.panel.label",
   description: "Profile source metadata and stored runtime design tokens for the current branch.",
-  descriptionKey: "websiteBuilder.system.design.panel.description",
+  descriptionKey: "photon.system.design.panel.description",
   order: 10,
   component: (props) => /* @__PURE__ */ jsx2(SiteDesignSettingsPanelBody, { ...props })
 };
@@ -728,25 +728,25 @@ var SplitLayout = ({
   block,
   renderArea
 }) => {
-  const mode = useWebsiteBuilderStore((state) => state.mode);
-  const siteDesign = useWebsiteBuilderStore(
+  const mode = usePhotonStore((state) => state.mode);
+  const siteDesign = usePhotonStore(
     (state) => state.site.settings.design
   );
   const columns = block.props.columns ?? [];
   const areas = block.areas ?? [];
   const templateColumns = areas.map((area, index) => getColumnConfig(columns, area, index).width).join(" ");
   const surface = surfaceStyles[block.props.surface] ?? surfaceStyles.glass;
-  const framelessSurface = isWebsiteBuilderFramelessSiteDesign(siteDesign);
+  const framelessSurface = isPhotonFramelessSiteDesign(siteDesign);
   const stickyPreviewEnabled = mode !== "builder";
   return /* @__PURE__ */ jsxs2(
     "section",
     {
       className: clsx(
         "min-w-0 px-6 py-8 sm:px-8 sm:py-10",
-        framelessSurface ? "rounded-none border-0 bg-transparent text-[var(--wb-site-text)] shadow-none" : "rounded-[38px] border shadow-[0_28px_90px_rgba(2,12,27,0.16)]",
+        framelessSurface ? "rounded-none border-0 bg-transparent text-[var(--photon-site-text)] shadow-none" : "rounded-[38px] border shadow-[0_28px_90px_rgba(2,12,27,0.16)]",
         !framelessSurface && surface
       ),
-      style: framelessSurface ? getWebsiteBuilderSurfaceModeStyle("bleed") : void 0,
+      style: framelessSurface ? getPhotonSurfaceModeStyle("bleed") : void 0,
       children: [
         /* @__PURE__ */ jsxs2("div", { className: "max-w-3xl", children: [
           /* @__PURE__ */ jsx3(
@@ -756,7 +756,7 @@ var SplitLayout = ({
               path: "eyebrow",
               className: clsx(
                 "text-[11px] font-semibold uppercase tracking-[0.3em]",
-                framelessSurface ? "text-[var(--wb-site-muted)]" : block.props.surface === "bright" ? "text-slate-500" : "text-cyan-100/70"
+                framelessSurface ? "text-[var(--photon-site-muted)]" : block.props.surface === "bright" ? "text-slate-500" : "text-cyan-100/70"
               )
             }
           ),
@@ -768,7 +768,7 @@ var SplitLayout = ({
               as: "h2",
               className: clsx(
                 "mt-4 block text-balance text-3xl font-semibold leading-[1.04] tracking-[-0.05em] sm:text-4xl xl:text-5xl",
-                framelessSurface ? "text-[var(--wb-site-text)]" : block.props.surface === "bright" ? "text-slate-950" : "text-white"
+                framelessSurface ? "text-[var(--photon-site-text)]" : block.props.surface === "bright" ? "text-slate-950" : "text-white"
               )
             }
           ),
@@ -779,7 +779,7 @@ var SplitLayout = ({
               path: "body",
               className: clsx(
                 "mt-5 text-base leading-8",
-                framelessSurface ? "text-[var(--wb-site-muted)]" : block.props.surface === "bright" ? "text-slate-600" : "text-slate-300"
+                framelessSurface ? "text-[var(--photon-site-muted)]" : block.props.surface === "bright" ? "text-slate-600" : "text-slate-300"
               )
             }
           )
@@ -787,10 +787,10 @@ var SplitLayout = ({
         /* @__PURE__ */ jsx3(
           "div",
           {
-            className: "mt-8 grid grid-cols-1 items-start gap-[var(--wb-layout-gap)] lg:[grid-template-columns:var(--wb-layout-columns)]",
+            className: "mt-8 grid grid-cols-1 items-start gap-[var(--photon-layout-gap)] lg:[grid-template-columns:var(--photon-layout-columns)]",
             style: {
-              "--wb-layout-columns": templateColumns || "minmax(0,1fr)",
-              "--wb-layout-gap": `${block.props.gap || 24}px`
+              "--photon-layout-columns": templateColumns || "minmax(0,1fr)",
+              "--photon-layout-gap": `${block.props.gap || 24}px`
             },
             children: areas.map((area, index) => {
               const column = getColumnConfig(columns, area, index);
@@ -802,7 +802,7 @@ var SplitLayout = ({
                     column.sticky && stickyPreviewEnabled && "lg:sticky lg:self-start"
                   ),
                   style: column.sticky && stickyPreviewEnabled ? {
-                    top: "calc(var(--wb-dock-offset, 0px) + var(--wb-site-header-offset, 0px) + var(--wb-site-header-height, 0px) + 0.75rem)"
+                    top: "calc(var(--photon-dock-offset, 0px) + var(--photon-site-header-offset, 0px) + var(--photon-site-header-height, 0px) + 0.75rem)"
                   } : void 0,
                   children: /* @__PURE__ */ jsxs2(
                     "div",
@@ -817,7 +817,7 @@ var SplitLayout = ({
                           {
                             className: clsx(
                               "mb-4 text-[11px] font-semibold uppercase tracking-[0.28em]",
-                              framelessSurface ? "text-[var(--wb-site-muted)]" : block.props.surface === "bright" ? "text-slate-500" : "text-white/40"
+                              framelessSurface ? "text-[var(--photon-site-muted)]" : block.props.surface === "bright" ? "text-slate-500" : "text-white/40"
                             ),
                             children: column.label
                           }
@@ -938,32 +938,32 @@ var splitLayoutFields = [
     localization: "shared"
   }
 ];
-var websiteBuilderSystemModule = {
-  module: "website-builder-system",
-  label: "Website Builder System",
-  labelKey: "websiteBuilder.system.module.label",
+var photonSystemModule = {
+  module: "photon-system",
+  label: "Photon System",
+  labelKey: "photon.system.module.label",
   version: "0.2.0",
   blocks: [
     siteHeaderShellDefinition,
     siteFooterShellDefinition,
-    defineWebsiteBuilderBlockDefinition({
+    definePhotonBlockDefinition({
       type: "split-layout",
       label: "Split Layout",
-      labelKey: "websiteBuilder.system.splitLayout.label",
+      labelKey: "photon.system.splitLayout.label",
       description: "Nested horizontal layout container with independent sticky columns and stackable child blocks.",
-      descriptionKey: "websiteBuilder.system.splitLayout.description",
+      descriptionKey: "photon.system.splitLayout.description",
       category: "Layout",
       icon: "layout-grid",
       defaults: {
-        eyebrow: createWebsiteBuilderLocalizedDefault({
+        eyebrow: createPhotonLocalizedDefault({
           en: "Layout system",
           ru: "\u0421\u0438\u0441\u0442\u0435\u043C\u0430 layout-\u0431\u043B\u043E\u043A\u043E\u0432"
         }),
-        title: createWebsiteBuilderLocalizedDefault({
+        title: createPhotonLocalizedDefault({
           en: "Compose horizontal sections without leaving the live page",
           ru: "\u0421\u043E\u0431\u0438\u0440\u0430\u0439\u0442\u0435 \u0433\u043E\u0440\u0438\u0437\u043E\u043D\u0442\u0430\u043B\u044C\u043D\u044B\u0435 \u0441\u0435\u043A\u0446\u0438\u0438 \u043F\u0440\u044F\u043C\u043E \u043D\u0430 \u0436\u0438\u0432\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435"
         }),
-        body: createWebsiteBuilderLocalizedDefault({
+        body: createPhotonLocalizedDefault({
           en: "Use nested layout containers to pin one side, stack blocks on the other and tune widths directly from the inspector.",
           ru: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435 \u0432\u043B\u043E\u0436\u0435\u043D\u043D\u044B\u0435 layout-\u043A\u043E\u043D\u0442\u0435\u0439\u043D\u0435\u0440\u044B, \u0447\u0442\u043E\u0431\u044B \u0437\u0430\u0444\u0438\u043A\u0441\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u043E\u0434\u043D\u0443 \u043A\u043E\u043B\u043E\u043D\u043A\u0443, \u0441\u043E\u0431\u0440\u0430\u0442\u044C \u0441\u0442\u0435\u043A \u0431\u043B\u043E\u043A\u043E\u0432 \u0432\u043E \u0432\u0442\u043E\u0440\u043E\u0439 \u0438 \u043D\u0430\u0441\u0442\u0440\u0430\u0438\u0432\u0430\u0442\u044C \u0448\u0438\u0440\u0438\u043D\u044B \u043F\u0440\u044F\u043C\u043E \u0438\u0437 \u0438\u043D\u0441\u043F\u0435\u043A\u0442\u043E\u0440\u0430."
         }),
@@ -1002,14 +1002,14 @@ var websiteBuilderSystemModule = {
   ],
   siteSettingsPanels: [siteDesignSettingsPanel]
 };
-var websiteBuilderSystemKit = createWebsiteBuilderKit({
-  key: "website-builder-system",
-  label: "Website Builder System",
-  modules: [websiteBuilderSystemModule]
+var photonSystemKit = createPhotonKit({
+  key: "photon-system",
+  label: "Photon System",
+  modules: [photonSystemModule]
 });
 export {
-  DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
-  DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
+  DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
+  DEFAULT_PHOTON_WORKSPACE_REF,
   EditableGallery,
   EditableImage,
   EditableRepeaterValue,
@@ -1017,120 +1017,120 @@ export {
   EditableText,
   EditableTextarea,
   KeyboardMenuList,
-  WEBSITE_BUILDER_DEFAULT_SITE_DESIGN_PRESET_ID,
-  WEBSITE_BUILDER_EMPTY_TEXT,
-  WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
-  WEBSITE_BUILDER_ROOT_LIST_ID,
-  WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
-  WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
-  WEBSITE_BUILDER_SEARCH_TARGET_PARAM,
-  WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS,
-  WEBSITE_BUILDER_SITE_DESIGN_FALLBACK_DEFAULTS,
-  WebsiteBuilderBlockRenderer,
-  WebsiteBuilderFieldEditorList,
-  WebsiteBuilderI18nProvider,
-  WebsiteBuilderLink,
-  WebsiteBuilderProvider,
-  WebsiteBuilderRenderDepthProvider,
-  WebsiteBuilderRichTextEditor,
-  WebsiteBuilderSearchHighlightEffect,
-  WebsiteBuilderSiteSearch,
-  WebsiteBuilderStudio,
-  WebsiteBuilderSurfaceSection,
-  applyWebsiteBuilderSiteColorScheme,
-  applyWebsiteBuilderSiteDesignPreset,
-  buildWebsiteBuilderSearchResultHref,
-  buildWebsiteBuilderSearchTargetId,
-  canEditWebsiteBuilderWorkspace,
-  canSaveWebsiteBuilderWorkspace,
-  cloneWebsiteBuilderBlockTreeWithNewIds,
-  cloneWebsiteBuilderValue,
+  PHOTON_DEFAULT_SITE_DESIGN_PRESET_ID,
+  PHOTON_EMPTY_TEXT,
+  PHOTON_PAGE_SURFACE_REGION_KEY,
+  PHOTON_ROOT_LIST_ID,
+  PHOTON_SEARCH_OCCURRENCE_PARAM,
+  PHOTON_SEARCH_QUERY_PARAM,
+  PHOTON_SEARCH_TARGET_PARAM,
+  PHOTON_SITE_DESIGN_DEFAULTS,
+  PHOTON_SITE_DESIGN_FALLBACK_DEFAULTS,
+  PhotonBlockRenderer,
+  PhotonFieldEditorList,
+  PhotonI18nProvider,
+  PhotonLink,
+  PhotonProvider,
+  PhotonRenderDepthProvider,
+  PhotonRichTextEditor,
+  PhotonSearchHighlightEffect,
+  PhotonSiteSearch,
+  PhotonStudio,
+  PhotonSurfaceSection,
+  applyPhotonSiteColorScheme,
+  applyPhotonSiteDesignPreset,
+  buildPhotonSearchResultHref,
+  buildPhotonSearchTargetId,
+  canEditPhotonWorkspace,
+  canSavePhotonWorkspace,
+  clonePhotonBlockTreeWithNewIds,
+  clonePhotonValue,
   collectBlockIds,
-  collectWebsiteBuilderAccountTabs,
-  collectWebsiteBuilderDocuments,
-  collectWebsiteBuilderFooterExtensionItems,
-  collectWebsiteBuilderHeaderExtensionItems,
-  collectWebsiteBuilderSiteFrameExtensions,
-  composeWebsiteBuilderSurfaceDocument,
-  createWebsiteBuilderAccountTabExtension,
-  createWebsiteBuilderAreaListId,
-  createWebsiteBuilderBlock,
-  createWebsiteBuilderBlockLocalizationSchema,
-  createWebsiteBuilderKit,
-  createWebsiteBuilderLocalizationManifest,
-  createWebsiteBuilderLocalizedDefault,
-  createWebsiteBuilderNodeId,
-  createWebsiteBuilderRegistry,
-  createWebsiteBuilderRuntime,
-  createWebsiteBuilderSiteDesignSettings,
-  createWebsiteBuilderSiteFrameExtension,
-  createWebsiteBuilderTiptapJsonBindingAdapter,
-  decodeWebsiteBuilderHtmlEntities,
-  decomposeWebsiteBuilderSurfaceDocument,
-  defineWebsiteBuilderBlockDefinition,
-  duplicateWebsiteBuilderBlockInDocument,
-  findWebsiteBuilderBlock,
-  getFirstWebsiteBuilderBlockId,
-  getFirstWebsiteBuilderSurfaceEditableBlockId,
+  collectPhotonAccountTabs,
+  collectPhotonDocuments,
+  collectPhotonFooterExtensionItems,
+  collectPhotonHeaderExtensionItems,
+  collectPhotonSiteFrameExtensions,
+  composePhotonSurfaceDocument,
+  createPhotonAccountTabExtension,
+  createPhotonAreaListId,
+  createPhotonBlock,
+  createPhotonBlockLocalizationSchema,
+  createPhotonKit,
+  createPhotonLocalizationManifest,
+  createPhotonLocalizedDefault,
+  createPhotonNodeId,
+  createPhotonRegistry,
+  createPhotonRuntime,
+  createPhotonSiteDesignSettings,
+  createPhotonSiteFrameExtension,
+  createPhotonTiptapJsonBindingAdapter,
+  decodePhotonHtmlEntities,
+  decomposePhotonSurfaceDocument,
+  definePhotonBlockDefinition,
+  duplicatePhotonBlockInDocument,
+  findPhotonBlock,
+  getFirstPhotonBlockId,
+  getFirstPhotonSurfaceEditableBlockId,
+  getPhotonAnchorRel,
+  getPhotonDefinitionKey,
+  getPhotonDocumentFingerprint,
+  getPhotonSiteColorScheme,
+  getPhotonSiteDesignPreset,
+  getPhotonSurfaceModeStyle,
+  getPhotonSurfaceRegionBlocks,
+  getPhotonSurfaceRegionListId,
+  getPhotonWorkspaceIdentityKey,
+  getPhotonWorkspaceKey,
   getValueAtPath,
-  getWebsiteBuilderAnchorRel,
-  getWebsiteBuilderDefinitionKey,
-  getWebsiteBuilderDocumentFingerprint,
-  getWebsiteBuilderSiteColorScheme,
-  getWebsiteBuilderSiteDesignPreset,
-  getWebsiteBuilderSurfaceModeStyle,
-  getWebsiteBuilderSurfaceRegionBlocks,
-  getWebsiteBuilderSurfaceRegionListId,
-  getWebsiteBuilderWorkspaceIdentityKey,
-  getWebsiteBuilderWorkspaceKey,
-  hasWebsiteBuilderSiteDesignPresetCustomization,
-  insertWebsiteBuilderBlockInDocument,
-  isWebsiteBuilderFramelessPreset,
-  isWebsiteBuilderFramelessSiteDesign,
-  isWebsiteBuilderInstallableKit,
-  isWebsiteBuilderMediaValue,
-  isWebsiteBuilderSiteDesignPresetApplied,
-  isWebsiteBuilderWorkspaceReadonly,
-  moveWebsiteBuilderArrayItem,
-  moveWebsiteBuilderBlockInDocument,
-  normalizeWebsiteBuilderSelectionForMode,
-  normalizeWebsiteBuilderUrlForProtocolCheck,
-  normalizeWebsiteBuilderWorkspaceCapabilities,
-  normalizeWebsiteBuilderWorkspaceDescriptor,
-  normalizeWebsiteBuilderWorkspaceRef,
-  removeWebsiteBuilderBlockFromDocument,
-  renderWebsiteBuilderRichTextHtml,
-  resolveWebsiteBuilderAccess,
-  resolveWebsiteBuilderAccountTabs,
-  resolveWebsiteBuilderMediaPreviewUrl,
-  resolveWebsiteBuilderMediaUrl,
-  resolveWebsiteBuilderMode,
-  resolveWebsiteBuilderModules,
-  resolveWebsiteBuilderRequestHeaders,
-  resolveWebsiteBuilderSiteDesignSettings,
-  resolveWebsiteBuilderSiteFrameExtensions,
-  resolveWebsiteBuilderSurfaceRegionDescriptors,
-  resolveWebsiteBuilderSurfaceRegionForBlockId,
-  resolveWebsiteBuilderSurfaceRegionForListId,
-  resolveWebsiteBuilderText,
-  resolveWebsiteBuilderWorkspaceParams,
-  sanitizeWebsiteBuilderLinkHref,
+  hasPhotonSiteDesignPresetCustomization,
+  insertPhotonBlockInDocument,
+  isPhotonFramelessPreset,
+  isPhotonFramelessSiteDesign,
+  isPhotonInstallableKit,
+  isPhotonMediaValue,
+  isPhotonSiteDesignPresetApplied,
+  isPhotonWorkspaceReadonly,
+  movePhotonArrayItem,
+  movePhotonBlockInDocument,
+  normalizePhotonSelectionForMode,
+  normalizePhotonUrlForProtocolCheck,
+  normalizePhotonWorkspaceCapabilities,
+  normalizePhotonWorkspaceDescriptor,
+  normalizePhotonWorkspaceRef,
+  photonRichTextContentClassName,
+  photonSiteColorSchemes,
+  photonSiteDesignPresets,
+  photonSystemKit,
+  photonSystemModule,
+  removePhotonBlockFromDocument,
+  renderPhotonRichTextHtml,
+  resolvePhotonAccess,
+  resolvePhotonAccountTabs,
+  resolvePhotonMediaPreviewUrl,
+  resolvePhotonMediaUrl,
+  resolvePhotonMode,
+  resolvePhotonModules,
+  resolvePhotonRequestHeaders,
+  resolvePhotonSiteDesignSettings,
+  resolvePhotonSiteFrameExtensions,
+  resolvePhotonSurfaceRegionDescriptors,
+  resolvePhotonSurfaceRegionForBlockId,
+  resolvePhotonSurfaceRegionForListId,
+  resolvePhotonText,
+  resolvePhotonWorkspaceParams,
+  sanitizePhotonLinkHref,
   setValueAtPath,
-  updateWebsiteBuilderBlockInDocument,
-  updateWebsiteBuilderMediaUrl,
+  updatePhotonBlockInDocument,
+  updatePhotonMediaUrl,
   useKeyboardMenuController,
-  useWebsiteBuilder,
-  useWebsiteBuilderCanEdit,
-  useWebsiteBuilderFieldValue,
-  useWebsiteBuilderI18n,
-  useWebsiteBuilderPersistedState,
-  useWebsiteBuilderRenderDepth,
-  useWebsiteBuilderStore,
-  useWebsiteBuilderStoreApi,
-  useWebsiteBuilderValueAtPath,
-  websiteBuilderRichTextContentClassName,
-  websiteBuilderSiteColorSchemes,
-  websiteBuilderSiteDesignPresets,
-  websiteBuilderSystemKit,
-  websiteBuilderSystemModule
+  usePhoton,
+  usePhotonCanEdit,
+  usePhotonFieldValue,
+  usePhotonI18n,
+  usePhotonPersistedState,
+  usePhotonRenderDepth,
+  usePhotonStore,
+  usePhotonStoreApi,
+  usePhotonValueAtPath
 };

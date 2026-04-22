@@ -18,11 +18,11 @@ export const DropdownMenuRadioItem = forwardRef<
 			ref={ref}
 			data-slot="dropdown-menu-radio-item"
 			className={cn(
-				"relative flex cursor-pointer select-none items-center justify-between gap-3 rounded-[1rem] py-2.5 pl-3 pr-9 text-sm font-semibold outline-none transition-colors duration-150 data-[disabled]:pointer-events-none data-[disabled]:opacity-45 data-[highlighted]:bg-[var(--wb-builder-accent-strong)] data-[highlighted]:text-[var(--wb-builder-text)]",
+				"relative flex cursor-pointer select-none items-center justify-between gap-3 rounded-[1rem] py-2.5 pl-3 pr-9 text-sm font-semibold outline-none transition-colors duration-150 data-[disabled]:pointer-events-none data-[disabled]:opacity-45 data-[highlighted]:bg-[var(--photon-builder-accent-strong)] data-[highlighted]:text-[var(--photon-builder-text)]",
 				className,
 			)}
 			style={{
-				color: "var(--wb-builder-text-muted)",
+				color: "var(--photon-builder-text-muted)",
 			}}
 			{...props}
 		>
@@ -31,7 +31,7 @@ export const DropdownMenuRadioItem = forwardRef<
 				<DropdownMenuPrimitive.ItemIndicator>
 					<Check
 						className="h-4 w-4"
-						style={{ color: "var(--wb-builder-accent)" }}
+						style={{ color: "var(--photon-builder-accent)" }}
 					/>
 				</DropdownMenuPrimitive.ItemIndicator>
 			</span>

@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import {
-	isWebsiteBuilderMediaValue,
-	resolveWebsiteBuilderMediaPreviewUrl,
-	resolveWebsiteBuilderMediaUrl,
-	updateWebsiteBuilderMediaUrl,
+	isPhotonMediaValue,
+	resolvePhotonMediaPreviewUrl,
+	resolvePhotonMediaUrl,
+	updatePhotonMediaUrl,
 } from "../../helpers/media";
-import type { WebsiteBuilderMediaUploadHandler } from "../../types";
+import type { PhotonMediaUploadHandler } from "../../types";
 import { inputClassName } from "../shared";
 import { formatMediaFileSize } from "./shared";
 
@@ -19,7 +19,7 @@ type ImageFieldEditorProps = {
 	value: unknown;
 	onFocus: () => void;
 	onApply: (value: unknown) => void;
-	onUpload?: WebsiteBuilderMediaUploadHandler;
+	onUpload?: PhotonMediaUploadHandler;
 };
 
 export const ImageFieldEditor = ({
@@ -32,20 +32,20 @@ export const ImageFieldEditor = ({
 	onUpload,
 }: ImageFieldEditorProps) => {
 	const [isUploading, setIsUploading] = useState(false);
-	const source = resolveWebsiteBuilderMediaPreviewUrl(value);
-	const mediaValue = isWebsiteBuilderMediaValue(value) ? value : null;
+	const source = resolvePhotonMediaPreviewUrl(value);
+	const mediaValue = isPhotonMediaValue(value) ? value : null;
 
 	return (
 		<div className="space-y-3">
 			<div
 				className="overflow-hidden rounded-[24px] border"
 				style={{
-					borderColor: "var(--wb-builder-border)",
+					borderColor: "var(--photon-builder-border)",
 					background:
-						"linear-gradient(180deg, var(--wb-builder-panel-solid), var(--wb-builder-panel))",
-					boxShadow: "var(--wb-builder-card-shadow)",
+						"linear-gradient(180deg, var(--photon-builder-panel-solid), var(--photon-builder-panel))",
+					boxShadow: "var(--photon-builder-card-shadow)",
 				}}
-				data-testid={`wb-image-field-editor-preview-${path}`}
+				data-testid={`photon-image-field-editor-preview-${path}`}
 			>
 				{source ? (
 					<img
@@ -56,7 +56,7 @@ export const ImageFieldEditor = ({
 				) : (
 					<div
 						className="flex aspect-[4/3] items-center justify-center px-6 text-center text-sm"
-						style={{ color: "var(--wb-builder-text-muted)" }}
+						style={{ color: "var(--photon-builder-text-muted)" }}
 					>
 						Upload an image or paste a remote source URL.
 					</div>
@@ -67,9 +67,9 @@ export const ImageFieldEditor = ({
 					<div
 						className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]"
 						style={{
-							borderColor: "var(--wb-builder-border-strong)",
-							background: "var(--wb-builder-accent-strong)",
-							color: "var(--wb-builder-accent)",
+							borderColor: "var(--photon-builder-border-strong)",
+							background: "var(--photon-builder-accent-strong)",
+							color: "var(--photon-builder-accent)",
 						}}
 					>
 						staged upload
@@ -79,9 +79,9 @@ export const ImageFieldEditor = ({
 					<div
 						className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]"
 						style={{
-							borderColor: "var(--wb-builder-border)",
-							background: "var(--wb-builder-field)",
-							color: "var(--wb-builder-text-soft)",
+							borderColor: "var(--photon-builder-border)",
+							background: "var(--photon-builder-field)",
+							color: "var(--photon-builder-text-soft)",
 						}}
 					>
 						{mediaValue.fileName}
@@ -91,9 +91,9 @@ export const ImageFieldEditor = ({
 					<div
 						className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]"
 						style={{
-							borderColor: "var(--wb-builder-border)",
-							background: "var(--wb-builder-field)",
-							color: "var(--wb-builder-text-soft)",
+							borderColor: "var(--photon-builder-border)",
+							background: "var(--photon-builder-field)",
+							color: "var(--photon-builder-text-soft)",
 						}}
 					>
 						{formatMediaFileSize(mediaValue.size) ?? "remote"}
@@ -102,11 +102,11 @@ export const ImageFieldEditor = ({
 			</div>
 			<input
 				type="text"
-				value={resolveWebsiteBuilderMediaUrl(value)}
+				value={resolvePhotonMediaUrl(value)}
 				onFocus={onFocus}
 				onChange={(event) =>
 					onApply(
-						updateWebsiteBuilderMediaUrl(value, event.currentTarget.value),
+						updatePhotonMediaUrl(value, event.currentTarget.value),
 					)
 				}
 				className={inputClassName}
@@ -115,9 +115,9 @@ export const ImageFieldEditor = ({
 				<label
 					className="inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition"
 					style={{
-						borderColor: "var(--wb-builder-border-strong)",
-						background: "var(--wb-builder-accent-strong)",
-						color: "var(--wb-builder-accent)",
+						borderColor: "var(--photon-builder-border-strong)",
+						background: "var(--photon-builder-accent-strong)",
+						color: "var(--photon-builder-accent)",
 					}}
 				>
 					<span>
@@ -167,9 +167,9 @@ export const ImageFieldEditor = ({
 					onClick={() => onApply("")}
 					className="rounded-full border px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.24em] transition"
 					style={{
-						borderColor: "var(--wb-builder-border)",
-						background: "var(--wb-builder-field)",
-						color: "var(--wb-builder-text-soft)",
+						borderColor: "var(--photon-builder-border)",
+						background: "var(--photon-builder-field)",
+						color: "var(--photon-builder-text-soft)",
 					}}
 				>
 					Clear

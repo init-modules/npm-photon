@@ -1,0 +1,471 @@
+"use client";
+
+import clsx from "clsx";
+import { Loader2, Search, X } from "lucide-react";
+import {
+	type CSSProperties,
+	startTransition,
+	useDeferredValue,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
+import { EditableText } from "../components/public/public-editable-text";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+} from "../components/ui/dialog";
+import {
+	KeyboardMenuList,
+	useKeyboardMenuController,
+} from "../components/ui/keyboard-menu";
+import {
+	usePhotonCanEdit,
+	usePhotonFieldValue,
+	usePhotonStore,
+	PhotonLink,
+} from "../context/photon-context";
+import { usePhotonI18n } from "../i18n/photon-i18n-context";
+import type { PhotonSearchResult } from "../types";
+import { buildPhotonSearchResultHref } from "./helpers";
+
+type PhotonSiteSearchProps = {
+	blockId: string;
+	placeholderPath: string;
+	className?: string;
+};
+
+const searchDialogStyle = {
+	background:
+		"color-mix(in oklab, var(--photon-site-background) 88%, var(--photon-site-surface))",
+	borderColor: "color-mix(in oklab, var(--photon-site-border) 24%, transparent)",
+	boxShadow: "0 34px 110px rgba(0,0,0,0.34)",
+} satisfies CSSProperties;
+
+const searchDividerStyle = {
+	borderColor: "color-mix(in oklab, var(--photon-site-border) 18%, transparent)",
+} satisfies CSSProperties;
+
+const searchPanelStyle = {
+	background: "color-mix(in oklab, var(--photon-site-surface) 34%, transparent)",
+	borderColor: "color-mix(in oklab, var(--photon-site-border) 18%, transparent)",
+} satisfies CSSProperties;
+
+const searchResultStyle = (isActive: boolean) =>
+	({
+		background: isActive
+			? "color-mix(in oklab, var(--photon-site-accent) 13%, var(--photon-site-surface))"
+			: "color-mix(in oklab, var(--photon-site-surface) 30%, transparent)",
+		borderColor: isActive
+			? "color-mix(in oklab, var(--photon-site-accent) 54%, var(--photon-site-border))"
+			: "color-mix(in oklab, var(--photon-site-border) 20%, transparent)",
+	}) satisfies CSSProperties;
+
+const searchResultPillStyle = {
+	borderColor: "color-mix(in oklab, var(--photon-site-border) 24%, transparent)",
+} satisfies CSSProperties;
+
+const renderSnippetParts = (snippet: string, query: string) => {
+	if (!query) {
+		return [snippet];
+	}
+
+	const source = snippet.toLowerCase();
+	const needle = query.toLowerCase();
+	const matchIndex = source.indexOf(needle);
+
+	if (matchIndex === -1) {
+		return [snippet];
+	}
+
+	return [
+		snippet.slice(0, matchIndex),
+		snippet.slice(matchIndex, matchIndex + query.length),
+		snippet.slice(matchIndex + query.length),
+	];
+};
+
+export const PhotonSiteSearch = ({
+	blockId,
+	placeholderPath,
+	className,
+}: PhotonSiteSearchProps) => {
+	const { translate } = usePhotonI18n();
+	const { locale, contentLocale } = usePhotonI18n();
+	const canEdit = usePhotonCanEdit();
+	const searchSite = usePhotonStore((state) => state.searchSite);
+	const mode = usePhotonStore((state) => state.mode);
+	const isAdmin = usePhotonStore((state) => state.isAdmin);
+	const workspace = usePhotonStore((state) => state.workspace);
+	const placeholder = String(
+		usePhotonFieldValue(blockId, placeholderPath) ??
+			"Search the website",
+	);
+	const [open, setOpen] = useState(false);
+	const [query, setQuery] = useState("");
+	const [results, setResults] = useState<PhotonSearchResult[]>([]);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const searchInputRef = useRef<HTMLInputElement>(null);
+	const lastRequestId = useRef(0);
+	const handleDialogOpenAutoFocus = (event: Event) => {
+		event.preventDefault();
+		searchInputRef.current?.focus();
+	};
+	const deferredQuery = useDeferredValue(query.trim());
+	const canSearch = typeof searchSite === "function";
+	const hasQuery = deferredQuery.length >= 2;
+	const searchSections = useMemo(
+		() => [
+			{
+				id: "results",
+				items: results,
+			},
+		],
+		[results],
+	);
+	const searchMenu = useKeyboardMenuController({
+		items: results,
+		getItemId: (result) => result.id,
+		isOpen: open && !loading,
+		onSelectItem: (result) => {
+			const href = buildPhotonSearchResultHref(
+				result,
+				deferredQuery || query.trim(),
+				mode,
+				isAdmin,
+				{
+					locale,
+					contentLocale,
+					currentSearchParams:
+						typeof window === "undefined"
+							? undefined
+							: new URLSearchParams(window.location.search),
+					workspaceSelection: workspace?.ref?.profileId
+						? {
+								profileId: workspace.ref.profileId,
+								branch: workspace.ref.branch,
+								revisionId: workspace.ref.revisionId ?? null,
+							}
+						: null,
+				},
+			);
+			const optionElement = searchMenu.getOptionElement(result.id);
+			const linkElement = optionElement?.querySelector<HTMLElement>("[href]");
+
+			setOpen(false);
+
+			if (linkElement) {
+				linkElement.click();
+				return;
+			}
+
+			if (typeof window !== "undefined") {
+				window.location.assign(href);
+			}
+		},
+	});
+	const summaryText = useMemo(() => {
+		if (!hasQuery) {
+			return translate(
+				"photon.search.hint",
+				"Type at least 2 characters to search across static pages and publications.",
+			);
+		}
+
+		if (loading) {
+			return translate(
+				"photon.search.loading",
+				"Searching the live site surface…",
+			);
+		}
+
+		if (error) {
+			return error;
+		}
+
+		if (results.length === 0) {
+			return "No matches found for this query.";
+		}
+
+		return `${results.length} match${
+			results.length === 1 ? "" : "es"
+		} across the live site.`;
+	}, [error, hasQuery, loading, results.length, translate]);
+
+	useEffect(() => {
+		if (!open) {
+			return;
+		}
+
+		searchInputRef.current?.focus();
+	}, [open]);
+
+	useEffect(() => {
+		if (!open || !canSearch) {
+			return;
+		}
+
+		if (!hasQuery) {
+			startTransition(() => {
+				setResults([]);
+				setLoading(false);
+				setError(null);
+			});
+			return;
+		}
+
+		const requestId = lastRequestId.current + 1;
+		lastRequestId.current = requestId;
+		startTransition(() => {
+			setLoading(true);
+			setError(null);
+		});
+
+		void searchSite({
+			query: deferredQuery,
+			limit: 8,
+		})
+			.then((nextResults) => {
+				if (lastRequestId.current !== requestId) {
+					return;
+				}
+
+				startTransition(() => {
+					setResults(nextResults);
+					setLoading(false);
+				});
+			})
+			.catch(() => {
+				if (lastRequestId.current !== requestId) {
+					return;
+				}
+
+				startTransition(() => {
+					setResults([]);
+					setLoading(false);
+					setError("Search is temporarily unavailable.");
+				});
+			});
+	}, [canSearch, deferredQuery, hasQuery, open, searchSite]);
+
+	if (!canSearch) {
+		return (
+			<div
+				className={clsx(
+					"flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-4",
+					className,
+				)}
+			>
+				<Search className="h-4 w-4 shrink-0 text-[var(--photon-site-muted)]" />
+				<EditableText
+					blockId={blockId}
+					path={placeholderPath}
+					className="text-sm text-[var(--photon-site-muted)]"
+				/>
+			</div>
+		);
+	}
+
+	return (
+		<>
+			<div
+				className={clsx(
+					"flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-4",
+					className,
+				)}
+			>
+				<button
+					type="button"
+					onClick={() => setOpen(true)}
+					className="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-[var(--photon-site-muted)] transition hover:bg-black/5 hover:text-[var(--photon-site-text)]"
+					aria-label={translate(
+						"photon.search.open",
+						"Search the website",
+					)}
+				>
+					<Search className="h-4 w-4" />
+				</button>
+				{canEdit ? (
+					<EditableText
+						blockId={blockId}
+						path={placeholderPath}
+						className="flex-1 text-sm text-[var(--photon-site-muted)]"
+					/>
+				) : (
+					<button
+						type="button"
+						onClick={() => setOpen(true)}
+						className="flex-1 cursor-pointer text-left text-sm text-[var(--photon-site-muted)]"
+					>
+						{placeholder}
+					</button>
+				)}
+			</div>
+
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent
+					onOpenAutoFocus={handleDialogOpenAutoFocus}
+					className="w-[min(44rem,calc(100%-1.5rem))] gap-0 overflow-hidden rounded-[24px] border p-0 text-[var(--photon-site-text)] backdrop-blur-xl"
+					style={searchDialogStyle}
+				>
+					<div className="sr-only">
+						<DialogTitle>
+							{translate(
+								"photon.search.dialogTitle",
+								"Search the website",
+							)}
+						</DialogTitle>
+						<DialogDescription>
+							{translate(
+								"photon.search.dialogDescription",
+								"Find exact matches across static pages and publication pages.",
+							)}
+						</DialogDescription>
+					</div>
+
+					<div
+						className="flex items-center gap-3 border-b px-5 py-4"
+						style={searchDividerStyle}
+					>
+						<Search className="h-5 w-5 shrink-0 text-[var(--photon-site-muted-text)]" />
+						<input
+							ref={searchInputRef}
+							value={query}
+							onChange={(event) => setQuery(event.currentTarget.value)}
+							onKeyDown={searchMenu.handleKeyDown}
+							placeholder={placeholder}
+							role="combobox"
+							aria-autocomplete="list"
+							aria-controls={searchMenu.listId}
+							aria-expanded={open}
+							aria-activedescendant={searchMenu.activeOptionId}
+							className="min-w-0 flex-1 border-0 bg-transparent text-base text-[var(--photon-site-text)] outline-none placeholder:text-[color-mix(in_srgb,var(--photon-site-muted-text)_72%,transparent)]"
+						/>
+						<button
+							type="button"
+							onClick={() => setOpen(false)}
+							className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--photon-site-muted-text)] transition hover:bg-[color-mix(in_oklab,var(--photon-site-border)_38%,transparent)] hover:text-[var(--photon-site-text)]"
+							aria-label="Close search"
+						>
+							<X className="h-4 w-4" />
+						</button>
+					</div>
+
+					<div
+						className="border-b px-5 py-3 text-sm text-[var(--photon-site-muted-text)]"
+						style={searchDividerStyle}
+					>
+						{summaryText}
+					</div>
+
+					<div className="max-h-[24rem] overflow-y-auto px-3 py-3">
+						{loading ? (
+							<div
+								className="flex items-center gap-3 rounded-[20px] border px-4 py-4 text-sm text-[var(--photon-site-muted-text)]"
+								style={searchPanelStyle}
+							>
+								<Loader2 className="h-4 w-4 animate-spin text-[var(--photon-site-accent)]" />
+								<span>Searching the live site surface…</span>
+							</div>
+						) : (
+							<KeyboardMenuList
+								controller={searchMenu}
+								sections={searchSections}
+								getItemId={(result) => result.id}
+								listLabel="Website search results"
+								className="space-y-2"
+								emptyState={
+									<div
+										className="rounded-[20px] border border-dashed px-4 py-8 text-center text-sm leading-7 text-[var(--photon-site-muted-text)]"
+										style={searchPanelStyle}
+									>
+										{hasQuery
+											? "No blocks matched this query yet."
+											: "Search static page copy and publication content from the live site shell."}
+									</div>
+								}
+								renderItem={(result, { isActive }) => {
+									const snippetParts = renderSnippetParts(
+										result.snippet,
+										deferredQuery || query.trim(),
+									);
+
+									return (
+										<div
+											data-photon-search-result-id={result.id}
+											style={searchResultStyle(isActive)}
+											className={clsx(
+												"rounded-[20px] border transition",
+												isActive
+													? "hover:bg-[color-mix(in_oklab,var(--photon-site-accent)_16%,var(--photon-site-surface))]"
+													: "hover:bg-[color-mix(in_oklab,var(--photon-site-accent)_10%,var(--photon-site-surface))]",
+											)}
+										>
+											<PhotonLink
+												navigateInPreviewOnly={false}
+												locale={locale}
+												href={buildPhotonSearchResultHref(
+													result,
+													deferredQuery || query.trim(),
+													mode,
+													isAdmin,
+													{
+														locale,
+														contentLocale,
+														currentSearchParams:
+															typeof window === "undefined"
+																? undefined
+																: new URLSearchParams(window.location.search),
+														workspaceSelection: workspace?.ref?.profileId
+															? {
+																	profileId: workspace.ref.profileId,
+																	branch: workspace.ref.branch,
+																	revisionId: workspace.ref.revisionId ?? null,
+																}
+															: null,
+													},
+												)}
+												onClick={() => setOpen(false)}
+												className="block px-4 py-4"
+											>
+												<div className="flex items-start justify-between gap-4">
+													<div className="min-w-0">
+														<div className="text-sm font-semibold text-[var(--photon-site-text)]">
+															{result.pageName}
+														</div>
+														<div className="mt-1 text-[11px] uppercase tracking-[0.24em] text-[var(--photon-site-muted-text)]">
+															{result.route}
+														</div>
+													</div>
+													<div
+														className="shrink-0 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-[var(--photon-site-muted-text)]"
+														style={searchResultPillStyle}
+													>
+														{result.pageKind}
+													</div>
+												</div>
+												<div className="mt-3 text-sm leading-7 text-[var(--photon-site-muted-text)]">
+													{snippetParts[0]}
+													{snippetParts[1] ? (
+														<mark className="rounded-full bg-[color-mix(in_oklab,var(--photon-site-accent)_24%,var(--photon-site-surface))] px-1.5 py-0.5 text-[var(--photon-site-text)]">
+															{snippetParts[1]}
+														</mark>
+													) : null}
+													{snippetParts[2] ?? ""}
+												</div>
+											</PhotonLink>
+										</div>
+									);
+								}}
+							/>
+						)}
+					</div>
+				</DialogContent>
+			</Dialog>
+		</>
+	);
+};

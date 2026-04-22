@@ -4,12 +4,12 @@ import clsx from "clsx";
 import type { ComponentType, ElementType, HTMLAttributes } from "react";
 import { useEffect, useState } from "react";
 import {
-	useWebsiteBuilderCanEdit,
-	useWebsiteBuilderFieldValue,
-} from "../../context/website-builder-context";
-import { getWebsiteBuilderEditableEditorLoader } from "../../helpers/editable-editor-loaders";
-import { WEBSITE_BUILDER_EMPTY_TEXT } from "../../helpers/path";
-import { buildWebsiteBuilderSearchTargetId } from "../../search/helpers";
+	usePhotonCanEdit,
+	usePhotonFieldValue,
+} from "../../context/photon-context";
+import { getPhotonEditableEditorLoader } from "../../helpers/editable-editor-loaders";
+import { PHOTON_EMPTY_TEXT } from "../../helpers/path";
+import { buildPhotonSearchTargetId } from "../../search/helpers";
 
 type PublicEditableTextProps = HTMLAttributes<HTMLElement> & {
 	blockId: string;
@@ -27,11 +27,11 @@ export const EditableText = ({
 	path,
 	as: Tag = "span",
 	className,
-	placeholder = WEBSITE_BUILDER_EMPTY_TEXT,
+	placeholder = PHOTON_EMPTY_TEXT,
 	...rest
 }: PublicEditableTextProps) => {
-	const canEdit = useWebsiteBuilderCanEdit();
-	const value = String(useWebsiteBuilderFieldValue(blockId, path) ?? "");
+	const canEdit = usePhotonCanEdit();
+	const value = String(usePhotonFieldValue(blockId, path) ?? "");
 	const [EditableTextEditor, setEditableTextEditor] =
 		useState<EditableTextEditorComponent | null>(null);
 
@@ -42,7 +42,7 @@ export const EditableText = ({
 
 		let cancelled = false;
 
-		const loadEditor = getWebsiteBuilderEditableEditorLoader("text");
+		const loadEditor = getPhotonEditableEditorLoader("text");
 
 		if (!loadEditor) {
 			return;
@@ -75,7 +75,7 @@ export const EditableText = ({
 	return (
 		<Tag
 			{...rest}
-			data-wb-search-target={buildWebsiteBuilderSearchTargetId(blockId, path)}
+			data-photon-search-target={buildPhotonSearchTargetId(blockId, path)}
 			className={clsx(className, !value && "opacity-60")}
 		>
 			{value || placeholder}

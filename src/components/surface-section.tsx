@@ -6,18 +6,18 @@ import {
 	type ElementType,
 	type ReactNode,
 } from "react";
-import { getWebsiteBuilderSurfaceModeStyle } from "../helpers/surface-layout";
-import type { WebsiteBuilderSurfaceMode } from "../types";
+import { getPhotonSurfaceModeStyle } from "../helpers/surface-layout";
+import type { PhotonSurfaceMode } from "../types";
 
-type WebsiteBuilderSurfaceSectionProps<T extends ElementType> = {
+type PhotonSurfaceSectionProps<T extends ElementType> = {
 	as?: T;
 	children: ReactNode;
 	className?: string;
 	style?: CSSProperties;
-	surfaceMode?: WebsiteBuilderSurfaceMode;
+	surfaceMode?: PhotonSurfaceMode;
 };
 
-export const WebsiteBuilderSurfaceSection = <
+export const PhotonSurfaceSection = <
 	T extends ElementType = "section",
 >({
 	as,
@@ -25,16 +25,16 @@ export const WebsiteBuilderSurfaceSection = <
 	className,
 	style,
 	surfaceMode = "contained",
-}: WebsiteBuilderSurfaceSectionProps<T>) => {
+}: PhotonSurfaceSectionProps<T>) => {
 	const Component = as ?? "section";
-	const surfaceStyle = getWebsiteBuilderSurfaceModeStyle(surfaceMode);
+	const surfaceStyle = getPhotonSurfaceModeStyle(surfaceMode);
 
 	return createElement(
 		Component,
 		{
 			className,
 			style: surfaceStyle ? { ...surfaceStyle, ...style } : style,
-			"data-wb-surface-mode": surfaceMode,
+			"data-photon-surface-mode": surfaceMode,
 		},
 		children,
 	);

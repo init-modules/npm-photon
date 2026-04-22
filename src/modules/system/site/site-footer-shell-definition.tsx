@@ -6,26 +6,26 @@ import { EditableImage } from "../../../components/public/public-editable-image"
 import { EditableText } from "../../../components/public/public-editable-text";
 import { EditableTextarea } from "../../../components/public/public-editable-textarea";
 import {
-	useWebsiteBuilderStore,
-	WebsiteBuilderLink,
-} from "../../../context/website-builder-context";
+	usePhotonStore,
+	PhotonLink,
+} from "../../../context/photon-context";
 import {
-	createWebsiteBuilderLocalizedDefault,
-	defineWebsiteBuilderBlockDefinition,
+	createPhotonLocalizedDefault,
+	definePhotonBlockDefinition,
 } from "../../../helpers/document";
-import { isWebsiteBuilderPublicFramelessSiteDesign } from "../../../helpers/public-site-design";
+import { isPhotonPublicFramelessSiteDesign } from "../../../helpers/public-site-design";
 import {
-	collectWebsiteBuilderFooterExtensionItems,
-	resolveWebsiteBuilderSiteFrameExtensions,
+	collectPhotonFooterExtensionItems,
+	resolvePhotonSiteFrameExtensions,
 } from "../../../helpers/site-frame-extensions";
 import type {
-	WebsiteBuilderBlockComponentProps,
-	WebsiteBuilderField,
+	PhotonBlockComponentProps,
+	PhotonField,
 } from "../../../types";
 import {
-	normalizeWebsiteBuilderSiteLinkItems,
-	normalizeWebsiteBuilderSiteNavigationColumns,
-	normalizeWebsiteBuilderSiteStringItems,
+	normalizePhotonSiteLinkItems,
+	normalizePhotonSiteNavigationColumns,
+	normalizePhotonSiteStringItems,
 } from "./helpers";
 
 type SiteFooterProps = {
@@ -51,7 +51,7 @@ type SiteFooterProps = {
 	disabledExtensionItemIds?: string[];
 };
 
-const siteFooterFields: WebsiteBuilderField[] = [
+const siteFooterFields: PhotonField[] = [
 	{
 		path: "variant",
 		label: "Variant",
@@ -208,66 +208,66 @@ const footerVariantStyles: Record<
 > = {
 	"classic-dark": {
 		shell:
-			"bg-[linear-gradient(180deg,color-mix(in_srgb,var(--wb-site-surface)_94%,black)_0%,color-mix(in_srgb,var(--wb-site-background)_88%,black)_100%)] text-white",
+			"bg-[linear-gradient(180deg,color-mix(in_srgb,var(--photon-site-surface)_94%,black)_0%,color-mix(in_srgb,var(--photon-site-background)_88%,black)_100%)] text-white",
 		card: "border-white/10 bg-white/[0.04]",
 		text: "text-white",
 		muted: "text-white/60",
 	},
 	"soft-cards": {
 		shell:
-			"bg-[linear-gradient(180deg,#f7f7fb_0%,#eef2f7_100%)] text-[var(--wb-site-text)]",
-		card: "border-[var(--wb-site-border)] bg-white/85",
-		text: "text-[var(--wb-site-text)]",
-		muted: "text-[var(--wb-site-muted)]",
+			"bg-[linear-gradient(180deg,#f7f7fb_0%,#eef2f7_100%)] text-[var(--photon-site-text)]",
+		card: "border-[var(--photon-site-border)] bg-white/85",
+		text: "text-[var(--photon-site-text)]",
+		muted: "text-[var(--photon-site-muted)]",
 	},
 	"minimal-air": {
 		shell:
-			"border-t border-[var(--wb-site-border)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--wb-site-background)_94%,white)_0%,color-mix(in_srgb,var(--wb-site-surface)_94%,white)_100%)] text-[var(--wb-site-text)] shadow-none",
+			"border-t border-[var(--photon-site-border)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--photon-site-background)_94%,white)_0%,color-mix(in_srgb,var(--photon-site-surface)_94%,white)_100%)] text-[var(--photon-site-text)] shadow-none",
 		card: "border-transparent bg-transparent",
-		text: "text-[var(--wb-site-text)]",
-		muted: "text-[var(--wb-site-muted)]",
+		text: "text-[var(--photon-site-text)]",
+		muted: "text-[var(--photon-site-muted)]",
 	},
 };
 
 const SiteFooterShell = ({
 	block,
-}: WebsiteBuilderBlockComponentProps<SiteFooterProps>) => {
-	const siteDesign = useWebsiteBuilderStore(
+}: PhotonBlockComponentProps<SiteFooterProps>) => {
+	const siteDesign = usePhotonStore(
 		(state) => state.site.settings.design,
 	);
-	const siteFrameExtensions = useWebsiteBuilderStore(
+	const siteFrameExtensions = usePhotonStore(
 		(state) => state.siteFrameExtensions,
 	);
-	const framelessSite = isWebsiteBuilderPublicFramelessSiteDesign(siteDesign);
+	const framelessSite = isPhotonPublicFramelessSiteDesign(siteDesign);
 	const footerVariant = framelessSite ? "minimal-air" : block.props.variant;
 	const variant =
 		footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"];
 	const isSoftCardsVariant = footerVariant === "soft-cards" && !framelessSite;
-	const disabledExtensionIds = normalizeWebsiteBuilderSiteStringItems(
+	const disabledExtensionIds = normalizePhotonSiteStringItems(
 		block.props.disabledExtensionIds,
 	);
-	const disabledExtensionItemIds = normalizeWebsiteBuilderSiteStringItems(
+	const disabledExtensionItemIds = normalizePhotonSiteStringItems(
 		block.props.disabledExtensionItemIds,
 	);
-	const footerExtensionItems = collectWebsiteBuilderFooterExtensionItems(
-		resolveWebsiteBuilderSiteFrameExtensions(
+	const footerExtensionItems = collectPhotonFooterExtensionItems(
+		resolvePhotonSiteFrameExtensions(
 			siteFrameExtensions,
 			disabledExtensionIds,
 		),
 		disabledExtensionItemIds,
 	);
 	const navigationColumns = [
-		...normalizeWebsiteBuilderSiteNavigationColumns(
+		...normalizePhotonSiteNavigationColumns(
 			block.props.navigationColumns,
 		),
-		...normalizeWebsiteBuilderSiteNavigationColumns(
+		...normalizePhotonSiteNavigationColumns(
 			footerExtensionItems.navigationColumns,
 		),
 	];
-	const legalLinks = normalizeWebsiteBuilderSiteLinkItems(
+	const legalLinks = normalizePhotonSiteLinkItems(
 		footerExtensionItems.legalLinks,
 	);
-	const contactItems = normalizeWebsiteBuilderSiteStringItems(
+	const contactItems = normalizePhotonSiteStringItems(
 		block.props.contactItems,
 	);
 
@@ -281,13 +281,13 @@ const SiteFooterShell = ({
 				).shell,
 			)}
 		>
-			<div className="mx-auto flex w-full max-w-[var(--wb-site-max-width,1280px)] flex-col gap-5 px-[var(--wb-site-gutter,24px)] py-8 pb-12 sm:py-10 sm:pb-14">
+			<div className="mx-auto flex w-full max-w-[var(--photon-site-max-width,1280px)] flex-col gap-5 px-[var(--photon-site-gutter,24px)] py-8 pb-12 sm:py-10 sm:pb-14">
 				<div className="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
 					<div
 						className={clsx(
 							footerVariant === "minimal-air"
-								? "rounded-none border-0 border-b border-[var(--wb-site-border)] px-0 pb-6 pt-0 sm:px-0"
-								: "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
+								? "rounded-none border-0 border-b border-[var(--photon-site-border)] px-0 pb-6 pt-0 sm:px-0"
+								: "rounded-[calc(var(--photon-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
 							(
 								footerVariantStyles[footerVariant] ??
 								footerVariantStyles["classic-dark"]
@@ -295,7 +295,7 @@ const SiteFooterShell = ({
 						)}
 					>
 						<div className="grid gap-5 lg:grid-cols-[auto_minmax(0,1fr)]">
-							<div className="relative h-24 w-24 overflow-hidden rounded-[28px] border border-[var(--wb-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.16),rgba(15,118,110,0.04))]">
+							<div className="relative h-24 w-24 overflow-hidden rounded-[28px] border border-[var(--photon-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.16),rgba(15,118,110,0.04))]">
 								{block.props.logoImage ? (
 									<EditableImage
 										blockId={block.id}
@@ -305,11 +305,11 @@ const SiteFooterShell = ({
 										fallbackAlt={block.props.brandTitle}
 									/>
 								) : (
-									<div className="flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--wb-site-accent)]">
+									<div className="flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--photon-site-accent)]">
 										<EditableText
 											blockId={block.id}
 											path="brandTitle"
-											className="text-[var(--wb-site-accent)]"
+											className="text-[var(--photon-site-accent)]"
 										/>
 									</div>
 								)}
@@ -320,7 +320,7 @@ const SiteFooterShell = ({
 									path="brandTitle"
 									as="h2"
 									className={clsx(
-										"[font-family:var(--wb-site-heading-font)] text-3xl font-semibold tracking-[-0.05em]",
+										"[font-family:var(--photon-site-heading-font)] text-3xl font-semibold tracking-[-0.05em]",
 										variant.text,
 									)}
 								/>
@@ -337,9 +337,9 @@ const SiteFooterShell = ({
 						className={clsx(
 							footerVariant === "minimal-air"
 								? "rounded-none border-0 px-0 py-0 sm:px-0"
-								: "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
+								: "rounded-[calc(var(--photon-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
 							block.props.variant === "soft-cards" && !framelessSite
-								? "border-transparent bg-[linear-gradient(135deg,var(--wb-site-accent),color-mix(in srgb,var(--wb-site-accent) 72%, white))] text-white shadow-[0_28px_60px_rgba(15,118,110,0.24)]"
+								? "border-transparent bg-[linear-gradient(135deg,var(--photon-site-accent),color-mix(in srgb,var(--photon-site-accent) 72%, white))] text-white shadow-[0_28px_60px_rgba(15,118,110,0.24)]"
 								: (
 										footerVariantStyles[footerVariant] ??
 										footerVariantStyles["classic-dark"]
@@ -351,7 +351,7 @@ const SiteFooterShell = ({
 								blockId={block.id}
 								path="subscriptionTitle"
 								as="h3"
-								className="[font-family:var(--wb-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
+								className="[font-family:var(--photon-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
 							/>
 							<EditableTextarea
 								blockId={block.id}
@@ -367,7 +367,7 @@ const SiteFooterShell = ({
 								className={clsx(
 									"flex min-h-14 flex-1 items-center px-4",
 									footerVariant === "minimal-air"
-										? "rounded-full border border-[var(--wb-site-border)] bg-white/72"
+										? "rounded-full border border-[var(--photon-site-border)] bg-white/72"
 										: "rounded-full border border-white/20 bg-white/10 backdrop-blur-sm",
 								)}
 							>
@@ -385,8 +385,8 @@ const SiteFooterShell = ({
 								className={clsx(
 									"inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold shadow-[0_18px_34px_rgba(15,23,42,0.12)]",
 									isSoftCardsVariant
-										? "bg-white text-[var(--wb-site-accent)]"
-										: "bg-[var(--wb-site-accent)] text-white",
+										? "bg-white text-[var(--photon-site-accent)]"
+										: "bg-[var(--photon-site-accent)] text-white",
 								)}
 							>
 								<Send className="h-4 w-4" />
@@ -395,7 +395,7 @@ const SiteFooterShell = ({
 									path="subscriptionButtonLabel"
 									className={clsx(
 										isSoftCardsVariant
-											? "text-[var(--wb-site-accent)]"
+											? "text-[var(--photon-site-accent)]"
 											: "text-white",
 									)}
 								/>
@@ -408,8 +408,8 @@ const SiteFooterShell = ({
 					<div
 						className={clsx(
 							footerVariant === "minimal-air"
-								? "rounded-none border-0 border-b border-[var(--wb-site-border)] px-0 pb-6 pt-0 sm:px-0"
-								: "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
+								? "rounded-none border-0 border-b border-[var(--photon-site-border)] px-0 pb-6 pt-0 sm:px-0"
+								: "rounded-[calc(var(--photon-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
 							(
 								footerVariantStyles[footerVariant] ??
 								footerVariantStyles["classic-dark"]
@@ -424,16 +424,16 @@ const SiteFooterShell = ({
 									</div>
 									<div className="space-y-2">
 										{column.links.map((link) => (
-											<WebsiteBuilderLink
+											<PhotonLink
 												key={`${column.title}:${link.label}:${link.href}`}
 												href={link.href}
 												className={clsx(
-													"block text-sm transition hover:text-[var(--wb-site-accent)]",
+													"block text-sm transition hover:text-[var(--photon-site-accent)]",
 													variant.muted,
 												)}
 											>
 												{link.label}
-											</WebsiteBuilderLink>
+											</PhotonLink>
 										))}
 									</div>
 								</div>
@@ -445,7 +445,7 @@ const SiteFooterShell = ({
 						className={clsx(
 							footerVariant === "minimal-air"
 								? "rounded-none border-0 px-0 pt-0 sm:px-0"
-								: "rounded-[calc(var(--wb-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
+								: "rounded-[calc(var(--photon-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
 							(
 								footerVariantStyles[footerVariant] ??
 								footerVariantStyles["classic-dark"]
@@ -473,7 +473,7 @@ const SiteFooterShell = ({
 						"flex flex-col gap-4 border-t pt-5 text-sm md:flex-row md:items-center md:justify-between",
 						footerVariant === "classic-dark"
 							? "border-white/10"
-							: "border-[var(--wb-site-border)]",
+							: "border-[var(--photon-site-border)]",
 					)}
 				>
 					<EditableText
@@ -487,10 +487,10 @@ const SiteFooterShell = ({
 						}
 					/>
 					<div className="flex flex-wrap items-center gap-4">
-						<WebsiteBuilderLink
+						<PhotonLink
 							href={block.props.legalHref}
 							className={clsx(
-								"inline-flex items-center gap-2 transition hover:text-[var(--wb-site-accent)]",
+								"inline-flex items-center gap-2 transition hover:text-[var(--photon-site-accent)]",
 								(
 									footerVariantStyles[footerVariant] ??
 									footerVariantStyles["classic-dark"]
@@ -499,15 +499,15 @@ const SiteFooterShell = ({
 						>
 							<EditableText blockId={block.id} path="legalLabel" />
 							<ArrowRight className="h-4 w-4" />
-						</WebsiteBuilderLink>
+						</PhotonLink>
 						{legalLinks.map((link) => (
-							<WebsiteBuilderLink
+							<PhotonLink
 								key={`${link.label}:${link.href}`}
 								href={link.href}
 								target={link.target}
 								rel={link.rel}
 								className={clsx(
-									"inline-flex items-center gap-2 transition hover:text-[var(--wb-site-accent)]",
+									"inline-flex items-center gap-2 transition hover:text-[var(--photon-site-accent)]",
 									(
 										footerVariantStyles[footerVariant] ??
 										footerVariantStyles["classic-dark"]
@@ -516,12 +516,12 @@ const SiteFooterShell = ({
 							>
 								{link.label}
 								<ArrowRight className="h-4 w-4" />
-							</WebsiteBuilderLink>
+							</PhotonLink>
 						))}
-						<WebsiteBuilderLink
+						<PhotonLink
 							href={block.props.developerHref}
 							className={clsx(
-								"font-semibold transition hover:text-[var(--wb-site-accent)]",
+								"font-semibold transition hover:text-[var(--photon-site-accent)]",
 								(
 									footerVariantStyles[footerVariant] ??
 									footerVariantStyles["classic-dark"]
@@ -529,7 +529,7 @@ const SiteFooterShell = ({
 							)}
 						>
 							<EditableText blockId={block.id} path="developerLabel" />
-						</WebsiteBuilderLink>
+						</PhotonLink>
 					</div>
 				</div>
 			</div>
@@ -537,43 +537,43 @@ const SiteFooterShell = ({
 	);
 };
 
-export const siteFooterShellDefinition = defineWebsiteBuilderBlockDefinition({
+export const siteFooterShellDefinition = definePhotonBlockDefinition({
 	type: "site-footer-shell",
 	label: "Site Footer Shell",
-	labelKey: "websiteBuilder.system.siteFooter.block.label",
+	labelKey: "photon.system.siteFooter.block.label",
 	description:
 		"Shared footer with editorial brand copy, subscription card, navigation columns and legal row.",
-	descriptionKey: "websiteBuilder.system.siteFooter.block.description",
+	descriptionKey: "photon.system.siteFooter.block.description",
 	category: "Site Frame",
 	icon: "panel-bottom",
 	defaults: {
 		variant: "classic-dark",
-		brandTitle: createWebsiteBuilderLocalizedDefault({
-			en: "Website Builder",
-			ru: "Website Builder",
+		brandTitle: createPhotonLocalizedDefault({
+			en: "Photon",
+			ru: "Photon",
 		}),
-		brandBody: createWebsiteBuilderLocalizedDefault({
+		brandBody: createPhotonLocalizedDefault({
 			en: "Package-first live website editing for teams that want reusable packages, clean package boundaries and real page composition.",
 			ru: "Package-first редактирование живого сайта для команд, которым нужны переиспользуемые пакеты, чистые границы пакетов и настоящая композиция страниц.",
 		}),
 		logoImage: null,
-		subscriptionTitle: createWebsiteBuilderLocalizedDefault({
+		subscriptionTitle: createPhotonLocalizedDefault({
 			en: "Get product notes and release updates",
 			ru: "Получайте продуктовые заметки и обновления релизов",
 		}),
-		subscriptionBody: createWebsiteBuilderLocalizedDefault({
+		subscriptionBody: createPhotonLocalizedDefault({
 			en: "Subscribe for major builder releases, new integration kits and architecture notes.",
 			ru: "Подпишитесь, чтобы получать крупные релизы builder, новые integration kits и архитектурные заметки.",
 		}),
-		subscriptionPlaceholder: createWebsiteBuilderLocalizedDefault({
+		subscriptionPlaceholder: createPhotonLocalizedDefault({
 			en: "Enter your email",
 			ru: "Введите ваш email",
 		}),
-		subscriptionButtonLabel: createWebsiteBuilderLocalizedDefault({
+		subscriptionButtonLabel: createPhotonLocalizedDefault({
 			en: "Subscribe",
 			ru: "Подписаться",
 		}),
-		navigationColumns: createWebsiteBuilderLocalizedDefault({
+		navigationColumns: createPhotonLocalizedDefault({
 			en: [
 				{
 					title: "Product",
@@ -611,20 +611,20 @@ export const siteFooterShellDefinition = defineWebsiteBuilderBlockDefinition({
 				},
 			],
 		}),
-		contactItems: createWebsiteBuilderLocalizedDefault({
+		contactItems: createPhotonLocalizedDefault({
 			en: ["+7 (707) 040-43-43", "hello@example.test", "Almaty, Kazakhstan"],
 			ru: ["+7 (707) 040-43-43", "hello@example.test", "Алматы, Казахстан"],
 		}),
-		legalLabel: createWebsiteBuilderLocalizedDefault({
+		legalLabel: createPhotonLocalizedDefault({
 			en: "Privacy policy",
 			ru: "Политика конфиденциальности",
 		}),
 		legalHref: "/privacy",
-		copyrightLabel: createWebsiteBuilderLocalizedDefault({
-			en: "Website Builder 2026",
-			ru: "Website Builder 2026",
+		copyrightLabel: createPhotonLocalizedDefault({
+			en: "Photon 2026",
+			ru: "Photon 2026",
 		}),
-		developerLabel: createWebsiteBuilderLocalizedDefault({
+		developerLabel: createPhotonLocalizedDefault({
 			en: "Built by init",
 			ru: "Сделано init",
 		}),

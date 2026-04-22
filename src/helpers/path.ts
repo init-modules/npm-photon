@@ -1,4 +1,4 @@
-export const WEBSITE_BUILDER_EMPTY_TEXT = "Untitled";
+export const PHOTON_EMPTY_TEXT = "Untitled";
 
 const cloneWithFallback = <T>(value: T): T => {
 	if (typeof structuredClone === "function") {
@@ -14,7 +14,7 @@ const parsePathSegment = (segment: string) => {
 	return Number.isInteger(numeric) && segment.trim() !== "" ? numeric : segment;
 };
 
-export const cloneWebsiteBuilderValue = <T>(value: T): T => {
+export const clonePhotonValue = <T>(value: T): T => {
 	return cloneWithFallback(value);
 };
 
@@ -51,7 +51,7 @@ export const setValueAtPath = <T extends Record<string, unknown>>(
 	value: unknown,
 ) => {
 	if (!path) {
-		return cloneWebsiteBuilderValue(value) as T;
+		return clonePhotonValue(value) as T;
 	}
 
 	const draft = cloneWithFallback(target) as Record<string, unknown>;

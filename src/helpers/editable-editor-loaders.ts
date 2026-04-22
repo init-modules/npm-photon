@@ -1,25 +1,25 @@
 import type { ComponentType } from "react";
 
-export type WebsiteBuilderEditableEditorLoaderKey =
+export type PhotonEditableEditorLoaderKey =
 	| "gallery"
 	| "image"
 	| "richText"
 	| "text"
 	| "textarea";
 
-export type WebsiteBuilderEditableEditorLoaders = Partial<
+export type PhotonEditableEditorLoaders = Partial<
 	Record<
-		WebsiteBuilderEditableEditorLoaderKey,
+		PhotonEditableEditorLoaderKey,
 		() => Promise<ComponentType<any>>
 	>
 >;
 
 declare global {
-	var __websiteBuilderEditableEditorLoaders:
-		| WebsiteBuilderEditableEditorLoaders
+	var __photonEditableEditorLoaders:
+		| PhotonEditableEditorLoaders
 		| undefined;
 }
 
-export const getWebsiteBuilderEditableEditorLoader = (
-	key: WebsiteBuilderEditableEditorLoaderKey,
-) => globalThis.__websiteBuilderEditableEditorLoaders?.[key] ?? null;
+export const getPhotonEditableEditorLoader = (
+	key: PhotonEditableEditorLoaderKey,
+) => globalThis.__photonEditableEditorLoaders?.[key] ?? null;

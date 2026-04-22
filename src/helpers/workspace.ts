@@ -1,17 +1,17 @@
 import type {
-	WebsiteBuilderWorkspaceCapabilities,
-	WebsiteBuilderWorkspaceDescriptor,
-	WebsiteBuilderWorkspaceRef,
+	PhotonWorkspaceCapabilities,
+	PhotonWorkspaceDescriptor,
+	PhotonWorkspaceRef,
 } from "../types";
 
-export const DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF: WebsiteBuilderWorkspaceRef =
+export const DEFAULT_PHOTON_WORKSPACE_REF: PhotonWorkspaceRef =
 	{
 		profileId: "default",
 		branch: "main",
 		readonly: false,
 	};
 
-export const DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES: WebsiteBuilderWorkspaceCapabilities =
+export const DEFAULT_PHOTON_WORKSPACE_CAPABILITIES: PhotonWorkspaceCapabilities =
 	{
 		canEdit: true,
 		canCommit: true,
@@ -22,11 +22,11 @@ export const DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES: WebsiteBuilderWorks
 		isMainLocked: false,
 	};
 
-export const normalizeWebsiteBuilderWorkspaceRef = (
-	workspace?: WebsiteBuilderWorkspaceRef | null,
-): WebsiteBuilderWorkspaceRef => {
+export const normalizePhotonWorkspaceRef = (
+	workspace?: PhotonWorkspaceRef | null,
+): PhotonWorkspaceRef => {
 	const normalizedWorkspace = {
-		...DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF,
+		...DEFAULT_PHOTON_WORKSPACE_REF,
 		...(workspace ?? {}),
 	};
 
@@ -37,17 +37,17 @@ export const normalizeWebsiteBuilderWorkspaceRef = (
 	return normalizedWorkspace;
 };
 
-export const normalizeWebsiteBuilderWorkspaceCapabilities = (
-	capabilities?: Partial<WebsiteBuilderWorkspaceCapabilities> | null,
-): WebsiteBuilderWorkspaceCapabilities => ({
-	...DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES,
+export const normalizePhotonWorkspaceCapabilities = (
+	capabilities?: Partial<PhotonWorkspaceCapabilities> | null,
+): PhotonWorkspaceCapabilities => ({
+	...DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
 	...(capabilities ?? {}),
 });
 
-export const normalizeWebsiteBuilderWorkspaceDescriptor = (
-	workspace?: WebsiteBuilderWorkspaceDescriptor | null,
-): WebsiteBuilderWorkspaceDescriptor => ({
-	ref: normalizeWebsiteBuilderWorkspaceRef(workspace?.ref),
+export const normalizePhotonWorkspaceDescriptor = (
+	workspace?: PhotonWorkspaceDescriptor | null,
+): PhotonWorkspaceDescriptor => ({
+	ref: normalizePhotonWorkspaceRef(workspace?.ref),
 	headRevisionId: workspace?.headRevisionId ?? null,
 	profileName: workspace?.profileName ?? null,
 	branchLabel: workspace?.branchLabel ?? null,
@@ -57,12 +57,12 @@ export const normalizeWebsiteBuilderWorkspaceDescriptor = (
 		(workspace?.ref?.revisionId?.trim() ? "revision" : null),
 });
 
-const extractWebsiteBuilderWorkspaceRef = (
+const extractPhotonWorkspaceRef = (
 	workspace?:
-		| WebsiteBuilderWorkspaceDescriptor
-		| WebsiteBuilderWorkspaceRef
+		| PhotonWorkspaceDescriptor
+		| PhotonWorkspaceRef
 		| null,
-): WebsiteBuilderWorkspaceRef | null => {
+): PhotonWorkspaceRef | null => {
 	if (!workspace) {
 		return null;
 	}
@@ -70,18 +70,18 @@ const extractWebsiteBuilderWorkspaceRef = (
 	return "ref" in workspace ? workspace.ref : workspace;
 };
 
-export const getWebsiteBuilderWorkspaceKey = (
+export const getPhotonWorkspaceKey = (
 	workspace?:
-		| WebsiteBuilderWorkspaceDescriptor
-		| WebsiteBuilderWorkspaceRef
+		| PhotonWorkspaceDescriptor
+		| PhotonWorkspaceRef
 		| null,
 ) => {
 	const descriptor =
 		workspace && "ref" in workspace
-			? normalizeWebsiteBuilderWorkspaceDescriptor(workspace)
+			? normalizePhotonWorkspaceDescriptor(workspace)
 			: {
-					ref: normalizeWebsiteBuilderWorkspaceRef(
-						extractWebsiteBuilderWorkspaceRef(workspace),
+					ref: normalizePhotonWorkspaceRef(
+						extractPhotonWorkspaceRef(workspace),
 					),
 					headRevisionId: null,
 					profileName: null,
@@ -99,18 +99,18 @@ export const getWebsiteBuilderWorkspaceKey = (
 	].join(":");
 };
 
-export const getWebsiteBuilderWorkspaceIdentityKey = (
+export const getPhotonWorkspaceIdentityKey = (
 	workspace?:
-		| WebsiteBuilderWorkspaceDescriptor
-		| WebsiteBuilderWorkspaceRef
+		| PhotonWorkspaceDescriptor
+		| PhotonWorkspaceRef
 		| null,
 ) => {
 	const descriptor =
 		workspace && "ref" in workspace
-			? normalizeWebsiteBuilderWorkspaceDescriptor(workspace)
+			? normalizePhotonWorkspaceDescriptor(workspace)
 			: {
-					ref: normalizeWebsiteBuilderWorkspaceRef(
-						extractWebsiteBuilderWorkspaceRef(workspace),
+					ref: normalizePhotonWorkspaceRef(
+						extractPhotonWorkspaceRef(workspace),
 					),
 					headRevisionId: null,
 					profileName: null,
@@ -126,19 +126,19 @@ export const getWebsiteBuilderWorkspaceIdentityKey = (
 	].join(":");
 };
 
-export const isWebsiteBuilderWorkspaceReadonly = (
+export const isPhotonWorkspaceReadonly = (
 	workspace?:
-		| WebsiteBuilderWorkspaceDescriptor
-		| WebsiteBuilderWorkspaceRef
+		| PhotonWorkspaceDescriptor
+		| PhotonWorkspaceRef
 		| null,
-	capabilities?: Partial<WebsiteBuilderWorkspaceCapabilities> | null,
+	capabilities?: Partial<PhotonWorkspaceCapabilities> | null,
 ) => {
 	const normalizedWorkspace =
 		workspace && "ref" in workspace
-			? normalizeWebsiteBuilderWorkspaceDescriptor(workspace)
+			? normalizePhotonWorkspaceDescriptor(workspace)
 			: {
-					ref: normalizeWebsiteBuilderWorkspaceRef(
-						extractWebsiteBuilderWorkspaceRef(workspace),
+					ref: normalizePhotonWorkspaceRef(
+						extractPhotonWorkspaceRef(workspace),
 					),
 					headRevisionId: null,
 					profileName: null,
@@ -147,7 +147,7 @@ export const isWebsiteBuilderWorkspaceReadonly = (
 					readonlyReason: null,
 				};
 	const normalizedCapabilities =
-		normalizeWebsiteBuilderWorkspaceCapabilities(capabilities);
+		normalizePhotonWorkspaceCapabilities(capabilities);
 
 	return Boolean(
 		normalizedWorkspace.ref.readonly ||
@@ -156,28 +156,28 @@ export const isWebsiteBuilderWorkspaceReadonly = (
 	);
 };
 
-export const canEditWebsiteBuilderWorkspace = (
+export const canEditPhotonWorkspace = (
 	workspace?:
-		| WebsiteBuilderWorkspaceDescriptor
-		| WebsiteBuilderWorkspaceRef
+		| PhotonWorkspaceDescriptor
+		| PhotonWorkspaceRef
 		| null,
-	capabilities?: Partial<WebsiteBuilderWorkspaceCapabilities> | null,
-) => !isWebsiteBuilderWorkspaceReadonly(workspace, capabilities);
+	capabilities?: Partial<PhotonWorkspaceCapabilities> | null,
+) => !isPhotonWorkspaceReadonly(workspace, capabilities);
 
-export const canSaveWebsiteBuilderWorkspace = ({
+export const canSavePhotonWorkspace = ({
 	isAdmin,
 	workspace,
 	capabilities,
 }: {
 	isAdmin: boolean;
 	workspace?:
-		| WebsiteBuilderWorkspaceDescriptor
-		| WebsiteBuilderWorkspaceRef
+		| PhotonWorkspaceDescriptor
+		| PhotonWorkspaceRef
 		| null;
-	capabilities?: Partial<WebsiteBuilderWorkspaceCapabilities> | null;
+	capabilities?: Partial<PhotonWorkspaceCapabilities> | null;
 }) =>
 	Boolean(
 		isAdmin &&
-			!isWebsiteBuilderWorkspaceReadonly(workspace, capabilities) &&
-			normalizeWebsiteBuilderWorkspaceCapabilities(capabilities).canCommit,
+			!isPhotonWorkspaceReadonly(workspace, capabilities) &&
+			normalizePhotonWorkspaceCapabilities(capabilities).canCommit,
 	);

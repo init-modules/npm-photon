@@ -1,11 +1,11 @@
 import type {
-	WebsiteBuilderResolvedSiteDesignSettings,
-	WebsiteBuilderSiteComponentVariants,
-	WebsiteBuilderSiteDesignColorTokens,
-	WebsiteBuilderSiteDesignSettings,
+	PhotonResolvedSiteDesignSettings,
+	PhotonSiteComponentVariants,
+	PhotonSiteDesignColorTokens,
+	PhotonSiteDesignSettings,
 } from "../types";
 
-const WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_TOKEN_KEYS = [
+const PHOTON_PUBLIC_SITE_DESIGN_TOKEN_KEYS = [
 	"bodyFontFamily",
 	"headingFontFamily",
 	"backgroundColor",
@@ -19,18 +19,18 @@ const WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_TOKEN_KEYS = [
 	"sectionGap",
 	"radius",
 	"headerOffset",
-] as const satisfies ReadonlyArray<keyof WebsiteBuilderSiteDesignSettings>;
+] as const satisfies ReadonlyArray<keyof PhotonSiteDesignSettings>;
 
-const WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_COLOR_TOKEN_KEYS = [
+const PHOTON_PUBLIC_SITE_DESIGN_COLOR_TOKEN_KEYS = [
 	"backgroundColor",
 	"surfaceColor",
 	"textColor",
 	"mutedTextColor",
 	"accentColor",
 	"borderColor",
-] as const satisfies ReadonlyArray<keyof WebsiteBuilderSiteDesignColorTokens>;
+] as const satisfies ReadonlyArray<keyof PhotonSiteDesignColorTokens>;
 
-export const WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_DEFAULTS: WebsiteBuilderSiteDesignSettings =
+export const PHOTON_PUBLIC_SITE_DESIGN_DEFAULTS: PhotonSiteDesignSettings =
 	{
 		bodyFontFamily: "var(--font-display, ui-sans-serif), system-ui, sans-serif",
 		headingFontFamily:
@@ -48,7 +48,7 @@ export const WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_DEFAULTS: WebsiteBuilderSiteDesi
 		headerOffset: "0px",
 	};
 
-const WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_FALLBACK_DEFAULTS: WebsiteBuilderSiteDesignSettings =
+const PHOTON_PUBLIC_SITE_DESIGN_FALLBACK_DEFAULTS: PhotonSiteDesignSettings =
 	{
 		bodyFontFamily: "ui-sans-serif, system-ui, sans-serif",
 		headingFontFamily: "ui-sans-serif, system-ui, sans-serif",
@@ -75,9 +75,9 @@ const readNonEmptyString = (value: unknown) =>
 
 const readTokenOverrides = (
 	candidate: Record<string, unknown>,
-	keys: readonly (keyof WebsiteBuilderSiteDesignSettings)[],
+	keys: readonly (keyof PhotonSiteDesignSettings)[],
 ) =>
-	keys.reduce<Partial<WebsiteBuilderSiteDesignSettings>>((result, key) => {
+	keys.reduce<Partial<PhotonSiteDesignSettings>>((result, key) => {
 		const value = readNonEmptyString(candidate[key]);
 
 		if (value !== undefined) {
@@ -89,19 +89,19 @@ const readTokenOverrides = (
 
 const hasAnyTokenOverride = (
 	candidate: Record<string, unknown>,
-	keys: readonly (keyof WebsiteBuilderSiteDesignSettings)[],
+	keys: readonly (keyof PhotonSiteDesignSettings)[],
 ) => keys.some((key) => readNonEmptyString(candidate[key]) !== undefined);
 
 const normalizeComponentVariants = (
 	value: unknown,
-): WebsiteBuilderSiteComponentVariants => {
+): PhotonSiteComponentVariants => {
 	if (typeof value !== "object" || value === null) {
 		return {};
 	}
 
 	return Object.entries(
 		value as Record<string, unknown>,
-	).reduce<WebsiteBuilderSiteComponentVariants>(
+	).reduce<PhotonSiteComponentVariants>(
 		(result, [key, candidateValue]) => {
 			const normalizedValue = readNonEmptyString(candidateValue);
 
@@ -116,35 +116,35 @@ const normalizeComponentVariants = (
 };
 
 const matchesPublicFallbackDefaults = (
-	value: WebsiteBuilderSiteDesignSettings,
+	value: PhotonSiteDesignSettings,
 ) =>
-	WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_TOKEN_KEYS.every(
+	PHOTON_PUBLIC_SITE_DESIGN_TOKEN_KEYS.every(
 		(key) =>
-			value[key] === WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_FALLBACK_DEFAULTS[key],
+			value[key] === PHOTON_PUBLIC_SITE_DESIGN_FALLBACK_DEFAULTS[key],
 	);
 
-export const resolveWebsiteBuilderPublicSiteDesignSettings = (
+export const resolvePhotonPublicSiteDesignSettings = (
 	value: unknown,
-): WebsiteBuilderResolvedSiteDesignSettings => {
+): PhotonResolvedSiteDesignSettings => {
 	const candidate = asSiteDesignCandidate(value);
 	const tokenOverrides = readTokenOverrides(
 		candidate,
-		WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_TOKEN_KEYS,
+		PHOTON_PUBLIC_SITE_DESIGN_TOKEN_KEYS,
 	);
 	const componentVariants = normalizeComponentVariants(
 		candidate.componentVariants,
 	);
 	const tokenSettings = {
-		...WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_DEFAULTS,
+		...PHOTON_PUBLIC_SITE_DESIGN_DEFAULTS,
 		...tokenOverrides,
 	};
 	const hasTokenOverrides = hasAnyTokenOverride(
 		candidate,
-		WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_TOKEN_KEYS,
+		PHOTON_PUBLIC_SITE_DESIGN_TOKEN_KEYS,
 	);
 	const hasColorOverrides = hasAnyTokenOverride(
 		candidate,
-		WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_COLOR_TOKEN_KEYS,
+		PHOTON_PUBLIC_SITE_DESIGN_COLOR_TOKEN_KEYS,
 	);
 	const hasComponentVariantOverrides =
 		Object.keys(componentVariants).length > 0;
@@ -156,15 +156,15 @@ export const resolveWebsiteBuilderPublicSiteDesignSettings = (
 
 	return {
 		...(isFallbackDesign
-			? WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_FALLBACK_DEFAULTS
-			: WEBSITE_BUILDER_PUBLIC_SITE_DESIGN_DEFAULTS),
+			? PHOTON_PUBLIC_SITE_DESIGN_FALLBACK_DEFAULTS
+			: PHOTON_PUBLIC_SITE_DESIGN_DEFAULTS),
 		...tokenOverrides,
 		componentVariants,
 	};
 };
 
-export const isWebsiteBuilderPublicFramelessSiteDesign = (value: unknown) => {
-	const settings = resolveWebsiteBuilderPublicSiteDesignSettings(value);
+export const isPhotonPublicFramelessSiteDesign = (value: unknown) => {
+	const settings = resolvePhotonPublicSiteDesignSettings(value);
 
 	return (
 		settings.radius === "0px" ||

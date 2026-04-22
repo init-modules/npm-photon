@@ -39,15 +39,15 @@ export const EditorLocaleSelect = ({
 		<button
 			type="button"
 			aria-label={label}
-			className="inline-flex h-11 min-w-[10.25rem] cursor-pointer items-center justify-between gap-3 rounded-full border px-4 text-sm font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[border-color,background-color,box-shadow,color] duration-200 ease-out outline-none border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] text-[color:var(--wb-builder-text)] hover:border-[color:var(--wb-builder-border-strong)] hover:bg-[color:var(--wb-builder-field)] focus-visible:border-[color:var(--wb-builder-border-strong)] focus-visible:bg-[color:var(--wb-builder-accent-strong)]"
+			className="inline-flex h-11 min-w-[10.25rem] cursor-pointer items-center justify-between gap-3 rounded-full border px-4 text-sm font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[border-color,background-color,box-shadow,color] duration-200 ease-out outline-none border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] text-[color:var(--photon-builder-text)] hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-field)] focus-visible:border-[color:var(--photon-builder-border-strong)] focus-visible:bg-[color:var(--photon-builder-accent-strong)]"
 		>
 			<span className="flex min-w-0 items-center gap-2.5">
-				<span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--wb-builder-text-soft)]">
+				<span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--photon-builder-text-soft)]">
 					{label}
 				</span>
 				<span className="truncate uppercase">{activeOption.label}</span>
 			</span>
-			<ChevronDown className="h-4 w-4 shrink-0 text-[color:var(--wb-builder-text-soft)] transition-transform duration-200 ease-out" />
+			<ChevronDown className="h-4 w-4 shrink-0 text-[color:var(--photon-builder-text-soft)] transition-transform duration-200 ease-out" />
 		</button>
 	);
 
@@ -66,7 +66,7 @@ export const EditorLocaleSelect = ({
 					{options.map((option) => (
 						<DropdownMenuRadioItem key={option.code} value={option.code}>
 							<span className="flex items-center gap-2.5">
-								<span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--wb-builder-text-soft)]">
+								<span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--photon-builder-text-soft)]">
 									{label}
 								</span>
 								<span className="uppercase">{option.label}</span>

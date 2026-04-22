@@ -1,13 +1,13 @@
-import { getWebsiteBuilderSiteColorScheme } from "../modules/system/site/site-color-schemes";
-import { getWebsiteBuilderSiteDesignPreset } from "../modules/system/site/site-design-presets";
+import { getPhotonSiteColorScheme } from "../modules/system/site/site-color-schemes";
+import { getPhotonSiteDesignPreset } from "../modules/system/site/site-design-presets";
 import type {
-	WebsiteBuilderResolvedSiteDesignSettings,
-	WebsiteBuilderSiteComponentVariants,
-	WebsiteBuilderSiteDesignColorTokens,
-	WebsiteBuilderSiteDesignSettings,
+	PhotonResolvedSiteDesignSettings,
+	PhotonSiteComponentVariants,
+	PhotonSiteDesignColorTokens,
+	PhotonSiteDesignSettings,
 } from "../types";
 
-const WEBSITE_BUILDER_SITE_DESIGN_TOKEN_KEYS = [
+const PHOTON_SITE_DESIGN_TOKEN_KEYS = [
 	"bodyFontFamily",
 	"headingFontFamily",
 	"backgroundColor",
@@ -21,23 +21,23 @@ const WEBSITE_BUILDER_SITE_DESIGN_TOKEN_KEYS = [
 	"sectionGap",
 	"radius",
 	"headerOffset",
-] as const satisfies ReadonlyArray<keyof WebsiteBuilderSiteDesignSettings>;
+] as const satisfies ReadonlyArray<keyof PhotonSiteDesignSettings>;
 
-const WEBSITE_BUILDER_SITE_DESIGN_COLOR_TOKEN_KEYS = [
+const PHOTON_SITE_DESIGN_COLOR_TOKEN_KEYS = [
 	"backgroundColor",
 	"surfaceColor",
 	"textColor",
 	"mutedTextColor",
 	"accentColor",
 	"borderColor",
-] as const satisfies ReadonlyArray<keyof WebsiteBuilderSiteDesignColorTokens>;
+] as const satisfies ReadonlyArray<keyof PhotonSiteDesignColorTokens>;
 
-const WEBSITE_BUILDER_FRAMELESS_PRESET_IDS = new Set([
+const PHOTON_FRAMELESS_PRESET_IDS = new Set([
 	"paper-flow",
 	"init-landing",
 ]);
 
-export const WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS: WebsiteBuilderSiteDesignSettings =
+export const PHOTON_SITE_DESIGN_DEFAULTS: PhotonSiteDesignSettings =
 	{
 		bodyFontFamily: "var(--font-display, ui-sans-serif), system-ui, sans-serif",
 		headingFontFamily:
@@ -55,7 +55,7 @@ export const WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS: WebsiteBuilderSiteDesignSetti
 		headerOffset: "0px",
 	};
 
-export const WEBSITE_BUILDER_SITE_DESIGN_FALLBACK_DEFAULTS: WebsiteBuilderSiteDesignSettings =
+export const PHOTON_SITE_DESIGN_FALLBACK_DEFAULTS: PhotonSiteDesignSettings =
 	{
 		bodyFontFamily: "ui-sans-serif, system-ui, sans-serif",
 		headingFontFamily: "ui-sans-serif, system-ui, sans-serif",
@@ -80,24 +80,24 @@ const asSiteDesignCandidate = (value: unknown): Record<string, unknown> =>
 const readNonEmptyString = (value: unknown) =>
 	typeof value === "string" && value.trim() !== "" ? value : undefined;
 
-const matchesWebsiteBuilderSiteDesignDefaults = (
-	left: WebsiteBuilderSiteDesignSettings,
-	right: WebsiteBuilderSiteDesignSettings,
+const matchesPhotonSiteDesignDefaults = (
+	left: PhotonSiteDesignSettings,
+	right: PhotonSiteDesignSettings,
 ) =>
-	WEBSITE_BUILDER_SITE_DESIGN_TOKEN_KEYS.every(
+	PHOTON_SITE_DESIGN_TOKEN_KEYS.every(
 		(key) => left[key] === right[key],
 	);
 
 const hasAnyTokenOverride = (
 	candidate: Record<string, unknown>,
-	keys: readonly (keyof WebsiteBuilderSiteDesignSettings)[],
+	keys: readonly (keyof PhotonSiteDesignSettings)[],
 ) => keys.some((key) => readNonEmptyString(candidate[key]) !== undefined);
 
 const readTokenOverrides = (
 	candidate: Record<string, unknown>,
-	keys: readonly (keyof WebsiteBuilderSiteDesignSettings)[],
+	keys: readonly (keyof PhotonSiteDesignSettings)[],
 ) =>
-	keys.reduce<Partial<WebsiteBuilderSiteDesignSettings>>((result, key) => {
+	keys.reduce<Partial<PhotonSiteDesignSettings>>((result, key) => {
 		const value = readNonEmptyString(candidate[key]);
 
 		if (value !== undefined) {
@@ -109,14 +109,14 @@ const readTokenOverrides = (
 
 const normalizeComponentVariants = (
 	value: unknown,
-): WebsiteBuilderSiteComponentVariants => {
+): PhotonSiteComponentVariants => {
 	if (typeof value !== "object" || value === null) {
 		return {};
 	}
 
 	return Object.entries(
 		value as Record<string, unknown>,
-	).reduce<WebsiteBuilderSiteComponentVariants>(
+	).reduce<PhotonSiteComponentVariants>(
 		(result, [key, candidateValue]) => {
 			const normalizedValue = readNonEmptyString(candidateValue);
 
@@ -131,15 +131,15 @@ const normalizeComponentVariants = (
 };
 
 const pickSiteDesignTokens = (
-	value: WebsiteBuilderSiteDesignSettings,
-): WebsiteBuilderSiteDesignSettings =>
-	WEBSITE_BUILDER_SITE_DESIGN_TOKEN_KEYS.reduce<WebsiteBuilderSiteDesignSettings>(
+	value: PhotonSiteDesignSettings,
+): PhotonSiteDesignSettings =>
+	PHOTON_SITE_DESIGN_TOKEN_KEYS.reduce<PhotonSiteDesignSettings>(
 		(result, key) => {
 			result[key] = value[key];
 
 			return result;
 		},
-		{ ...WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS },
+		{ ...PHOTON_SITE_DESIGN_DEFAULTS },
 	);
 
 const createResolvedSettings = ({
@@ -150,18 +150,18 @@ const createResolvedSettings = ({
 }: {
 	presetId?: string;
 	colorSchemeId?: string;
-	componentVariants?: WebsiteBuilderSiteComponentVariants;
-	tokenOverrides?: Partial<WebsiteBuilderSiteDesignSettings>;
-}): WebsiteBuilderResolvedSiteDesignSettings => {
+	componentVariants?: PhotonSiteComponentVariants;
+	tokenOverrides?: Partial<PhotonSiteDesignSettings>;
+}): PhotonResolvedSiteDesignSettings => {
 	const preset = presetId
-		? getWebsiteBuilderSiteDesignPreset(presetId)
+		? getPhotonSiteDesignPreset(presetId)
 		: undefined;
 	const colorScheme = colorSchemeId
-		? getWebsiteBuilderSiteColorScheme(colorSchemeId)
+		? getPhotonSiteColorScheme(colorSchemeId)
 		: undefined;
 
 	return {
-		...WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS,
+		...PHOTON_SITE_DESIGN_DEFAULTS,
 		...(preset?.designTokens ?? {}),
 		...(colorScheme?.colorTokens ?? {}),
 		...(tokenOverrides ?? {}),
@@ -178,18 +178,18 @@ const createFallbackResolvedSettings = ({
 	componentVariants,
 	tokenOverrides,
 }: {
-	componentVariants?: WebsiteBuilderSiteComponentVariants;
-	tokenOverrides?: Partial<WebsiteBuilderSiteDesignSettings>;
-} = {}): WebsiteBuilderResolvedSiteDesignSettings =>
+	componentVariants?: PhotonSiteComponentVariants;
+	tokenOverrides?: Partial<PhotonSiteDesignSettings>;
+} = {}): PhotonResolvedSiteDesignSettings =>
 	createResolvedSettings({
 		componentVariants,
 		tokenOverrides: {
-			...WEBSITE_BUILDER_SITE_DESIGN_FALLBACK_DEFAULTS,
+			...PHOTON_SITE_DESIGN_FALLBACK_DEFAULTS,
 			...(tokenOverrides ?? {}),
 		},
 	});
 
-export const createWebsiteBuilderSiteDesignSettings = ({
+export const createPhotonSiteDesignSettings = ({
 	presetId,
 	colorSchemeId,
 	componentVariants,
@@ -197,11 +197,11 @@ export const createWebsiteBuilderSiteDesignSettings = ({
 }: {
 	presetId?: string;
 	colorSchemeId?: string;
-	componentVariants?: WebsiteBuilderSiteComponentVariants;
-	overrides?: Partial<WebsiteBuilderSiteDesignSettings>;
-} = {}): WebsiteBuilderResolvedSiteDesignSettings => {
+	componentVariants?: PhotonSiteComponentVariants;
+	overrides?: Partial<PhotonSiteDesignSettings>;
+} = {}): PhotonResolvedSiteDesignSettings => {
 	const preset = presetId
-		? getWebsiteBuilderSiteDesignPreset(presetId)
+		? getPhotonSiteDesignPreset(presetId)
 		: undefined;
 
 	return createResolvedSettings({
@@ -212,21 +212,21 @@ export const createWebsiteBuilderSiteDesignSettings = ({
 	});
 };
 
-export const isWebsiteBuilderFramelessPreset = (presetId?: string | null) =>
+export const isPhotonFramelessPreset = (presetId?: string | null) =>
 	typeof presetId === "string" &&
-	WEBSITE_BUILDER_FRAMELESS_PRESET_IDS.has(presetId);
+	PHOTON_FRAMELESS_PRESET_IDS.has(presetId);
 
-export const isWebsiteBuilderFramelessSiteDesign = (value: unknown) =>
-	isWebsiteBuilderFramelessPreset(
-		resolveWebsiteBuilderSiteDesignSettings(value).presetId,
+export const isPhotonFramelessSiteDesign = (value: unknown) =>
+	isPhotonFramelessPreset(
+		resolvePhotonSiteDesignSettings(value).presetId,
 	);
 
-export const applyWebsiteBuilderSiteDesignPreset = (
+export const applyPhotonSiteDesignPreset = (
 	value: unknown,
 	presetId: string,
-): WebsiteBuilderResolvedSiteDesignSettings => {
-	const currentSettings = resolveWebsiteBuilderSiteDesignSettings(value);
-	const preset = getWebsiteBuilderSiteDesignPreset(presetId);
+): PhotonResolvedSiteDesignSettings => {
+	const currentSettings = resolvePhotonSiteDesignSettings(value);
+	const preset = getPhotonSiteDesignPreset(presetId);
 	const resolvedColorSchemeId =
 		preset?.recommendedColorSchemeId ?? currentSettings.colorSchemeId;
 	const rawComponentVariants = normalizeComponentVariants(
@@ -251,11 +251,11 @@ export const applyWebsiteBuilderSiteDesignPreset = (
 	});
 };
 
-export const isWebsiteBuilderSiteDesignPresetApplied = (
-	settings: WebsiteBuilderResolvedSiteDesignSettings,
+export const isPhotonSiteDesignPresetApplied = (
+	settings: PhotonResolvedSiteDesignSettings,
 	presetId: string,
 ) => {
-	const preset = getWebsiteBuilderSiteDesignPreset(presetId);
+	const preset = getPhotonSiteDesignPreset(presetId);
 
 	if (!preset) {
 		return false;
@@ -263,7 +263,7 @@ export const isWebsiteBuilderSiteDesignPresetApplied = (
 
 	const tokenMatches = Object.entries(preset.designTokens).every(
 		([key, value]) =>
-			settings[key as keyof WebsiteBuilderResolvedSiteDesignSettings] === value,
+			settings[key as keyof PhotonResolvedSiteDesignSettings] === value,
 	);
 	const variantMatches = Object.entries(preset.componentVariants).every(
 		([key, value]) => settings.componentVariants[key] === value,
@@ -274,24 +274,24 @@ export const isWebsiteBuilderSiteDesignPresetApplied = (
 	return tokenMatches && variantMatches && recommendedSchemeMatches;
 };
 
-export const hasWebsiteBuilderSiteDesignPresetCustomization = (
-	settings: WebsiteBuilderResolvedSiteDesignSettings,
+export const hasPhotonSiteDesignPresetCustomization = (
+	settings: PhotonResolvedSiteDesignSettings,
 	presetId: string,
 ) => {
-	const preset = getWebsiteBuilderSiteDesignPreset(presetId);
+	const preset = getPhotonSiteDesignPreset(presetId);
 
 	return (
 		settings.presetId === preset?.id &&
-		!isWebsiteBuilderSiteDesignPresetApplied(settings, presetId)
+		!isPhotonSiteDesignPresetApplied(settings, presetId)
 	);
 };
 
-export const applyWebsiteBuilderSiteColorScheme = (
+export const applyPhotonSiteColorScheme = (
 	value: unknown,
 	colorSchemeId: string,
-): WebsiteBuilderResolvedSiteDesignSettings => {
-	const currentSettings = resolveWebsiteBuilderSiteDesignSettings(value);
-	const colorScheme = getWebsiteBuilderSiteColorScheme(colorSchemeId);
+): PhotonResolvedSiteDesignSettings => {
+	const currentSettings = resolvePhotonSiteDesignSettings(value);
+	const colorScheme = getPhotonSiteColorScheme(colorSchemeId);
 
 	return createResolvedSettings({
 		presetId: currentSettings.presetId,
@@ -304,18 +304,18 @@ export const applyWebsiteBuilderSiteColorScheme = (
 	});
 };
 
-export const resolveWebsiteBuilderSiteDesignSettings = (
+export const resolvePhotonSiteDesignSettings = (
 	value: unknown,
-): WebsiteBuilderResolvedSiteDesignSettings => {
+): PhotonResolvedSiteDesignSettings => {
 	const candidate = asSiteDesignCandidate(value);
 	const presetId = readNonEmptyString(candidate.presetId);
 	const colorSchemeId = readNonEmptyString(candidate.colorSchemeId);
 	const tokenOverrides = readTokenOverrides(
 		candidate,
-		WEBSITE_BUILDER_SITE_DESIGN_TOKEN_KEYS,
+		PHOTON_SITE_DESIGN_TOKEN_KEYS,
 	);
 	const tokenOverrideSettings = {
-		...WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS,
+		...PHOTON_SITE_DESIGN_DEFAULTS,
 		...tokenOverrides,
 	};
 	const componentVariants = normalizeComponentVariants(
@@ -323,27 +323,27 @@ export const resolveWebsiteBuilderSiteDesignSettings = (
 	);
 	const hasTokenOverrides = hasAnyTokenOverride(
 		candidate,
-		WEBSITE_BUILDER_SITE_DESIGN_TOKEN_KEYS,
+		PHOTON_SITE_DESIGN_TOKEN_KEYS,
 	);
 	const hasColorOverrides = hasAnyTokenOverride(
 		candidate,
-		WEBSITE_BUILDER_SITE_DESIGN_COLOR_TOKEN_KEYS,
+		PHOTON_SITE_DESIGN_COLOR_TOKEN_KEYS,
 	);
 	const hasComponentVariantOverrides =
 		Object.keys(componentVariants).length > 0;
 	const explicitPreset = presetId
-		? getWebsiteBuilderSiteDesignPreset(presetId)
+		? getPhotonSiteDesignPreset(presetId)
 		: undefined;
 	const explicitColorScheme = colorSchemeId
-		? getWebsiteBuilderSiteColorScheme(colorSchemeId)
+		? getPhotonSiteColorScheme(colorSchemeId)
 		: undefined;
 	const isFallbackDesign =
 		!explicitPreset &&
 		!explicitColorScheme &&
 		!hasComponentVariantOverrides &&
-		matchesWebsiteBuilderSiteDesignDefaults(
+		matchesPhotonSiteDesignDefaults(
 			tokenOverrideSettings,
-			WEBSITE_BUILDER_SITE_DESIGN_FALLBACK_DEFAULTS,
+			PHOTON_SITE_DESIGN_FALLBACK_DEFAULTS,
 		);
 	if (isFallbackDesign) {
 		return createFallbackResolvedSettings({

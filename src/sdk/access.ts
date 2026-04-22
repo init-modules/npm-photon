@@ -1,4 +1,4 @@
-export type WebsiteBuilderAccessAuthStateLike = {
+export type PhotonAccessAuthStateLike = {
 	user?: {
 		permissions?: string[] | null;
 		role?: string | null;
@@ -8,13 +8,13 @@ export type WebsiteBuilderAccessAuthStateLike = {
 const BUILDER_PERMISSION_KEYS = [
 	"admin",
 	"su",
-	"website-builder.manage",
-	"website-builder.edit",
+	"photon.manage",
+	"photon.edit",
 	"cms.manage",
 ];
 
-export const resolveWebsiteBuilderAccess = (
-	authState: WebsiteBuilderAccessAuthStateLike,
+export const resolvePhotonAccess = (
+	authState: PhotonAccessAuthStateLike,
 	options?: {
 		demoAccessAllowed?: boolean;
 	},

@@ -3,10 +3,10 @@
 import clsx from "clsx";
 import { LayoutPanelLeft, LayoutPanelTop, LogIn, LogOut } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { useWebsiteBuilderI18n } from "../../i18n/website-builder-i18n-context";
+import { usePhotonI18n } from "../../i18n/photon-i18n-context";
 import type {
-	WebsiteBuilderMode,
-	WebsiteBuilderPageCatalogItem,
+	PhotonMode,
+	PhotonPageCatalogItem,
 } from "../../types";
 import { ToolbarButton } from "../shared";
 import { EditorDockBrand } from "./editor-dock-brand";
@@ -15,10 +15,10 @@ import { EditorModeSelect } from "./editor-mode-select";
 import { EditorPageBrowser } from "./editor-page-browser";
 import { EditorSaveButton } from "./editor-save-button";
 
-export const WEBSITE_BUILDER_EDITOR_DOCK_FALLBACK_HEIGHT = 80;
+export const PHOTON_EDITOR_DOCK_FALLBACK_HEIGHT = 80;
 
 type EditorDockProps = {
-	activeMode: WebsiteBuilderMode;
+	activeMode: PhotonMode;
 	canManage: boolean;
 	hasUnsavedChanges: boolean;
 	collapsedBlockCount: number;
@@ -27,12 +27,12 @@ type EditorDockProps = {
 	showCollapsedInPreview: boolean;
 	title: string;
 	description?: string;
-	currentPage: WebsiteBuilderPageCatalogItem | null;
-	pages: WebsiteBuilderPageCatalogItem[];
+	currentPage: PhotonPageCatalogItem | null;
+	pages: PhotonPageCatalogItem[];
 	onHeightChange: (height: number) => void;
 	onAuthOpen: () => void;
 	onAutosaveChange: (value: boolean) => void;
-	onOpenPage?: (page: WebsiteBuilderPageCatalogItem) => void;
+	onOpenPage?: (page: PhotonPageCatalogItem) => void;
 	onCreatePage?: (input: {
 		name: string;
 		route: string;
@@ -47,7 +47,7 @@ type EditorDockProps = {
 		shortcutLabel?: string;
 	};
 	onLogout: () => void;
-	onModeChange: (mode: WebsiteBuilderMode) => void;
+	onModeChange: (mode: PhotonMode) => void;
 	onPreviewCollapsedChange: () => void;
 	onReset: () => void;
 	onSave: () => void;
@@ -87,7 +87,7 @@ export const EditorDock = ({
 		interfaceLocale,
 		interfaceLocales,
 		translate,
-	} = useWebsiteBuilderI18n();
+	} = usePhotonI18n();
 	const compact = true;
 	const contentLocaleOptions = editableLocales.map((locale) => ({
 		code: locale.code,
@@ -125,13 +125,13 @@ export const EditorDock = ({
 		<header
 			ref={headerRef}
 			className="fixed inset-x-0 top-0 z-[60] border-b backdrop-blur-xl"
-			data-testid="wb-editor-dock"
+			data-testid="photon-editor-dock"
 			style={{
-				minHeight: WEBSITE_BUILDER_EDITOR_DOCK_FALLBACK_HEIGHT,
-				background: "var(--wb-builder-dock-bg)",
-				boxShadow: "var(--wb-builder-panel-shadow)",
-				borderColor: "var(--wb-builder-border)",
-				color: "var(--wb-builder-text)",
+				minHeight: PHOTON_EDITOR_DOCK_FALLBACK_HEIGHT,
+				background: "var(--photon-builder-dock-bg)",
+				boxShadow: "var(--photon-builder-panel-shadow)",
+				borderColor: "var(--photon-builder-border)",
+				color: "var(--photon-builder-text)",
 			}}
 		>
 			<div
@@ -169,7 +169,7 @@ export const EditorDock = ({
 								/>
 								<EditorLocaleSelect
 									label={translate(
-										"websiteBuilder.editor.contentLocale.label",
+										"photon.editor.contentLocale.label",
 										"Content",
 									)}
 									value={contentLocale}
@@ -179,7 +179,7 @@ export const EditorDock = ({
 								{showInterfaceLocaleControl ? (
 									<EditorLocaleSelect
 										label={translate(
-											"websiteBuilder.editor.interfaceLocale.label",
+											"photon.editor.interfaceLocale.label",
 											"Interface",
 										)}
 										value={interfaceLocale}
@@ -190,7 +190,7 @@ export const EditorDock = ({
 								{workspaceControl ? (
 									<button
 										type="button"
-										className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] px-4 text-sm font-semibold text-[color:var(--wb-builder-text)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:bg-[color:var(--wb-builder-field)]"
+										className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] px-4 text-sm font-semibold text-[color:var(--photon-builder-text)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-field)]"
 										onClick={workspaceControl.onToggle}
 										aria-pressed={workspaceControl.isOpen}
 										aria-label={
@@ -198,9 +198,9 @@ export const EditorDock = ({
 												? "Hide workspace panel"
 												: "Show workspace panel"
 										}
-										data-testid="wb-workspace-toggle"
+										data-testid="photon-workspace-toggle"
 									>
-										<WorkspaceIcon className="h-4 w-4 text-[color:var(--wb-builder-accent)]" />
+										<WorkspaceIcon className="h-4 w-4 text-[color:var(--photon-builder-accent)]" />
 										<span>Workspace</span>
 									</button>
 								) : null}
@@ -219,13 +219,13 @@ export const EditorDock = ({
 								/>
 								<ToolbarButton onClick={onLogout}>
 									<LogOut className="h-4 w-4" />
-									{translate("websiteBuilder.auth.logOut", "Log out")}
+									{translate("photon.auth.logOut", "Log out")}
 								</ToolbarButton>
 							</>
 						) : (
 							<ToolbarButton onClick={onAuthOpen}>
 								<LogIn className="h-4 w-4" />
-								{translate("websiteBuilder.auth.signIn", "Admin sign in")}
+								{translate("photon.auth.signIn", "Admin sign in")}
 							</ToolbarButton>
 						)}
 					</div>

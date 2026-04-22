@@ -1,27 +1,27 @@
 import type { ReactNode } from "react";
 import type {
-	WebsiteBuilderAccountTabExtension,
-	WebsiteBuilderBranchPolicyState,
-	WebsiteBuilderDocument,
-	WebsiteBuilderField,
-	WebsiteBuilderI18nValue,
-	WebsiteBuilderLinkComponent,
-	WebsiteBuilderMediaUploadHandler,
-	WebsiteBuilderMergePreview,
-	WebsiteBuilderMode,
-	WebsiteBuilderPageCatalogItem,
-	WebsiteBuilderPageSettings,
-	WebsiteBuilderPageSettingsPanelDefinition,
-	WebsiteBuilderRegistry,
-	WebsiteBuilderResources,
-	WebsiteBuilderRevisionDescriptor,
-	WebsiteBuilderSearchHandler,
-	WebsiteBuilderSearchHighlight,
-	WebsiteBuilderSite,
-	WebsiteBuilderSiteFrameExtension,
-	WebsiteBuilderSiteSettingsPanelDefinition,
-	WebsiteBuilderWorkspaceCapabilities,
-	WebsiteBuilderWorkspaceDescriptor,
+	PhotonAccountTabExtension,
+	PhotonBranchPolicyState,
+	PhotonDocument,
+	PhotonField,
+	PhotonI18nValue,
+	PhotonLinkComponent,
+	PhotonMediaUploadHandler,
+	PhotonMergePreview,
+	PhotonMode,
+	PhotonPageCatalogItem,
+	PhotonPageSettings,
+	PhotonPageSettingsPanelDefinition,
+	PhotonRegistry,
+	PhotonResources,
+	PhotonRevisionDescriptor,
+	PhotonSearchHandler,
+	PhotonSearchHighlight,
+	PhotonSite,
+	PhotonSiteFrameExtension,
+	PhotonSiteSettingsPanelDefinition,
+	PhotonWorkspaceCapabilities,
+	PhotonWorkspaceDescriptor,
 } from "../types";
 
 export type InsertTarget = {
@@ -29,64 +29,64 @@ export type InsertTarget = {
 	index: number;
 };
 
-export type WebsiteBuilderStudioSaveReason = "manual" | "autosave";
+export type PhotonStudioSaveReason = "manual" | "autosave";
 
-export type WebsiteBuilderStudioSavePayload = {
-	workspace?: WebsiteBuilderWorkspaceDescriptor;
+export type PhotonStudioSavePayload = {
+	workspace?: PhotonWorkspaceDescriptor;
 	expectedHeadRevisionId: string | null;
 	commitMessage?: string | null;
-	saveMode: WebsiteBuilderStudioSaveReason;
-	document: WebsiteBuilderDocument;
-	resources: WebsiteBuilderResources;
-	pageSettings: WebsiteBuilderPageSettings;
-	site: WebsiteBuilderSite;
+	saveMode: PhotonStudioSaveReason;
+	document: PhotonDocument;
+	resources: PhotonResources;
+	pageSettings: PhotonPageSettings;
+	site: PhotonSite;
 };
 
-export type WebsiteBuilderStudioSiteSettingChangeContext =
-	WebsiteBuilderStudioSavePayload & {
-		currentPage: WebsiteBuilderPageCatalogItem | null;
+export type PhotonStudioSiteSettingChangeContext =
+	PhotonStudioSavePayload & {
+		currentPage: PhotonPageCatalogItem | null;
 	};
 
-export type WebsiteBuilderStudioProps = {
-	initialDocument: WebsiteBuilderDocument;
-	initialResources?: WebsiteBuilderResources;
-	initialPageSettings?: WebsiteBuilderPageSettings;
-	initialSite?: WebsiteBuilderSite;
-	registry: WebsiteBuilderRegistry;
-	workspace?: WebsiteBuilderWorkspaceDescriptor;
-	capabilities?: Partial<WebsiteBuilderWorkspaceCapabilities>;
-	history?: WebsiteBuilderRevisionDescriptor[];
-	branchPolicy?: WebsiteBuilderBranchPolicyState;
-	mergePreview?: WebsiteBuilderMergePreview | null;
+export type PhotonStudioProps = {
+	initialDocument: PhotonDocument;
+	initialResources?: PhotonResources;
+	initialPageSettings?: PhotonPageSettings;
+	initialSite?: PhotonSite;
+	registry: PhotonRegistry;
+	workspace?: PhotonWorkspaceDescriptor;
+	capabilities?: Partial<PhotonWorkspaceCapabilities>;
+	history?: PhotonRevisionDescriptor[];
+	branchPolicy?: PhotonBranchPolicyState;
+	mergePreview?: PhotonMergePreview | null;
 	canManage: boolean;
 	isDemoAccess?: boolean;
 	userEmail?: string | null;
-	initialMode?: WebsiteBuilderMode;
+	initialMode?: PhotonMode;
 	draftStorageKey: string;
 	autosaveStorageKey: string;
-	currentPage?: WebsiteBuilderPageCatalogItem | null;
-	pages?: WebsiteBuilderPageCatalogItem[];
+	currentPage?: PhotonPageCatalogItem | null;
+	pages?: PhotonPageCatalogItem[];
 	onRequestAuth?: () => void;
 	onLogout?: () => void | Promise<void>;
 	onContentLocaleChange?: (locale: string) => void | Promise<void>;
 	onInterfaceLocaleChange?: (locale: string) => void | Promise<void>;
-	onModeChange?: (mode: WebsiteBuilderMode) => void | Promise<void>;
+	onModeChange?: (mode: PhotonMode) => void | Promise<void>;
 	onSiteSettingChange?: (
 		path: string,
 		value: unknown,
-		context: WebsiteBuilderStudioSiteSettingChangeContext,
-	) => WebsiteBuilderStudioSavePayload | void;
+		context: PhotonStudioSiteSettingChangeContext,
+	) => PhotonStudioSavePayload | void;
 	onSaveDocument?: (
-		payload: WebsiteBuilderStudioSavePayload,
+		payload: PhotonStudioSavePayload,
 		context: {
-			reason: WebsiteBuilderStudioSaveReason;
-			workspace: WebsiteBuilderWorkspaceDescriptor;
-			capabilities: WebsiteBuilderWorkspaceCapabilities;
+			reason: PhotonStudioSaveReason;
+			workspace: PhotonWorkspaceDescriptor;
+			capabilities: PhotonWorkspaceCapabilities;
 		},
-	) => Promise<WebsiteBuilderStudioSavePayload | undefined>;
+	) => Promise<PhotonStudioSavePayload | undefined>;
 	onOpenPage?: (
-		page: WebsiteBuilderPageCatalogItem,
-		context: { mode: WebsiteBuilderMode },
+		page: PhotonPageCatalogItem,
+		context: { mode: PhotonMode },
 	) => void | Promise<void>;
 	onCreatePage?: (
 		input: {
@@ -95,21 +95,21 @@ export type WebsiteBuilderStudioProps = {
 			duplicateCurrent: boolean;
 		},
 		context: {
-			mode: WebsiteBuilderMode;
-			document: WebsiteBuilderDocument;
-			resources: WebsiteBuilderResources;
-			pageSettings: WebsiteBuilderPageSettings;
-			site: WebsiteBuilderSite;
-			currentPage: WebsiteBuilderPageCatalogItem | null;
+			mode: PhotonMode;
+			document: PhotonDocument;
+			resources: PhotonResources;
+			pageSettings: PhotonPageSettings;
+			site: PhotonSite;
+			currentPage: PhotonPageCatalogItem | null;
 		},
 	) => void | Promise<void>;
-	onUploadMedia?: WebsiteBuilderMediaUploadHandler;
-	onSearch?: WebsiteBuilderSearchHandler;
-	activeSearchHighlight?: WebsiteBuilderSearchHighlight | null;
-	linkComponent?: WebsiteBuilderLinkComponent;
-	siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
-	accountTabs?: WebsiteBuilderAccountTabExtension[];
-	i18n?: WebsiteBuilderI18nValue | null;
+	onUploadMedia?: PhotonMediaUploadHandler;
+	onSearch?: PhotonSearchHandler;
+	activeSearchHighlight?: PhotonSearchHighlight | null;
+	linkComponent?: PhotonLinkComponent;
+	siteFrameExtensions?: PhotonSiteFrameExtension[];
+	accountTabs?: PhotonAccountTabExtension[];
+	i18n?: PhotonI18nValue | null;
 	hydrateModePreference?: boolean;
 	showInterfaceLocaleControl?: boolean;
 	workspaceControl?: {
@@ -123,7 +123,7 @@ export type WebsiteBuilderStudioProps = {
 	renderContentNotice?: ReactNode;
 };
 
-export type InspectorGroups = Record<string, WebsiteBuilderField[]>;
+export type InspectorGroups = Record<string, PhotonField[]>;
 
 export type InspectorDefinitionMeta = {
 	label: string;
@@ -136,7 +136,7 @@ export type InspectorDefinitionMeta = {
 };
 
 export type PaletteDefinition = ReturnType<
-	WebsiteBuilderRegistry["getPaletteBlocks"]
+	PhotonRegistry["getPaletteBlocks"]
 >[number] & {
 	family: string;
 	group: string;
@@ -153,9 +153,9 @@ export type PaletteFamilyGroup = {
 };
 
 export type PageSettingsPanelDefinition =
-	WebsiteBuilderPageSettingsPanelDefinition;
+	PhotonPageSettingsPanelDefinition;
 export type SiteSettingsPanelDefinition =
-	WebsiteBuilderSiteSettingsPanelDefinition;
+	PhotonSiteSettingsPanelDefinition;
 export type SiteSettingsSubtabDefinition = {
 	key: string;
 	label: string;

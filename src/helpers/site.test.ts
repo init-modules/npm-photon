@@ -1,17 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { WebsiteBuilderBlock, WebsiteBuilderDocument } from "../types";
+import type { PhotonBlock, PhotonDocument } from "../types";
 import {
-	composeWebsiteBuilderSurfaceDocument,
-	decomposeWebsiteBuilderSurfaceDocument,
-	getWebsiteBuilderSurfaceRegionBlocks,
-	WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
+	composePhotonSurfaceDocument,
+	decomposePhotonSurfaceDocument,
+	getPhotonSurfaceRegionBlocks,
+	PHOTON_PAGE_SURFACE_REGION_KEY,
 } from "./site";
 
 const createDocument = (
 	id: string,
-	blocks: WebsiteBuilderBlock[],
-): WebsiteBuilderDocument => ({
+	blocks: PhotonBlock[],
+): PhotonDocument => ({
 	id,
 	name: id,
 	route: `/${id}`,
@@ -19,11 +19,11 @@ const createDocument = (
 	blocks,
 });
 
-test("composeWebsiteBuilderSurfaceDocument strips duplicated header and footer shell blocks from page content", () => {
+test("composePhotonSurfaceDocument strips duplicated header and footer shell blocks from page content", () => {
 	const pageDocument = createDocument("home", [
 		{
 			id: "header-inline",
-			module: "website-builder-system",
+			module: "photon-system",
 			type: "site-header-shell",
 			props: {},
 		},
@@ -35,7 +35,7 @@ test("composeWebsiteBuilderSurfaceDocument strips duplicated header and footer s
 		},
 		{
 			id: "footer-inline",
-			module: "website-builder-system",
+			module: "photon-system",
 			type: "site-footer-shell",
 			props: {},
 		},
@@ -51,7 +51,7 @@ test("composeWebsiteBuilderSurfaceDocument strips duplicated header and footer s
 				document: createDocument("header", [
 					{
 						id: "header-shell",
-						module: "website-builder-system",
+						module: "photon-system",
 						type: "site-header-shell",
 						props: {},
 					},
@@ -65,7 +65,7 @@ test("composeWebsiteBuilderSurfaceDocument strips duplicated header and footer s
 				document: createDocument("footer", [
 					{
 						id: "footer-shell",
-						module: "website-builder-system",
+						module: "photon-system",
 						type: "site-footer-shell",
 						props: {},
 					},
@@ -74,19 +74,19 @@ test("composeWebsiteBuilderSurfaceDocument strips duplicated header and footer s
 		},
 	};
 
-	const surfaceDocument = composeWebsiteBuilderSurfaceDocument(
+	const surfaceDocument = composePhotonSurfaceDocument(
 		pageDocument,
 		site,
 	);
 	const pageBlocks =
-		getWebsiteBuilderSurfaceRegionBlocks(
+		getPhotonSurfaceRegionBlocks(
 			surfaceDocument,
-			WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
+			PHOTON_PAGE_SURFACE_REGION_KEY,
 		) ?? [];
 	const headerBlocks =
-		getWebsiteBuilderSurfaceRegionBlocks(surfaceDocument, "header") ?? [];
+		getPhotonSurfaceRegionBlocks(surfaceDocument, "header") ?? [];
 	const footerBlocks =
-		getWebsiteBuilderSurfaceRegionBlocks(surfaceDocument, "footer") ?? [];
+		getPhotonSurfaceRegionBlocks(surfaceDocument, "footer") ?? [];
 
 	assert.deepEqual(
 		pageBlocks.map((block) => block.id),
@@ -102,7 +102,7 @@ test("composeWebsiteBuilderSurfaceDocument strips duplicated header and footer s
 	);
 });
 
-test("decomposeWebsiteBuilderSurfaceDocument keeps site shell ownership inside site regions", () => {
+test("decomposePhotonSurfaceDocument keeps site shell ownership inside site regions", () => {
 	const surfaceDocument = {
 		id: "home",
 		name: "home",
@@ -110,8 +110,8 @@ test("decomposeWebsiteBuilderSurfaceDocument keeps site shell ownership inside s
 		updatedAt: "2026-01-01T00:00:00.000Z",
 		blocks: [
 			{
-				id: "__wb_surface_region:header__",
-				module: "__website_builder_internal__",
+				id: "__photon_surface_region:header__",
+				module: "__photon_internal__",
 				type: "surface-region",
 				props: {
 					regionKey: "header",
@@ -124,7 +124,7 @@ test("decomposeWebsiteBuilderSurfaceDocument keeps site shell ownership inside s
 						blocks: [
 							{
 								id: "header-shell",
-								module: "website-builder-system",
+								module: "photon-system",
 								type: "site-header-shell",
 								props: {},
 							},
@@ -133,8 +133,8 @@ test("decomposeWebsiteBuilderSurfaceDocument keeps site shell ownership inside s
 				],
 			},
 			{
-				id: "__wb_surface_region:page__",
-				module: "__website_builder_internal__",
+				id: "__photon_surface_region:page__",
+				module: "__photon_internal__",
 				type: "surface-region",
 				props: {
 					regionKey: "page",
@@ -147,7 +147,7 @@ test("decomposeWebsiteBuilderSurfaceDocument keeps site shell ownership inside s
 						blocks: [
 							{
 								id: "header-inline",
-								module: "website-builder-system",
+								module: "photon-system",
 								type: "site-header-shell",
 								props: {},
 							},
@@ -162,8 +162,8 @@ test("decomposeWebsiteBuilderSurfaceDocument keeps site shell ownership inside s
 				],
 			},
 			{
-				id: "__wb_surface_region:footer__",
-				module: "__website_builder_internal__",
+				id: "__photon_surface_region:footer__",
+				module: "__photon_internal__",
 				type: "surface-region",
 				props: {
 					regionKey: "footer",
@@ -176,7 +176,7 @@ test("decomposeWebsiteBuilderSurfaceDocument keeps site shell ownership inside s
 						blocks: [
 							{
 								id: "footer-shell",
-								module: "website-builder-system",
+								module: "photon-system",
 								type: "site-footer-shell",
 								props: {},
 							},
@@ -206,7 +206,7 @@ test("decomposeWebsiteBuilderSurfaceDocument keeps site shell ownership inside s
 		},
 	};
 
-	const persistedState = decomposeWebsiteBuilderSurfaceDocument(
+	const persistedState = decomposePhotonSurfaceDocument(
 		surfaceDocument,
 		site,
 	);

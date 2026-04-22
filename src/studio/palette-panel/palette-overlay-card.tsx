@@ -16,20 +16,20 @@ export const PaletteOverlayCard = ({
 		<div
 			className="w-[13.5rem] min-w-[13.5rem] max-w-[13.5rem] overflow-hidden rounded-[30px] border px-3.5 py-3.5 text-left backdrop-blur-xl"
 			style={{
-				borderColor: "var(--wb-builder-border-strong)",
+				borderColor: "var(--photon-builder-border-strong)",
 				background:
-					"var(--wb-builder-card-highlight), linear-gradient(180deg, var(--wb-builder-panel-solid), var(--wb-builder-panel))",
-				color: "var(--wb-builder-text)",
-				boxShadow: "var(--wb-builder-shadow)",
+					"var(--photon-builder-card-highlight), linear-gradient(180deg, var(--photon-builder-panel-solid), var(--photon-builder-panel))",
+				color: "var(--photon-builder-text)",
+				boxShadow: "var(--photon-builder-shadow)",
 			}}
 		>
 			<div className="flex items-center gap-3">
 				<div
 					className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[20px] border"
 					style={{
-						borderColor: "var(--wb-builder-border)",
-						background: "var(--wb-builder-field)",
-						color: "var(--wb-builder-accent)",
+						borderColor: "var(--photon-builder-border)",
+						background: "var(--photon-builder-field)",
+						color: "var(--photon-builder-accent)",
 					}}
 				>
 					<Icon className="h-4 w-4" />
@@ -37,7 +37,7 @@ export const PaletteOverlayCard = ({
 				<div className="min-w-0 flex-1">
 					<div
 						className="text-[10px] uppercase tracking-[0.26em]"
-						style={{ color: "var(--wb-builder-text-soft)" }}
+						style={{ color: "var(--photon-builder-text-soft)" }}
 					>
 						{definition.category}
 					</div>
@@ -46,7 +46,7 @@ export const PaletteOverlayCard = ({
 					</div>
 					<div
 						className="mt-2 text-[10px] uppercase tracking-[0.26em]"
-						style={{ color: "var(--wb-builder-text-ghost)" }}
+						style={{ color: "var(--photon-builder-text-ghost)" }}
 					>
 						{definition.module}
 					</div>

@@ -1,41 +1,41 @@
 import type {
-	WebsiteBuilderAnyBlockDefinition,
-	WebsiteBuilderBindingAdapter,
-	WebsiteBuilderBlock,
-	WebsiteBuilderBlockDefinition,
-	WebsiteBuilderBlockLocalizationSchema,
-	WebsiteBuilderBlockProps,
-	WebsiteBuilderDocument,
-	WebsiteBuilderLocalizedDefaultValue,
-	WebsiteBuilderModule,
-	WebsiteBuilderNestedField,
-	WebsiteBuilderPageSettingsPanelDefinition,
-	WebsiteBuilderRegistry,
-	WebsiteBuilderRegistryEntry,
-	WebsiteBuilderSiteSettingsPanelDefinition,
+	PhotonAnyBlockDefinition,
+	PhotonBindingAdapter,
+	PhotonBlock,
+	PhotonBlockDefinition,
+	PhotonBlockLocalizationSchema,
+	PhotonBlockProps,
+	PhotonDocument,
+	PhotonLocalizedDefaultValue,
+	PhotonModule,
+	PhotonNestedField,
+	PhotonPageSettingsPanelDefinition,
+	PhotonRegistry,
+	PhotonRegistryEntry,
+	PhotonSiteSettingsPanelDefinition,
 } from "../types";
-import { resolveWebsiteBuilderModules } from "./installable";
-import { cloneWebsiteBuilderValue } from "./path";
-import { createWebsiteBuilderNodeId } from "./tree";
+import { resolvePhotonModules } from "./installable";
+import { clonePhotonValue } from "./path";
+import { createPhotonNodeId } from "./tree";
 
-export const getWebsiteBuilderDefinitionKey = (
+export const getPhotonDefinitionKey = (
 	moduleName: string,
 	blockType: string,
 ) => `${moduleName}::${blockType}`;
 
-export const createWebsiteBuilderRegistry = (
-	entries: WebsiteBuilderRegistryEntry[],
-): WebsiteBuilderRegistry => {
-	const modules = resolveWebsiteBuilderModules(entries);
-	const definitions = new Map<string, WebsiteBuilderAnyBlockDefinition>();
-	const bindingAdapters = new Map<string, WebsiteBuilderBindingAdapter>();
-	const pageSettingsPanels: WebsiteBuilderPageSettingsPanelDefinition[] = [];
-	const siteSettingsPanels: WebsiteBuilderSiteSettingsPanelDefinition[] = [];
+export const createPhotonRegistry = (
+	entries: PhotonRegistryEntry[],
+): PhotonRegistry => {
+	const modules = resolvePhotonModules(entries);
+	const definitions = new Map<string, PhotonAnyBlockDefinition>();
+	const bindingAdapters = new Map<string, PhotonBindingAdapter>();
+	const pageSettingsPanels: PhotonPageSettingsPanelDefinition[] = [];
+	const siteSettingsPanels: PhotonSiteSettingsPanelDefinition[] = [];
 
 	modules.forEach((moduleEntry) => {
 		moduleEntry.blocks.forEach((definition) => {
 			definitions.set(
-				getWebsiteBuilderDefinitionKey(moduleEntry.module, definition.type),
+				getPhotonDefinitionKey(moduleEntry.module, definition.type),
 				definition,
 			);
 		});
@@ -81,7 +81,7 @@ export const createWebsiteBuilderRegistry = (
 		siteSettingsPanels,
 		getDefinition(moduleName, blockType) {
 			return definitions.get(
-				getWebsiteBuilderDefinitionKey(moduleName, blockType),
+				getPhotonDefinitionKey(moduleName, blockType),
 			);
 		},
 		getBindingAdapter(key) {
@@ -98,7 +98,7 @@ export const createWebsiteBuilderRegistry = (
 				moduleEntry.blocks.map((definition) => ({
 					...definition,
 					module: moduleEntry.module,
-					key: getWebsiteBuilderDefinitionKey(
+					key: getPhotonDefinitionKey(
 						moduleEntry.module,
 						definition.type,
 					),
@@ -108,15 +108,15 @@ export const createWebsiteBuilderRegistry = (
 	};
 };
 
-export const createWebsiteBuilderLocalizedDefault = <T>(
+export const createPhotonLocalizedDefault = <T>(
 	values: Record<string, T>,
-): WebsiteBuilderLocalizedDefaultValue<T> => ({
+): PhotonLocalizedDefaultValue<T> => ({
 	__wbLocalizedDefault: true,
 	values,
 });
 
-const registerWebsiteBuilderFieldLocalization = (
-	schema: WebsiteBuilderBlockLocalizationSchema,
+const registerPhotonFieldLocalization = (
+	schema: PhotonBlockLocalizationSchema,
 	mode: "localized" | "shared",
 	path: string,
 ) => {
@@ -132,9 +132,9 @@ const registerWebsiteBuilderFieldLocalization = (
 	schema.shared.push(normalizedPath);
 };
 
-const collectWebsiteBuilderFieldLocalization = (
-	field: WebsiteBuilderNestedField,
-	schema: WebsiteBuilderBlockLocalizationSchema,
+const collectPhotonFieldLocalization = (
+	field: PhotonNestedField,
+	schema: PhotonBlockLocalizationSchema,
 	basePath: string,
 	inheritedLocalization?: "localized" | "shared",
 ) => {
@@ -147,7 +147,7 @@ const collectWebsiteBuilderFieldLocalization = (
 
 	if (field.kind === "object") {
 		for (const nestedField of field.fields ?? []) {
-			collectWebsiteBuilderFieldLocalization(
+			collectPhotonFieldLocalization(
 				nestedField,
 				schema,
 				currentPath,
@@ -162,7 +162,7 @@ const collectWebsiteBuilderFieldLocalization = (
 		const repeaterBasePath = currentPath ? `${currentPath}.*` : "*";
 
 		if (field.itemField) {
-			collectWebsiteBuilderFieldLocalization(
+			collectPhotonFieldLocalization(
 				field.itemField,
 				schema,
 				repeaterBasePath,
@@ -171,7 +171,7 @@ const collectWebsiteBuilderFieldLocalization = (
 		}
 
 		for (const nestedField of field.fields ?? []) {
-			collectWebsiteBuilderFieldLocalization(
+			collectPhotonFieldLocalization(
 				nestedField,
 				schema,
 				repeaterBasePath,
@@ -184,7 +184,7 @@ const collectWebsiteBuilderFieldLocalization = (
 
 	if (field.kind === "form-fields") {
 		if (!currentPath) {
-			throw new Error("Website Builder form fields require a concrete path.");
+			throw new Error("Photon form fields require a concrete path.");
 		}
 
 		for (const localizedPath of [
@@ -193,7 +193,7 @@ const collectWebsiteBuilderFieldLocalization = (
 			"options.*.label",
 			"placeholder",
 		]) {
-			registerWebsiteBuilderFieldLocalization(
+			registerPhotonFieldLocalization(
 				schema,
 				"localized",
 				`${currentPath}.*.${localizedPath}`,
@@ -211,7 +211,7 @@ const collectWebsiteBuilderFieldLocalization = (
 			"type",
 			"width",
 		]) {
-			registerWebsiteBuilderFieldLocalization(
+			registerPhotonFieldLocalization(
 				schema,
 				"shared",
 				`${currentPath}.*.${sharedPath}`,
@@ -223,33 +223,33 @@ const collectWebsiteBuilderFieldLocalization = (
 
 	if (!currentPath) {
 		throw new Error(
-			"Website Builder field localization requires a concrete path.",
+			"Photon field localization requires a concrete path.",
 		);
 	}
 
 	if (!effectiveLocalization) {
 		throw new Error(
-			`Website Builder field "${currentPath}" is missing explicit localization metadata.`,
+			`Photon field "${currentPath}" is missing explicit localization metadata.`,
 		);
 	}
 
-	registerWebsiteBuilderFieldLocalization(
+	registerPhotonFieldLocalization(
 		schema,
 		effectiveLocalization,
 		currentPath,
 	);
 };
 
-export const createWebsiteBuilderBlockLocalizationSchema = (
-	fields: WebsiteBuilderNestedField[],
-): WebsiteBuilderBlockLocalizationSchema => {
-	const schema: WebsiteBuilderBlockLocalizationSchema = {
+export const createPhotonBlockLocalizationSchema = (
+	fields: PhotonNestedField[],
+): PhotonBlockLocalizationSchema => {
+	const schema: PhotonBlockLocalizationSchema = {
 		localized: [],
 		shared: [],
 	};
 
 	for (const field of fields) {
-		collectWebsiteBuilderFieldLocalization(field, schema, "");
+		collectPhotonFieldLocalization(field, schema, "");
 	}
 
 	schema.localized.sort();
@@ -258,41 +258,41 @@ export const createWebsiteBuilderBlockLocalizationSchema = (
 	return schema;
 };
 
-export const createWebsiteBuilderLocalizationManifest = (
-	modules: WebsiteBuilderModule[],
+export const createPhotonLocalizationManifest = (
+	modules: PhotonModule[],
 ) =>
 	Object.fromEntries(
 		modules.flatMap((moduleEntry) =>
 			moduleEntry.blocks.map((definition) => [
-				getWebsiteBuilderDefinitionKey(moduleEntry.module, definition.type),
+				getPhotonDefinitionKey(moduleEntry.module, definition.type),
 				definition.localizationSchema ??
-					createWebsiteBuilderBlockLocalizationSchema(definition.fields),
+					createPhotonBlockLocalizationSchema(definition.fields),
 			]),
 		),
 	);
 
-const isWebsiteBuilderLocalizedDefault = (
+const isPhotonLocalizedDefault = (
 	value: unknown,
-): value is WebsiteBuilderLocalizedDefaultValue =>
+): value is PhotonLocalizedDefaultValue =>
 	typeof value === "object" &&
 	value !== null &&
 	"__wbLocalizedDefault" in value &&
 	(value as { __wbLocalizedDefault?: unknown }).__wbLocalizedDefault === true &&
 	"values" in value;
 
-const resolveWebsiteBuilderLocalizedDefaultValue = (
+const resolvePhotonLocalizedDefaultValue = (
 	value: unknown,
 	locale: string,
 	defaultLocale: string,
 ): unknown => {
 	if (Array.isArray(value)) {
 		return value.map((item) =>
-			resolveWebsiteBuilderLocalizedDefaultValue(item, locale, defaultLocale),
+			resolvePhotonLocalizedDefaultValue(item, locale, defaultLocale),
 		);
 	}
 
-	if (isWebsiteBuilderLocalizedDefault(value)) {
-		return cloneWebsiteBuilderValue(
+	if (isPhotonLocalizedDefault(value)) {
+		return clonePhotonValue(
 			value.values[locale] ??
 				value.values[defaultLocale] ??
 				Object.values(value.values)[0] ??
@@ -304,7 +304,7 @@ const resolveWebsiteBuilderLocalizedDefaultValue = (
 		return Object.fromEntries(
 			Object.entries(value).map(([key, item]) => [
 				key,
-				resolveWebsiteBuilderLocalizedDefaultValue(item, locale, defaultLocale),
+				resolvePhotonLocalizedDefaultValue(item, locale, defaultLocale),
 			]),
 		);
 	}
@@ -312,45 +312,45 @@ const resolveWebsiteBuilderLocalizedDefaultValue = (
 	return value;
 };
 
-export const createWebsiteBuilderBlock = <
+export const createPhotonBlock = <
 	Props extends Record<string, unknown> = Record<string, unknown>,
 >(
 	moduleName: string,
-	definition: WebsiteBuilderBlockDefinition<Props>,
+	definition: PhotonBlockDefinition<Props>,
 	options?: {
 		locale?: string;
 		defaultLocale?: string;
 	},
-): WebsiteBuilderBlock<Props> => {
+): PhotonBlock<Props> => {
 	const locale = options?.locale?.trim().toLowerCase() || "en";
 	const defaultLocale = options?.defaultLocale?.trim().toLowerCase() || "en";
 
 	return {
-		id: createWebsiteBuilderNodeId(),
+		id: createPhotonNodeId(),
 		module: moduleName,
 		type: definition.type,
-		props: resolveWebsiteBuilderLocalizedDefaultValue(
-			cloneWebsiteBuilderValue(definition.defaults),
+		props: resolvePhotonLocalizedDefaultValue(
+			clonePhotonValue(definition.defaults),
 			locale,
 			defaultLocale,
 		) as Props,
-		bindings: cloneWebsiteBuilderValue(definition.bindings),
-		areas: cloneWebsiteBuilderValue(definition.areas),
+		bindings: clonePhotonValue(definition.bindings),
+		areas: clonePhotonValue(definition.areas),
 	};
 };
 
-export const defineWebsiteBuilderBlockDefinition = <
-	Props extends WebsiteBuilderBlockProps,
+export const definePhotonBlockDefinition = <
+	Props extends PhotonBlockProps,
 >(
-	definition: WebsiteBuilderBlockDefinition<Props>,
-): WebsiteBuilderBlockDefinition<Props> => ({
+	definition: PhotonBlockDefinition<Props>,
+): PhotonBlockDefinition<Props> => ({
 	...definition,
 	localizationSchema:
 		definition.localizationSchema ??
-		createWebsiteBuilderBlockLocalizationSchema(definition.fields),
+		createPhotonBlockLocalizationSchema(definition.fields),
 });
 
-export const moveWebsiteBuilderArrayItem = <T>(
+export const movePhotonArrayItem = <T>(
 	items: T[],
 	fromIndex: number,
 	toIndex: number,
@@ -363,8 +363,8 @@ export const moveWebsiteBuilderArrayItem = <T>(
 	return next;
 };
 
-export const getWebsiteBuilderDocumentFingerprint = (
-	document: WebsiteBuilderDocument,
+export const getPhotonDocumentFingerprint = (
+	document: PhotonDocument,
 ) =>
 	JSON.stringify({
 		id: document.id,

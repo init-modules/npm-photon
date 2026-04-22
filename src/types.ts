@@ -1,13 +1,13 @@
 import type { ComponentType, MouseEventHandler, ReactNode } from "react";
 
-export type WebsiteBuilderMode = "preview" | "content" | "builder";
-export type WebsiteBuilderSurfaceMode =
+export type PhotonMode = "preview" | "content" | "builder";
+export type PhotonSurfaceMode =
 	| "contained"
 	| "bleed"
 	| "full-viewport"
 	| "fixed-shell";
 
-export type WebsiteBuilderFieldKind =
+export type PhotonFieldKind =
 	| "text"
 	| "textarea"
 	| "rich-text"
@@ -24,34 +24,34 @@ export type WebsiteBuilderFieldKind =
 	| "image"
 	| "gallery";
 
-export type WebsiteBuilderFieldOption = {
+export type PhotonFieldOption = {
 	label: string;
 	labelKey?: string;
 	value: string;
 };
 
-export type WebsiteBuilderFieldLocalization = "localized" | "shared";
+export type PhotonFieldLocalization = "localized" | "shared";
 
-export type WebsiteBuilderLocalizedDefaultValue<T = unknown> = {
+export type PhotonLocalizedDefaultValue<T = unknown> = {
 	__wbLocalizedDefault: true;
 	values: Record<string, T>;
 };
 
-export type WebsiteBuilderNestedField = {
+export type PhotonNestedField = {
 	path?: string;
 	label?: string;
 	labelKey?: string;
-	kind: WebsiteBuilderFieldKind;
-	localization?: WebsiteBuilderFieldLocalization;
+	kind: PhotonFieldKind;
+	localization?: PhotonFieldLocalization;
 	description?: string;
 	descriptionKey?: string;
 	group?: "content" | "style" | "layout" | "data";
-	options?: WebsiteBuilderFieldOption[];
+	options?: PhotonFieldOption[];
 	min?: number;
 	max?: number;
 	step?: number;
-	fields?: WebsiteBuilderNestedField[];
-	itemField?: WebsiteBuilderNestedField;
+	fields?: PhotonNestedField[];
+	itemField?: PhotonNestedField;
 	itemLabel?: string;
 	itemLabelKey?: string;
 	itemLabelPath?: string;
@@ -61,42 +61,42 @@ export type WebsiteBuilderNestedField = {
 	defaultItem?: unknown;
 };
 
-export type WebsiteBuilderDefaultable<T> =
+export type PhotonDefaultable<T> =
 	T extends Array<infer Item>
 		?
-				| Array<WebsiteBuilderDefaultable<Item>>
-				| WebsiteBuilderLocalizedDefaultValue<T>
+				| Array<PhotonDefaultable<Item>>
+				| PhotonLocalizedDefaultValue<T>
 		: T extends Record<string, unknown>
 			?
 					| {
-							[K in keyof T]: WebsiteBuilderDefaultable<T[K]>;
+							[K in keyof T]: PhotonDefaultable<T[K]>;
 					  }
-					| WebsiteBuilderLocalizedDefaultValue<T>
-			: T | WebsiteBuilderLocalizedDefaultValue<T>;
+					| PhotonLocalizedDefaultValue<T>
+			: T | PhotonLocalizedDefaultValue<T>;
 
-export type WebsiteBuilderBlockDefaults<
-	Props extends WebsiteBuilderBlockProps = WebsiteBuilderBlockProps,
+export type PhotonBlockDefaults<
+	Props extends PhotonBlockProps = PhotonBlockProps,
 > = {
-	[K in keyof Props]: WebsiteBuilderDefaultable<Props[K]>;
+	[K in keyof Props]: PhotonDefaultable<Props[K]>;
 };
 
-export type WebsiteBuilderField = WebsiteBuilderNestedField & {
+export type PhotonField = PhotonNestedField & {
 	path: string;
 	label: string;
 };
 
-export type WebsiteBuilderBlockLocalizationSchema = {
+export type PhotonBlockLocalizationSchema = {
 	localized: string[];
 	shared: string[];
 };
 
-export type WebsiteBuilderArea = {
+export type PhotonArea = {
 	id: string;
 	label?: string;
-	blocks: WebsiteBuilderBlock[];
+	blocks: PhotonBlock[];
 };
 
-export type WebsiteBuilderMediaValue = {
+export type PhotonMediaValue = {
 	kind: "media";
 	url: string;
 	previewUrl?: string | null;
@@ -114,7 +114,7 @@ export type WebsiteBuilderMediaValue = {
 	uploadedAt?: string | null;
 };
 
-export type WebsiteBuilderSearchResult = {
+export type PhotonSearchResult = {
 	id: string;
 	pageKey: string;
 	pageName: string;
@@ -128,70 +128,70 @@ export type WebsiteBuilderSearchResult = {
 	snippet: string;
 };
 
-export type WebsiteBuilderSearchInput = {
+export type PhotonSearchInput = {
 	query: string;
 	limit?: number;
 };
 
-export type WebsiteBuilderSearchHighlight = {
+export type PhotonSearchHighlight = {
 	query: string;
 	targetId: string;
 	occurrence: number;
 };
 
-export type WebsiteBuilderSearchHandler = (
-	input: WebsiteBuilderSearchInput,
-) => Promise<WebsiteBuilderSearchResult[]>;
+export type PhotonSearchHandler = (
+	input: PhotonSearchInput,
+) => Promise<PhotonSearchResult[]>;
 
-export type WebsiteBuilderBindingMode = "read" | "write";
+export type PhotonBindingMode = "read" | "write";
 
-export type WebsiteBuilderFieldBinding = {
+export type PhotonFieldBinding = {
 	source: string;
 	path: string;
-	mode?: WebsiteBuilderBindingMode;
+	mode?: PhotonBindingMode;
 	adapter?: string;
 };
 
-export type WebsiteBuilderBindingAdapter = {
+export type PhotonBindingAdapter = {
 	key: string;
 	read?: (value: unknown) => unknown;
 	write?: (value: unknown) => unknown;
 };
 
-export type WebsiteBuilderBlockProps = Record<string, unknown>;
+export type PhotonBlockProps = Record<string, unknown>;
 
-export type WebsiteBuilderBlock<
-	Props extends WebsiteBuilderBlockProps = WebsiteBuilderBlockProps,
+export type PhotonBlock<
+	Props extends PhotonBlockProps = PhotonBlockProps,
 > = {
 	id: string;
 	module: string;
 	type: string;
 	props: Props;
-	bindings?: Record<string, WebsiteBuilderFieldBinding>;
-	areas?: WebsiteBuilderArea[];
+	bindings?: Record<string, PhotonFieldBinding>;
+	areas?: PhotonArea[];
 };
 
-export type WebsiteBuilderDocument = {
+export type PhotonDocument = {
 	id: string;
 	name: string;
 	route: string;
 	updatedAt: string;
-	blocks: WebsiteBuilderBlock[];
+	blocks: PhotonBlock[];
 };
 
-export type WebsiteBuilderDocumentsMap = Record<string, WebsiteBuilderDocument>;
+export type PhotonDocumentsMap = Record<string, PhotonDocument>;
 
-export type WebsiteBuilderResources = Record<string, unknown>;
+export type PhotonResources = Record<string, unknown>;
 
-export type WebsiteBuilderPageSettings = Record<string, unknown>;
-export type WebsiteBuilderPageRuntimeData = Record<string, unknown>;
-export type WebsiteBuilderSiteSettings = Record<string, unknown>;
+export type PhotonPageSettings = Record<string, unknown>;
+export type PhotonPageRuntimeData = Record<string, unknown>;
+export type PhotonSiteSettings = Record<string, unknown>;
 
-export type WebsiteBuilderSiteDesignAppearance = "light" | "dark";
+export type PhotonSiteDesignAppearance = "light" | "dark";
 
-export type WebsiteBuilderSiteComponentVariants = Record<string, string>;
+export type PhotonSiteComponentVariants = Record<string, string>;
 
-export type WebsiteBuilderSiteDesignSettings = {
+export type PhotonSiteDesignSettings = {
 	bodyFontFamily: string;
 	headingFontFamily: string;
 	backgroundColor: string;
@@ -207,8 +207,8 @@ export type WebsiteBuilderSiteDesignSettings = {
 	headerOffset: string;
 };
 
-export type WebsiteBuilderSiteDesignColorTokens = Pick<
-	WebsiteBuilderSiteDesignSettings,
+export type PhotonSiteDesignColorTokens = Pick<
+	PhotonSiteDesignSettings,
 	| "backgroundColor"
 	| "surfaceColor"
 	| "textColor"
@@ -217,52 +217,52 @@ export type WebsiteBuilderSiteDesignColorTokens = Pick<
 	| "borderColor"
 >;
 
-export type WebsiteBuilderSiteDesignValue =
-	Partial<WebsiteBuilderSiteDesignSettings> & {
+export type PhotonSiteDesignValue =
+	Partial<PhotonSiteDesignSettings> & {
 		presetId?: string;
 		colorSchemeId?: string;
-		componentVariants?: WebsiteBuilderSiteComponentVariants;
+		componentVariants?: PhotonSiteComponentVariants;
 	};
 
-export type WebsiteBuilderResolvedSiteDesignSettings =
-	WebsiteBuilderSiteDesignSettings & {
+export type PhotonResolvedSiteDesignSettings =
+	PhotonSiteDesignSettings & {
 		presetId?: string;
 		colorSchemeId?: string;
-		componentVariants: WebsiteBuilderSiteComponentVariants;
+		componentVariants: PhotonSiteComponentVariants;
 	};
 
-export type WebsiteBuilderSiteDesignPresetDefinition = {
+export type PhotonSiteDesignPresetDefinition = {
 	id: string;
 	label: string;
-	appearance: WebsiteBuilderSiteDesignAppearance;
+	appearance: PhotonSiteDesignAppearance;
 	description: string;
 	recommendedColorSchemeId?: string;
-	designTokens: Partial<WebsiteBuilderSiteDesignSettings>;
-	componentVariants: WebsiteBuilderSiteComponentVariants;
+	designTokens: Partial<PhotonSiteDesignSettings>;
+	componentVariants: PhotonSiteComponentVariants;
 };
 
-export type WebsiteBuilderSiteColorSchemeDefinition = {
+export type PhotonSiteColorSchemeDefinition = {
 	id: string;
 	label: string;
-	appearance: WebsiteBuilderSiteDesignAppearance;
+	appearance: PhotonSiteDesignAppearance;
 	description: string;
-	colorTokens: WebsiteBuilderSiteDesignColorTokens;
+	colorTokens: PhotonSiteDesignColorTokens;
 };
 
-export type WebsiteBuilderSiteRegion = {
+export type PhotonSiteRegion = {
 	key: string;
 	label: string;
 	order: number;
 	lockedOnCanvas: boolean;
-	document: WebsiteBuilderDocument;
+	document: PhotonDocument;
 };
 
-export type WebsiteBuilderSite = {
-	settings: WebsiteBuilderSiteSettings;
-	regions: Record<string, WebsiteBuilderSiteRegion>;
+export type PhotonSite = {
+	settings: PhotonSiteSettings;
+	regions: Record<string, PhotonSiteRegion>;
 };
 
-export type WebsiteBuilderSiteFrameLinkItem = {
+export type PhotonSiteFrameLinkItem = {
 	id?: string;
 	label: string;
 	href: string;
@@ -272,11 +272,11 @@ export type WebsiteBuilderSiteFrameLinkItem = {
 	enabled?: boolean;
 };
 
-export type WebsiteBuilderSiteFrameActionKind = "link" | "auth";
+export type PhotonSiteFrameActionKind = "link" | "auth";
 
-export type WebsiteBuilderSiteFrameActionItem =
-	WebsiteBuilderSiteFrameLinkItem & {
-		kind?: WebsiteBuilderSiteFrameActionKind;
+export type PhotonSiteFrameActionItem =
+	PhotonSiteFrameLinkItem & {
+		kind?: PhotonSiteFrameActionKind;
 		appearance?: "primary" | "secondary" | "ghost";
 		authenticatedLabel?: string;
 		authenticatedHref?: string;
@@ -284,31 +284,31 @@ export type WebsiteBuilderSiteFrameActionItem =
 		authenticatedRel?: string;
 	};
 
-export type WebsiteBuilderSiteFrameNavigationColumn = {
+export type PhotonSiteFrameNavigationColumn = {
 	id?: string;
 	title: string;
-	links: WebsiteBuilderSiteFrameLinkItem[];
+	links: PhotonSiteFrameLinkItem[];
 	order?: number;
 	enabled?: boolean;
 };
 
-export type WebsiteBuilderSiteFrameExtension = {
+export type PhotonSiteFrameExtension = {
 	id: string;
 	label?: string;
 	enabled?: boolean;
 	order?: number;
 	header?: {
-		utilityLinks?: WebsiteBuilderSiteFrameLinkItem[];
-		categoryLinks?: WebsiteBuilderSiteFrameLinkItem[];
-		actions?: WebsiteBuilderSiteFrameActionItem[];
+		utilityLinks?: PhotonSiteFrameLinkItem[];
+		categoryLinks?: PhotonSiteFrameLinkItem[];
+		actions?: PhotonSiteFrameActionItem[];
 	};
 	footer?: {
-		navigationColumns?: WebsiteBuilderSiteFrameNavigationColumn[];
-		legalLinks?: WebsiteBuilderSiteFrameLinkItem[];
+		navigationColumns?: PhotonSiteFrameNavigationColumn[];
+		legalLinks?: PhotonSiteFrameLinkItem[];
 	};
 };
 
-export type WebsiteBuilderAccountTabMatch =
+export type PhotonAccountTabMatch =
 	| {
 			type: "exact";
 			href: string;
@@ -318,25 +318,25 @@ export type WebsiteBuilderAccountTabMatch =
 			href: string;
 	  };
 
-export type WebsiteBuilderAccountTabExtension = {
+export type PhotonAccountTabExtension = {
 	id: string;
 	label: string;
 	href?: string;
 	icon?: string;
-	match?: WebsiteBuilderAccountTabMatch;
+	match?: PhotonAccountTabMatch;
 	order?: number;
 	enabled?: boolean;
 };
 
-export type WebsiteBuilderWorkspaceRef = {
+export type PhotonWorkspaceRef = {
 	profileId: string;
 	branch: string;
 	revisionId?: string;
 	readonly?: boolean;
 };
 
-export type WebsiteBuilderWorkspaceDescriptor = {
-	ref: WebsiteBuilderWorkspaceRef;
+export type PhotonWorkspaceDescriptor = {
+	ref: PhotonWorkspaceRef;
 	headRevisionId?: string | null;
 	profileName?: string | null;
 	branchLabel?: string | null;
@@ -350,7 +350,7 @@ export type WebsiteBuilderWorkspaceDescriptor = {
 		| null;
 };
 
-export type WebsiteBuilderWorkspaceCapabilities = {
+export type PhotonWorkspaceCapabilities = {
 	canEdit: boolean;
 	canCommit: boolean;
 	canBranch: boolean;
@@ -360,45 +360,45 @@ export type WebsiteBuilderWorkspaceCapabilities = {
 	isMainLocked: boolean;
 };
 
-export type WebsiteBuilderActorSummary = {
+export type PhotonActorSummary = {
 	id: string;
 	type: string;
 	label: string;
 	email?: string | null;
 };
 
-export type WebsiteBuilderRevisionChangeSummaryItem = {
+export type PhotonRevisionChangeSummaryItem = {
 	path: string;
 	action: "added" | "updated" | "removed" | "moved" | "conflicted";
 	label?: string;
 };
 
-export type WebsiteBuilderRevisionDescriptor = {
+export type PhotonRevisionDescriptor = {
 	id: string;
 	branch: string;
 	parents: string[];
 	message: string;
 	createdAt: string;
-	actor: WebsiteBuilderActorSummary;
+	actor: PhotonActorSummary;
 	treeHash?: string;
-	changeSummary: WebsiteBuilderRevisionChangeSummaryItem[];
+	changeSummary: PhotonRevisionChangeSummaryItem[];
 };
 
-export type WebsiteBuilderBranchPolicyState = {
+export type PhotonBranchPolicyState = {
 	isMainBranch: boolean;
 	isLocked: boolean;
 	directWritePolicy: "allowed" | "forbidden";
 	lockReason?: string | null;
 	lockedAt?: string | null;
-	lockedBy?: WebsiteBuilderActorSummary | null;
+	lockedBy?: PhotonActorSummary | null;
 };
 
-export type WebsiteBuilderMergeResolutionStrategy =
+export type PhotonMergeResolutionStrategy =
 	| "take_source_branch"
 	| "take_newest_change"
 	| "manual";
 
-export type WebsiteBuilderMergeDiffItem = {
+export type PhotonMergeDiffItem = {
 	path: string;
 	nodeType: string;
 	change: "added" | "updated" | "removed";
@@ -406,7 +406,7 @@ export type WebsiteBuilderMergeDiffItem = {
 	targetRevisionId?: string;
 };
 
-export type WebsiteBuilderMergeConflict = {
+export type PhotonMergeConflict = {
 	path: string;
 	nodeType: string;
 	baseValue: unknown;
@@ -415,19 +415,19 @@ export type WebsiteBuilderMergeConflict = {
 	sourceRevisionId?: string;
 	targetRevisionId?: string;
 	resolution?: {
-		kind: WebsiteBuilderMergeResolutionStrategy;
+		kind: PhotonMergeResolutionStrategy;
 		value?: unknown;
 	};
 };
 
-export type WebsiteBuilderMergePreview = {
+export type PhotonMergePreview = {
 	mergeBaseRevisionId: string;
-	conflicts: WebsiteBuilderMergeConflict[];
-	autoResolved: WebsiteBuilderMergeDiffItem[];
-	cleanChanges: WebsiteBuilderMergeDiffItem[];
+	conflicts: PhotonMergeConflict[];
+	autoResolved: PhotonMergeDiffItem[];
+	cleanChanges: PhotonMergeDiffItem[];
 };
 
-export type WebsiteBuilderLinkComponentProps = {
+export type PhotonLinkComponentProps = {
 	href: string;
 	locale?: string;
 	className?: string;
@@ -437,26 +437,26 @@ export type WebsiteBuilderLinkComponentProps = {
 	rel?: string;
 };
 
-export type WebsiteBuilderLinkComponent =
-	ComponentType<WebsiteBuilderLinkComponentProps>;
+export type PhotonLinkComponent =
+	ComponentType<PhotonLinkComponentProps>;
 
-export type WebsiteBuilderBlockComponentProps<
-	Props extends WebsiteBuilderBlockProps = WebsiteBuilderBlockProps,
+export type PhotonBlockComponentProps<
+	Props extends PhotonBlockProps = PhotonBlockProps,
 > = {
-	block: WebsiteBuilderBlock<Props>;
-	renderArea?: (area: WebsiteBuilderArea, index: number) => ReactNode;
+	block: PhotonBlock<Props>;
+	renderArea?: (area: PhotonArea, index: number) => ReactNode;
 };
 
-export type WebsiteBuilderBlockComponent<
-	Props extends WebsiteBuilderBlockProps = WebsiteBuilderBlockProps,
+export type PhotonBlockComponent<
+	Props extends PhotonBlockProps = PhotonBlockProps,
 > = {
 	bivarianceHack: (
-		props: WebsiteBuilderBlockComponentProps<Props>,
+		props: PhotonBlockComponentProps<Props>,
 	) => ReactNode;
 }["bivarianceHack"];
 
-export type WebsiteBuilderBlockDefinition<
-	Props extends WebsiteBuilderBlockProps = WebsiteBuilderBlockProps,
+export type PhotonBlockDefinition<
+	Props extends PhotonBlockProps = PhotonBlockProps,
 > = {
 	type: string;
 	label: string;
@@ -468,49 +468,49 @@ export type WebsiteBuilderBlockDefinition<
 	group?: string;
 	package?: string;
 	icon?: string;
-	defaults: WebsiteBuilderBlockDefaults<Props>;
-	bindings?: Record<string, WebsiteBuilderFieldBinding>;
-	areas?: WebsiteBuilderArea[];
-	fields: WebsiteBuilderField[];
-	localizationSchema?: WebsiteBuilderBlockLocalizationSchema;
-	component: WebsiteBuilderBlockComponent<Props>;
+	defaults: PhotonBlockDefaults<Props>;
+	bindings?: Record<string, PhotonFieldBinding>;
+	areas?: PhotonArea[];
+	fields: PhotonField[];
+	localizationSchema?: PhotonBlockLocalizationSchema;
+	component: PhotonBlockComponent<Props>;
 };
 
-export type WebsiteBuilderAnyBlockDefinition =
-	WebsiteBuilderBlockDefinition<any>;
+export type PhotonAnyBlockDefinition =
+	PhotonBlockDefinition<any>;
 
-export type WebsiteBuilderPageSettingsPanelProps = {
-	scope: WebsiteBuilderPageSettingsScope;
-	currentPage: WebsiteBuilderPageCatalogItem | null;
-	pageSettings: WebsiteBuilderPageSettings;
+export type PhotonPageSettingsPanelProps = {
+	scope: PhotonPageSettingsScope;
+	currentPage: PhotonPageCatalogItem | null;
+	pageSettings: PhotonPageSettings;
 	scopeSettings: Record<string, unknown>;
 	getValue: (path: string) => unknown;
 	setValue: (path: string, value: unknown) => void;
 	focusField: (path: string) => void;
 };
 
-export type WebsiteBuilderPageSettingsScope = "page" | "record" | "template";
+export type PhotonPageSettingsScope = "page" | "record" | "template";
 
-export type WebsiteBuilderPageSettingsPanelDefinition = {
+export type PhotonPageSettingsPanelDefinition = {
 	key: string;
-	scope: WebsiteBuilderPageSettingsScope;
+	scope: PhotonPageSettingsScope;
 	label: string;
 	labelKey?: string;
 	description?: string;
 	descriptionKey?: string;
 	order?: number;
 	isVisible?: (context: {
-		scope: WebsiteBuilderPageSettingsScope;
-		currentPage: WebsiteBuilderPageCatalogItem | null;
-		pageSettings: WebsiteBuilderPageSettings;
+		scope: PhotonPageSettingsScope;
+		currentPage: PhotonPageCatalogItem | null;
+		pageSettings: PhotonPageSettings;
 	}) => boolean;
-	component: (props: WebsiteBuilderPageSettingsPanelProps) => ReactNode;
+	component: (props: PhotonPageSettingsPanelProps) => ReactNode;
 };
 
-export type WebsiteBuilderSiteSettingsPanelProps = {
-	currentPage: WebsiteBuilderPageCatalogItem | null;
-	pageSettings: WebsiteBuilderPageSettings;
-	site: WebsiteBuilderSite;
+export type PhotonSiteSettingsPanelProps = {
+	currentPage: PhotonPageCatalogItem | null;
+	pageSettings: PhotonPageSettings;
+	site: PhotonSite;
 	scopeSettings: Record<string, unknown>;
 	viewMode?: string;
 	getValue: (path: string) => unknown;
@@ -518,7 +518,7 @@ export type WebsiteBuilderSiteSettingsPanelProps = {
 	focusField: (path: string) => void;
 };
 
-export type WebsiteBuilderSiteSettingsPanelDefinition = {
+export type PhotonSiteSettingsPanelDefinition = {
 	key: string;
 	label: string;
 	labelKey?: string;
@@ -526,100 +526,100 @@ export type WebsiteBuilderSiteSettingsPanelDefinition = {
 	descriptionKey?: string;
 	order?: number;
 	isVisible?: (context: {
-		currentPage: WebsiteBuilderPageCatalogItem | null;
-		pageSettings: WebsiteBuilderPageSettings;
-		site: WebsiteBuilderSite;
+		currentPage: PhotonPageCatalogItem | null;
+		pageSettings: PhotonPageSettings;
+		site: PhotonSite;
 	}) => boolean;
-	component: (props: WebsiteBuilderSiteSettingsPanelProps) => ReactNode;
+	component: (props: PhotonSiteSettingsPanelProps) => ReactNode;
 };
 
-export type WebsiteBuilderModule = {
+export type PhotonModule = {
 	module: string;
 	label: string;
 	labelKey?: string;
 	version?: string;
-	blocks: WebsiteBuilderAnyBlockDefinition[];
-	bindingAdapters?: WebsiteBuilderBindingAdapter[];
-	pageSettingsPanels?: WebsiteBuilderPageSettingsPanelDefinition[];
-	siteSettingsPanels?: WebsiteBuilderSiteSettingsPanelDefinition[];
+	blocks: PhotonAnyBlockDefinition[];
+	bindingAdapters?: PhotonBindingAdapter[];
+	pageSettingsPanels?: PhotonPageSettingsPanelDefinition[];
+	siteSettingsPanels?: PhotonSiteSettingsPanelDefinition[];
 };
 
-export type WebsiteBuilderInstallableKit = {
+export type PhotonInstallableKit = {
 	key: string;
 	label: string;
-	modules: WebsiteBuilderModule[];
-	documents?: WebsiteBuilderDocumentsMap;
-	siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
-	accountTabs?: WebsiteBuilderAccountTabExtension[];
+	modules: PhotonModule[];
+	documents?: PhotonDocumentsMap;
+	siteFrameExtensions?: PhotonSiteFrameExtension[];
+	accountTabs?: PhotonAccountTabExtension[];
 };
 
-export type WebsiteBuilderRegistryEntry =
-	| WebsiteBuilderModule
-	| WebsiteBuilderInstallableKit;
+export type PhotonRegistryEntry =
+	| PhotonModule
+	| PhotonInstallableKit;
 
-export type WebsiteBuilderLocaleStatus = "active" | "draft" | "inactive";
+export type PhotonLocaleStatus = "active" | "draft" | "inactive";
 
-export type WebsiteBuilderLocaleDescriptor = {
+export type PhotonLocaleDescriptor = {
 	code: string;
 	label: string;
-	status: WebsiteBuilderLocaleStatus;
+	status: PhotonLocaleStatus;
 	isDefault?: boolean;
 	sortOrder?: number;
 };
 
-export type WebsiteBuilderInterfaceLocaleOption = {
+export type PhotonInterfaceLocaleOption = {
 	code: string;
 	label: string;
 };
 
-export type WebsiteBuilderI18nValue = {
+export type PhotonI18nValue = {
 	defaultLocale: string;
 	locale: string;
 	contentLocale: string;
 	interfaceLocale: string;
-	interfaceLocales: WebsiteBuilderInterfaceLocaleOption[];
-	locales: WebsiteBuilderLocaleDescriptor[];
-	publicLocales: WebsiteBuilderLocaleDescriptor[];
-	editableLocales: WebsiteBuilderLocaleDescriptor[];
+	interfaceLocales: PhotonInterfaceLocaleOption[];
+	locales: PhotonLocaleDescriptor[];
+	publicLocales: PhotonLocaleDescriptor[];
+	editableLocales: PhotonLocaleDescriptor[];
 	showLocaleSwitcher?: boolean;
 	translate: (key: string, fallback?: string) => string;
 };
 
-export type WebsiteBuilderSelectedField = {
+export type PhotonSelectedField = {
 	blockId: string;
 	path: string;
 } | null;
 
-export type WebsiteBuilderRegistry = {
-	modules: WebsiteBuilderModule[];
-	definitions: Map<string, WebsiteBuilderAnyBlockDefinition>;
-	bindingAdapters: Map<string, WebsiteBuilderBindingAdapter>;
-	pageSettingsPanels: WebsiteBuilderPageSettingsPanelDefinition[];
-	siteSettingsPanels: WebsiteBuilderSiteSettingsPanelDefinition[];
+export type PhotonRegistry = {
+	modules: PhotonModule[];
+	definitions: Map<string, PhotonAnyBlockDefinition>;
+	bindingAdapters: Map<string, PhotonBindingAdapter>;
+	pageSettingsPanels: PhotonPageSettingsPanelDefinition[];
+	siteSettingsPanels: PhotonSiteSettingsPanelDefinition[];
 	getDefinition: (
 		moduleName: string,
 		blockType: string,
-	) => WebsiteBuilderAnyBlockDefinition | undefined;
-	getBindingAdapter: (key: string) => WebsiteBuilderBindingAdapter | undefined;
-	getPageSettingsPanels: () => WebsiteBuilderPageSettingsPanelDefinition[];
-	getSiteSettingsPanels: () => WebsiteBuilderSiteSettingsPanelDefinition[];
+	) => PhotonAnyBlockDefinition | undefined;
+	getBindingAdapter: (key: string) => PhotonBindingAdapter | undefined;
+	getPageSettingsPanels: () => PhotonPageSettingsPanelDefinition[];
+	getSiteSettingsPanels: () => PhotonSiteSettingsPanelDefinition[];
 	getPaletteBlocks: () => Array<
-		WebsiteBuilderAnyBlockDefinition & {
+		PhotonAnyBlockDefinition & {
 			module: string;
 			key: string;
 		}
 	>;
 };
 
-export type WebsiteBuilderRuntime = {
-	entries: WebsiteBuilderRegistryEntry[];
-	registry: WebsiteBuilderRegistry;
-	documents: WebsiteBuilderDocumentsMap;
-	siteFrameExtensions: WebsiteBuilderSiteFrameExtension[];
-	accountTabs: WebsiteBuilderAccountTabExtension[];
+export type PhotonRuntime = {
+	entries: PhotonRegistryEntry[];
+	registry: PhotonRegistry;
+	documents: PhotonDocumentsMap;
+	siteFrameExtensions: PhotonSiteFrameExtension[];
+	accountTabs: PhotonAccountTabExtension[];
 };
 
-export type WebsiteBuilderPageCatalogItem = {
+export type PhotonPageCatalogItem = {
 	key: string;
 	name: string;
 	description?: string | null;
@@ -633,28 +633,28 @@ export type WebsiteBuilderPageCatalogItem = {
 	isDynamic: boolean;
 };
 
-export type WebsiteBuilderResolvedPage = {
-	workspace?: WebsiteBuilderWorkspaceDescriptor;
-	page: WebsiteBuilderPageCatalogItem;
-	document: WebsiteBuilderDocument;
-	resources: WebsiteBuilderResources;
-	pageSettings: WebsiteBuilderPageSettings;
-	runtimeData: WebsiteBuilderPageRuntimeData;
-	site: WebsiteBuilderSite;
-	pages: WebsiteBuilderPageCatalogItem[];
-	capabilities?: WebsiteBuilderWorkspaceCapabilities;
-	history?: WebsiteBuilderRevisionDescriptor[];
-	branchPolicy?: WebsiteBuilderBranchPolicyState;
-	mergePreview?: WebsiteBuilderMergePreview | null;
+export type PhotonResolvedPage = {
+	workspace?: PhotonWorkspaceDescriptor;
+	page: PhotonPageCatalogItem;
+	document: PhotonDocument;
+	resources: PhotonResources;
+	pageSettings: PhotonPageSettings;
+	runtimeData: PhotonPageRuntimeData;
+	site: PhotonSite;
+	pages: PhotonPageCatalogItem[];
+	capabilities?: PhotonWorkspaceCapabilities;
+	history?: PhotonRevisionDescriptor[];
+	branchPolicy?: PhotonBranchPolicyState;
+	mergePreview?: PhotonMergePreview | null;
 };
 
-export type WebsiteBuilderMediaUploadInput = {
+export type PhotonMediaUploadInput = {
 	file: File;
 	documentId: string;
 	blockId: string;
 	path: string;
 };
 
-export type WebsiteBuilderMediaUploadHandler = (
-	input: WebsiteBuilderMediaUploadInput,
-) => Promise<WebsiteBuilderMediaValue>;
+export type PhotonMediaUploadHandler = (
+	input: PhotonMediaUploadInput,
+) => Promise<PhotonMediaValue>;

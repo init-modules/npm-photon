@@ -1,6 +1,6 @@
-import type { WebsiteBuilderWorkspaceSelectionLike } from "./mode";
+import type { PhotonWorkspaceSelectionLike } from "./mode";
 
-export const resolveWebsiteBuilderRequestHeaders = (options?: {
+export const resolvePhotonRequestHeaders = (options?: {
 	locale?: string;
 }) => {
 	const locale = options?.locale?.trim().toLowerCase();
@@ -15,8 +15,8 @@ export const resolveWebsiteBuilderRequestHeaders = (options?: {
 	};
 };
 
-export const resolveWebsiteBuilderWorkspaceParams = (
-	workspace?: WebsiteBuilderWorkspaceSelectionLike,
+export const resolvePhotonWorkspaceParams = (
+	workspace?: PhotonWorkspaceSelectionLike,
 ) =>
 	workspace?.profileId
 		? {

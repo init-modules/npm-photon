@@ -1,20 +1,20 @@
 import type {
-	WebsiteBuilderRegistryEntry,
-	WebsiteBuilderRuntime,
+	PhotonRegistryEntry,
+	PhotonRuntime,
 } from "../types";
-import { createWebsiteBuilderRegistry } from "./document";
+import { createPhotonRegistry } from "./document";
 import {
-	collectWebsiteBuilderAccountTabs,
-	collectWebsiteBuilderDocuments,
-	collectWebsiteBuilderSiteFrameExtensions,
+	collectPhotonAccountTabs,
+	collectPhotonDocuments,
+	collectPhotonSiteFrameExtensions,
 } from "./installable";
 
-export const createWebsiteBuilderRuntime = (
-	entries: WebsiteBuilderRegistryEntry[],
-): WebsiteBuilderRuntime => ({
+export const createPhotonRuntime = (
+	entries: PhotonRegistryEntry[],
+): PhotonRuntime => ({
 	entries,
-	registry: createWebsiteBuilderRegistry(entries),
-	documents: collectWebsiteBuilderDocuments(entries),
-	siteFrameExtensions: collectWebsiteBuilderSiteFrameExtensions(entries),
-	accountTabs: collectWebsiteBuilderAccountTabs(entries),
+	registry: createPhotonRegistry(entries),
+	documents: collectPhotonDocuments(entries),
+	siteFrameExtensions: collectPhotonSiteFrameExtensions(entries),
+	accountTabs: collectPhotonAccountTabs(entries),
 });

@@ -11,14 +11,14 @@ import {
 	ContextMenuSeparator,
 	ContextMenuTrigger,
 } from "../../components/ui/context-menu";
-import type { WebsiteBuilderMode } from "../../types";
+import type { PhotonMode } from "../../types";
 import { EditorResetDialog } from "./editor-reset-dialog";
 import { getSaveButtonMeta } from "./get-save-button-meta";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 
 type EditorSaveButtonProps = {
-	activeMode: WebsiteBuilderMode;
+	activeMode: PhotonMode;
 	autosaveEnabled: boolean;
 	hasUnsavedChanges: boolean;
 	collapsedBlockCount: number;
@@ -76,7 +76,7 @@ export const EditorSaveButton = ({
 
 				<ContextMenuContent>
 					<ContextMenuItem onSelect={onSave}>
-						<Save className="mr-3 h-4 w-4 text-[color:var(--wb-builder-text-soft)]" />
+						<Save className="mr-3 h-4 w-4 text-[color:var(--photon-builder-text-soft)]" />
 						Save now
 					</ContextMenuItem>
 
@@ -93,7 +93,7 @@ export const EditorSaveButton = ({
 							setResetDialogOpen(true);
 						}}
 					>
-						<History className="mr-3 h-4 w-4 text-[color:var(--wb-builder-text-soft)]" />
+						<History className="mr-3 h-4 w-4 text-[color:var(--photon-builder-text-soft)]" />
 						Revert local draft
 					</ContextMenuItem>
 
@@ -101,7 +101,7 @@ export const EditorSaveButton = ({
 
 					{activeMode === "preview" && collapsedBlockCount > 0 ? (
 						<ContextMenuItem onSelect={onPreviewCollapsedChange}>
-							<ChevronRight className="mr-3 h-4 w-4 rotate-90 text-[color:var(--wb-builder-text-soft)]" />
+							<ChevronRight className="mr-3 h-4 w-4 rotate-90 text-[color:var(--photon-builder-text-soft)]" />
 							{showCollapsedInPreview
 								? "Show full layout"
 								: "Show collapsed blocks"}

@@ -1,7 +1,7 @@
 import type {
-	WebsiteBuilderBlock,
-	WebsiteBuilderResources,
-	WebsiteBuilderSiteFrameActionItem,
+	PhotonBlock,
+	PhotonResources,
+	PhotonSiteFrameActionItem,
 } from "../../../types";
 
 export type SiteHeaderLinkItem = {
@@ -37,7 +37,7 @@ export const isProtectedAccountHref = (href: unknown) => {
 	return pathname === "/account" || pathname.startsWith("/account/");
 };
 
-export const getHeaderCartQuantity = (resources: WebsiteBuilderResources) => {
+export const getHeaderCartQuantity = (resources: PhotonResources) => {
 	const summary = resources.commerceCartSummary as
 		| { items_quantity?: unknown; item_count?: unknown }
 		| undefined;
@@ -46,7 +46,7 @@ export const getHeaderCartQuantity = (resources: WebsiteBuilderResources) => {
 	return Number.isFinite(quantity) && quantity > 0 ? Math.floor(quantity) : 0;
 };
 
-export const hasAuthenticatedUser = (resources: WebsiteBuilderResources) => {
+export const hasAuthenticatedUser = (resources: PhotonResources) => {
 	const auth = resources.auth as
 		| { user?: null | Record<string, unknown> }
 		| undefined;
@@ -55,10 +55,10 @@ export const hasAuthenticatedUser = (resources: WebsiteBuilderResources) => {
 };
 
 export const hasCommerceBlock = (
-	blocks: readonly WebsiteBuilderBlock[] | undefined,
+	blocks: readonly PhotonBlock[] | undefined,
 ): boolean =>
 	(blocks ?? []).some((item) => {
-		if (item.module === "commerce-website-builder") {
+		if (item.module === "commerce-photon") {
 			return true;
 		}
 
@@ -66,7 +66,7 @@ export const hasCommerceBlock = (
 	});
 
 export const hasCommerceRuntimeResource = (
-	resources: WebsiteBuilderResources,
+	resources: PhotonResources,
 ) =>
 	[
 		"commerceCatalog",
@@ -100,7 +100,7 @@ export const collectUniqueHeaderLinks = <TLink extends SiteHeaderLinkItem>(
 };
 
 export const getHeaderActionVisibleHref = (
-	action: WebsiteBuilderSiteFrameActionItem,
+	action: PhotonSiteFrameActionItem,
 	authenticatedUser: boolean,
 ) =>
 	authenticatedUser && (action.kind ?? "link") === "auth"
@@ -116,7 +116,7 @@ export const getHeaderCartLink = (
 };
 
 export const collectHeaderActionLinkKeys = (
-	actions: WebsiteBuilderSiteFrameActionItem[],
+	actions: PhotonSiteFrameActionItem[],
 ) => {
 	const keys = new Set<string>();
 

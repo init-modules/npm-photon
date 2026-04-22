@@ -1,13 +1,13 @@
 "use client";
 
-import type { WebsiteBuilderBlock } from "../../types";
+import type { PhotonBlock } from "../../types";
 import { matchesTarget } from "../shared";
 import type { InsertTarget } from "../types";
 import { CanvasBlockItem } from "./canvas-block-item";
 import { CanvasInsertZone } from "./canvas-insert-zone";
 
 type CanvasBlockListProps = {
-	blocks: WebsiteBuilderBlock[];
+	blocks: PhotonBlock[];
 	listId: string;
 	builderEnabled: boolean;
 	collapseControlsEnabled: boolean;
@@ -29,7 +29,7 @@ export const CanvasBlockList = ({
 	dropTarget,
 	onActivateInsertTarget,
 }: CanvasBlockListProps) => (
-	<div className="space-y-[var(--wb-list-gap,0.75rem)]">
+	<div className="space-y-[var(--photon-list-gap,0.75rem)]">
 		<CanvasInsertZone
 			listId={listId}
 			index={0}

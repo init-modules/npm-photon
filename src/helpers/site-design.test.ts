@@ -1,18 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { getWebsiteBuilderSiteColorScheme } from "../modules/system/site/site-color-schemes";
-import { getWebsiteBuilderSiteDesignPreset } from "../modules/system/site/site-design-presets";
+import { getPhotonSiteColorScheme } from "../modules/system/site/site-color-schemes";
+import { getPhotonSiteDesignPreset } from "../modules/system/site/site-design-presets";
 import {
-	applyWebsiteBuilderSiteColorScheme,
-	applyWebsiteBuilderSiteDesignPreset,
-	createWebsiteBuilderSiteDesignSettings,
-	hasWebsiteBuilderSiteDesignPresetCustomization,
-	isWebsiteBuilderSiteDesignPresetApplied,
-	resolveWebsiteBuilderSiteDesignSettings,
+	applyPhotonSiteColorScheme,
+	applyPhotonSiteDesignPreset,
+	createPhotonSiteDesignSettings,
+	hasPhotonSiteDesignPresetCustomization,
+	isPhotonSiteDesignPresetApplied,
+	resolvePhotonSiteDesignSettings,
 } from "./site-design";
 
 test("fallback flat defaults resolve without forcing the new preset metadata", () => {
-	const resolved = resolveWebsiteBuilderSiteDesignSettings({
+	const resolved = resolvePhotonSiteDesignSettings({
 		bodyFontFamily: "ui-sans-serif, system-ui, sans-serif",
 		headingFontFamily: "ui-sans-serif, system-ui, sans-serif",
 		backgroundColor: "#f8fafc",
@@ -37,9 +37,9 @@ test("fallback flat defaults resolve without forcing the new preset metadata", (
 });
 
 test("applying a preset replaces preset-owned variants while preserving unrelated custom keys", () => {
-	const applied = applyWebsiteBuilderSiteDesignPreset(
+	const applied = applyPhotonSiteDesignPreset(
 		{
-			...createWebsiteBuilderSiteDesignSettings({
+			...createPhotonSiteDesignSettings({
 				presetId: "aurora-current",
 				colorSchemeId: "midnight-aqua",
 			}),
@@ -51,8 +51,8 @@ test("applying a preset replaces preset-owned variants while preserving unrelate
 		},
 		"paper-flow",
 	);
-	const preset = getWebsiteBuilderSiteDesignPreset("paper-flow");
-	const recommendedScheme = getWebsiteBuilderSiteColorScheme(
+	const preset = getPhotonSiteDesignPreset("paper-flow");
+	const recommendedScheme = getPhotonSiteColorScheme(
 		preset?.recommendedColorSchemeId ?? "",
 	);
 
@@ -83,8 +83,8 @@ test("applying a preset replaces preset-owned variants while preserving unrelate
 });
 
 test("remaining flow presets publish their linked scheme and full marketing-demo variant family", () => {
-	const paperFlow = getWebsiteBuilderSiteDesignPreset("paper-flow");
-	const initLanding = getWebsiteBuilderSiteDesignPreset("init-landing");
+	const paperFlow = getPhotonSiteDesignPreset("paper-flow");
+	const initLanding = getPhotonSiteDesignPreset("init-landing");
 
 	assert.equal(paperFlow?.appearance, "light");
 	assert.equal(paperFlow?.recommendedColorSchemeId, "paper-sky");
@@ -101,10 +101,10 @@ test("remaining flow presets publish their linked scheme and full marketing-demo
 });
 
 test("creating preset-backed settings without an explicit scheme uses the preset recommendation", () => {
-	const paperFlow = createWebsiteBuilderSiteDesignSettings({
+	const paperFlow = createPhotonSiteDesignSettings({
 		presetId: "paper-flow",
 	});
-	const initLanding = createWebsiteBuilderSiteDesignSettings({
+	const initLanding = createPhotonSiteDesignSettings({
 		presetId: "init-landing",
 	});
 
@@ -123,12 +123,12 @@ test("creating preset-backed settings without an explicit scheme uses the preset
 });
 
 test("applying a color scheme changes only color tokens and keeps the active preset structure", () => {
-	const base = createWebsiteBuilderSiteDesignSettings({
+	const base = createPhotonSiteDesignSettings({
 		presetId: "aurora-current",
 		colorSchemeId: "midnight-aqua",
 	});
-	const applied = applyWebsiteBuilderSiteColorScheme(base, "mint-ledger");
-	const scheme = getWebsiteBuilderSiteColorScheme("mint-ledger");
+	const applied = applyPhotonSiteColorScheme(base, "mint-ledger");
+	const scheme = getPhotonSiteColorScheme("mint-ledger");
 
 	assert.equal(applied.presetId, "aurora-current");
 	assert.equal(applied.colorSchemeId, "mint-ledger");
@@ -142,8 +142,8 @@ test("applying a color scheme changes only color tokens and keeps the active pre
 });
 
 test("switching only the color scheme keeps the preset selected but marks it customized", () => {
-	const appliedPreset = applyWebsiteBuilderSiteDesignPreset({}, "paper-flow");
-	const customizedPalette = applyWebsiteBuilderSiteColorScheme(
+	const appliedPreset = applyPhotonSiteDesignPreset({}, "paper-flow");
+	const customizedPalette = applyPhotonSiteColorScheme(
 		appliedPreset,
 		"mint-ledger",
 	);
@@ -155,11 +155,11 @@ test("switching only the color scheme keeps the preset selected but marks it cus
 		"air",
 	);
 	assert.equal(
-		isWebsiteBuilderSiteDesignPresetApplied(customizedPalette, "paper-flow"),
+		isPhotonSiteDesignPresetApplied(customizedPalette, "paper-flow"),
 		false,
 	);
 	assert.equal(
-		hasWebsiteBuilderSiteDesignPresetCustomization(
+		hasPhotonSiteDesignPresetCustomization(
 			customizedPalette,
 			"paper-flow",
 		),

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { getWebsiteBuilderExternalStateFingerprint } from "./external-state";
+import { getPhotonExternalStateFingerprint } from "./external-state";
 
 const document = {
 	id: "home",
@@ -11,7 +11,7 @@ const document = {
 };
 
 test("capability and label refreshes do not change the external content fingerprint", () => {
-	const baseFingerprint = getWebsiteBuilderExternalStateFingerprint({
+	const baseFingerprint = getPhotonExternalStateFingerprint({
 		document,
 		resources: {},
 		pageSettings: {},
@@ -29,7 +29,7 @@ test("capability and label refreshes do not change the external content fingerpr
 			branchLabel: "Main",
 		},
 	});
-	const refreshedFingerprint = getWebsiteBuilderExternalStateFingerprint({
+	const refreshedFingerprint = getPhotonExternalStateFingerprint({
 		document,
 		resources: {},
 		pageSettings: {},
@@ -54,7 +54,7 @@ test("capability and label refreshes do not change the external content fingerpr
 });
 
 test("workspace head changes do not replace external content fingerprints on their own", () => {
-	const originalFingerprint = getWebsiteBuilderExternalStateFingerprint({
+	const originalFingerprint = getPhotonExternalStateFingerprint({
 		document,
 		resources: {},
 		pageSettings: {},
@@ -70,7 +70,7 @@ test("workspace head changes do not replace external content fingerprints on the
 			headRevisionId: "rev-1",
 		},
 	});
-	const updatedFingerprint = getWebsiteBuilderExternalStateFingerprint({
+	const updatedFingerprint = getPhotonExternalStateFingerprint({
 		document,
 		resources: {},
 		pageSettings: {},
@@ -91,7 +91,7 @@ test("workspace head changes do not replace external content fingerprints on the
 });
 
 test("workspace branch changes still replace the external content fingerprint", () => {
-	const mainFingerprint = getWebsiteBuilderExternalStateFingerprint({
+	const mainFingerprint = getPhotonExternalStateFingerprint({
 		document,
 		resources: {},
 		pageSettings: {},
@@ -107,7 +107,7 @@ test("workspace branch changes still replace the external content fingerprint", 
 			headRevisionId: "rev-1",
 		},
 	});
-	const featureFingerprint = getWebsiteBuilderExternalStateFingerprint({
+	const featureFingerprint = getPhotonExternalStateFingerprint({
 		document,
 		resources: {},
 		pageSettings: {},

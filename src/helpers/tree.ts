@@ -1,26 +1,26 @@
 import type {
-	WebsiteBuilderArea,
-	WebsiteBuilderBlock,
-	WebsiteBuilderDocument,
+	PhotonArea,
+	PhotonBlock,
+	PhotonDocument,
 } from "../types";
-import { cloneWebsiteBuilderValue } from "./path";
+import { clonePhotonValue } from "./path";
 
-export { cloneWebsiteBuilderValue } from "./path";
+export { clonePhotonValue } from "./path";
 
-export const WEBSITE_BUILDER_ROOT_LIST_ID = "root";
+export const PHOTON_ROOT_LIST_ID = "root";
 
-export const createWebsiteBuilderAreaListId = (
+export const createPhotonAreaListId = (
 	blockId: string,
 	areaId: string,
 ) => `area:${blockId}:${areaId}`;
 
 const randomSegment = () => Math.random().toString(36).slice(2, 10);
 
-export const createWebsiteBuilderNodeId = () => `wb_${randomSegment()}`;
+export const createPhotonNodeId = () => `photon_${randomSegment()}`;
 
 const cloneAreaTree = (
-	areas: WebsiteBuilderArea[] | undefined,
-): WebsiteBuilderArea[] | undefined => {
+	areas: PhotonArea[] | undefined,
+): PhotonArea[] | undefined => {
 	if (!areas?.length) {
 		return undefined;
 	}
@@ -28,38 +28,38 @@ const cloneAreaTree = (
 	return areas.map((area) => ({
 		id: area.id,
 		label: area.label,
-		blocks: area.blocks.map(cloneWebsiteBuilderBlockTreeWithNewIds),
+		blocks: area.blocks.map(clonePhotonBlockTreeWithNewIds),
 	}));
 };
 
-export const cloneWebsiteBuilderBlockTreeWithNewIds = <
+export const clonePhotonBlockTreeWithNewIds = <
 	Props extends Record<string, unknown> = Record<string, unknown>,
 >(
-	block: WebsiteBuilderBlock<Props>,
-): WebsiteBuilderBlock<Props> => ({
-	id: createWebsiteBuilderNodeId(),
+	block: PhotonBlock<Props>,
+): PhotonBlock<Props> => ({
+	id: createPhotonNodeId(),
 	module: block.module,
 	type: block.type,
-	props: cloneWebsiteBuilderValue(block.props),
-	bindings: cloneWebsiteBuilderValue(block.bindings),
+	props: clonePhotonValue(block.props),
+	bindings: clonePhotonValue(block.bindings),
 	areas: cloneAreaTree(block.areas),
 });
 
-export const getFirstWebsiteBuilderBlockId = (
-	blocks: WebsiteBuilderBlock[],
+export const getFirstPhotonBlockId = (
+	blocks: PhotonBlock[],
 ): string | null => blocks[0]?.id ?? null;
 
-export const findWebsiteBuilderBlock = (
-	blocks: WebsiteBuilderBlock[],
+export const findPhotonBlock = (
+	blocks: PhotonBlock[],
 	blockId: string,
-): WebsiteBuilderBlock | null => {
+): PhotonBlock | null => {
 	for (const block of blocks) {
 		if (block.id === blockId) {
 			return block;
 		}
 
 		for (const area of block.areas ?? []) {
-			const nested = findWebsiteBuilderBlock(area.blocks, blockId);
+			const nested = findPhotonBlock(area.blocks, blockId);
 
 			if (nested) {
 				return nested;
@@ -70,7 +70,7 @@ export const findWebsiteBuilderBlock = (
 	return null;
 };
 
-export const collectBlockIds = (blocks: WebsiteBuilderBlock[]): string[] => {
+export const collectBlockIds = (blocks: PhotonBlock[]): string[] => {
 	const ids: string[] = [];
 
 	for (const block of blocks) {
@@ -85,14 +85,14 @@ export const collectBlockIds = (blocks: WebsiteBuilderBlock[]): string[] => {
 };
 
 type UpdateResult = {
-	blocks: WebsiteBuilderBlock[];
+	blocks: PhotonBlock[];
 	updated: boolean;
 };
 
 const updateBlocks = (
-	blocks: WebsiteBuilderBlock[],
+	blocks: PhotonBlock[],
 	blockId: string,
-	updater: (block: WebsiteBuilderBlock) => WebsiteBuilderBlock,
+	updater: (block: PhotonBlock) => PhotonBlock,
 ): UpdateResult => {
 	let updated = false;
 
@@ -139,10 +139,10 @@ const updateBlocks = (
 	};
 };
 
-export const updateWebsiteBuilderBlockInDocument = (
-	document: WebsiteBuilderDocument,
+export const updatePhotonBlockInDocument = (
+	document: PhotonDocument,
 	blockId: string,
-	updater: (block: WebsiteBuilderBlock) => WebsiteBuilderBlock,
+	updater: (block: PhotonBlock) => PhotonBlock,
 ) => {
 	const result = updateBlocks(document.blocks, blockId, updater);
 
@@ -155,14 +155,14 @@ export const updateWebsiteBuilderBlockInDocument = (
 };
 
 type RemoveResult = {
-	blocks: WebsiteBuilderBlock[];
-	removed: WebsiteBuilderBlock | null;
+	blocks: PhotonBlock[];
+	removed: PhotonBlock | null;
 	sourceListId: string | null;
 	sourceIndex: number;
 };
 
 const removeBlockFromList = (
-	blocks: WebsiteBuilderBlock[],
+	blocks: PhotonBlock[],
 	blockId: string,
 	listId: string,
 ): RemoveResult => {
@@ -187,7 +187,7 @@ const removeBlockFromList = (
 			const result = removeBlockFromList(
 				area.blocks,
 				blockId,
-				createWebsiteBuilderAreaListId(block.id, area.id),
+				createPhotonAreaListId(block.id, area.id),
 			);
 
 			if (!result.removed) {
@@ -202,8 +202,8 @@ const removeBlockFromList = (
 				__removed: result.removed,
 				__sourceListId: result.sourceListId,
 				__sourceIndex: result.sourceIndex,
-			} as WebsiteBuilderArea & {
-				__removed: WebsiteBuilderBlock;
+			} as PhotonArea & {
+				__removed: PhotonBlock;
 				__sourceListId: string;
 				__sourceIndex: number;
 			};
@@ -216,8 +216,8 @@ const removeBlockFromList = (
 		const areaWithPayload = nextAreas.find(
 			(
 				area,
-			): area is WebsiteBuilderArea & {
-				__removed: WebsiteBuilderBlock;
+			): area is PhotonArea & {
+				__removed: PhotonBlock;
 				__sourceListId: string;
 				__sourceIndex: number;
 			} => "__removed" in area,
@@ -234,8 +234,8 @@ const removeBlockFromList = (
 									__sourceListId,
 									__sourceIndex,
 									...cleanArea
-								} = area as WebsiteBuilderArea & {
-									__removed?: WebsiteBuilderBlock;
+								} = area as PhotonArea & {
+									__removed?: PhotonBlock;
 									__sourceListId?: string;
 									__sourceIndex?: number;
 								};
@@ -260,8 +260,8 @@ const removeBlockFromList = (
 };
 
 const insertIntoList = (
-	blocks: WebsiteBuilderBlock[],
-	block: WebsiteBuilderBlock,
+	blocks: PhotonBlock[],
+	block: PhotonBlock,
 	index: number,
 ) => {
 	const nextBlocks = [...blocks];
@@ -273,17 +273,17 @@ const insertIntoList = (
 };
 
 type InsertResult = {
-	blocks: WebsiteBuilderBlock[];
+	blocks: PhotonBlock[];
 	inserted: boolean;
 };
 
 const insertIntoListTree = (
-	blocks: WebsiteBuilderBlock[],
+	blocks: PhotonBlock[],
 	listId: string,
-	block: WebsiteBuilderBlock,
+	block: PhotonBlock,
 	index: number,
 ): InsertResult => {
-	if (listId === WEBSITE_BUILDER_ROOT_LIST_ID) {
+	if (listId === PHOTON_ROOT_LIST_ID) {
 		return {
 			blocks: insertIntoList(blocks, block, index),
 			inserted: true,
@@ -297,7 +297,7 @@ const insertIntoListTree = (
 		}
 
 		const nextAreas = candidate.areas.map((area) => {
-			const areaListId = createWebsiteBuilderAreaListId(candidate.id, area.id);
+			const areaListId = createPhotonAreaListId(candidate.id, area.id);
 
 			if (areaListId === listId) {
 				inserted = true;
@@ -336,10 +336,10 @@ const insertIntoListTree = (
 	};
 };
 
-export const insertWebsiteBuilderBlockInDocument = (
-	document: WebsiteBuilderDocument,
+export const insertPhotonBlockInDocument = (
+	document: PhotonDocument,
 	listId: string,
-	block: WebsiteBuilderBlock,
+	block: PhotonBlock,
 	index: number,
 ) => {
 	const result = insertIntoListTree(document.blocks, listId, block, index);
@@ -352,17 +352,17 @@ export const insertWebsiteBuilderBlockInDocument = (
 		: document;
 };
 
-export const removeWebsiteBuilderBlockFromDocument = (
-	document: WebsiteBuilderDocument,
+export const removePhotonBlockFromDocument = (
+	document: PhotonDocument,
 	blockId: string,
 ) =>
-	removeBlockFromList(document.blocks, blockId, WEBSITE_BUILDER_ROOT_LIST_ID);
+	removeBlockFromList(document.blocks, blockId, PHOTON_ROOT_LIST_ID);
 
-export const duplicateWebsiteBuilderBlockInDocument = (
-	document: WebsiteBuilderDocument,
+export const duplicatePhotonBlockInDocument = (
+	document: PhotonDocument,
 	blockId: string,
 ) => {
-	const target = findWebsiteBuilderBlock(document.blocks, blockId);
+	const target = findPhotonBlock(document.blocks, blockId);
 
 	if (!target) {
 		return {
@@ -374,7 +374,7 @@ export const duplicateWebsiteBuilderBlockInDocument = (
 	const removeResult = removeBlockFromList(
 		document.blocks,
 		blockId,
-		WEBSITE_BUILDER_ROOT_LIST_ID,
+		PHOTON_ROOT_LIST_ID,
 	);
 
 	if (!removeResult.sourceListId || removeResult.sourceIndex < 0) {
@@ -384,8 +384,8 @@ export const duplicateWebsiteBuilderBlockInDocument = (
 		};
 	}
 
-	const clone = cloneWebsiteBuilderBlockTreeWithNewIds(target);
-	const nextDocument = insertWebsiteBuilderBlockInDocument(
+	const clone = clonePhotonBlockTreeWithNewIds(target);
+	const nextDocument = insertPhotonBlockInDocument(
 		document,
 		removeResult.sourceListId,
 		clone,
@@ -398,8 +398,8 @@ export const duplicateWebsiteBuilderBlockInDocument = (
 	};
 };
 
-export const moveWebsiteBuilderBlockInDocument = (
-	document: WebsiteBuilderDocument,
+export const movePhotonBlockInDocument = (
+	document: PhotonDocument,
 	blockId: string,
 	targetListId: string,
 	targetIndex: number,
@@ -407,7 +407,7 @@ export const moveWebsiteBuilderBlockInDocument = (
 	const removal = removeBlockFromList(
 		document.blocks,
 		blockId,
-		WEBSITE_BUILDER_ROOT_LIST_ID,
+		PHOTON_ROOT_LIST_ID,
 	);
 
 	if (!removal.removed || !removal.sourceListId || removal.sourceIndex < 0) {
@@ -415,11 +415,11 @@ export const moveWebsiteBuilderBlockInDocument = (
 	}
 
 	const targetLivesInsideRemovedTree = (
-		block: WebsiteBuilderBlock,
+		block: PhotonBlock,
 		listId: string,
 	): boolean => {
 		for (const area of block.areas ?? []) {
-			if (createWebsiteBuilderAreaListId(block.id, area.id) === listId) {
+			if (createPhotonAreaListId(block.id, area.id) === listId) {
 				return true;
 			}
 
@@ -442,7 +442,7 @@ export const moveWebsiteBuilderBlockInDocument = (
 			? targetIndex - 1
 			: targetIndex;
 
-	const nextDocument = insertWebsiteBuilderBlockInDocument(
+	const nextDocument = insertPhotonBlockInDocument(
 		{
 			...document,
 			blocks: removal.blocks,

@@ -6,28 +6,28 @@ import { useEffect, useRef, useState } from "react";
 import { EditableImage } from "../../../components/public/public-editable-image";
 import { EditableText } from "../../../components/public/public-editable-text";
 import {
-	useWebsiteBuilderStore,
-	WebsiteBuilderLink,
-} from "../../../context/website-builder-context";
+	usePhotonStore,
+	PhotonLink,
+} from "../../../context/photon-context";
 import {
-	createWebsiteBuilderLocalizedDefault,
-	defineWebsiteBuilderBlockDefinition,
+	createPhotonLocalizedDefault,
+	definePhotonBlockDefinition,
 } from "../../../helpers/document";
-import { isWebsiteBuilderPublicFramelessSiteDesign } from "../../../helpers/public-site-design";
+import { isPhotonPublicFramelessSiteDesign } from "../../../helpers/public-site-design";
 import {
-	collectWebsiteBuilderHeaderExtensionItems,
-	resolveWebsiteBuilderSiteFrameExtensions,
+	collectPhotonHeaderExtensionItems,
+	resolvePhotonSiteFrameExtensions,
 } from "../../../helpers/site-frame-extensions";
-import { useWebsiteBuilderI18n } from "../../../i18n/website-builder-i18n-context";
-import { WebsiteBuilderSiteSearch } from "../../../search/website-builder-site-search";
+import { usePhotonI18n } from "../../../i18n/photon-i18n-context";
+import { PhotonSiteSearch } from "../../../search/photon-site-search";
 import type {
-	WebsiteBuilderBlockComponentProps,
-	WebsiteBuilderField,
-	WebsiteBuilderSiteFrameActionItem,
+	PhotonBlockComponentProps,
+	PhotonField,
+	PhotonSiteFrameActionItem,
 } from "../../../types";
 import {
-	normalizeWebsiteBuilderSiteLinkItems,
-	normalizeWebsiteBuilderSiteStringItems,
+	normalizePhotonSiteLinkItems,
+	normalizePhotonSiteStringItems,
 } from "./helpers";
 import {
 	collectHeaderActionLinkKeys,
@@ -70,7 +70,7 @@ type SiteHeaderProps = {
 	disabledExtensionItemIds?: string[];
 };
 
-const siteHeaderFields: WebsiteBuilderField[] = [
+const siteHeaderFields: PhotonField[] = [
 	{
 		path: "variant",
 		label: "Variant",
@@ -203,7 +203,7 @@ const siteHeaderFields: WebsiteBuilderField[] = [
 	{
 		path: "showLocaleSwitcher",
 		label: "Show locale switcher",
-		labelKey: "websiteBuilder.system.siteHeader.showLocaleSwitcher.label",
+		labelKey: "photon.system.siteHeader.showLocaleSwitcher.label",
 		kind: "toggle",
 		group: "layout",
 		localization: "shared",
@@ -239,33 +239,33 @@ const siteHeaderFields: WebsiteBuilderField[] = [
 
 const SiteHeaderShell = ({
 	block,
-}: WebsiteBuilderBlockComponentProps<SiteHeaderProps>) => {
-	const isAdmin = useWebsiteBuilderStore((state) => state.isAdmin);
-	const mode = useWebsiteBuilderStore((state) => state.mode);
-	const currentRoute = useWebsiteBuilderStore((state) => state.document.route);
-	const currentBlocks = useWebsiteBuilderStore(
+}: PhotonBlockComponentProps<SiteHeaderProps>) => {
+	const isAdmin = usePhotonStore((state) => state.isAdmin);
+	const mode = usePhotonStore((state) => state.mode);
+	const currentRoute = usePhotonStore((state) => state.document.route);
+	const currentBlocks = usePhotonStore(
 		(state) => state.document.blocks,
 	);
-	const requestAuth = useWebsiteBuilderStore((state) => state.requestAuth);
-	const resources = useWebsiteBuilderStore((state) => state.resources);
-	const siteRegions = useWebsiteBuilderStore((state) => state.site.regions);
-	const siteDesign = useWebsiteBuilderStore(
+	const requestAuth = usePhotonStore((state) => state.requestAuth);
+	const resources = usePhotonStore((state) => state.resources);
+	const siteRegions = usePhotonStore((state) => state.site.regions);
+	const siteDesign = usePhotonStore(
 		(state) => state.site.settings.design,
 	);
-	const siteFrameExtensions = useWebsiteBuilderStore(
+	const siteFrameExtensions = usePhotonStore(
 		(state) => state.siteFrameExtensions,
 	);
-	const { locale, publicLocales, translate } = useWebsiteBuilderI18n();
+	const { locale, publicLocales, translate } = usePhotonI18n();
 	const [isCompact, setIsCompact] = useState(false);
 	const headerRef = useRef<HTMLElement | null>(null);
-	const disabledExtensionIds = normalizeWebsiteBuilderSiteStringItems(
+	const disabledExtensionIds = normalizePhotonSiteStringItems(
 		block.props.disabledExtensionIds,
 	);
-	const disabledExtensionItemIds = normalizeWebsiteBuilderSiteStringItems(
+	const disabledExtensionItemIds = normalizePhotonSiteStringItems(
 		block.props.disabledExtensionItemIds,
 	);
-	const headerExtensionItems = collectWebsiteBuilderHeaderExtensionItems(
-		resolveWebsiteBuilderSiteFrameExtensions(
+	const headerExtensionItems = collectPhotonHeaderExtensionItems(
+		resolvePhotonSiteFrameExtensions(
 			siteFrameExtensions,
 			disabledExtensionIds,
 		).filter(
@@ -280,10 +280,10 @@ const SiteHeaderShell = ({
 		disabledExtensionItemIds,
 	);
 	const rawUtilityLinks = [
-		...normalizeWebsiteBuilderSiteLinkItems(block.props.utilityLinks),
-		...normalizeWebsiteBuilderSiteLinkItems(headerExtensionItems.utilityLinks),
+		...normalizePhotonSiteLinkItems(block.props.utilityLinks),
+		...normalizePhotonSiteLinkItems(headerExtensionItems.utilityLinks),
 	];
-	const extensionCategoryLinks = normalizeWebsiteBuilderSiteLinkItems(
+	const extensionCategoryLinks = normalizePhotonSiteLinkItems(
 		headerExtensionItems.categoryLinks,
 	);
 	const commerceCatalogLink =
@@ -293,13 +293,13 @@ const SiteHeaderShell = ({
 				getHeaderLinkPathname(link.href) === "/catalog",
 		) ?? null;
 	const rawCategoryLinks = [
-		...normalizeWebsiteBuilderSiteLinkItems(block.props.categoryLinks),
+		...normalizePhotonSiteLinkItems(block.props.categoryLinks),
 		...extensionCategoryLinks.filter((link) => link !== commerceCatalogLink),
 	];
 	const variant = block.props.variant ?? "commerce-inline";
 	const liveSurfaceMode = mode !== "builder";
 	const compact = liveSurfaceMode && block.props.compactOnScroll && isCompact;
-	const framelessSite = isWebsiteBuilderPublicFramelessSiteDesign(siteDesign);
+	const framelessSite = isPhotonPublicFramelessSiteDesign(siteDesign);
 	const isShowcaseCard = variant === "showcase-card" && !framelessSite;
 	const localeSwitcherVisible =
 		block.props.showLocaleSwitcher !== false && publicLocales.length > 1;
@@ -394,23 +394,23 @@ const SiteHeaderShell = ({
 		className?: string,
 		key?: string,
 	) => (
-		<WebsiteBuilderLink
+		<PhotonLink
 			key={key ?? `cart:${href}`}
 			href={href}
 			aria-label={label}
-			data-wb-header-cart-link="true"
+			data-photon-header-cart-link="true"
 			className={clsx(
-				"relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--wb-site-border)] text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
+				"relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--photon-site-border)] text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
 				className,
 			)}
 		>
 			<ShoppingCart className="h-5 w-5" />
 			{cartQuantity > 0 ? (
-				<span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--wb-site-accent)] px-1 text-[10px] font-bold leading-none text-white">
+				<span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--photon-site-accent)] px-1 text-[10px] font-bold leading-none text-white">
 					{cartQuantity > 99 ? "99+" : cartQuantity}
 				</span>
 			) : null}
-		</WebsiteBuilderLink>
+		</PhotonLink>
 	);
 
 	const renderSmartLink = (
@@ -427,7 +427,7 @@ const SiteHeaderShell = ({
 		}
 
 		return (
-			<WebsiteBuilderLink
+			<PhotonLink
 				key={key}
 				href={link.href}
 				target={link.target}
@@ -435,19 +435,19 @@ const SiteHeaderShell = ({
 				className={className}
 			>
 				{link.label}
-			</WebsiteBuilderLink>
+			</PhotonLink>
 		);
 	};
 
-	const renderExtensionAction = (action: WebsiteBuilderSiteFrameActionItem) => {
+	const renderExtensionAction = (action: PhotonSiteFrameActionItem) => {
 		const appearance = action.appearance ?? "secondary";
 		const className = clsx(
 			"inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition",
 			appearance === "primary"
-				? "bg-[var(--wb-site-accent)] text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] hover:translate-y-[-1px]"
+				? "bg-[var(--photon-site-accent)] text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] hover:translate-y-[-1px]"
 				: appearance === "ghost"
-					? "text-[var(--wb-site-text)] hover:text-[var(--wb-site-accent)]"
-					: "border border-[var(--wb-site-border)] text-[var(--wb-site-text)] hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
+					? "text-[var(--photon-site-text)] hover:text-[var(--photon-site-accent)]"
+					: "border border-[var(--photon-site-border)] text-[var(--photon-site-text)] hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
 		);
 
 		if ((action.kind ?? "link") === "auth") {
@@ -459,7 +459,7 @@ const SiteHeaderShell = ({
 				}
 
 				return (
-					<WebsiteBuilderLink
+					<PhotonLink
 						key={
 							action.id ??
 							`${action.authenticatedLabel ?? action.label}:${authenticatedHref}`
@@ -471,7 +471,7 @@ const SiteHeaderShell = ({
 					>
 						<CircleUserRound className="h-4 w-4" />
 						<span>{action.authenticatedLabel ?? action.label}</span>
-					</WebsiteBuilderLink>
+					</PhotonLink>
 				);
 			}
 
@@ -556,7 +556,7 @@ const SiteHeaderShell = ({
 
 		const syncHeaderHeight = () => {
 			root.style.setProperty(
-				"--wb-site-header-height",
+				"--photon-site-header-height",
 				liveSurfaceMode && block.props.sticky && headerRef.current
 					? `${headerRef.current.offsetHeight}px`
 					: "0px",
@@ -567,7 +567,7 @@ const SiteHeaderShell = ({
 
 		if (!headerRef.current || typeof ResizeObserver === "undefined") {
 			return () => {
-				root.style.setProperty("--wb-site-header-height", "0px");
+				root.style.setProperty("--photon-site-header-height", "0px");
 			};
 		}
 
@@ -578,7 +578,7 @@ const SiteHeaderShell = ({
 
 		return () => {
 			observer.disconnect();
-			root.style.setProperty("--wb-site-header-height", "0px");
+			root.style.setProperty("--photon-site-header-height", "0px");
 		};
 	}, [block.props.sticky, liveSurfaceMode, compact, localeSwitcherVisible]);
 
@@ -588,23 +588,23 @@ const SiteHeaderShell = ({
 			className={clsx(
 				"relative",
 				liveSurfaceMode && "z-40",
-				isShowcaseCard ? "pt-[var(--wb-site-gutter,24px)]" : "pt-0",
+				isShowcaseCard ? "pt-[var(--photon-site-gutter,24px)]" : "pt-0",
 			)}
 		>
 			<div
 				className={clsx(
-					"border-b border-[var(--wb-site-border)] text-[var(--wb-site-text)] transition-[box-shadow,background-color,border-radius] duration-300",
+					"border-b border-[var(--photon-site-border)] text-[var(--photon-site-text)] transition-[box-shadow,background-color,border-radius] duration-300",
 					framelessSite
 						? clsx(
-								"rounded-none border-x-0 border-t-0 bg-[color-mix(in_srgb,var(--wb-site-surface)_92%,white)] shadow-none",
+								"rounded-none border-x-0 border-t-0 bg-[color-mix(in_srgb,var(--photon-site-surface)_92%,white)] shadow-none",
 								block.props.sticky &&
 									compact &&
-									"bg-[color-mix(in_srgb,var(--wb-site-surface)_96%,white)] shadow-[0_18px_40px_rgba(15,23,42,0.08)]",
+									"bg-[color-mix(in_srgb,var(--photon-site-surface)_96%,white)] shadow-[0_18px_40px_rgba(15,23,42,0.08)]",
 							)
 						: isShowcaseCard
-							? "mx-auto max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] rounded-[calc(var(--wb-site-radius,24px)+10px)] border shadow-[0_28px_70px_rgba(15,23,42,0.08)]"
+							? "mx-auto max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] rounded-[calc(var(--photon-site-radius,24px)+10px)] border shadow-[0_28px_70px_rgba(15,23,42,0.08)]"
 							: clsx(
-									"rounded-none border-x-0 border-t-0 bg-[var(--wb-site-surface)] shadow-[0_18px_40px_rgba(15,23,42,0.06)]",
+									"rounded-none border-x-0 border-t-0 bg-[var(--photon-site-surface)] shadow-[0_18px_40px_rgba(15,23,42,0.06)]",
 									block.props.sticky &&
 										compact &&
 										"shadow-[0_20px_54px_rgba(15,23,42,0.12)]",
@@ -613,28 +613,28 @@ const SiteHeaderShell = ({
 			>
 				<div
 					className={clsx(
-						"mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] transition-[padding,gap] duration-300",
+						"mx-auto w-full max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] transition-[padding,gap] duration-300",
 						framelessSite
 							? compact
-								? "px-[var(--wb-site-gutter,24px)] py-3"
-								: "px-[var(--wb-site-gutter,24px)] py-4"
+								? "px-[var(--photon-site-gutter,24px)] py-3"
+								: "px-[var(--photon-site-gutter,24px)] py-4"
 							: isShowcaseCard
 								? compact
 									? "px-4 py-3"
 									: "px-5 py-4 sm:px-6"
 								: compact
-									? "px-[var(--wb-site-gutter,24px)] py-3"
-									: "px-[var(--wb-site-gutter,24px)] py-4",
+									? "px-[var(--photon-site-gutter,24px)] py-3"
+									: "px-[var(--photon-site-gutter,24px)] py-4",
 					)}
 				>
 					<div className="flex flex-col gap-4">
 						<div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-							<div className="flex flex-wrap items-center gap-3 text-sm text-[var(--wb-site-muted)]">
+							<div className="flex flex-wrap items-center gap-3 text-sm text-[var(--photon-site-muted)]">
 								{utilityLinks.map((link) =>
 									renderSmartLink(
 										link,
 										clsx(
-											"transition hover:text-[var(--wb-site-text)]",
+											"transition hover:text-[var(--photon-site-text)]",
 											isCartLinkHref(link.href) && "h-8 w-8 border-transparent",
 										),
 										`${link.label}:${link.href}`,
@@ -644,42 +644,42 @@ const SiteHeaderShell = ({
 							<div className="flex flex-wrap items-center gap-3 text-sm">
 								{localeSwitcherVisible ? (
 									<div
-										data-wb-locale-switcher="true"
-										className="flex flex-wrap items-center gap-2 rounded-full border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-2 py-2"
+										data-photon-locale-switcher="true"
+										className="flex flex-wrap items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-2 py-2"
 									>
-										<div className="px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--wb-site-muted)]">
+										<div className="px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--photon-site-muted)]">
 											{translate(
-												"websiteBuilder.localeSwitcher.label",
+												"photon.localeSwitcher.label",
 												"Language",
 											)}
 										</div>
 										{publicLocales.map((item) => (
-											<WebsiteBuilderLink
+											<PhotonLink
 												key={item.code}
 												href={currentRoute}
 												locale={item.code}
-												data-wb-locale-option={item.code}
+												data-photon-locale-option={item.code}
 												className={clsx(
 													"rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] transition",
 													item.code === locale
-														? "bg-[var(--wb-site-accent)] text-white"
-														: "text-[var(--wb-site-muted)] hover:text-[var(--wb-site-text)]",
+														? "bg-[var(--photon-site-accent)] text-white"
+														: "text-[var(--photon-site-muted)] hover:text-[var(--photon-site-text)]",
 												)}
 											>
 												{item.label}
-											</WebsiteBuilderLink>
+											</PhotonLink>
 										))}
 									</div>
 								) : null}
 								<EditableText
 									blockId={block.id}
 									path="contactCaption"
-									className="text-[var(--wb-site-muted)]"
+									className="text-[var(--photon-site-muted)]"
 								/>
 								<EditableText
 									blockId={block.id}
 									path="contactValue"
-									className="font-semibold text-[var(--wb-site-text)]"
+									className="font-semibold text-[var(--photon-site-text)]"
 								/>
 							</div>
 						</div>
@@ -692,11 +692,11 @@ const SiteHeaderShell = ({
 									: "lg:grid-cols-[auto_minmax(280px,1fr)_auto]",
 							)}
 						>
-							<WebsiteBuilderLink
+							<PhotonLink
 								href={block.props.brandHref}
 								className="flex min-w-0 items-center gap-3"
 							>
-								<div className="relative h-16 w-16 overflow-hidden rounded-[22px] border border-[var(--wb-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]">
+								<div className="relative h-16 w-16 overflow-hidden rounded-[22px] border border-[var(--photon-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]">
 									{block.props.logoImage ? (
 										<EditableImage
 											blockId={block.id}
@@ -706,11 +706,11 @@ const SiteHeaderShell = ({
 											fallbackAlt={block.props.brandLabel}
 										/>
 									) : (
-										<div className="flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--wb-site-accent)]">
+										<div className="flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--photon-site-accent)]">
 											<EditableText
 												blockId={block.id}
 												path="brandLabel"
-												className="text-[var(--wb-site-accent)]"
+												className="text-[var(--photon-site-accent)]"
 											/>
 										</div>
 									)}
@@ -720,31 +720,31 @@ const SiteHeaderShell = ({
 										blockId={block.id}
 										path="brandLabel"
 										as="div"
-										className="[font-family:var(--wb-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
+										className="[font-family:var(--photon-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
 									/>
 									{isShowcaseCard ? (
-										<div className="mt-1 text-xs uppercase tracking-[0.24em] text-[var(--wb-site-muted)]">
+										<div className="mt-1 text-xs uppercase tracking-[0.24em] text-[var(--photon-site-muted)]">
 											Live site frame
 										</div>
 									) : null}
 								</div>
-							</WebsiteBuilderLink>
+							</PhotonLink>
 
 							{commerceCatalogLink ? (
-								<WebsiteBuilderLink
+								<PhotonLink
 									href={commerceCatalogLink.href}
-									className="inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] bg-[var(--wb-site-background)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
+									className="inline-flex items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]"
 								>
-									<div className="h-2.5 w-2.5 rounded-full bg-[var(--wb-site-accent)]" />
+									<div className="h-2.5 w-2.5 rounded-full bg-[var(--photon-site-accent)]" />
 									<EditableText
 										blockId={block.id}
 										path="catalogLabel"
 										className="font-semibold"
 									/>
-								</WebsiteBuilderLink>
+								</PhotonLink>
 							) : null}
 
-							<WebsiteBuilderSiteSearch
+							<PhotonSiteSearch
 								blockId={block.id}
 								placeholderPath="searchPlaceholder"
 							/>
@@ -759,22 +759,22 @@ const SiteHeaderShell = ({
 											"secondary-cart",
 										)
 									) : (
-										<WebsiteBuilderLink
+										<PhotonLink
 											href={block.props.secondaryCtaHref}
-											className="inline-flex items-center gap-2 rounded-full border border-[var(--wb-site-border)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
+											className="inline-flex items-center gap-2 rounded-full border border-[var(--photon-site-border)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]"
 										>
 											<EditableText
 												blockId={block.id}
 												path="secondaryCtaLabel"
 												className="font-semibold"
 											/>
-										</WebsiteBuilderLink>
+										</PhotonLink>
 									)
 								) : null}
 								{shouldRenderPrimaryCta ? (
-									<WebsiteBuilderLink
+									<PhotonLink
 										href={block.props.primaryCtaHref}
-										className="inline-flex items-center gap-2 rounded-full bg-[var(--wb-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] transition hover:translate-y-[-1px]"
+										className="inline-flex items-center gap-2 rounded-full bg-[var(--photon-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] transition hover:translate-y-[-1px]"
 									>
 										<EditableText
 											blockId={block.id}
@@ -782,7 +782,7 @@ const SiteHeaderShell = ({
 											className="font-semibold text-white"
 										/>
 										<ArrowRight className="h-4 w-4" />
-									</WebsiteBuilderLink>
+									</PhotonLink>
 								) : null}
 								{dedicatedCartLink
 									? renderCartLink(
@@ -800,7 +800,7 @@ const SiteHeaderShell = ({
 									<button
 										type="button"
 										onClick={requestAuth}
-										className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--wb-site-border)] bg-[var(--wb-site-surface)] px-4 py-3 text-sm font-semibold text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]"
+										className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-surface)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]"
 									>
 										<LogIn className="h-4 w-4" />
 										<EditableText
@@ -817,21 +817,21 @@ const SiteHeaderShell = ({
 				{categoryLinks.length > 0 ? (
 					<div
 						className={clsx(
-							"border-t border-[var(--wb-site-border)]",
+							"border-t border-[var(--photon-site-border)]",
 							framelessSite && "bg-transparent",
 						)}
 					>
-						<div className="mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] px-[var(--wb-site-gutter,24px)] py-4">
+						<div className="mx-auto w-full max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] px-[var(--photon-site-gutter,24px)] py-4">
 							<div className="flex flex-wrap gap-2">
 								{categoryLinks.map((link) =>
 									renderSmartLink(
 										link,
 										clsx(
-											"rounded-full border border-[var(--wb-site-border)] px-4 py-2 text-sm text-[var(--wb-site-text)] transition hover:border-[var(--wb-site-accent)] hover:text-[var(--wb-site-accent)]",
+											"rounded-full border border-[var(--photon-site-border)] px-4 py-2 text-sm text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
 											framelessSite
 												? "bg-transparent"
 												: isShowcaseCard
-													? "bg-[var(--wb-site-background)]"
+													? "bg-[var(--photon-site-background)]"
 													: "bg-white/0",
 											isCartLinkHref(link.href) && "h-10 w-10 px-0 py-0",
 										),
@@ -847,24 +847,24 @@ const SiteHeaderShell = ({
 	);
 };
 
-export const siteHeaderShellDefinition = defineWebsiteBuilderBlockDefinition({
+export const siteHeaderShellDefinition = definePhotonBlockDefinition({
 	type: "site-header-shell",
 	label: "Site Header Shell",
-	labelKey: "websiteBuilder.system.siteHeader.block.label",
+	labelKey: "photon.system.siteHeader.block.label",
 	description:
 		"Shared live-site header with utility links, search and package-registered actions.",
-	descriptionKey: "websiteBuilder.system.siteHeader.block.description",
+	descriptionKey: "photon.system.siteHeader.block.description",
 	category: "Site Frame",
 	icon: "panel-top",
 	defaults: {
 		variant: "commerce-inline",
-		brandLabel: createWebsiteBuilderLocalizedDefault({
-			en: "Website Builder",
-			ru: "Website Builder",
+		brandLabel: createPhotonLocalizedDefault({
+			en: "Photon",
+			ru: "Photon",
 		}),
 		brandHref: "/",
 		logoImage: null,
-		utilityLinks: createWebsiteBuilderLocalizedDefault({
+		utilityLinks: createPhotonLocalizedDefault({
 			en: [
 				{ label: "Services", href: "/services" },
 				{ label: "Partners", href: "/partners" },
@@ -876,31 +876,31 @@ export const siteHeaderShellDefinition = defineWebsiteBuilderBlockDefinition({
 				{ label: "Блог", href: "/blog" },
 			],
 		}),
-		catalogLabel: createWebsiteBuilderLocalizedDefault({
+		catalogLabel: createPhotonLocalizedDefault({
 			en: "Catalog",
 			ru: "Каталог",
 		}),
-		searchPlaceholder: createWebsiteBuilderLocalizedDefault({
+		searchPlaceholder: createPhotonLocalizedDefault({
 			en: "Search the website",
 			ru: "Поиск по сайту",
 		}),
 		contactValue: "+7 (707) 040-43-43",
-		contactCaption: createWebsiteBuilderLocalizedDefault({
+		contactCaption: createPhotonLocalizedDefault({
 			en: "Daily from 09:00 to 18:00",
 			ru: "Ежедневно с 09:00 до 18:00",
 		}),
-		primaryCtaLabel: createWebsiteBuilderLocalizedDefault({
+		primaryCtaLabel: createPhotonLocalizedDefault({
 			en: "Contact us",
 			ru: "Связаться",
 		}),
 		primaryCtaHref: "/contacts",
-		secondaryCtaLabel: createWebsiteBuilderLocalizedDefault({
+		secondaryCtaLabel: createPhotonLocalizedDefault({
 			en: "WhatsApp",
 			ru: "WhatsApp",
 		}),
 		secondaryCtaHref: "https://wa.me/77070404343",
 		showLoginAction: false,
-		loginLabel: createWebsiteBuilderLocalizedDefault({
+		loginLabel: createPhotonLocalizedDefault({
 			en: "Admin sign in",
 			ru: "Вход для админа",
 		}),
@@ -909,7 +909,7 @@ export const siteHeaderShellDefinition = defineWebsiteBuilderBlockDefinition({
 		showLocaleSwitcher: true,
 		disabledExtensionIds: [],
 		disabledExtensionItemIds: [],
-		categoryLinks: createWebsiteBuilderLocalizedDefault({
+		categoryLinks: createPhotonLocalizedDefault({
 			en: [
 				{ label: "Infrastructure", href: "/infrastructure" },
 				{ label: "Operations", href: "/operations" },

@@ -1,34 +1,34 @@
 import type {
-	WebsiteBuilderAccountTabExtension,
-	WebsiteBuilderDocumentsMap,
-	WebsiteBuilderInstallableKit,
-	WebsiteBuilderModule,
-	WebsiteBuilderRegistryEntry,
-	WebsiteBuilderSiteFrameExtension,
+	PhotonAccountTabExtension,
+	PhotonDocumentsMap,
+	PhotonInstallableKit,
+	PhotonModule,
+	PhotonRegistryEntry,
+	PhotonSiteFrameExtension,
 } from "../types";
 
-export const createWebsiteBuilderKit = (
-	kit: WebsiteBuilderInstallableKit,
-): WebsiteBuilderInstallableKit => kit;
+export const createPhotonKit = (
+	kit: PhotonInstallableKit,
+): PhotonInstallableKit => kit;
 
-export const isWebsiteBuilderInstallableKit = (
-	entry: WebsiteBuilderRegistryEntry,
-): entry is WebsiteBuilderInstallableKit => "modules" in entry;
+export const isPhotonInstallableKit = (
+	entry: PhotonRegistryEntry,
+): entry is PhotonInstallableKit => "modules" in entry;
 
-export const resolveWebsiteBuilderModules = (
-	entries: WebsiteBuilderRegistryEntry[],
-): WebsiteBuilderModule[] =>
+export const resolvePhotonModules = (
+	entries: PhotonRegistryEntry[],
+): PhotonModule[] =>
 	entries.flatMap((entry) =>
-		isWebsiteBuilderInstallableKit(entry) ? entry.modules : [entry],
+		isPhotonInstallableKit(entry) ? entry.modules : [entry],
 	);
 
-export const collectWebsiteBuilderDocuments = (
-	entries: WebsiteBuilderRegistryEntry[],
-): WebsiteBuilderDocumentsMap => {
-	const documents: WebsiteBuilderDocumentsMap = {};
+export const collectPhotonDocuments = (
+	entries: PhotonRegistryEntry[],
+): PhotonDocumentsMap => {
+	const documents: PhotonDocumentsMap = {};
 
 	for (const entry of entries) {
-		if (!isWebsiteBuilderInstallableKit(entry) || !entry.documents) {
+		if (!isPhotonInstallableKit(entry) || !entry.documents) {
 			continue;
 		}
 
@@ -38,18 +38,18 @@ export const collectWebsiteBuilderDocuments = (
 	return documents;
 };
 
-export const collectWebsiteBuilderSiteFrameExtensions = (
-	entries: WebsiteBuilderRegistryEntry[],
-): WebsiteBuilderSiteFrameExtension[] =>
+export const collectPhotonSiteFrameExtensions = (
+	entries: PhotonRegistryEntry[],
+): PhotonSiteFrameExtension[] =>
 	entries.flatMap((entry) =>
-		isWebsiteBuilderInstallableKit(entry)
+		isPhotonInstallableKit(entry)
 			? (entry.siteFrameExtensions ?? [])
 			: [],
 	);
 
-export const collectWebsiteBuilderAccountTabs = (
-	entries: WebsiteBuilderRegistryEntry[],
-): WebsiteBuilderAccountTabExtension[] =>
+export const collectPhotonAccountTabs = (
+	entries: PhotonRegistryEntry[],
+): PhotonAccountTabExtension[] =>
 	entries.flatMap((entry) =>
-		isWebsiteBuilderInstallableKit(entry) ? (entry.accountTabs ?? []) : [],
+		isPhotonInstallableKit(entry) ? (entry.accountTabs ?? []) : [],
 	);

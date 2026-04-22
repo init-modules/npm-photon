@@ -1,8 +1,8 @@
-import type { WebsiteBuilderMediaValue } from "../types";
+import type { PhotonMediaValue } from "../types";
 
-export const isWebsiteBuilderMediaValue = (
+export const isPhotonMediaValue = (
 	value: unknown,
-): value is WebsiteBuilderMediaValue =>
+): value is PhotonMediaValue =>
 	Boolean(
 		value &&
 			typeof value === "object" &&
@@ -12,33 +12,33 @@ export const isWebsiteBuilderMediaValue = (
 			typeof (value as { url?: unknown }).url === "string",
 	);
 
-export const resolveWebsiteBuilderMediaUrl = (value: unknown): string => {
+export const resolvePhotonMediaUrl = (value: unknown): string => {
 	if (typeof value === "string") {
 		return value;
 	}
 
-	if (isWebsiteBuilderMediaValue(value)) {
+	if (isPhotonMediaValue(value)) {
 		return value.url;
 	}
 
 	return "";
 };
 
-export const resolveWebsiteBuilderMediaPreviewUrl = (
+export const resolvePhotonMediaPreviewUrl = (
 	value: unknown,
 ): string => {
-	if (isWebsiteBuilderMediaValue(value)) {
+	if (isPhotonMediaValue(value)) {
 		return value.previewUrl || value.url;
 	}
 
-	return resolveWebsiteBuilderMediaUrl(value);
+	return resolvePhotonMediaUrl(value);
 };
 
-export const updateWebsiteBuilderMediaUrl = (
+export const updatePhotonMediaUrl = (
 	currentValue: unknown,
 	url: string,
-): string | WebsiteBuilderMediaValue =>
-	isWebsiteBuilderMediaValue(currentValue)
+): string | PhotonMediaValue =>
+	isPhotonMediaValue(currentValue)
 		? {
 				...currentValue,
 				url,

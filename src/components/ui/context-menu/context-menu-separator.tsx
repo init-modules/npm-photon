@@ -16,7 +16,7 @@ export const ContextMenuSeparator = forwardRef<
 		<ContextMenuPrimitive.Separator
 			ref={ref}
 			data-slot="context-menu-separator"
-			className={cn("my-1.5 h-px bg-[var(--wb-builder-border)]", className)}
+			className={cn("my-1.5 h-px bg-[var(--photon-builder-border)]", className)}
 			{...props}
 		/>
 	);

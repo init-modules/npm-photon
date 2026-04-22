@@ -17,7 +17,7 @@ export const DialogTitle = forwardRef<
 			ref={ref}
 			data-slot="dialog-title"
 			className={cn("text-xl font-semibold tracking-[-0.03em]", className)}
-			style={{ color: "var(--wb-builder-text, rgb(255 255 255))" }}
+			style={{ color: "var(--photon-builder-text, rgb(255 255 255))" }}
 			{...props}
 		/>
 	);

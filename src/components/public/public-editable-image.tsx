@@ -4,11 +4,11 @@ import clsx from "clsx";
 import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
 import {
-	useWebsiteBuilderCanEdit,
-	useWebsiteBuilderFieldValue,
-} from "../../context/website-builder-context";
-import { getWebsiteBuilderEditableEditorLoader } from "../../helpers/editable-editor-loaders";
-import { resolveWebsiteBuilderMediaPreviewUrl } from "../../helpers/media";
+	usePhotonCanEdit,
+	usePhotonFieldValue,
+} from "../../context/photon-context";
+import { getPhotonEditableEditorLoader } from "../../helpers/editable-editor-loaders";
+import { resolvePhotonMediaPreviewUrl } from "../../helpers/media";
 
 type PublicEditableImageProps = {
 	blockId: string;
@@ -29,11 +29,11 @@ export const EditableImage = ({
 	imageClassName,
 	fallbackAlt = "Builder image",
 }: PublicEditableImageProps) => {
-	const canEdit = useWebsiteBuilderCanEdit();
-	const rawValue = useWebsiteBuilderFieldValue(blockId, path);
-	const source = resolveWebsiteBuilderMediaPreviewUrl(rawValue);
+	const canEdit = usePhotonCanEdit();
+	const rawValue = usePhotonFieldValue(blockId, path);
+	const source = resolvePhotonMediaPreviewUrl(rawValue);
 	const altValue = altPath
-		? useWebsiteBuilderFieldValue(blockId, altPath)
+		? usePhotonFieldValue(blockId, altPath)
 		: null;
 	const alt = altPath ? String(altValue ?? fallbackAlt) : fallbackAlt;
 	const [EditableImageEditor, setEditableImageEditor] =
@@ -46,7 +46,7 @@ export const EditableImage = ({
 
 		let cancelled = false;
 
-		const loadEditor = getWebsiteBuilderEditableEditorLoader("image");
+		const loadEditor = getPhotonEditableEditorLoader("image");
 
 		if (!loadEditor) {
 			return;
@@ -85,7 +85,7 @@ export const EditableImage = ({
 					className={clsx("h-full w-full object-cover", imageClassName)}
 				/>
 			) : (
-				<div className="flex h-full min-h-[14rem] w-full items-center justify-center bg-[color:var(--wb-site-surface)] text-center text-[color:var(--wb-site-muted)]">
+				<div className="flex h-full min-h-[14rem] w-full items-center justify-center bg-[color:var(--photon-site-surface)] text-center text-[color:var(--photon-site-muted)]">
 					<div className="px-6 text-sm leading-7">Media</div>
 				</div>
 			)}

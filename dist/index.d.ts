@@ -1,35 +1,35 @@
 import * as react from 'react';
 import { ComponentType, ReactNode, ElementType, HTMLAttributes, CSSProperties, KeyboardEvent } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import { a as WebsiteBuilderBlock, W as WebsiteBuilderArea, z as WebsiteBuilderSurfaceMode, J as WebsiteBuilderField, a0 as WebsiteBuilderBindingAdapter, h as WebsiteBuilderMediaValue, T as WebsiteBuilderInstallableKit, P as WebsiteBuilderModule, o as WebsiteBuilderSearchResult, E as WebsiteBuilderMode, n as WebsiteBuilderSearchHighlight } from './types-CuFDrLWO.js';
-export { y as WebsiteBuilderAccountTabExtension, a4 as WebsiteBuilderAccountTabMatch, a5 as WebsiteBuilderActorSummary, a6 as WebsiteBuilderAnyBlockDefinition, a7 as WebsiteBuilderBindingMode, a8 as WebsiteBuilderBlockComponent, a1 as WebsiteBuilderBlockComponentProps, a9 as WebsiteBuilderBlockDefaults, M as WebsiteBuilderBlockDefinition, O as WebsiteBuilderBlockLocalizationSchema, S as WebsiteBuilderBlockProps, C as WebsiteBuilderBranchPolicyState, aa as WebsiteBuilderDefaultable, b as WebsiteBuilderDocument, c as WebsiteBuilderDocumentsMap, d as WebsiteBuilderFieldBinding, ab as WebsiteBuilderFieldKind, ac as WebsiteBuilderFieldLocalization, a2 as WebsiteBuilderFieldOption, I as WebsiteBuilderI18nValue, ad as WebsiteBuilderInterfaceLocaleOption, H as WebsiteBuilderLinkComponent, $ as WebsiteBuilderLinkComponentProps, e as WebsiteBuilderLocaleDescriptor, f as WebsiteBuilderLocaleStatus, Q as WebsiteBuilderLocalizedDefaultValue, F as WebsiteBuilderMediaUploadHandler, g as WebsiteBuilderMediaUploadInput, ae as WebsiteBuilderMergeConflict, af as WebsiteBuilderMergeDiffItem, D as WebsiteBuilderMergePreview, ag as WebsiteBuilderMergeResolutionStrategy, N as WebsiteBuilderNestedField, i as WebsiteBuilderPageCatalogItem, j as WebsiteBuilderPageRuntimeData, k as WebsiteBuilderPageSettings, K as WebsiteBuilderPageSettingsPanelDefinition, ah as WebsiteBuilderPageSettingsPanelProps, a3 as WebsiteBuilderPageSettingsScope, A as WebsiteBuilderRegistry, R as WebsiteBuilderRegistryEntry, l as WebsiteBuilderResolvedPage, X as WebsiteBuilderResolvedSiteDesignSettings, m as WebsiteBuilderResources, ai as WebsiteBuilderRevisionChangeSummaryItem, B as WebsiteBuilderRevisionDescriptor, U as WebsiteBuilderRuntime, G as WebsiteBuilderSearchHandler, aj as WebsiteBuilderSearchInput, _ as WebsiteBuilderSelectedField, p as WebsiteBuilderSite, ak as WebsiteBuilderSiteColorSchemeDefinition, Y as WebsiteBuilderSiteComponentVariants, al as WebsiteBuilderSiteDesignAppearance, am as WebsiteBuilderSiteDesignColorTokens, an as WebsiteBuilderSiteDesignPresetDefinition, V as WebsiteBuilderSiteDesignSettings, ao as WebsiteBuilderSiteDesignValue, x as WebsiteBuilderSiteFrameActionItem, ap as WebsiteBuilderSiteFrameActionKind, u as WebsiteBuilderSiteFrameExtension, w as WebsiteBuilderSiteFrameLinkItem, v as WebsiteBuilderSiteFrameNavigationColumn, q as WebsiteBuilderSiteRegion, r as WebsiteBuilderSiteSettings, L as WebsiteBuilderSiteSettingsPanelDefinition, aq as WebsiteBuilderSiteSettingsPanelProps, s as WebsiteBuilderWorkspaceCapabilities, t as WebsiteBuilderWorkspaceDescriptor, Z as WebsiteBuilderWorkspaceRef } from './types-CuFDrLWO.js';
-export { g as WebsiteBuilderI18nProvider, W as WebsiteBuilderLink, h as WebsiteBuilderProvider, i as WebsiteBuilderRenderDepthProvider, a as WebsiteBuilderSiteSearch, r as resolveWebsiteBuilderText, u as useWebsiteBuilder, b as useWebsiteBuilderCanEdit, f as useWebsiteBuilderFieldValue, c as useWebsiteBuilderI18n, j as useWebsiteBuilderPersistedState, d as useWebsiteBuilderRenderDepth, e as useWebsiteBuilderStore, k as useWebsiteBuilderStoreApi } from './website-builder-site-search-DgqPIWez.js';
-export { f as collectWebsiteBuilderAccountTabs, g as collectWebsiteBuilderDocuments, h as collectWebsiteBuilderSiteFrameExtensions, i as createWebsiteBuilderBlock, c as createWebsiteBuilderBlockLocalizationSchema, a as createWebsiteBuilderKit, j as createWebsiteBuilderLocalizationManifest, b as createWebsiteBuilderLocalizedDefault, k as createWebsiteBuilderRegistry, d as createWebsiteBuilderRuntime, e as defineWebsiteBuilderBlockDefinition, l as getWebsiteBuilderDefinitionKey, m as getWebsiteBuilderDocumentFingerprint, n as isWebsiteBuilderInstallableKit, o as moveWebsiteBuilderArrayItem, r as resolveWebsiteBuilderModules } from './runtime-Led5emTV.js';
-export { d as decodeWebsiteBuilderHtmlEntities, g as getWebsiteBuilderAnchorRel, n as normalizeWebsiteBuilderUrlForProtocolCheck, s as sanitizeWebsiteBuilderLinkHref } from './link-url-CBOXlDl0.js';
-export { D as DEFAULT_WEBSITE_BUILDER_WORKSPACE_CAPABILITIES, a as DEFAULT_WEBSITE_BUILDER_WORKSPACE_REF, G as WEBSITE_BUILDER_EMPTY_TEXT, W as WEBSITE_BUILDER_ROOT_LIST_ID, b as WEBSITE_BUILDER_SITE_DESIGN_DEFAULTS, c as WEBSITE_BUILDER_SITE_DESIGN_FALLBACK_DEFAULTS, d as applyWebsiteBuilderSiteColorScheme, e as applyWebsiteBuilderSiteDesignPreset, f as canEditWebsiteBuilderWorkspace, g as canSaveWebsiteBuilderWorkspace, h as cloneWebsiteBuilderBlockTreeWithNewIds, i as cloneWebsiteBuilderValue, j as collectBlockIds, k as createWebsiteBuilderAreaListId, l as createWebsiteBuilderNodeId, m as createWebsiteBuilderSiteDesignSettings, n as duplicateWebsiteBuilderBlockInDocument, o as findWebsiteBuilderBlock, p as getFirstWebsiteBuilderBlockId, H as getValueAtPath, q as getWebsiteBuilderWorkspaceIdentityKey, r as getWebsiteBuilderWorkspaceKey, s as hasWebsiteBuilderSiteDesignPresetCustomization, t as insertWebsiteBuilderBlockInDocument, u as isWebsiteBuilderFramelessPreset, v as isWebsiteBuilderFramelessSiteDesign, w as isWebsiteBuilderSiteDesignPresetApplied, x as isWebsiteBuilderWorkspaceReadonly, y as moveWebsiteBuilderBlockInDocument, z as normalizeWebsiteBuilderWorkspaceCapabilities, A as normalizeWebsiteBuilderWorkspaceDescriptor, B as normalizeWebsiteBuilderWorkspaceRef, C as removeWebsiteBuilderBlockFromDocument, E as resolveWebsiteBuilderSiteDesignSettings, I as setValueAtPath, F as updateWebsiteBuilderBlockInDocument } from './workspace-DYMiajiz.js';
-export { WEBSITE_BUILDER_DEFAULT_SITE_DESIGN_PRESET_ID, WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY, composeWebsiteBuilderSurfaceDocument, decomposeWebsiteBuilderSurfaceDocument, getFirstWebsiteBuilderSurfaceEditableBlockId, getWebsiteBuilderSiteColorScheme, getWebsiteBuilderSiteDesignPreset, getWebsiteBuilderSurfaceRegionBlocks, getWebsiteBuilderSurfaceRegionListId, resolveWebsiteBuilderSurfaceRegionDescriptors, resolveWebsiteBuilderSurfaceRegionForBlockId, resolveWebsiteBuilderSurfaceRegionForListId, websiteBuilderSiteColorSchemes, websiteBuilderSiteDesignPresets } from './server.js';
-export { b as collectWebsiteBuilderFooterExtensionItems, d as collectWebsiteBuilderHeaderExtensionItems, c as createWebsiteBuilderAccountTabExtension, a as createWebsiteBuilderSiteFrameExtension, r as resolveWebsiteBuilderAccountTabs, e as resolveWebsiteBuilderSiteFrameExtensions } from './site-frame-extensions-CljWsZYY.js';
-export { g as getWebsiteBuilderSurfaceModeStyle } from './surface-layout-p8WBJh3f.js';
-export { WebsiteBuilderAccessAuthStateLike, WebsiteBuilderModeLike, WebsiteBuilderWorkspaceSelectionLike, normalizeWebsiteBuilderSelectionForMode, resolveWebsiteBuilderAccess, resolveWebsiteBuilderMode, resolveWebsiteBuilderRequestHeaders, resolveWebsiteBuilderWorkspaceParams } from './sdk.js';
-export { W as WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM, a as WEBSITE_BUILDER_SEARCH_QUERY_PARAM, b as WEBSITE_BUILDER_SEARCH_TARGET_PARAM } from './constants-DenT-L3W.js';
-export { I as InsertTarget, a as InspectorDefinitionMeta, b as InspectorGroups, P as PageSettingsPanelDefinition, c as PaletteDefinition, d as PaletteFamilyGroup, S as SiteSettingsPanelDefinition, e as SiteSettingsSubtabDefinition, W as WebsiteBuilderStudio, f as WebsiteBuilderStudioProps, g as WebsiteBuilderStudioSavePayload, h as WebsiteBuilderStudioSaveReason, i as WebsiteBuilderStudioSiteSettingChangeContext } from './website-builder-studio-DMX6zQCo.js';
+import { a as PhotonBlock, P as PhotonArea, z as PhotonSurfaceMode, J as PhotonField, a0 as PhotonBindingAdapter, h as PhotonMediaValue, U as PhotonInstallableKit, Q as PhotonModule, o as PhotonSearchResult, E as PhotonMode, n as PhotonSearchHighlight } from './types-S6aNsw9R.js';
+export { y as PhotonAccountTabExtension, a4 as PhotonAccountTabMatch, a5 as PhotonActorSummary, a6 as PhotonAnyBlockDefinition, a7 as PhotonBindingMode, a8 as PhotonBlockComponent, a1 as PhotonBlockComponentProps, a9 as PhotonBlockDefaults, M as PhotonBlockDefinition, O as PhotonBlockLocalizationSchema, T as PhotonBlockProps, C as PhotonBranchPolicyState, aa as PhotonDefaultable, b as PhotonDocument, c as PhotonDocumentsMap, d as PhotonFieldBinding, ab as PhotonFieldKind, ac as PhotonFieldLocalization, a2 as PhotonFieldOption, I as PhotonI18nValue, ad as PhotonInterfaceLocaleOption, H as PhotonLinkComponent, $ as PhotonLinkComponentProps, e as PhotonLocaleDescriptor, f as PhotonLocaleStatus, R as PhotonLocalizedDefaultValue, F as PhotonMediaUploadHandler, g as PhotonMediaUploadInput, ae as PhotonMergeConflict, af as PhotonMergeDiffItem, D as PhotonMergePreview, ag as PhotonMergeResolutionStrategy, N as PhotonNestedField, i as PhotonPageCatalogItem, j as PhotonPageRuntimeData, k as PhotonPageSettings, K as PhotonPageSettingsPanelDefinition, ah as PhotonPageSettingsPanelProps, a3 as PhotonPageSettingsScope, A as PhotonRegistry, S as PhotonRegistryEntry, l as PhotonResolvedPage, X as PhotonResolvedSiteDesignSettings, m as PhotonResources, ai as PhotonRevisionChangeSummaryItem, B as PhotonRevisionDescriptor, V as PhotonRuntime, G as PhotonSearchHandler, aj as PhotonSearchInput, _ as PhotonSelectedField, p as PhotonSite, ak as PhotonSiteColorSchemeDefinition, Y as PhotonSiteComponentVariants, al as PhotonSiteDesignAppearance, am as PhotonSiteDesignColorTokens, an as PhotonSiteDesignPresetDefinition, W as PhotonSiteDesignSettings, ao as PhotonSiteDesignValue, x as PhotonSiteFrameActionItem, ap as PhotonSiteFrameActionKind, u as PhotonSiteFrameExtension, w as PhotonSiteFrameLinkItem, v as PhotonSiteFrameNavigationColumn, q as PhotonSiteRegion, r as PhotonSiteSettings, L as PhotonSiteSettingsPanelDefinition, aq as PhotonSiteSettingsPanelProps, s as PhotonWorkspaceCapabilities, t as PhotonWorkspaceDescriptor, Z as PhotonWorkspaceRef } from './types-S6aNsw9R.js';
+export { g as PhotonI18nProvider, P as PhotonLink, h as PhotonProvider, i as PhotonRenderDepthProvider, a as PhotonSiteSearch, r as resolvePhotonText, u as usePhoton, b as usePhotonCanEdit, f as usePhotonFieldValue, c as usePhotonI18n, j as usePhotonPersistedState, d as usePhotonRenderDepth, e as usePhotonStore, k as usePhotonStoreApi } from './photon-site-search-CyOGWrWo.js';
+export { f as collectPhotonAccountTabs, g as collectPhotonDocuments, h as collectPhotonSiteFrameExtensions, i as createPhotonBlock, c as createPhotonBlockLocalizationSchema, a as createPhotonKit, j as createPhotonLocalizationManifest, b as createPhotonLocalizedDefault, k as createPhotonRegistry, d as createPhotonRuntime, e as definePhotonBlockDefinition, l as getPhotonDefinitionKey, m as getPhotonDocumentFingerprint, n as isPhotonInstallableKit, o as movePhotonArrayItem, r as resolvePhotonModules } from './runtime-B8vjSNTE.js';
+export { d as decodePhotonHtmlEntities, g as getPhotonAnchorRel, n as normalizePhotonUrlForProtocolCheck, s as sanitizePhotonLinkHref } from './link-url-XwgBLvA0.js';
+export { D as DEFAULT_PHOTON_WORKSPACE_CAPABILITIES, a as DEFAULT_PHOTON_WORKSPACE_REF, G as PHOTON_EMPTY_TEXT, P as PHOTON_ROOT_LIST_ID, b as PHOTON_SITE_DESIGN_DEFAULTS, c as PHOTON_SITE_DESIGN_FALLBACK_DEFAULTS, d as applyPhotonSiteColorScheme, e as applyPhotonSiteDesignPreset, f as canEditPhotonWorkspace, g as canSavePhotonWorkspace, h as clonePhotonBlockTreeWithNewIds, i as clonePhotonValue, j as collectBlockIds, k as createPhotonAreaListId, l as createPhotonNodeId, m as createPhotonSiteDesignSettings, n as duplicatePhotonBlockInDocument, o as findPhotonBlock, p as getFirstPhotonBlockId, q as getPhotonWorkspaceIdentityKey, r as getPhotonWorkspaceKey, H as getValueAtPath, s as hasPhotonSiteDesignPresetCustomization, t as insertPhotonBlockInDocument, u as isPhotonFramelessPreset, v as isPhotonFramelessSiteDesign, w as isPhotonSiteDesignPresetApplied, x as isPhotonWorkspaceReadonly, y as movePhotonBlockInDocument, z as normalizePhotonWorkspaceCapabilities, A as normalizePhotonWorkspaceDescriptor, B as normalizePhotonWorkspaceRef, C as removePhotonBlockFromDocument, E as resolvePhotonSiteDesignSettings, I as setValueAtPath, F as updatePhotonBlockInDocument } from './workspace-F95gBUsO.js';
+export { PHOTON_DEFAULT_SITE_DESIGN_PRESET_ID, PHOTON_PAGE_SURFACE_REGION_KEY, composePhotonSurfaceDocument, decomposePhotonSurfaceDocument, getFirstPhotonSurfaceEditableBlockId, getPhotonSiteColorScheme, getPhotonSiteDesignPreset, getPhotonSurfaceRegionBlocks, getPhotonSurfaceRegionListId, photonSiteColorSchemes, photonSiteDesignPresets, resolvePhotonSurfaceRegionDescriptors, resolvePhotonSurfaceRegionForBlockId, resolvePhotonSurfaceRegionForListId } from './server.js';
+export { b as collectPhotonFooterExtensionItems, d as collectPhotonHeaderExtensionItems, c as createPhotonAccountTabExtension, a as createPhotonSiteFrameExtension, r as resolvePhotonAccountTabs, e as resolvePhotonSiteFrameExtensions } from './site-frame-extensions-MxazF6mP.js';
+export { g as getPhotonSurfaceModeStyle } from './surface-layout-DTo_L0tV.js';
+export { PhotonAccessAuthStateLike, PhotonModeLike, PhotonWorkspaceSelectionLike, normalizePhotonSelectionForMode, resolvePhotonAccess, resolvePhotonMode, resolvePhotonRequestHeaders, resolvePhotonWorkspaceParams } from './sdk.js';
+export { P as PHOTON_SEARCH_OCCURRENCE_PARAM, a as PHOTON_SEARCH_QUERY_PARAM, b as PHOTON_SEARCH_TARGET_PARAM } from './constants-Bu7HPDAC.js';
+export { I as InsertTarget, a as InspectorDefinitionMeta, b as InspectorGroups, c as PageSettingsPanelDefinition, d as PaletteDefinition, e as PaletteFamilyGroup, P as PhotonStudio, f as PhotonStudioProps, g as PhotonStudioSavePayload, h as PhotonStudioSaveReason, i as PhotonStudioSiteSettingChangeContext, S as SiteSettingsPanelDefinition, j as SiteSettingsSubtabDefinition } from './photon-studio-DpeIHvJs.js';
 import 'zustand/vanilla';
 
-type WebsiteBuilderEditableEditorLoaderKey = "gallery" | "image" | "richText" | "text" | "textarea";
-type WebsiteBuilderEditableEditorLoaders = Partial<Record<WebsiteBuilderEditableEditorLoaderKey, () => Promise<ComponentType<any>>>>;
+type PhotonEditableEditorLoaderKey = "gallery" | "image" | "richText" | "text" | "textarea";
+type PhotonEditableEditorLoaders = Partial<Record<PhotonEditableEditorLoaderKey, () => Promise<ComponentType<any>>>>;
 declare global {
-    var __websiteBuilderEditableEditorLoaders: WebsiteBuilderEditableEditorLoaders | undefined;
+    var __photonEditableEditorLoaders: PhotonEditableEditorLoaders | undefined;
 }
 
 declare global {
-    var __websiteBuilderEditableEditorLoaders: WebsiteBuilderEditableEditorLoaders | undefined;
+    var __photonEditableEditorLoaders: PhotonEditableEditorLoaders | undefined;
 }
 
-type WebsiteBuilderBlockRendererProps = {
-    block: WebsiteBuilderBlock;
-    renderArea?: (area: WebsiteBuilderArea, index: number) => ReactNode;
+type PhotonBlockRendererProps = {
+    block: PhotonBlock;
+    renderArea?: (area: PhotonArea, index: number) => ReactNode;
 };
-declare const WebsiteBuilderBlockRenderer: ({ block, renderArea, }: WebsiteBuilderBlockRendererProps) => react_jsx_runtime.JSX.Element;
+declare const PhotonBlockRenderer: ({ block, renderArea, }: PhotonBlockRendererProps) => react_jsx_runtime.JSX.Element;
 
 type EditableGalleryProps = {
     blockId: string;
@@ -97,9 +97,9 @@ type EditableTextareaProps = {
 };
 declare const EditableTextarea: ({ blockId, path, className, placeholder, }: EditableTextareaProps) => react_jsx_runtime.JSX.Element;
 
-declare const useWebsiteBuilderValueAtPath: (blockId: string, path: string) => unknown;
+declare const usePhotonValueAtPath: (blockId: string, path: string) => unknown;
 
-type WebsiteBuilderRichTextEditorProps = {
+type PhotonRichTextEditorProps = {
     value: string;
     onChange: (value: string) => void;
     onFocus?: () => void;
@@ -109,18 +109,18 @@ type WebsiteBuilderRichTextEditorProps = {
     className?: string;
     surfaceClassName?: string;
 };
-declare const websiteBuilderRichTextContentClassName = "text-[var(--wb-site-text)] [&_blockquote]:my-5 [&_blockquote]:border-l-2 [&_blockquote]:border-[var(--wb-site-border)] [&_blockquote]:pl-4 [&_blockquote]:text-[var(--wb-site-muted-text)] [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-[-0.04em] [&_h2]:text-[var(--wb-site-text)] [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:tracking-[-0.03em] [&_h3]:text-[var(--wb-site-text)] [&_li]:text-[var(--wb-site-text)] [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-8 [&_p]:text-[var(--wb-site-text)] [&_p+p]:mt-4 [&_strong]:font-semibold [&_strong]:text-[var(--wb-site-text)] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-5";
-declare const renderWebsiteBuilderRichTextHtml: (value: string, placeholder?: string) => string;
-declare const WebsiteBuilderRichTextEditor: ({ value, onChange, onFocus, onBlur, onEscape, placeholder, className, surfaceClassName, }: WebsiteBuilderRichTextEditorProps) => react_jsx_runtime.JSX.Element | null;
+declare const photonRichTextContentClassName = "text-[var(--photon-site-text)] [&_blockquote]:my-5 [&_blockquote]:border-l-2 [&_blockquote]:border-[var(--photon-site-border)] [&_blockquote]:pl-4 [&_blockquote]:text-[var(--photon-site-muted-text)] [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-[-0.04em] [&_h2]:text-[var(--photon-site-text)] [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:tracking-[-0.03em] [&_h3]:text-[var(--photon-site-text)] [&_li]:text-[var(--photon-site-text)] [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-8 [&_p]:text-[var(--photon-site-text)] [&_p+p]:mt-4 [&_strong]:font-semibold [&_strong]:text-[var(--photon-site-text)] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-5";
+declare const renderPhotonRichTextHtml: (value: string, placeholder?: string) => string;
+declare const PhotonRichTextEditor: ({ value, onChange, onFocus, onBlur, onEscape, placeholder, className, surfaceClassName, }: PhotonRichTextEditorProps) => react_jsx_runtime.JSX.Element | null;
 
-type WebsiteBuilderSurfaceSectionProps<T extends ElementType> = {
+type PhotonSurfaceSectionProps<T extends ElementType> = {
     as?: T;
     children: ReactNode;
     className?: string;
     style?: CSSProperties;
-    surfaceMode?: WebsiteBuilderSurfaceMode;
+    surfaceMode?: PhotonSurfaceMode;
 };
-declare const WebsiteBuilderSurfaceSection: <T extends ElementType = "section">({ as, children, className, style, surfaceMode, }: WebsiteBuilderSurfaceSectionProps<T>) => react.ReactElement<any, string | react.JSXElementConstructor<any>>;
+declare const PhotonSurfaceSection: <T extends ElementType = "section">({ as, children, className, style, surfaceMode, }: PhotonSurfaceSectionProps<T>) => react.ReactElement<any, string | react.JSXElementConstructor<any>>;
 
 type KeyboardMenuSection<T> = {
     id: string;
@@ -176,27 +176,27 @@ type KeyboardMenuListProps<T> = {
 declare const useKeyboardMenuController: <T>({ items, getItemId, isItemDisabled, isOpen, preferredItemId, onSelectItem, }: UseKeyboardMenuControllerOptions<T>) => KeyboardMenuController<T>;
 declare const KeyboardMenuList: <T>({ controller, sections, getItemId, isItemDisabled, selectedItemId, listLabel, className, emptyState, renderItem, }: KeyboardMenuListProps<T>) => react_jsx_runtime.JSX.Element;
 
-type WebsiteBuilderFieldEditorListProps = {
-    fields: WebsiteBuilderField[];
+type PhotonFieldEditorListProps = {
+    fields: PhotonField[];
     subjectId: string;
     getValue: (path: string) => unknown;
     onChange: (path: string, value: unknown) => void;
     onFocus: (path: string) => void;
 };
-declare const WebsiteBuilderFieldEditorList: ({ fields, subjectId, getValue, onChange, onFocus, }: WebsiteBuilderFieldEditorListProps) => react_jsx_runtime.JSX.Element;
+declare const PhotonFieldEditorList: ({ fields, subjectId, getValue, onChange, onFocus, }: PhotonFieldEditorListProps) => react_jsx_runtime.JSX.Element;
 
-declare const createWebsiteBuilderTiptapJsonBindingAdapter: (key: string) => WebsiteBuilderBindingAdapter;
+declare const createPhotonTiptapJsonBindingAdapter: (key: string) => PhotonBindingAdapter;
 
-declare const isWebsiteBuilderMediaValue: (value: unknown) => value is WebsiteBuilderMediaValue;
-declare const resolveWebsiteBuilderMediaUrl: (value: unknown) => string;
-declare const resolveWebsiteBuilderMediaPreviewUrl: (value: unknown) => string;
-declare const updateWebsiteBuilderMediaUrl: (currentValue: unknown, url: string) => string | WebsiteBuilderMediaValue;
+declare const isPhotonMediaValue: (value: unknown) => value is PhotonMediaValue;
+declare const resolvePhotonMediaUrl: (value: unknown) => string;
+declare const resolvePhotonMediaPreviewUrl: (value: unknown) => string;
+declare const updatePhotonMediaUrl: (currentValue: unknown, url: string) => string | PhotonMediaValue;
 
-declare const websiteBuilderSystemModule: WebsiteBuilderModule;
-declare const websiteBuilderSystemKit: WebsiteBuilderInstallableKit;
+declare const photonSystemModule: PhotonModule;
+declare const photonSystemKit: PhotonInstallableKit;
 
-declare const buildWebsiteBuilderSearchTargetId: (blockId: string, path: string) => string;
-declare const buildWebsiteBuilderSearchResultHref: (result: WebsiteBuilderSearchResult, query: string, mode: WebsiteBuilderMode, isAdmin: boolean, options?: {
+declare const buildPhotonSearchTargetId: (blockId: string, path: string) => string;
+declare const buildPhotonSearchResultHref: (result: PhotonSearchResult, query: string, mode: PhotonMode, isAdmin: boolean, options?: {
     locale?: string;
     contentLocale?: string;
     currentSearchParams?: URLSearchParams;
@@ -207,9 +207,9 @@ declare const buildWebsiteBuilderSearchResultHref: (result: WebsiteBuilderSearch
     } | null;
 }) => string;
 
-type WebsiteBuilderSearchHighlightEffectProps = {
-    activeHighlight?: WebsiteBuilderSearchHighlight | null;
+type PhotonSearchHighlightEffectProps = {
+    activeHighlight?: PhotonSearchHighlight | null;
 };
-declare const WebsiteBuilderSearchHighlightEffect: ({ activeHighlight, }: WebsiteBuilderSearchHighlightEffectProps) => null;
+declare const PhotonSearchHighlightEffect: ({ activeHighlight, }: PhotonSearchHighlightEffectProps) => null;
 
-export { EditableGallery, EditableImage, EditableRepeaterValue, EditableRichText, EditableText, EditableTextarea, type KeyboardMenuController, KeyboardMenuList, type KeyboardMenuSection, WebsiteBuilderArea, WebsiteBuilderBindingAdapter, WebsiteBuilderBlock, WebsiteBuilderBlockRenderer, WebsiteBuilderField, WebsiteBuilderFieldEditorList, WebsiteBuilderInstallableKit, WebsiteBuilderMediaValue, WebsiteBuilderMode, WebsiteBuilderModule, WebsiteBuilderRichTextEditor, WebsiteBuilderSearchHighlight, WebsiteBuilderSearchHighlightEffect, WebsiteBuilderSearchResult, WebsiteBuilderSurfaceMode, WebsiteBuilderSurfaceSection, buildWebsiteBuilderSearchResultHref, buildWebsiteBuilderSearchTargetId, createWebsiteBuilderTiptapJsonBindingAdapter, isWebsiteBuilderMediaValue, renderWebsiteBuilderRichTextHtml, resolveWebsiteBuilderMediaPreviewUrl, resolveWebsiteBuilderMediaUrl, updateWebsiteBuilderMediaUrl, useKeyboardMenuController, useWebsiteBuilderValueAtPath, websiteBuilderRichTextContentClassName, websiteBuilderSystemKit, websiteBuilderSystemModule };
+export { EditableGallery, EditableImage, EditableRepeaterValue, EditableRichText, EditableText, EditableTextarea, type KeyboardMenuController, KeyboardMenuList, type KeyboardMenuSection, PhotonArea, PhotonBindingAdapter, PhotonBlock, PhotonBlockRenderer, PhotonField, PhotonFieldEditorList, PhotonInstallableKit, PhotonMediaValue, PhotonMode, PhotonModule, PhotonRichTextEditor, PhotonSearchHighlight, PhotonSearchHighlightEffect, PhotonSearchResult, PhotonSurfaceMode, PhotonSurfaceSection, buildPhotonSearchResultHref, buildPhotonSearchTargetId, createPhotonTiptapJsonBindingAdapter, isPhotonMediaValue, photonRichTextContentClassName, photonSystemKit, photonSystemModule, renderPhotonRichTextHtml, resolvePhotonMediaPreviewUrl, resolvePhotonMediaUrl, updatePhotonMediaUrl, useKeyboardMenuController, usePhotonValueAtPath };

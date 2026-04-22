@@ -2,70 +2,70 @@
 import {
   EditableImage,
   EditableTextarea,
-  WebsiteBuilderSiteSearch,
-  isWebsiteBuilderPublicFramelessSiteDesign,
-  resolveWebsiteBuilderPublicSiteDesignSettings,
+  PhotonSiteSearch,
+  isPhotonPublicFramelessSiteDesign,
+  resolvePhotonPublicSiteDesignSettings,
   siteFooterShellDefinition,
   siteHeaderShellDefinition
-} from "./chunk-IVZCBRYA.js";
+} from "./chunk-SNFVUC4N.js";
 import {
-  WebsiteBuilderBlockRenderer,
-  WebsiteBuilderRenderDepthProvider,
-  WebsiteBuilderSearchHighlightEffect,
-  WebsiteBuilderSurfaceLayoutProvider,
-  useWebsiteBuilderRenderDepth
-} from "./chunk-4OY27MEO.js";
+  PhotonBlockRenderer,
+  PhotonRenderDepthProvider,
+  PhotonSearchHighlightEffect,
+  PhotonSurfaceLayoutProvider,
+  usePhotonRenderDepth
+} from "./chunk-57U64XQ4.js";
 import {
   EditableText,
-  getWebsiteBuilderEditableEditorLoader
-} from "./chunk-5SCOZJAS.js";
+  getPhotonEditableEditorLoader
+} from "./chunk-KBISSZIA.js";
 import {
-  buildWebsiteBuilderSearchTargetId
-} from "./chunk-VDE2PPT5.js";
+  buildPhotonSearchTargetId
+} from "./chunk-FRFYYFDJ.js";
 import {
-  createWebsiteBuilderRuntime
-} from "./chunk-JBXEMZUN.js";
+  createPhotonRuntime
+} from "./chunk-HHFFJ7R4.js";
 import {
-  createWebsiteBuilderAccountTabExtension,
-  createWebsiteBuilderSiteFrameExtension,
-  resolveWebsiteBuilderAccountTabs
-} from "./chunk-2UNKJB65.js";
+  createPhotonAccountTabExtension,
+  createPhotonSiteFrameExtension,
+  resolvePhotonAccountTabs
+} from "./chunk-JSXMWVKI.js";
 import {
-  getWebsiteBuilderSurfaceModeStyle
-} from "./chunk-75KJ6L3N.js";
+  getPhotonSurfaceModeStyle
+} from "./chunk-IOB5G6YT.js";
 import {
-  WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
-  WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
-  WEBSITE_BUILDER_SEARCH_TARGET_PARAM
-} from "./chunk-HFEMF2E3.js";
+  PHOTON_SEARCH_OCCURRENCE_PARAM,
+  PHOTON_SEARCH_QUERY_PARAM,
+  PHOTON_SEARCH_TARGET_PARAM
+} from "./chunk-CZ47CC3D.js";
 import {
-  resolveWebsiteBuilderMediaPreviewUrl
-} from "./chunk-NZ4V64SZ.js";
+  resolvePhotonMediaPreviewUrl
+} from "./chunk-QQDDM7OM.js";
 import {
-  WebsiteBuilderLink,
-  WebsiteBuilderProvider,
-  useWebsiteBuilder,
-  useWebsiteBuilderCanEdit,
-  useWebsiteBuilderFieldValue,
-  useWebsiteBuilderI18n,
-  useWebsiteBuilderStore
-} from "./chunk-ZQJWNS6S.js";
+  PhotonLink,
+  PhotonProvider,
+  usePhoton,
+  usePhotonCanEdit,
+  usePhotonFieldValue,
+  usePhotonI18n,
+  usePhotonStore
+} from "./chunk-XOQNSI7G.js";
 import {
-  WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
-  createWebsiteBuilderBlockLocalizationSchema,
-  createWebsiteBuilderKit,
-  createWebsiteBuilderLocalizedDefault,
-  defineWebsiteBuilderBlockDefinition,
-  getWebsiteBuilderSurfaceRegionBlocks,
-  resolveWebsiteBuilderSurfaceRegionDescriptors
-} from "./chunk-EN3VAWKM.js";
+  PHOTON_PAGE_SURFACE_REGION_KEY,
+  createPhotonBlockLocalizationSchema,
+  createPhotonKit,
+  createPhotonLocalizedDefault,
+  definePhotonBlockDefinition,
+  getPhotonSurfaceRegionBlocks,
+  resolvePhotonSurfaceRegionDescriptors
+} from "./chunk-U33YWAMI.js";
 import {
-  getWebsiteBuilderAnchorRel,
-  sanitizeWebsiteBuilderLinkHref
-} from "./chunk-GQSABMVW.js";
+  getPhotonAnchorRel,
+  sanitizePhotonLinkHref
+} from "./chunk-V7CN23YR.js";
 import {
-  WEBSITE_BUILDER_EMPTY_TEXT
-} from "./chunk-KUHW6SOQ.js";
+  PHOTON_EMPTY_TEXT
+} from "./chunk-5MWE2CZQ.js";
 
 // src/public.tsx
 import clsx4 from "clsx";
@@ -96,8 +96,8 @@ var EditableGallery = ({
   addCardBodyClassName,
   addCardButtonClassName
 }) => {
-  const canEdit = useWebsiteBuilderCanEdit();
-  const galleryValue = useWebsiteBuilderFieldValue(blockId, path);
+  const canEdit = usePhotonCanEdit();
+  const galleryValue = usePhotonFieldValue(blockId, path);
   const items = Array.isArray(galleryValue) ? galleryValue : [];
   const [EditableGalleryEditor, setEditableGalleryEditor] = useState(null);
   useEffect(() => {
@@ -105,7 +105,7 @@ var EditableGallery = ({
       return;
     }
     let cancelled = false;
-    const loadEditor = getWebsiteBuilderEditableEditorLoader("gallery");
+    const loadEditor = getPhotonEditableEditorLoader("gallery");
     if (!loadEditor) {
       return;
     }
@@ -179,7 +179,7 @@ var EditableGalleryStatic = ({
   emptyStateClassName,
   emptyStateTitleClassName,
   emptyStateBodyClassName
-}) => /* @__PURE__ */ jsx("div", { "data-testid": "wb-editable-gallery", className, children: /* @__PURE__ */ jsx(
+}) => /* @__PURE__ */ jsx("div", { "data-testid": "photon-editable-gallery", className, children: /* @__PURE__ */ jsx(
   "div",
   {
     className: clsx(columnsClassName, items.length === 0 && "grid-cols-1"),
@@ -191,17 +191,17 @@ var EditableGalleryStatic = ({
           emptyStateClassName
         ),
         style: {
-          borderColor: "var(--wb-gallery-empty-border, rgba(214,211,209,0.9))",
-          background: "var(--wb-gallery-empty-bg, linear-gradient(180deg,rgba(255,255,255,0.98),rgba(245,240,231,0.96)))",
-          color: "var(--wb-gallery-empty-text, rgba(87,83,78,0.84))",
-          boxShadow: "var(--wb-gallery-empty-shadow, 0 18px 40px rgba(120,113,108,0.12))"
+          borderColor: "var(--photon-gallery-empty-border, rgba(214,211,209,0.9))",
+          background: "var(--photon-gallery-empty-bg, linear-gradient(180deg,rgba(255,255,255,0.98),rgba(245,240,231,0.96)))",
+          color: "var(--photon-gallery-empty-text, rgba(87,83,78,0.84))",
+          boxShadow: "var(--photon-gallery-empty-shadow, 0 18px 40px rgba(120,113,108,0.12))"
         },
         children: [
           /* @__PURE__ */ jsx(
             "p",
             {
               className: clsx("text-sm font-semibold", emptyStateTitleClassName),
-              style: { color: "var(--wb-gallery-empty-title, currentColor)" },
+              style: { color: "var(--photon-gallery-empty-title, currentColor)" },
               children: emptyTitle
             }
           ),
@@ -220,7 +220,7 @@ var EditableGalleryStatic = ({
         captionClassName: itemCaptionClassName,
         fileNameClassName: itemFileNameClassName
       },
-      item.id ?? `${index}-${resolveWebsiteBuilderMediaPreviewUrl(item.media)}`
+      item.id ?? `${index}-${resolvePhotonMediaPreviewUrl(item.media)}`
     ))
   }
 ) });
@@ -234,21 +234,21 @@ var PublicGalleryItemCard = ({
   captionClassName,
   fileNameClassName
 }) => {
-  const previewUrl = resolveWebsiteBuilderMediaPreviewUrl(item.media);
+  const previewUrl = resolvePhotonMediaPreviewUrl(item.media);
   const isHeroItem = totalItems >= 3 && index === 0;
   return /* @__PURE__ */ jsxs(
     "article",
     {
-      "data-testid": "wb-editable-gallery-item",
+      "data-testid": "photon-editable-gallery-item",
       className: clsx(
         "overflow-hidden rounded-[34px] border",
         className,
         isHeroItem && "md:col-span-2"
       ),
       style: {
-        borderColor: "var(--wb-gallery-card-border, rgba(255,255,255,0.1))",
-        background: "var(--wb-gallery-card-bg, radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_48%),linear-gradient(180deg,rgba(8,17,30,0.97),rgba(5,11,20,0.99)))",
-        boxShadow: "var(--wb-gallery-card-shadow, 0 24px 56px rgba(0,0,0,0.2))"
+        borderColor: "var(--photon-gallery-card-border, rgba(255,255,255,0.1))",
+        background: "var(--photon-gallery-card-bg, radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_48%),linear-gradient(180deg,rgba(8,17,30,0.97),rgba(5,11,20,0.99)))",
+        boxShadow: "var(--photon-gallery-card-shadow, 0 24px 56px rgba(0,0,0,0.2))"
       },
       children: [
         /* @__PURE__ */ jsx(
@@ -273,8 +273,8 @@ var PublicGalleryItemCard = ({
                   fallbackClassName
                 ),
                 style: {
-                  background: "var(--wb-gallery-fallback-bg, radial-gradient(circle_at_top,rgba(34,211,238,0.12),transparent_28%),linear-gradient(180deg,rgba(7,17,31,0.92),rgba(5,11,20,0.98)))",
-                  color: "var(--wb-gallery-fallback-text, rgba(255,255,255,0.48))"
+                  background: "var(--photon-gallery-fallback-bg, radial-gradient(circle_at_top,rgba(34,211,238,0.12),transparent_28%),linear-gradient(180deg,rgba(7,17,31,0.92),rgba(5,11,20,0.98)))",
+                  color: "var(--photon-gallery-fallback-text, rgba(255,255,255,0.48))"
                 },
                 children: "Media slot"
               }
@@ -289,7 +289,7 @@ var PublicGalleryItemCard = ({
                 "text-[11px] font-semibold uppercase tracking-[0.2em]",
                 labelClassName
               ),
-              style: { color: "var(--wb-gallery-label, rgba(255,255,255,0.54))" },
+              style: { color: "var(--photon-gallery-label, rgba(255,255,255,0.54))" },
               children: item.eyebrow || `Item ${index + 1}`
             }
           ),
@@ -298,7 +298,7 @@ var PublicGalleryItemCard = ({
             {
               className: clsx("text-sm leading-6", captionClassName),
               style: {
-                color: "var(--wb-gallery-caption, rgba(255,255,255,0.72))"
+                color: "var(--photon-gallery-caption, rgba(255,255,255,0.72))"
               },
               children: item.caption
             }
@@ -311,9 +311,9 @@ var PublicGalleryItemCard = ({
                 fileNameClassName
               ),
               style: {
-                borderColor: "var(--wb-gallery-file-border, rgba(255,255,255,0.08))",
-                background: "var(--wb-gallery-file-bg, rgba(255,255,255,0.05))",
-                color: "var(--wb-gallery-file-text, rgba(255,255,255,0.5))"
+                borderColor: "var(--photon-gallery-file-border, rgba(255,255,255,0.08))",
+                background: "var(--photon-gallery-file-bg, rgba(255,255,255,0.05))",
+                color: "var(--photon-gallery-file-text, rgba(255,255,255,0.5))"
               },
               children: item.media
             }
@@ -374,7 +374,7 @@ var escapeHtml = (value) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;
 var escapeAttribute = (value) => escapeHtml(value).replaceAll('"', "&quot;");
 var sanitizeAttributeValue = (tagName, name, value) => {
   if (name === "href") {
-    const sanitizedHref = sanitizeWebsiteBuilderLinkHref(value, "");
+    const sanitizedHref = sanitizePhotonLinkHref(value, "");
     return sanitizedHref === "" ? null : sanitizedHref;
   }
   if (tagName === "a" && name === "target" && value !== "_blank") {
@@ -417,7 +417,7 @@ var sanitizeWithDomParser = (html) => {
     if (tagName === "a") {
       cleanElement.setAttribute(
         "rel",
-        getWebsiteBuilderAnchorRel(
+        getPhotonAnchorRel(
           cleanElement.getAttribute("target"),
           cleanElement.getAttribute("rel")
         ) ?? "noopener noreferrer"
@@ -496,13 +496,13 @@ var sanitizeWithoutDomParser = (html) => {
   output += escapeHtml(html.slice(cursor));
   return output;
 };
-var sanitizeWebsiteBuilderRichTextHtml = (value) => {
+var sanitizePhotonRichTextHtml = (value) => {
   if (typeof DOMParser === "undefined") {
     return sanitizeWithoutDomParser(value);
   }
   return sanitizeWithDomParser(value);
 };
-var renderWebsiteBuilderRichTextHtml = (value, placeholder) => {
+var renderPhotonRichTextHtml = (value, placeholder) => {
   const trimmed = value.trim();
   if (!trimmed) {
     return `<p>${escapeHtml(placeholder)}</p>`;
@@ -510,27 +510,27 @@ var renderWebsiteBuilderRichTextHtml = (value, placeholder) => {
   if (!trimmed.startsWith("<")) {
     return `<p>${escapeHtml(trimmed)}</p>`;
   }
-  return sanitizeWebsiteBuilderRichTextHtml(trimmed);
+  return sanitizePhotonRichTextHtml(trimmed);
 };
 
 // src/components/public/public-editable-rich-text.tsx
 import { jsx as jsx3 } from "react/jsx-runtime";
-var richTextContentClassName = "text-[var(--wb-site-text)] [&_blockquote]:my-5 [&_blockquote]:border-l-2 [&_blockquote]:border-[var(--wb-site-border)] [&_blockquote]:pl-4 [&_blockquote]:text-[var(--wb-site-muted-text)] [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-[-0.04em] [&_h2]:text-[var(--wb-site-text)] [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:tracking-[-0.03em] [&_h3]:text-[var(--wb-site-text)] [&_li]:text-[var(--wb-site-text)] [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-8 [&_p]:text-[var(--wb-site-text)] [&_p+p]:mt-4 [&_strong]:font-semibold [&_strong]:text-[var(--wb-site-text)] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-5";
+var richTextContentClassName = "text-[var(--photon-site-text)] [&_blockquote]:my-5 [&_blockquote]:border-l-2 [&_blockquote]:border-[var(--photon-site-border)] [&_blockquote]:pl-4 [&_blockquote]:text-[var(--photon-site-muted-text)] [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-[-0.04em] [&_h2]:text-[var(--photon-site-text)] [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:tracking-[-0.03em] [&_h3]:text-[var(--photon-site-text)] [&_li]:text-[var(--photon-site-text)] [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-8 [&_p]:text-[var(--photon-site-text)] [&_p+p]:mt-4 [&_strong]:font-semibold [&_strong]:text-[var(--photon-site-text)] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-5";
 var EditableRichText = ({
   blockId,
   path,
   className,
-  placeholder = WEBSITE_BUILDER_EMPTY_TEXT
+  placeholder = PHOTON_EMPTY_TEXT
 }) => {
-  const canEdit = useWebsiteBuilderCanEdit();
-  const value = String(useWebsiteBuilderFieldValue(blockId, path) ?? "");
+  const canEdit = usePhotonCanEdit();
+  const value = String(usePhotonFieldValue(blockId, path) ?? "");
   const [EditableRichTextEditor, setEditableRichTextEditor] = useState2(null);
   useEffect2(() => {
     if (!canEdit || EditableRichTextEditor) {
       return;
     }
     let cancelled = false;
-    const loadEditor = getWebsiteBuilderEditableEditorLoader("richText");
+    const loadEditor = getPhotonEditableEditorLoader("richText");
     if (!loadEditor) {
       return;
     }
@@ -559,17 +559,17 @@ var EditableRichText = ({
   return /* @__PURE__ */ jsx3(
     "div",
     {
-      "data-wb-search-target": buildWebsiteBuilderSearchTargetId(blockId, path),
+      "data-photon-search-target": buildPhotonSearchTargetId(blockId, path),
       children: /* @__PURE__ */ jsx3(
         "div",
         {
           className: clsx2(
             richTextContentClassName,
             className,
-            !value && "text-[color:var(--wb-site-muted)] opacity-60"
+            !value && "text-[color:var(--photon-site-muted)] opacity-60"
           ),
           dangerouslySetInnerHTML: {
-            __html: renderWebsiteBuilderRichTextHtml(value, placeholder)
+            __html: renderPhotonRichTextHtml(value, placeholder)
           }
         }
       )
@@ -595,25 +595,25 @@ var SplitLayout = ({
   block,
   renderArea
 }) => {
-  const mode = useWebsiteBuilderStore((state) => state.mode);
-  const siteDesign = useWebsiteBuilderStore(
+  const mode = usePhotonStore((state) => state.mode);
+  const siteDesign = usePhotonStore(
     (state) => state.site.settings.design
   );
   const columns = block.props.columns ?? [];
   const areas = block.areas ?? [];
   const templateColumns = areas.map((area, index) => getColumnConfig(columns, area, index).width).join(" ");
   const surface = surfaceStyles[block.props.surface] ?? surfaceStyles.glass;
-  const framelessSurface = isWebsiteBuilderPublicFramelessSiteDesign(siteDesign);
+  const framelessSurface = isPhotonPublicFramelessSiteDesign(siteDesign);
   const stickyPreviewEnabled = mode !== "builder";
   return /* @__PURE__ */ jsxs2(
     "section",
     {
       className: clsx3(
         "min-w-0 px-6 py-8 sm:px-8 sm:py-10",
-        framelessSurface ? "rounded-none border-0 bg-transparent text-[var(--wb-site-text)] shadow-none" : "rounded-[38px] border shadow-[0_28px_90px_rgba(2,12,27,0.16)]",
+        framelessSurface ? "rounded-none border-0 bg-transparent text-[var(--photon-site-text)] shadow-none" : "rounded-[38px] border shadow-[0_28px_90px_rgba(2,12,27,0.16)]",
         !framelessSurface && surface
       ),
-      style: framelessSurface ? getWebsiteBuilderSurfaceModeStyle("bleed") : void 0,
+      style: framelessSurface ? getPhotonSurfaceModeStyle("bleed") : void 0,
       children: [
         /* @__PURE__ */ jsxs2("div", { className: "max-w-3xl", children: [
           /* @__PURE__ */ jsx4(EditableText, { blockId: block.id, path: "eyebrow" }),
@@ -623,10 +623,10 @@ var SplitLayout = ({
         /* @__PURE__ */ jsx4(
           "div",
           {
-            className: "mt-8 grid grid-cols-1 items-start gap-[var(--wb-layout-gap)] lg:[grid-template-columns:var(--wb-layout-columns)]",
+            className: "mt-8 grid grid-cols-1 items-start gap-[var(--photon-layout-gap)] lg:[grid-template-columns:var(--photon-layout-columns)]",
             style: {
-              "--wb-layout-columns": templateColumns || "minmax(0,1fr)",
-              "--wb-layout-gap": `${block.props.gap || 24}px`
+              "--photon-layout-columns": templateColumns || "minmax(0,1fr)",
+              "--photon-layout-gap": `${block.props.gap || 24}px`
             },
             children: areas.map((area, index) => {
               const column = getColumnConfig(columns, area, index);
@@ -638,7 +638,7 @@ var SplitLayout = ({
                     column.sticky && stickyPreviewEnabled && "lg:sticky lg:self-start"
                   ),
                   style: column.sticky && stickyPreviewEnabled ? {
-                    top: "calc(var(--wb-dock-offset, 0px) + var(--wb-site-header-offset, 0px) + var(--wb-site-header-height, 0px) + 0.75rem)"
+                    top: "calc(var(--photon-dock-offset, 0px) + var(--photon-site-header-offset, 0px) + var(--photon-site-header-height, 0px) + 0.75rem)"
                   } : void 0,
                   children: [
                     column.label?.trim() ? /* @__PURE__ */ jsx4("div", { className: "mb-4 text-[11px] font-semibold uppercase tracking-[0.28em]", children: column.label }) : null,
@@ -755,32 +755,32 @@ var splitLayoutFields = [
     localization: "shared"
   }
 ];
-var websiteBuilderPublicSystemModule = {
-  module: "website-builder-system",
-  label: "Website Builder System",
-  labelKey: "websiteBuilder.system.module.label",
+var photonPublicSystemModule = {
+  module: "photon-system",
+  label: "Photon System",
+  labelKey: "photon.system.module.label",
   version: "0.2.0",
   blocks: [
     siteHeaderShellDefinition,
     siteFooterShellDefinition,
-    defineWebsiteBuilderBlockDefinition({
+    definePhotonBlockDefinition({
       type: "split-layout",
       label: "Split Layout",
-      labelKey: "websiteBuilder.system.splitLayout.label",
+      labelKey: "photon.system.splitLayout.label",
       description: "Nested horizontal layout container with independent sticky columns and stackable child blocks.",
-      descriptionKey: "websiteBuilder.system.splitLayout.description",
+      descriptionKey: "photon.system.splitLayout.description",
       category: "Layout",
       icon: "layout-grid",
       defaults: {
-        eyebrow: createWebsiteBuilderLocalizedDefault({
+        eyebrow: createPhotonLocalizedDefault({
           en: "Layout system",
           ru: "\u0421\u0438\u0441\u0442\u0435\u043C\u0430 layout-\u0431\u043B\u043E\u043A\u043E\u0432"
         }),
-        title: createWebsiteBuilderLocalizedDefault({
+        title: createPhotonLocalizedDefault({
           en: "Compose horizontal sections without leaving the live page",
           ru: "\u0421\u043E\u0431\u0438\u0440\u0430\u0439\u0442\u0435 \u0433\u043E\u0440\u0438\u0437\u043E\u043D\u0442\u0430\u043B\u044C\u043D\u044B\u0435 \u0441\u0435\u043A\u0446\u0438\u0438 \u043F\u0440\u044F\u043C\u043E \u043D\u0430 \u0436\u0438\u0432\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435"
         }),
-        body: createWebsiteBuilderLocalizedDefault({
+        body: createPhotonLocalizedDefault({
           en: "Use nested layout containers to pin one side, stack blocks on the other and tune widths directly from the inspector.",
           ru: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0439\u0442\u0435 \u0432\u043B\u043E\u0436\u0435\u043D\u043D\u044B\u0435 layout-\u043A\u043E\u043D\u0442\u0435\u0439\u043D\u0435\u0440\u044B, \u0447\u0442\u043E\u0431\u044B \u0437\u0430\u0444\u0438\u043A\u0441\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u043E\u0434\u043D\u0443 \u043A\u043E\u043B\u043E\u043D\u043A\u0443, \u0441\u043E\u0431\u0440\u0430\u0442\u044C \u0441\u0442\u0435\u043A \u0431\u043B\u043E\u043A\u043E\u0432 \u0432\u043E \u0432\u0442\u043E\u0440\u043E\u0439 \u0438 \u043D\u0430\u0441\u0442\u0440\u0430\u0438\u0432\u0430\u0442\u044C \u0448\u0438\u0440\u0438\u043D\u044B \u043F\u0440\u044F\u043C\u043E \u0438\u0437 \u0438\u043D\u0441\u043F\u0435\u043A\u0442\u043E\u0440\u0430."
         }),
@@ -810,42 +810,42 @@ var websiteBuilderPublicSystemModule = {
     })
   ]
 };
-var websiteBuilderPublicSystemKit = createWebsiteBuilderKit({
-  key: "website-builder-system",
-  label: "Website Builder System",
-  modules: [websiteBuilderPublicSystemModule]
+var photonPublicSystemKit = createPhotonKit({
+  key: "photon-system",
+  label: "Photon System",
+  modules: [photonPublicSystemModule]
 });
 
 // src/public.tsx
 import { jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
-var WebsiteBuilderPublicBlockItem = ({
+var PhotonPublicBlockItem = ({
   block
 }) => {
-  const renderDepth = useWebsiteBuilderRenderDepth();
+  const renderDepth = usePhotonRenderDepth();
   return /* @__PURE__ */ jsx5(
-    WebsiteBuilderBlockRenderer,
+    PhotonBlockRenderer,
     {
       block,
-      renderArea: (area) => /* @__PURE__ */ jsx5(WebsiteBuilderRenderDepthProvider, { value: renderDepth + 1, children: /* @__PURE__ */ jsx5(WebsiteBuilderPublicBlockList, { blocks: area.blocks }) })
+      renderArea: (area) => /* @__PURE__ */ jsx5(PhotonRenderDepthProvider, { value: renderDepth + 1, children: /* @__PURE__ */ jsx5(PhotonPublicBlockList, { blocks: area.blocks }) })
     }
   );
 };
-var WebsiteBuilderPublicBlockList = ({
+var PhotonPublicBlockList = ({
   blocks
-}) => /* @__PURE__ */ jsx5("div", { className: "space-y-[var(--wb-list-gap,0.75rem)]", children: blocks.map((block) => /* @__PURE__ */ jsx5(WebsiteBuilderPublicBlockItem, { block }, block.id)) });
-var WebsiteBuilderPublicSurfaceRegion = ({
+}) => /* @__PURE__ */ jsx5("div", { className: "space-y-[var(--photon-list-gap,0.75rem)]", children: blocks.map((block) => /* @__PURE__ */ jsx5(PhotonPublicBlockItem, { block }, block.id)) });
+var PhotonPublicSurfaceRegion = ({
   region,
   page
 }) => {
   const sectionRef = useRef(null);
   const [surfaceWidth, setSurfaceWidth] = useState3(0);
-  const blocks = getWebsiteBuilderSurfaceRegionBlocks(
+  const blocks = getPhotonSurfaceRegionBlocks(
     page.document,
     region.key
   );
-  const isPageRegion = region.key === WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY;
+  const isPageRegion = region.key === PHOTON_PAGE_SURFACE_REGION_KEY;
   const stickySiteHeaderRegion = region.key === "header" && (blocks ?? []).some(
-    (block) => block.module === "website-builder-system" && block.type === "site-header-shell" && block.props.sticky === true
+    (block) => block.module === "photon-system" && block.type === "site-header-shell" && block.props.sticky === true
   );
   useEffect3(() => {
     const element = sectionRef.current;
@@ -859,7 +859,7 @@ var WebsiteBuilderPublicSurfaceRegion = ({
     return () => observer.disconnect();
   }, []);
   return /* @__PURE__ */ jsx5(
-    WebsiteBuilderSurfaceLayoutProvider,
+    PhotonSurfaceLayoutProvider,
     {
       value: {
         builderEnabled: false,
@@ -871,22 +871,22 @@ var WebsiteBuilderPublicSurfaceRegion = ({
         "section",
         {
           ref: sectionRef,
-          "data-wb-surface-region": region.key,
+          "data-photon-surface-region": region.key,
           className: clsx4(
             "relative [container-type:inline-size]",
             stickySiteHeaderRegion && "sticky z-40"
           ),
           style: stickySiteHeaderRegion ? {
-            top: "var(--wb-site-header-offset, 0px)"
+            top: "var(--photon-site-header-offset, 0px)"
           } : void 0,
           children: /* @__PURE__ */ jsx5(
             "div",
             {
-              className: isPageRegion ? "mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] px-[var(--wb-site-gutter,24px)]" : "w-full",
+              className: isPageRegion ? "mx-auto w-full max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] px-[var(--photon-site-gutter,24px)]" : "w-full",
               style: isPageRegion ? {
-                "--wb-list-gap": "var(--wb-section-gap,2rem)"
+                "--photon-list-gap": "var(--photon-section-gap,2rem)"
               } : void 0,
-              children: /* @__PURE__ */ jsx5(WebsiteBuilderPublicBlockList, { blocks: blocks ?? [] })
+              children: /* @__PURE__ */ jsx5(PhotonPublicBlockList, { blocks: blocks ?? [] })
             }
           )
         }
@@ -894,12 +894,12 @@ var WebsiteBuilderPublicSurfaceRegion = ({
     }
   );
 };
-var WebsiteBuilderPublicSurface = memo(function WebsiteBuilderPublicSurface2({
+var PhotonPublicSurface = memo(function PhotonPublicSurface2({
   page
 }) {
-  const regions = resolveWebsiteBuilderSurfaceRegionDescriptors(page.site);
-  return /* @__PURE__ */ jsx5("div", { className: "space-y-[var(--wb-section-gap,2rem)]", children: regions.map((region) => /* @__PURE__ */ jsx5(
-    WebsiteBuilderPublicSurfaceRegion,
+  const regions = resolvePhotonSurfaceRegionDescriptors(page.site);
+  return /* @__PURE__ */ jsx5("div", { className: "space-y-[var(--photon-section-gap,2rem)]", children: regions.map((region) => /* @__PURE__ */ jsx5(
+    PhotonPublicSurfaceRegion,
     {
       region,
       page
@@ -907,7 +907,7 @@ var WebsiteBuilderPublicSurface = memo(function WebsiteBuilderPublicSurface2({
     region.key
   )) });
 });
-var WebsiteBuilderPublicPage = ({
+var PhotonPublicPage = ({
   page,
   registry,
   i18n,
@@ -918,30 +918,30 @@ var WebsiteBuilderPublicPage = ({
   searchSite,
   activeSearchHighlight = null
 }) => {
-  const designSettings = resolveWebsiteBuilderPublicSiteDesignSettings(
+  const designSettings = resolvePhotonPublicSiteDesignSettings(
     page.site.settings.design
   );
   const siteSurfaceStyle = {
-    "--wb-site-body-font": designSettings.bodyFontFamily,
-    "--wb-site-heading-font": designSettings.headingFontFamily,
-    "--wb-site-background": designSettings.backgroundColor,
-    "--wb-site-surface": designSettings.surfaceColor,
-    "--wb-site-text": designSettings.textColor,
-    "--wb-site-muted": designSettings.mutedTextColor,
-    "--wb-site-muted-text": designSettings.mutedTextColor,
-    "--wb-site-accent": designSettings.accentColor,
-    "--wb-site-border": designSettings.borderColor,
-    "--wb-site-max-width": designSettings.siteMaxWidth,
-    "--wb-site-gutter": designSettings.pageGutter,
-    "--wb-section-gap": designSettings.sectionGap,
-    "--wb-site-radius": designSettings.radius,
-    "--wb-site-header-offset": designSettings.headerOffset,
+    "--photon-site-body-font": designSettings.bodyFontFamily,
+    "--photon-site-heading-font": designSettings.headingFontFamily,
+    "--photon-site-background": designSettings.backgroundColor,
+    "--photon-site-surface": designSettings.surfaceColor,
+    "--photon-site-text": designSettings.textColor,
+    "--photon-site-muted": designSettings.mutedTextColor,
+    "--photon-site-muted-text": designSettings.mutedTextColor,
+    "--photon-site-accent": designSettings.accentColor,
+    "--photon-site-border": designSettings.borderColor,
+    "--photon-site-max-width": designSettings.siteMaxWidth,
+    "--photon-site-gutter": designSettings.pageGutter,
+    "--photon-section-gap": designSettings.sectionGap,
+    "--photon-site-radius": designSettings.radius,
+    "--photon-site-header-offset": designSettings.headerOffset,
     backgroundColor: designSettings.backgroundColor,
     color: designSettings.textColor,
     fontFamily: designSettings.bodyFontFamily
   };
   return /* @__PURE__ */ jsxs3(
-    WebsiteBuilderProvider,
+    PhotonProvider,
     {
       initialDocument: page.document,
       initialResources: page.resources,
@@ -958,7 +958,7 @@ var WebsiteBuilderPublicPage = ({
       i18n,
       children: [
         /* @__PURE__ */ jsx5(
-          WebsiteBuilderSearchHighlightEffect,
+          PhotonSearchHighlightEffect,
           {
             activeHighlight: activeSearchHighlight
           }
@@ -968,8 +968,8 @@ var WebsiteBuilderPublicPage = ({
           {
             className: "min-h-screen min-w-0 px-0 transition-colors duration-500",
             style: siteSurfaceStyle,
-            "data-testid": "wb-public-runtime",
-            children: /* @__PURE__ */ jsx5(WebsiteBuilderPublicSurface, { page })
+            "data-testid": "photon-public-runtime",
+            children: /* @__PURE__ */ jsx5(PhotonPublicSurface, { page })
           }
         )
       ]
@@ -983,31 +983,31 @@ export {
   EditableRichText,
   EditableText,
   EditableTextarea,
-  WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
-  WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
-  WEBSITE_BUILDER_SEARCH_TARGET_PARAM,
-  WebsiteBuilderLink,
-  WebsiteBuilderPublicPage,
-  WebsiteBuilderSiteSearch,
-  createWebsiteBuilderAccountTabExtension,
-  createWebsiteBuilderBlockLocalizationSchema,
-  createWebsiteBuilderKit,
-  createWebsiteBuilderLocalizedDefault,
-  createWebsiteBuilderRuntime,
-  createWebsiteBuilderSiteFrameExtension,
-  defineWebsiteBuilderBlockDefinition,
-  getWebsiteBuilderAnchorRel,
-  getWebsiteBuilderSurfaceModeStyle,
-  renderWebsiteBuilderRichTextHtml,
-  resolveWebsiteBuilderAccountTabs,
-  sanitizeWebsiteBuilderLinkHref,
-  sanitizeWebsiteBuilderRichTextHtml,
-  useWebsiteBuilder,
-  useWebsiteBuilderCanEdit,
-  useWebsiteBuilderI18n,
-  useWebsiteBuilderRenderDepth,
-  useWebsiteBuilderStore,
-  useWebsiteBuilderFieldValue as useWebsiteBuilderValueAtPath,
-  websiteBuilderPublicSystemKit as websiteBuilderSystemKit,
-  websiteBuilderPublicSystemModule as websiteBuilderSystemModule
+  PHOTON_SEARCH_OCCURRENCE_PARAM,
+  PHOTON_SEARCH_QUERY_PARAM,
+  PHOTON_SEARCH_TARGET_PARAM,
+  PhotonLink,
+  PhotonPublicPage,
+  PhotonSiteSearch,
+  createPhotonAccountTabExtension,
+  createPhotonBlockLocalizationSchema,
+  createPhotonKit,
+  createPhotonLocalizedDefault,
+  createPhotonRuntime,
+  createPhotonSiteFrameExtension,
+  definePhotonBlockDefinition,
+  getPhotonAnchorRel,
+  getPhotonSurfaceModeStyle,
+  photonPublicSystemKit as photonSystemKit,
+  photonPublicSystemModule as photonSystemModule,
+  renderPhotonRichTextHtml,
+  resolvePhotonAccountTabs,
+  sanitizePhotonLinkHref,
+  sanitizePhotonRichTextHtml,
+  usePhoton,
+  usePhotonCanEdit,
+  usePhotonI18n,
+  usePhotonRenderDepth,
+  usePhotonStore,
+  usePhotonFieldValue as usePhotonValueAtPath
 };

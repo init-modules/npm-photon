@@ -1,19 +1,19 @@
-# Website Builder Forms
+# Photon Forms
 
-`@init-modules/website-builder/forms` - отдельный subpath для унифицированного API форм в Website Builder.
+`@init/photon/forms` - отдельный subpath для унифицированного API форм в Photon.
 
 Код форм должен жить внутри `src/forms/*` и импортироваться через:
 
 ```ts
 import {
-  WebsiteBuilderForm,
-  createWebsiteBuilderFormFieldsField,
-  defineWebsiteBuilderForm,
-  type WebsiteBuilderFormFieldDefinition,
-} from "@init-modules/website-builder/forms";
+  PhotonForm,
+  createPhotonFormFieldsField,
+  definePhotonForm,
+  type PhotonFormFieldDefinition,
+} from "@init/photon/forms";
 ```
 
-Root export `@init-modules/website-builder` намеренно не является основным местом для form API. Так формы остаются отдельным модулем пакета и не расползаются по core namespace.
+Root export `@init/photon` намеренно не является основным местом для form API. Так формы остаются отдельным модулем пакета и не расползаются по core namespace.
 
 ## Задача модуля
 
@@ -26,10 +26,10 @@ Forms API решает две проблемы:
 
 ## Основные сущности
 
-`WebsiteBuilderFormFieldDefinition` описывает одно поле:
+`PhotonFormFieldDefinition` описывает одно поле:
 
 ```ts
-type WebsiteBuilderFormFieldDefinition = {
+type PhotonFormFieldDefinition = {
   id: string;
   name: string;
   type: "text" | "email" | "phone" | "number" | "textarea" | "select" | "checkbox" | "date" | "hidden";
@@ -46,10 +46,10 @@ type WebsiteBuilderFormFieldDefinition = {
 };
 ```
 
-`WebsiteBuilderFormDefinition` описывает форму и ее policy:
+`PhotonFormDefinition` описывает форму и ее policy:
 
 ```ts
-const checkoutForm = defineWebsiteBuilderForm({
+const checkoutForm = definePhotonForm({
   id: "commerce.checkout",
   mode: "extendable",
   defaultFields: [
@@ -84,7 +84,7 @@ const checkoutForm = defineWebsiteBuilderForm({
 
 ## Политики
 
-Policy применяется в `resolveWebsiteBuilderFormFields`.
+Policy применяется в `resolvePhotonFormFields`.
 
 - `allowedFieldTypes`: whitelist типов.
 - `deniedFieldTypes`: blacklist типов.
@@ -100,20 +100,20 @@ Policy применяется в `resolveWebsiteBuilderFormFields`.
 
 ## Поле блока для schema
 
-Чтобы блок получил редактор полей в inspector, добавьте `createWebsiteBuilderFormFieldsField` в `fields` block definition:
+Чтобы блок получил редактор полей в inspector, добавьте `createPhotonFormFieldsField` в `fields` block definition:
 
 ```ts
-const checkoutFormFieldsField = createWebsiteBuilderFormFieldsField("fields", {
+const checkoutFormFieldsField = createPhotonFormFieldsField("fields", {
   label: "Checkout fields",
   description: "Runtime checkout form schema.",
   addLabel: "Add checkout field",
   allowedFieldTypes: ["text", "email", "phone", "textarea", "select", "checkbox"],
 });
 
-export const checkoutBlock = defineWebsiteBuilderBlockDefinition({
+export const checkoutBlock = definePhotonBlockDefinition({
   // ...
   defaults: {
-    fields: createWebsiteBuilderLocalizedDefault({
+    fields: createPhotonLocalizedDefault({
       en: checkoutForm.defaultFields,
       ru: [
         { ...checkoutForm.defaultFields[0], label: "Имя" },
@@ -131,10 +131,10 @@ export const checkoutBlock = defineWebsiteBuilderBlockDefinition({
 
 ## Runtime render
 
-`WebsiteBuilderForm` принимает definition, fields и submit handler:
+`PhotonForm` принимает definition, fields и submit handler:
 
 ```tsx
-<WebsiteBuilderForm
+<PhotonForm
   blockId={block.id}
   fieldsPath="fields"
   definition={checkoutForm}
@@ -151,14 +151,14 @@ export const checkoutBlock = defineWebsiteBuilderBlockDefinition({
   }}
 >
   <button type="submit">Submit</button>
-</WebsiteBuilderForm>
+</PhotonForm>
 ```
 
-`WebsiteBuilderForm`:
+`PhotonForm`:
 
-- применяет `resolveWebsiteBuilderFormFields`;
+- применяет `resolvePhotonFormFields`;
 - рендерит inputs по schema;
-- читает значения через `readWebsiteBuilderFormValues`;
+- читает значения через `readPhotonFormValues`;
 - отдает `values` в `onSubmitValues`;
 - для labels/helpText использует inline editable rendering, если переданы `blockId` и `fieldsPath`.
 

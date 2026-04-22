@@ -17,13 +17,13 @@ export const DialogContent = forwardRef<
 		typeof document === "undefined"
 			? null
 			: document.querySelector<HTMLElement>(
-					'[data-testid="wb-builder-theme-root"]',
+					'[data-testid="photon-builder-theme-root"]',
 				);
 	const publicThemeRoot =
 		typeof document === "undefined"
 			? null
 			: document.querySelector<HTMLElement>(
-					'[data-testid="wb-public-runtime"]',
+					'[data-testid="photon-public-runtime"]',
 				);
 
 	return (
@@ -34,9 +34,9 @@ export const DialogContent = forwardRef<
 			<DialogPrimitive.Content
 				ref={ref}
 				data-slot="dialog-content"
-				data-testid="wb-dialog-content"
+				data-testid="photon-dialog-content"
 				className={cn(
-					"fixed left-1/2 top-1/2 z-50 grid w-[min(32rem,calc(100%-2rem))] -translate-x-1/2 -translate-y-1/2 gap-5 rounded-[1.75rem] border border-[color:var(--wb-builder-border-strong)] bg-[linear-gradient(180deg,var(--wb-builder-panel-solid),var(--wb-builder-panel))] p-6 text-[color:var(--wb-builder-text)] shadow-[var(--wb-builder-shadow)] backdrop-blur-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+					"fixed left-1/2 top-1/2 z-50 grid w-[min(32rem,calc(100%-2rem))] -translate-x-1/2 -translate-y-1/2 gap-5 rounded-[1.75rem] border border-[color:var(--photon-builder-border-strong)] bg-[linear-gradient(180deg,var(--photon-builder-panel-solid),var(--photon-builder-panel))] p-6 text-[color:var(--photon-builder-text)] shadow-[var(--photon-builder-shadow)] backdrop-blur-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
 					className,
 				)}
 				{...props}

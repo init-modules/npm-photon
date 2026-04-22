@@ -99,7 +99,7 @@ export const useKeyboardMenuController = <T,>({
 	onSelectItem,
 }: UseKeyboardMenuControllerOptions<T>): KeyboardMenuController<T> => {
 	const rawListId = useId();
-	const listId = `wb-keyboard-menu-${rawListId.replace(/:/gu, "")}`;
+	const listId = `photon-keyboard-menu-${rawListId.replace(/:/gu, "")}`;
 	const [activeItemId, setActiveItemId] = useState<string | null>(null);
 	const itemNodesRef = useRef(new Map<string, HTMLDivElement | null>());
 	const listNodeRef = useRef<HTMLDivElement | null>(null);
@@ -315,7 +315,7 @@ export const KeyboardMenuList = <T,>({
 			{sections.map((section) => (
 				<section key={section.id} className="space-y-2">
 					{section.label ? (
-						<div className="px-2 text-[11px] uppercase tracking-[0.28em] text-[color:var(--wb-builder-text-soft)]">
+						<div className="px-2 text-[11px] uppercase tracking-[0.28em] text-[color:var(--photon-builder-text-soft)]">
 							{section.label}
 						</div>
 					) : null}

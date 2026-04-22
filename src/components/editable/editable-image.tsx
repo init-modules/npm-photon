@@ -5,16 +5,16 @@ import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
-	useWebsiteBuilderCanEdit,
-	useWebsiteBuilderFieldValue,
-	useWebsiteBuilderStore,
-	useWebsiteBuilderStoreApi,
-} from "../../context/website-builder-context";
+	usePhotonCanEdit,
+	usePhotonFieldValue,
+	usePhotonStore,
+	usePhotonStoreApi,
+} from "../../context/photon-context";
 import {
-	isWebsiteBuilderMediaValue,
-	resolveWebsiteBuilderMediaPreviewUrl,
-	resolveWebsiteBuilderMediaUrl,
-	updateWebsiteBuilderMediaUrl,
+	isPhotonMediaValue,
+	resolvePhotonMediaPreviewUrl,
+	resolvePhotonMediaUrl,
+	updatePhotonMediaUrl,
 } from "../../helpers/media";
 import { MediaStateChip } from "./media-state-chip";
 import {
@@ -41,24 +41,24 @@ export const EditableImage = ({
 	imageClassName,
 	fallbackAlt = "Builder image",
 }: EditableImageProps) => {
-	const store = useWebsiteBuilderStoreApi();
-	const documentId = useWebsiteBuilderStore((state) => state.document.id);
-	const selectedField = useWebsiteBuilderStore((state) => state.selectedField);
-	const selectField = useWebsiteBuilderStore((state) => state.selectField);
-	const updateFieldValue = useWebsiteBuilderStore(
+	const store = usePhotonStoreApi();
+	const documentId = usePhotonStore((state) => state.document.id);
+	const selectedField = usePhotonStore((state) => state.selectedField);
+	const selectField = usePhotonStore((state) => state.selectField);
+	const updateFieldValue = usePhotonStore(
 		(state) => state.updateFieldValue,
 	);
-	const uploadMedia = useWebsiteBuilderStore((state) => state.uploadMedia);
+	const uploadMedia = usePhotonStore((state) => state.uploadMedia);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [isUploading, setIsUploading] = useState(false);
-	const rawValue = useWebsiteBuilderFieldValue(blockId, path);
-	const source = previewUrl ?? resolveWebsiteBuilderMediaPreviewUrl(rawValue);
+	const rawValue = usePhotonFieldValue(blockId, path);
+	const source = previewUrl ?? resolvePhotonMediaPreviewUrl(rawValue);
 	const altValue = altPath
-		? useWebsiteBuilderFieldValue(blockId, altPath)
+		? usePhotonFieldValue(blockId, altPath)
 		: null;
 	const alt = altPath ? String(altValue ?? fallbackAlt) : fallbackAlt;
-	const mediaValue = isWebsiteBuilderMediaValue(rawValue) ? rawValue : null;
-	const isEditable = useWebsiteBuilderCanEdit();
+	const mediaValue = isPhotonMediaValue(rawValue) ? rawValue : null;
+	const isEditable = usePhotonCanEdit();
 	const isActive =
 		selectedField?.blockId === blockId && selectedField.path === path;
 
@@ -182,12 +182,12 @@ export const EditableImage = ({
 						</div>
 					</div>
 					<input
-						value={resolveWebsiteBuilderMediaUrl(rawValue)}
+						value={resolvePhotonMediaUrl(rawValue)}
 						onChange={(event) =>
 							updateFieldValue(
 								blockId,
 								path,
-								updateWebsiteBuilderMediaUrl(
+								updatePhotonMediaUrl(
 									store.getState().getFieldValue(blockId, path),
 									event.currentTarget.value,
 								),

@@ -1,12 +1,12 @@
 import {
   EditableText
-} from "./chunk-5SCOZJAS.js";
-import "./chunk-VDE2PPT5.js";
-import "./chunk-HFEMF2E3.js";
-import "./chunk-ZQJWNS6S.js";
-import "./chunk-EN3VAWKM.js";
-import "./chunk-GQSABMVW.js";
-import "./chunk-KUHW6SOQ.js";
+} from "./chunk-KBISSZIA.js";
+import "./chunk-FRFYYFDJ.js";
+import "./chunk-CZ47CC3D.js";
+import "./chunk-XOQNSI7G.js";
+import "./chunk-U33YWAMI.js";
+import "./chunk-V7CN23YR.js";
+import "./chunk-5MWE2CZQ.js";
 
 // src/forms/helpers.ts
 var fieldTypeOptions = [
@@ -52,8 +52,8 @@ var mergeEditableFieldParts = (base, incoming, policy) => {
     name: allowEditFieldNames ? incoming.name || base.name : base.name
   };
 };
-var defineWebsiteBuilderForm = (definition) => definition;
-var createWebsiteBuilderFormFieldsField = (path = "fields", options = {}) => {
+var definePhotonForm = (definition) => definition;
+var createPhotonFormFieldsField = (path = "fields", options = {}) => {
   const typeOptions = options.allowedFieldTypes?.length ? fieldTypeOptions.filter(
     (item) => options.allowedFieldTypes?.includes(item.value)
   ) : fieldTypeOptions;
@@ -162,7 +162,7 @@ var createWebsiteBuilderFormFieldsField = (path = "fields", options = {}) => {
     ]
   };
 };
-var resolveWebsiteBuilderFormFields = (fields, definition) => {
+var resolvePhotonFormFields = (fields, definition) => {
   const mode = definition.mode ?? "extendable";
   const policy = definition.policy ?? {};
   const incoming = Array.isArray(fields) ? fields : [];
@@ -226,7 +226,7 @@ var resolveWebsiteBuilderFormFields = (fields, definition) => {
     };
   });
 };
-var readWebsiteBuilderFormValues = (form, fields) => {
+var readPhotonFormValues = (form, fields) => {
   const formData = new FormData(form);
   const values = {};
   for (const field of fields) {
@@ -243,7 +243,7 @@ var readWebsiteBuilderFormValues = (form, fields) => {
   return values;
 };
 
-// src/forms/website-builder-form.tsx
+// src/forms/photon-form.tsx
 import clsx from "clsx";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 var getFieldInputType = (field) => {
@@ -297,7 +297,7 @@ var renderFieldHelpText = (field, blockId, fieldsPath, className) => {
     }
   );
 };
-var WebsiteBuilderForm = ({
+var PhotonForm = ({
   blockId,
   fieldsPath = "fields",
   definition,
@@ -311,7 +311,7 @@ var WebsiteBuilderForm = ({
   className,
   ...props
 }) => {
-  const resolvedFields = resolveWebsiteBuilderFormFields(fields, definition);
+  const resolvedFields = resolvePhotonFormFields(fields, definition);
   const handleSubmit = async (event) => {
     if (!submitOnEnter) {
       event.preventDefault();
@@ -321,7 +321,7 @@ var WebsiteBuilderForm = ({
     }
     event.preventDefault();
     await onSubmitValues(
-      readWebsiteBuilderFormValues(event.currentTarget, resolvedFields),
+      readPhotonFormValues(event.currentTarget, resolvedFields),
       event
     );
   };
@@ -419,9 +419,9 @@ var WebsiteBuilderForm = ({
   );
 };
 export {
-  WebsiteBuilderForm,
-  createWebsiteBuilderFormFieldsField,
-  defineWebsiteBuilderForm,
-  readWebsiteBuilderFormValues,
-  resolveWebsiteBuilderFormFields
+  PhotonForm,
+  createPhotonFormFieldsField,
+  definePhotonForm,
+  readPhotonFormValues,
+  resolvePhotonFormFields
 };

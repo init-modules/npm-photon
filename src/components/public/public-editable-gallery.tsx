@@ -4,11 +4,11 @@ import clsx from "clsx";
 import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
 import {
-	useWebsiteBuilderCanEdit,
-	useWebsiteBuilderFieldValue,
-} from "../../context/website-builder-context";
-import { getWebsiteBuilderEditableEditorLoader } from "../../helpers/editable-editor-loaders";
-import { resolveWebsiteBuilderMediaPreviewUrl } from "../../helpers/media";
+	usePhotonCanEdit,
+	usePhotonFieldValue,
+} from "../../context/photon-context";
+import { getPhotonEditableEditorLoader } from "../../helpers/editable-editor-loaders";
+import { resolvePhotonMediaPreviewUrl } from "../../helpers/media";
 
 type PublicEditableGalleryItem = {
 	id?: string;
@@ -63,8 +63,8 @@ export const EditableGallery = ({
 	addCardBodyClassName,
 	addCardButtonClassName,
 }: PublicEditableGalleryProps) => {
-	const canEdit = useWebsiteBuilderCanEdit();
-	const galleryValue = useWebsiteBuilderFieldValue(blockId, path);
+	const canEdit = usePhotonCanEdit();
+	const galleryValue = usePhotonFieldValue(blockId, path);
 	const items = Array.isArray(galleryValue)
 		? (galleryValue as PublicEditableGalleryItem[])
 		: [];
@@ -78,7 +78,7 @@ export const EditableGallery = ({
 
 		let cancelled = false;
 
-		const loadEditor = getWebsiteBuilderEditableEditorLoader("gallery");
+		const loadEditor = getPhotonEditableEditorLoader("gallery");
 
 		if (!loadEditor) {
 			return;
@@ -171,7 +171,7 @@ const EditableGalleryStatic = ({
 	emptyStateTitleClassName?: string;
 	emptyStateBodyClassName?: string;
 }) => (
-	<div data-testid="wb-editable-gallery" className={className}>
+	<div data-testid="photon-editable-gallery" className={className}>
 		<div
 			className={clsx(columnsClassName, items.length === 0 && "grid-cols-1")}
 		>
@@ -183,17 +183,17 @@ const EditableGalleryStatic = ({
 					)}
 					style={{
 						borderColor:
-							"var(--wb-gallery-empty-border, rgba(214,211,209,0.9))",
+							"var(--photon-gallery-empty-border, rgba(214,211,209,0.9))",
 						background:
-							"var(--wb-gallery-empty-bg, linear-gradient(180deg,rgba(255,255,255,0.98),rgba(245,240,231,0.96)))",
-						color: "var(--wb-gallery-empty-text, rgba(87,83,78,0.84))",
+							"var(--photon-gallery-empty-bg, linear-gradient(180deg,rgba(255,255,255,0.98),rgba(245,240,231,0.96)))",
+						color: "var(--photon-gallery-empty-text, rgba(87,83,78,0.84))",
 						boxShadow:
-							"var(--wb-gallery-empty-shadow, 0 18px 40px rgba(120,113,108,0.12))",
+							"var(--photon-gallery-empty-shadow, 0 18px 40px rgba(120,113,108,0.12))",
 					}}
 				>
 					<p
 						className={clsx("text-sm font-semibold", emptyStateTitleClassName)}
-						style={{ color: "var(--wb-gallery-empty-title, currentColor)" }}
+						style={{ color: "var(--photon-gallery-empty-title, currentColor)" }}
 					>
 						{emptyTitle}
 					</p>
@@ -206,7 +206,7 @@ const EditableGalleryStatic = ({
 					<PublicGalleryItemCard
 						key={
 							item.id ??
-							`${index}-${resolveWebsiteBuilderMediaPreviewUrl(item.media)}`
+							`${index}-${resolvePhotonMediaPreviewUrl(item.media)}`
 						}
 						item={item}
 						index={index}
@@ -242,22 +242,22 @@ const PublicGalleryItemCard = ({
 	captionClassName?: string;
 	fileNameClassName?: string;
 }) => {
-	const previewUrl = resolveWebsiteBuilderMediaPreviewUrl(item.media);
+	const previewUrl = resolvePhotonMediaPreviewUrl(item.media);
 	const isHeroItem = totalItems >= 3 && index === 0;
 
 	return (
 		<article
-			data-testid="wb-editable-gallery-item"
+			data-testid="photon-editable-gallery-item"
 			className={clsx(
 				"overflow-hidden rounded-[34px] border",
 				className,
 				isHeroItem && "md:col-span-2",
 			)}
 			style={{
-				borderColor: "var(--wb-gallery-card-border, rgba(255,255,255,0.1))",
+				borderColor: "var(--photon-gallery-card-border, rgba(255,255,255,0.1))",
 				background:
-					"var(--wb-gallery-card-bg, radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_48%),linear-gradient(180deg,rgba(8,17,30,0.97),rgba(5,11,20,0.99)))",
-				boxShadow: "var(--wb-gallery-card-shadow, 0 24px 56px rgba(0,0,0,0.2))",
+					"var(--photon-gallery-card-bg, radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_48%),linear-gradient(180deg,rgba(8,17,30,0.97),rgba(5,11,20,0.99)))",
+				boxShadow: "var(--photon-gallery-card-shadow, 0 24px 56px rgba(0,0,0,0.2))",
 			}}
 		>
 			<div
@@ -280,8 +280,8 @@ const PublicGalleryItemCard = ({
 						)}
 						style={{
 							background:
-								"var(--wb-gallery-fallback-bg, radial-gradient(circle_at_top,rgba(34,211,238,0.12),transparent_28%),linear-gradient(180deg,rgba(7,17,31,0.92),rgba(5,11,20,0.98)))",
-							color: "var(--wb-gallery-fallback-text, rgba(255,255,255,0.48))",
+								"var(--photon-gallery-fallback-bg, radial-gradient(circle_at_top,rgba(34,211,238,0.12),transparent_28%),linear-gradient(180deg,rgba(7,17,31,0.92),rgba(5,11,20,0.98)))",
+							color: "var(--photon-gallery-fallback-text, rgba(255,255,255,0.48))",
 						}}
 					>
 						Media slot
@@ -294,7 +294,7 @@ const PublicGalleryItemCard = ({
 						"text-[11px] font-semibold uppercase tracking-[0.2em]",
 						labelClassName,
 					)}
-					style={{ color: "var(--wb-gallery-label, rgba(255,255,255,0.54))" }}
+					style={{ color: "var(--photon-gallery-label, rgba(255,255,255,0.54))" }}
 				>
 					{item.eyebrow || `Item ${index + 1}`}
 				</p>
@@ -302,7 +302,7 @@ const PublicGalleryItemCard = ({
 					<p
 						className={clsx("text-sm leading-6", captionClassName)}
 						style={{
-							color: "var(--wb-gallery-caption, rgba(255,255,255,0.72))",
+							color: "var(--photon-gallery-caption, rgba(255,255,255,0.72))",
 						}}
 					>
 						{item.caption}
@@ -316,9 +316,9 @@ const PublicGalleryItemCard = ({
 						)}
 						style={{
 							borderColor:
-								"var(--wb-gallery-file-border, rgba(255,255,255,0.08))",
-							background: "var(--wb-gallery-file-bg, rgba(255,255,255,0.05))",
-							color: "var(--wb-gallery-file-text, rgba(255,255,255,0.5))",
+								"var(--photon-gallery-file-border, rgba(255,255,255,0.08))",
+							background: "var(--photon-gallery-file-bg, rgba(255,255,255,0.05))",
+							color: "var(--photon-gallery-file-text, rgba(255,255,255,0.5))",
 						}}
 					>
 						{item.media}

@@ -1,8 +1,8 @@
 import type { FormEvent, ReactNode } from "react";
 
-export type WebsiteBuilderFormMode = "fixed" | "extendable" | "freeform";
+export type PhotonFormMode = "fixed" | "extendable" | "freeform";
 
-export type WebsiteBuilderFormFieldType =
+export type PhotonFormFieldType =
 	| "text"
 	| "email"
 	| "phone"
@@ -13,15 +13,15 @@ export type WebsiteBuilderFormFieldType =
 	| "date"
 	| "hidden";
 
-export type WebsiteBuilderFormFieldWidth = "full" | "half" | "third";
+export type PhotonFormFieldWidth = "full" | "half" | "third";
 
-export type WebsiteBuilderFormFieldOption = {
+export type PhotonFormFieldOption = {
 	id?: string;
 	label: string;
 	value: string;
 };
 
-export type WebsiteBuilderFormFieldValidation = {
+export type PhotonFormFieldValidation = {
 	min?: number;
 	max?: number;
 	minLength?: number;
@@ -29,26 +29,26 @@ export type WebsiteBuilderFormFieldValidation = {
 	pattern?: string;
 };
 
-export type WebsiteBuilderFormFieldDefinition = {
+export type PhotonFormFieldDefinition = {
 	id: string;
 	name: string;
-	type: WebsiteBuilderFormFieldType;
+	type: PhotonFormFieldType;
 	label: string;
 	placeholder?: string;
 	helpText?: string;
 	required?: boolean;
 	defaultValue?: unknown;
-	options?: WebsiteBuilderFormFieldOption[];
-	width?: WebsiteBuilderFormFieldWidth;
+	options?: PhotonFormFieldOption[];
+	width?: PhotonFormFieldWidth;
 	locked?: boolean;
 	removable?: boolean;
 	disabled?: boolean;
-	validation?: WebsiteBuilderFormFieldValidation;
+	validation?: PhotonFormFieldValidation;
 };
 
-export type WebsiteBuilderFormPolicy = {
-	allowedFieldTypes?: WebsiteBuilderFormFieldType[];
-	deniedFieldTypes?: WebsiteBuilderFormFieldType[];
+export type PhotonFormPolicy = {
+	allowedFieldTypes?: PhotonFormFieldType[];
+	deniedFieldTypes?: PhotonFormFieldType[];
 	requiredFieldIds?: string[];
 	lockedFieldIds?: string[];
 	removableFieldIds?: string[];
@@ -58,27 +58,27 @@ export type WebsiteBuilderFormPolicy = {
 	allowEditFieldNames?: boolean;
 };
 
-export type WebsiteBuilderFormDefinition = {
+export type PhotonFormDefinition = {
 	id: string;
-	mode?: WebsiteBuilderFormMode;
-	defaultFields: WebsiteBuilderFormFieldDefinition[];
-	policy?: WebsiteBuilderFormPolicy;
+	mode?: PhotonFormMode;
+	defaultFields: PhotonFormFieldDefinition[];
+	policy?: PhotonFormPolicy;
 };
 
-export type WebsiteBuilderResolvedFormField =
-	WebsiteBuilderFormFieldDefinition & {
+export type PhotonResolvedFormField =
+	PhotonFormFieldDefinition & {
 		sourceIndex: number | null;
 	};
 
-export type WebsiteBuilderFormValues = Record<string, unknown>;
+export type PhotonFormValues = Record<string, unknown>;
 
-export type WebsiteBuilderFormSubmitHandler = (
-	values: WebsiteBuilderFormValues,
+export type PhotonFormSubmitHandler = (
+	values: PhotonFormValues,
 	event: FormEvent<HTMLFormElement>,
 ) => void | Promise<void>;
 
-export type WebsiteBuilderFormFieldRenderContext = {
-	field: WebsiteBuilderResolvedFormField;
+export type PhotonFormFieldRenderContext = {
+	field: PhotonResolvedFormField;
 	input: ReactNode;
 	label: ReactNode;
 	helpText: ReactNode;

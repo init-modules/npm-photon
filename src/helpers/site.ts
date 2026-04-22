@@ -1,22 +1,22 @@
 import type {
-	WebsiteBuilderArea,
-	WebsiteBuilderBlock,
-	WebsiteBuilderDocument,
-	WebsiteBuilderSite,
-	WebsiteBuilderSiteRegion,
+	PhotonArea,
+	PhotonBlock,
+	PhotonDocument,
+	PhotonSite,
+	PhotonSiteRegion,
 } from "../types";
-import { cloneWebsiteBuilderValue } from "./path";
-import { createWebsiteBuilderAreaListId } from "./tree";
+import { clonePhotonValue } from "./path";
+import { createPhotonAreaListId } from "./tree";
 
-const WEBSITE_BUILDER_SURFACE_REGION_AREA_ID = "content";
-export const WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY = "page";
-const WEBSITE_BUILDER_PAGE_SURFACE_REGION_ORDER = 50;
-const WEBSITE_BUILDER_SITE_SHELL_REGION_TYPES = {
+const PHOTON_SURFACE_REGION_AREA_ID = "content";
+export const PHOTON_PAGE_SURFACE_REGION_KEY = "page";
+const PHOTON_PAGE_SURFACE_REGION_ORDER = 50;
+const PHOTON_SITE_SHELL_REGION_TYPES = {
 	header: "site-header-shell",
 	footer: "site-footer-shell",
 } as const;
 
-type WebsiteBuilderSurfaceRegionDescriptor = {
+type PhotonSurfaceRegionDescriptor = {
 	key: string;
 	label: string;
 	order: number;
@@ -24,32 +24,32 @@ type WebsiteBuilderSurfaceRegionDescriptor = {
 	kind: "page" | "site";
 };
 
-const createWebsiteBuilderSurfaceRegionBlockId = (regionKey: string) =>
-	`__wb_surface_region:${regionKey}__`;
+const createPhotonSurfaceRegionBlockId = (regionKey: string) =>
+	`__photon_surface_region:${regionKey}__`;
 
-const isWebsiteBuilderSurfaceRegionBlock = (
-	block: WebsiteBuilderBlock,
+const isPhotonSurfaceRegionBlock = (
+	block: PhotonBlock,
 	regionKey?: string,
 ) => {
-	if (!block.id.startsWith("__wb_surface_region:")) {
+	if (!block.id.startsWith("__photon_surface_region:")) {
 		return false;
 	}
 
 	return regionKey
-		? block.id === createWebsiteBuilderSurfaceRegionBlockId(regionKey)
+		? block.id === createPhotonSurfaceRegionBlockId(regionKey)
 		: true;
 };
 
-const getWebsiteBuilderSurfaceRegionArea = (
-	block: WebsiteBuilderBlock,
-): WebsiteBuilderArea | null =>
+const getPhotonSurfaceRegionArea = (
+	block: PhotonBlock,
+): PhotonArea | null =>
 	block.areas?.find(
-		(area) => area.id === WEBSITE_BUILDER_SURFACE_REGION_AREA_ID,
+		(area) => area.id === PHOTON_SURFACE_REGION_AREA_ID,
 	) ?? null;
 
-const getWebsiteBuilderSiteRegionDescriptors = (
-	site: WebsiteBuilderSite,
-): WebsiteBuilderSurfaceRegionDescriptor[] =>
+const getPhotonSiteRegionDescriptors = (
+	site: PhotonSite,
+): PhotonSurfaceRegionDescriptor[] =>
 	Object.values(site.regions)
 		.sort((left, right) => left.order - right.order)
 		.map((region) => ({
@@ -60,13 +60,13 @@ const getWebsiteBuilderSiteRegionDescriptors = (
 			kind: "site" as const,
 		}));
 
-const removeDuplicatedWebsiteBuilderSiteShellBlocks = (
-	blocks: WebsiteBuilderBlock[],
-	site: WebsiteBuilderSite,
+const removeDuplicatedPhotonSiteShellBlocks = (
+	blocks: PhotonBlock[],
+	site: PhotonSite,
 ) =>
 	blocks.filter((block) => {
 		const regionEntry = Object.entries(
-			WEBSITE_BUILDER_SITE_SHELL_REGION_TYPES,
+			PHOTON_SITE_SHELL_REGION_TYPES,
 		).find(([, type]) => type === block.type);
 
 		if (!regionEntry) {
@@ -78,23 +78,23 @@ const removeDuplicatedWebsiteBuilderSiteShellBlocks = (
 		return !regionKey || !(regionKey in site.regions);
 	});
 
-export const resolveWebsiteBuilderSurfaceRegionDescriptors = (
-	site: WebsiteBuilderSite,
-): WebsiteBuilderSurfaceRegionDescriptor[] => {
-	const pageDescriptor: WebsiteBuilderSurfaceRegionDescriptor = {
-		key: WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
+export const resolvePhotonSurfaceRegionDescriptors = (
+	site: PhotonSite,
+): PhotonSurfaceRegionDescriptor[] => {
+	const pageDescriptor: PhotonSurfaceRegionDescriptor = {
+		key: PHOTON_PAGE_SURFACE_REGION_KEY,
 		label: "Page content",
-		order: WEBSITE_BUILDER_PAGE_SURFACE_REGION_ORDER,
+		order: PHOTON_PAGE_SURFACE_REGION_ORDER,
 		lockedOnCanvas: false,
 		kind: "page",
 	};
 
-	return [...getWebsiteBuilderSiteRegionDescriptors(site), pageDescriptor].sort(
+	return [...getPhotonSiteRegionDescriptors(site), pageDescriptor].sort(
 		(left, right) => left.order - right.order,
 	);
 };
 
-const createWebsiteBuilderSurfaceRegionBlock = ({
+const createPhotonSurfaceRegionBlock = ({
 	key,
 	label,
 	lockedOnCanvas,
@@ -103,10 +103,10 @@ const createWebsiteBuilderSurfaceRegionBlock = ({
 	key: string;
 	label: string;
 	lockedOnCanvas: boolean;
-	blocks: WebsiteBuilderBlock[];
-}): WebsiteBuilderBlock => ({
-	id: createWebsiteBuilderSurfaceRegionBlockId(key),
-	module: "__website_builder_internal__",
+	blocks: PhotonBlock[];
+}): PhotonBlock => ({
+	id: createPhotonSurfaceRegionBlockId(key),
+	module: "__photon_internal__",
 	type: "surface-region",
 	props: {
 		regionKey: key,
@@ -115,35 +115,35 @@ const createWebsiteBuilderSurfaceRegionBlock = ({
 	},
 	areas: [
 		{
-			id: WEBSITE_BUILDER_SURFACE_REGION_AREA_ID,
+			id: PHOTON_SURFACE_REGION_AREA_ID,
 			label,
-			blocks: cloneWebsiteBuilderValue(blocks),
+			blocks: clonePhotonValue(blocks),
 		},
 	],
 });
 
-const createWebsiteBuilderEmptyDocument = (
+const createPhotonEmptyDocument = (
 	key: string,
 	label: string,
 	route: string,
 	updatedAt: string,
-): WebsiteBuilderDocument => ({
-	id: `website-builder-${key}`,
+): PhotonDocument => ({
+	id: `photon-${key}`,
 	name: label,
 	route,
 	updatedAt,
 	blocks: [],
 });
 
-export const composeWebsiteBuilderSurfaceDocument = (
-	pageDocument: WebsiteBuilderDocument,
-	site: WebsiteBuilderSite,
-): WebsiteBuilderDocument => {
-	const sanitizedPageBlocks = removeDuplicatedWebsiteBuilderSiteShellBlocks(
+export const composePhotonSurfaceDocument = (
+	pageDocument: PhotonDocument,
+	site: PhotonSite,
+): PhotonDocument => {
+	const sanitizedPageBlocks = removeDuplicatedPhotonSiteShellBlocks(
 		pageDocument.blocks,
 		site,
 	);
-	const regionDescriptors = resolveWebsiteBuilderSurfaceRegionDescriptors(site);
+	const regionDescriptors = resolvePhotonSurfaceRegionDescriptors(site);
 	const latestUpdatedAt = Object.values(site.regions).reduce(
 		(currentLatest, region) => {
 			const candidate = region.document?.updatedAt;
@@ -162,7 +162,7 @@ export const composeWebsiteBuilderSurfaceDocument = (
 		updatedAt: latestUpdatedAt,
 		blocks: regionDescriptors.map((descriptor) => {
 			if (descriptor.kind === "page") {
-				return createWebsiteBuilderSurfaceRegionBlock({
+				return createPhotonSurfaceRegionBlock({
 					key: descriptor.key,
 					label: descriptor.label,
 					lockedOnCanvas: descriptor.lockedOnCanvas,
@@ -172,7 +172,7 @@ export const composeWebsiteBuilderSurfaceDocument = (
 
 			const regionDocument = site.regions[descriptor.key]?.document;
 
-			return createWebsiteBuilderSurfaceRegionBlock({
+			return createPhotonSurfaceRegionBlock({
 				key: descriptor.key,
 				label: descriptor.label,
 				lockedOnCanvas: descriptor.lockedOnCanvas,
@@ -182,36 +182,36 @@ export const composeWebsiteBuilderSurfaceDocument = (
 	};
 };
 
-export const decomposeWebsiteBuilderSurfaceDocument = (
-	surfaceDocument: WebsiteBuilderDocument,
-	site: WebsiteBuilderSite,
+export const decomposePhotonSurfaceDocument = (
+	surfaceDocument: PhotonDocument,
+	site: PhotonSite,
 ): {
-	pageDocument: WebsiteBuilderDocument;
-	site: WebsiteBuilderSite;
+	pageDocument: PhotonDocument;
+	site: PhotonSite;
 } => {
 	const pageBlocks =
-		getWebsiteBuilderSurfaceRegionBlocks(
+		getPhotonSurfaceRegionBlocks(
 			surfaceDocument,
-			WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
+			PHOTON_PAGE_SURFACE_REGION_KEY,
 		) ?? [];
 
-	const pageDocument: WebsiteBuilderDocument = {
+	const pageDocument: PhotonDocument = {
 		id: surfaceDocument.id,
 		name: surfaceDocument.name,
 		route: surfaceDocument.route,
 		updatedAt: surfaceDocument.updatedAt,
-		blocks: cloneWebsiteBuilderValue(
-			removeDuplicatedWebsiteBuilderSiteShellBlocks(pageBlocks, site),
+		blocks: clonePhotonValue(
+			removeDuplicatedPhotonSiteShellBlocks(pageBlocks, site),
 		),
 	};
 
 	const nextRegions = Object.fromEntries(
 		Object.entries(site.regions).map(([regionKey, region]) => {
 			const regionBlocks =
-				getWebsiteBuilderSurfaceRegionBlocks(surfaceDocument, regionKey) ?? [];
+				getPhotonSurfaceRegionBlocks(surfaceDocument, regionKey) ?? [];
 			const fallbackDocument =
 				region.document ??
-				createWebsiteBuilderEmptyDocument(
+				createPhotonEmptyDocument(
 					`site-${regionKey}`,
 					region.label,
 					`/_site/${regionKey}`,
@@ -225,9 +225,9 @@ export const decomposeWebsiteBuilderSurfaceDocument = (
 					document: {
 						...fallbackDocument,
 						updatedAt: surfaceDocument.updatedAt,
-						blocks: cloneWebsiteBuilderValue(regionBlocks),
+						blocks: clonePhotonValue(regionBlocks),
 					},
-				} satisfies WebsiteBuilderSiteRegion,
+				} satisfies PhotonSiteRegion,
 			];
 		}),
 	);
@@ -235,36 +235,36 @@ export const decomposeWebsiteBuilderSurfaceDocument = (
 	return {
 		pageDocument,
 		site: {
-			settings: cloneWebsiteBuilderValue(site.settings),
+			settings: clonePhotonValue(site.settings),
 			regions: nextRegions,
 		},
 	};
 };
 
-export const getWebsiteBuilderSurfaceRegionBlocks = (
-	document: WebsiteBuilderDocument,
+export const getPhotonSurfaceRegionBlocks = (
+	document: PhotonDocument,
 	regionKey: string,
-): WebsiteBuilderBlock[] | null => {
+): PhotonBlock[] | null => {
 	const block = document.blocks.find((candidate) =>
-		isWebsiteBuilderSurfaceRegionBlock(candidate, regionKey),
+		isPhotonSurfaceRegionBlock(candidate, regionKey),
 	);
-	const area = block ? getWebsiteBuilderSurfaceRegionArea(block) : null;
+	const area = block ? getPhotonSurfaceRegionArea(block) : null;
 
 	return area ? area.blocks : null;
 };
 
-export const getWebsiteBuilderSurfaceRegionListId = (regionKey: string) =>
-	createWebsiteBuilderAreaListId(
-		createWebsiteBuilderSurfaceRegionBlockId(regionKey),
-		WEBSITE_BUILDER_SURFACE_REGION_AREA_ID,
+export const getPhotonSurfaceRegionListId = (regionKey: string) =>
+	createPhotonAreaListId(
+		createPhotonSurfaceRegionBlockId(regionKey),
+		PHOTON_SURFACE_REGION_AREA_ID,
 	);
 
 const findFirstEditableBlockId = (
-	blocks: WebsiteBuilderBlock[],
+	blocks: PhotonBlock[],
 ): string | null => {
 	for (const block of blocks) {
-		if (isWebsiteBuilderSurfaceRegionBlock(block)) {
-			const area = getWebsiteBuilderSurfaceRegionArea(block);
+		if (isPhotonSurfaceRegionBlock(block)) {
+			const area = getPhotonSurfaceRegionArea(block);
 			const nested = area ? findFirstEditableBlockId(area.blocks) : null;
 
 			if (nested) {
@@ -280,18 +280,18 @@ const findFirstEditableBlockId = (
 	return null;
 };
 
-export const getFirstWebsiteBuilderSurfaceEditableBlockId = (
-	document: WebsiteBuilderDocument,
+export const getFirstPhotonSurfaceEditableBlockId = (
+	document: PhotonDocument,
 ): string | null => findFirstEditableBlockId(document.blocks);
 
-const resolveWebsiteBuilderSurfaceRegionFromBlocks = (
-	blocks: WebsiteBuilderBlock[],
+const resolvePhotonSurfaceRegionFromBlocks = (
+	blocks: PhotonBlock[],
 	blockId: string,
 	listId: string,
 	currentRegion: string | null,
 ): string | null => {
 	for (const block of blocks) {
-		const nextRegion = isWebsiteBuilderSurfaceRegionBlock(block)
+		const nextRegion = isPhotonSurfaceRegionBlock(block)
 			? ((block.props.regionKey as string | undefined) ?? currentRegion)
 			: currentRegion;
 
@@ -300,13 +300,13 @@ const resolveWebsiteBuilderSurfaceRegionFromBlocks = (
 		}
 
 		for (const area of block.areas ?? []) {
-			const areaListId = createWebsiteBuilderAreaListId(block.id, area.id);
+			const areaListId = createPhotonAreaListId(block.id, area.id);
 
 			if (areaListId === listId) {
 				return nextRegion;
 			}
 
-			const nested = resolveWebsiteBuilderSurfaceRegionFromBlocks(
+			const nested = resolvePhotonSurfaceRegionFromBlocks(
 				area.blocks,
 				blockId,
 				listId,
@@ -322,22 +322,22 @@ const resolveWebsiteBuilderSurfaceRegionFromBlocks = (
 	return null;
 };
 
-export const resolveWebsiteBuilderSurfaceRegionForBlockId = (
-	document: WebsiteBuilderDocument,
+export const resolvePhotonSurfaceRegionForBlockId = (
+	document: PhotonDocument,
 	blockId: string,
 ): string | null =>
-	resolveWebsiteBuilderSurfaceRegionFromBlocks(
+	resolvePhotonSurfaceRegionFromBlocks(
 		document.blocks,
 		blockId,
 		"__unknown__",
 		null,
 	);
 
-export const resolveWebsiteBuilderSurfaceRegionForListId = (
-	document: WebsiteBuilderDocument,
+export const resolvePhotonSurfaceRegionForListId = (
+	document: PhotonDocument,
 	listId: string,
 ): string | null =>
-	resolveWebsiteBuilderSurfaceRegionFromBlocks(
+	resolvePhotonSurfaceRegionFromBlocks(
 		document.blocks,
 		"__unknown__",
 		listId,

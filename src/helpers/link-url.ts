@@ -1,4 +1,4 @@
-const safeWebsiteBuilderUrlProtocols = new Set([
+const safePhotonUrlProtocols = new Set([
 	"http:",
 	"https:",
 	"mailto:",
@@ -14,7 +14,7 @@ const htmlEntities: Record<string, string> = {
 	nbsp: " ",
 };
 
-export const decodeWebsiteBuilderHtmlEntities = (value: string) =>
+export const decodePhotonHtmlEntities = (value: string) =>
 	value.replace(/&(#x[0-9a-f]+|#\d+|[a-z][a-z0-9]+);?/gi, (entity, body) => {
 		const normalized = String(body).toLowerCase();
 
@@ -35,12 +35,12 @@ export const decodeWebsiteBuilderHtmlEntities = (value: string) =>
 		return htmlEntities[normalized] ?? entity;
 	});
 
-export const normalizeWebsiteBuilderUrlForProtocolCheck = (value: string) =>
-	decodeWebsiteBuilderHtmlEntities(value)
+export const normalizePhotonUrlForProtocolCheck = (value: string) =>
+	decodePhotonHtmlEntities(value)
 		.replace(/[\u0000-\u001f\u007f\s]+/g, "")
 		.trim();
 
-export const sanitizeWebsiteBuilderLinkHref = (
+export const sanitizePhotonLinkHref = (
 	href: unknown,
 	fallback = "#",
 ) => {
@@ -48,14 +48,14 @@ export const sanitizeWebsiteBuilderLinkHref = (
 		return fallback;
 	}
 
-	const trimmed = decodeWebsiteBuilderHtmlEntities(href).trim();
+	const trimmed = decodePhotonHtmlEntities(href).trim();
 
 	if (!trimmed) {
 		return fallback;
 	}
 
 	const protocolCheckValue =
-		normalizeWebsiteBuilderUrlForProtocolCheck(trimmed);
+		normalizePhotonUrlForProtocolCheck(trimmed);
 
 	if (protocolCheckValue.startsWith("//")) {
 		return fallback;
@@ -79,10 +79,10 @@ export const sanitizeWebsiteBuilderLinkHref = (
 		.slice(0, protocolSeparatorIndex + 1)
 		.toLowerCase();
 
-	return safeWebsiteBuilderUrlProtocols.has(protocol) ? trimmed : fallback;
+	return safePhotonUrlProtocols.has(protocol) ? trimmed : fallback;
 };
 
-export const getWebsiteBuilderAnchorRel = (target: unknown, rel: unknown) => {
+export const getPhotonAnchorRel = (target: unknown, rel: unknown) => {
 	const relTokens = new Set(
 		typeof rel === "string" ? rel.split(/\s+/).filter(Boolean) : [],
 	);

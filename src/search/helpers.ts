@@ -1,30 +1,30 @@
-import type { WebsiteBuilderMode, WebsiteBuilderSearchResult } from "../types";
+import type { PhotonMode, PhotonSearchResult } from "../types";
 import {
-	WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
-	WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
-	WEBSITE_BUILDER_SEARCH_TARGET_PARAM,
+	PHOTON_SEARCH_OCCURRENCE_PARAM,
+	PHOTON_SEARCH_QUERY_PARAM,
+	PHOTON_SEARCH_TARGET_PARAM,
 } from "./constants";
 
-export const buildWebsiteBuilderSearchTargetId = (
+export const buildPhotonSearchTargetId = (
 	blockId: string,
 	path: string,
 ) => `${blockId}::${path}`;
 
-const preservedWebsiteBuilderSearchQueryParams = new Set([
-	"wbProfile",
-	"wbBranch",
-	"wbRevision",
+const preservedPhotonSearchQueryParams = new Set([
+	"photonProfile",
+	"photonBranch",
+	"photonRevision",
 	"mode",
 	"contentLocale",
 ]);
 
-const preserveWebsiteBuilderSearchParams = (
+const preservePhotonSearchParams = (
 	currentSearchParams: URLSearchParams,
 ) => {
 	const searchParams = new URLSearchParams();
 
 	currentSearchParams.forEach((value, key) => {
-		if (preservedWebsiteBuilderSearchQueryParams.has(key)) {
+		if (preservedPhotonSearchQueryParams.has(key)) {
 			searchParams.append(key, value);
 		}
 	});
@@ -32,12 +32,12 @@ const preserveWebsiteBuilderSearchParams = (
 	return searchParams;
 };
 
-const normalizeWebsiteBuilderSearchRoute = (
+const normalizePhotonSearchRoute = (
 	route: string,
 	locale?: string,
 	contentLocale?: string,
 ) => {
-	const url = new URL(route.trim() || "/", "https://website-builder.local");
+	const url = new URL(route.trim() || "/", "https://photon.local");
 	let pathname = url.pathname || "/";
 	const localeCandidates = [...new Set([locale, contentLocale])].filter(
 		(value): value is string => Boolean(value),
@@ -60,10 +60,10 @@ const normalizeWebsiteBuilderSearchRoute = (
 	return `${pathname}${url.search}${url.hash}`;
 };
 
-export const buildWebsiteBuilderSearchResultHref = (
-	result: WebsiteBuilderSearchResult,
+export const buildPhotonSearchResultHref = (
+	result: PhotonSearchResult,
 	query: string,
-	mode: WebsiteBuilderMode,
+	mode: PhotonMode,
 	isAdmin: boolean,
 	options?: {
 		locale?: string;
@@ -76,17 +76,17 @@ export const buildWebsiteBuilderSearchResultHref = (
 		} | null;
 	},
 ) => {
-	const normalizedRoute = normalizeWebsiteBuilderSearchRoute(
+	const normalizedRoute = normalizePhotonSearchRoute(
 		result.route,
 		options?.locale,
 		options?.contentLocale,
 	);
-	const routeUrl = new URL(normalizedRoute, "https://website-builder.local");
+	const routeUrl = new URL(normalizedRoute, "https://photon.local");
 	const targetPathname = isAdmin
-		? `/wb-admin${routeUrl.pathname === "/" ? "" : routeUrl.pathname}`
+		? `/photon-admin${routeUrl.pathname === "/" ? "" : routeUrl.pathname}`
 		: routeUrl.pathname;
-	const url = new URL(targetPathname, "https://website-builder.local");
-	const searchParams = preserveWebsiteBuilderSearchParams(
+	const url = new URL(targetPathname, "https://photon.local");
+	const searchParams = preservePhotonSearchParams(
 		options?.currentSearchParams ?? new URLSearchParams(),
 	);
 
@@ -107,24 +107,24 @@ export const buildWebsiteBuilderSearchResultHref = (
 	}
 
 	if (options?.workspaceSelection?.profileId) {
-		searchParams.set("wbProfile", options.workspaceSelection.profileId);
-		searchParams.set("wbBranch", options.workspaceSelection.branch);
+		searchParams.set("photonProfile", options.workspaceSelection.profileId);
+		searchParams.set("photonBranch", options.workspaceSelection.branch);
 
 		if (options.workspaceSelection.revisionId) {
-			searchParams.set("wbRevision", options.workspaceSelection.revisionId);
+			searchParams.set("photonRevision", options.workspaceSelection.revisionId);
 		} else {
-			searchParams.delete("wbRevision");
+			searchParams.delete("photonRevision");
 		}
 	} else {
-		searchParams.delete("wbProfile");
-		searchParams.delete("wbBranch");
-		searchParams.delete("wbRevision");
+		searchParams.delete("photonProfile");
+		searchParams.delete("photonBranch");
+		searchParams.delete("photonRevision");
 	}
 
-	searchParams.set(WEBSITE_BUILDER_SEARCH_QUERY_PARAM, query);
-	searchParams.set(WEBSITE_BUILDER_SEARCH_TARGET_PARAM, result.targetId);
+	searchParams.set(PHOTON_SEARCH_QUERY_PARAM, query);
+	searchParams.set(PHOTON_SEARCH_TARGET_PARAM, result.targetId);
 	searchParams.set(
-		WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
+		PHOTON_SEARCH_OCCURRENCE_PARAM,
 		String(result.occurrence),
 	);
 

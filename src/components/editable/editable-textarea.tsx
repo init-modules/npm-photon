@@ -3,12 +3,12 @@
 import type { ChangeEvent, FocusEvent, KeyboardEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import {
-	useWebsiteBuilderCanEdit,
-	useWebsiteBuilderFieldValue,
-	useWebsiteBuilderStore,
-} from "../../context/website-builder-context";
-import { WEBSITE_BUILDER_EMPTY_TEXT } from "../../helpers/path";
-import { buildWebsiteBuilderSearchTargetId } from "../../search/helpers";
+	usePhotonCanEdit,
+	usePhotonFieldValue,
+	usePhotonStore,
+} from "../../context/photon-context";
+import { PHOTON_EMPTY_TEXT } from "../../helpers/path";
+import { buildPhotonSearchTargetId } from "../../search/helpers";
 import { createActivationProps, editableFrameClassName } from "./shared";
 
 type EditableTextareaProps = {
@@ -22,26 +22,26 @@ export const EditableTextarea = ({
 	blockId,
 	path,
 	className,
-	placeholder = WEBSITE_BUILDER_EMPTY_TEXT,
+	placeholder = PHOTON_EMPTY_TEXT,
 }: EditableTextareaProps) => {
-	const selectedField = useWebsiteBuilderStore((state) => state.selectedField);
-	const selectField = useWebsiteBuilderStore((state) => state.selectField);
-	const clearSelectedField = useWebsiteBuilderStore(
+	const selectedField = usePhotonStore((state) => state.selectedField);
+	const selectField = usePhotonStore((state) => state.selectField);
+	const clearSelectedField = usePhotonStore(
 		(state) => state.clearSelectedField,
 	);
-	const updateFieldValue = useWebsiteBuilderStore(
+	const updateFieldValue = usePhotonStore(
 		(state) => state.updateFieldValue,
 	);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
-	const value = String(useWebsiteBuilderFieldValue(blockId, path) ?? "");
+	const value = String(usePhotonFieldValue(blockId, path) ?? "");
 	const fallbackValue =
 		value ||
-		(placeholder !== WEBSITE_BUILDER_EMPTY_TEXT ? String(placeholder) : "");
+		(placeholder !== PHOTON_EMPTY_TEXT ? String(placeholder) : "");
 	const [draftValue, setDraftValue] = useState(fallbackValue);
-	const isEditable = useWebsiteBuilderCanEdit();
+	const isEditable = usePhotonCanEdit();
 	const isActive =
 		selectedField?.blockId === blockId && selectedField.path === path;
-	const searchTargetId = buildWebsiteBuilderSearchTargetId(blockId, path);
+	const searchTargetId = buildPhotonSearchTargetId(blockId, path);
 	const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
 		const nextValue = event.currentTarget.value;
 		setDraftValue(nextValue);
@@ -84,7 +84,7 @@ export const EditableTextarea = ({
 	if (isEditable && isActive) {
 		return (
 			<div
-				data-wb-search-target={searchTargetId}
+				data-photon-search-target={searchTargetId}
 				className={editableFrameClassName({ isActive, isEditable, className })}
 			>
 				<textarea
@@ -107,7 +107,7 @@ export const EditableTextarea = ({
 	return (
 		<div
 			{...createActivationProps(isEditable, () => selectField(blockId, path))}
-			data-wb-search-target={searchTargetId}
+			data-photon-search-target={searchTargetId}
 			className={editableFrameClassName({ isActive, isEditable, className })}
 		>
 			{value || placeholder}

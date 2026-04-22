@@ -2,23 +2,23 @@
 
 import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { moveWebsiteBuilderArrayItem } from "../helpers/document";
-import { cloneWebsiteBuilderValue } from "../helpers/path";
+import { movePhotonArrayItem } from "../helpers/document";
+import { clonePhotonValue } from "../helpers/path";
 import { inputClassName } from "../studio/shared";
 import type {
-	WebsiteBuilderFormFieldDefinition,
-	WebsiteBuilderFormFieldOption,
-	WebsiteBuilderFormFieldType,
+	PhotonFormFieldDefinition,
+	PhotonFormFieldOption,
+	PhotonFormFieldType,
 } from "./types";
 
-type WebsiteBuilderFormFieldsEditorProps = {
+type PhotonFormFieldsEditorProps = {
 	value: unknown;
-	onChange: (value: WebsiteBuilderFormFieldDefinition[]) => void;
+	onChange: (value: PhotonFormFieldDefinition[]) => void;
 	onFocus: (path: string) => void;
 	absolutePath?: string;
 };
 
-const fieldTypes: Array<{ value: WebsiteBuilderFormFieldType; label: string }> =
+const fieldTypes: Array<{ value: PhotonFormFieldType; label: string }> =
 	[
 		{ value: "text", label: "Text" },
 		{ value: "email", label: "Email" },
@@ -39,15 +39,15 @@ const widthOptions = [
 
 const normalizeFields = (
 	value: unknown,
-): WebsiteBuilderFormFieldDefinition[] =>
+): PhotonFormFieldDefinition[] =>
 	Array.isArray(value)
 		? value.filter(
-				(item): item is WebsiteBuilderFormFieldDefinition =>
+				(item): item is PhotonFormFieldDefinition =>
 					typeof item === "object" && item !== null,
 			)
 		: [];
 
-const createField = (): WebsiteBuilderFormFieldDefinition => ({
+const createField = (): PhotonFormFieldDefinition => ({
 	id: "custom_field",
 	name: "custom_field",
 	type: "text",
@@ -60,24 +60,24 @@ const createField = (): WebsiteBuilderFormFieldDefinition => ({
 	removable: true,
 });
 
-const createOption = (): WebsiteBuilderFormFieldOption => ({
+const createOption = (): PhotonFormFieldOption => ({
 	label: "Option",
 	value: "option",
 });
 
 const updateField = (
-	fields: WebsiteBuilderFormFieldDefinition[],
+	fields: PhotonFormFieldDefinition[],
 	index: number,
-	patch: Partial<WebsiteBuilderFormFieldDefinition>,
+	patch: Partial<PhotonFormFieldDefinition>,
 ) =>
 	fields.map((field, fieldIndex) =>
 		fieldIndex === index ? { ...field, ...patch } : field,
 	);
 
 const updateOption = (
-	field: WebsiteBuilderFormFieldDefinition,
+	field: PhotonFormFieldDefinition,
 	optionIndex: number,
-	patch: Partial<WebsiteBuilderFormFieldOption>,
+	patch: Partial<PhotonFormFieldOption>,
 ) => ({
 	...field,
 	options: (field.options ?? []).map((option, index) =>
@@ -85,27 +85,27 @@ const updateOption = (
 	),
 });
 
-export const WebsiteBuilderFormFieldsEditor = ({
+export const PhotonFormFieldsEditor = ({
 	value,
 	onChange,
 	onFocus,
-}: WebsiteBuilderFormFieldsEditorProps) => {
+}: PhotonFormFieldsEditorProps) => {
 	const fields = normalizeFields(value);
 	const [expandedFieldId, setExpandedFieldId] = useState<string | null>(
 		fields[0]?.id ?? null,
 	);
 
-	const emit = (nextFields: WebsiteBuilderFormFieldDefinition[]) => {
+	const emit = (nextFields: PhotonFormFieldDefinition[]) => {
 		onChange(
-			cloneWebsiteBuilderValue(
+			clonePhotonValue(
 				nextFields,
-			) as WebsiteBuilderFormFieldDefinition[],
+			) as PhotonFormFieldDefinition[],
 		);
 	};
 
 	return (
 		<div className="space-y-3">
-			<div className="space-y-2 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-2">
+			<div className="space-y-2 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-2">
 				{fields.map((field, index) => {
 					const isExpanded = expandedFieldId === field.id;
 					const options = field.options ?? [];
@@ -113,7 +113,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 					return (
 						<div
 							key={`${field.id}:${index}`}
-							className="rounded-[18px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] p-3"
+							className="rounded-[18px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] p-3"
 						>
 							<div className="flex items-center justify-between gap-3">
 								<button
@@ -123,10 +123,10 @@ export const WebsiteBuilderFormFieldsEditor = ({
 									}
 									className="min-w-0 cursor-pointer text-left"
 								>
-									<div className="truncate text-sm font-semibold text-[color:var(--wb-builder-text)]">
+									<div className="truncate text-sm font-semibold text-[color:var(--photon-builder-text)]">
 										{field.label || field.id || "Field"}
 									</div>
-									<div className="mt-1 truncate font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--wb-builder-text-ghost)]">
+									<div className="mt-1 truncate font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--photon-builder-text-ghost)]">
 										{field.type} / {field.name}
 									</div>
 								</button>
@@ -136,10 +136,10 @@ export const WebsiteBuilderFormFieldsEditor = ({
 										disabled={index === 0}
 										onClick={() =>
 											emit(
-												moveWebsiteBuilderArrayItem(fields, index, index - 1),
+												movePhotonArrayItem(fields, index, index - 1),
 											)
 										}
-										className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40"
+										className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] text-[color:var(--photon-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40"
 									>
 										<ArrowUp className="h-4 w-4" />
 									</button>
@@ -148,10 +148,10 @@ export const WebsiteBuilderFormFieldsEditor = ({
 										disabled={index === fields.length - 1}
 										onClick={() =>
 											emit(
-												moveWebsiteBuilderArrayItem(fields, index, index + 1),
+												movePhotonArrayItem(fields, index, index + 1),
 											)
 										}
-										className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40"
+										className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] text-[color:var(--photon-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40"
 									>
 										<ArrowDown className="h-4 w-4" />
 									</button>
@@ -163,7 +163,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 												fields.filter((_, fieldIndex) => fieldIndex !== index),
 											)
 										}
-										className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40"
+										className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] text-[color:var(--photon-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40"
 									>
 										<Trash2 className="h-4 w-4" />
 									</button>
@@ -173,7 +173,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 							{isExpanded ? (
 								<div className="mt-4 grid gap-3">
 									<div className="grid gap-3 sm:grid-cols-2">
-										<label className="grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]">
+										<label className="grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]">
 											Label
 											<input
 												value={field.label ?? ""}
@@ -188,7 +188,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 												className={inputClassName}
 											/>
 										</label>
-										<label className="grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]">
+										<label className="grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]">
 											Type
 											<select
 												value={field.type}
@@ -197,7 +197,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 													emit(
 														updateField(fields, index, {
 															type: event.currentTarget
-																.value as WebsiteBuilderFormFieldType,
+																.value as PhotonFormFieldType,
 														}),
 													)
 												}
@@ -213,7 +213,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 									</div>
 
 									<div className="grid gap-3 sm:grid-cols-2">
-										<label className="grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]">
+										<label className="grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]">
 											Field id
 											<input
 												value={field.id ?? ""}
@@ -228,7 +228,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 												className={inputClassName}
 											/>
 										</label>
-										<label className="grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]">
+										<label className="grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]">
 											Input name
 											<input
 												value={field.name ?? ""}
@@ -245,7 +245,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 										</label>
 									</div>
 
-									<label className="grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]">
+									<label className="grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]">
 										Placeholder
 										<input
 											value={field.placeholder ?? ""}
@@ -261,7 +261,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 										/>
 									</label>
 
-									<label className="grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]">
+									<label className="grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]">
 										Help text
 										<textarea
 											rows={3}
@@ -279,7 +279,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 									</label>
 
 									<div className="grid gap-3 sm:grid-cols-2">
-										<label className="grid gap-2 text-sm font-semibold text-[color:var(--wb-builder-text)]">
+										<label className="grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]">
 											Width
 											<select
 												value={field.width ?? "full"}
@@ -288,7 +288,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 													emit(
 														updateField(fields, index, {
 															width: event.currentTarget
-																.value as WebsiteBuilderFormFieldDefinition["width"],
+																.value as PhotonFormFieldDefinition["width"],
 														}),
 													)
 												}
@@ -308,13 +308,13 @@ export const WebsiteBuilderFormFieldsEditor = ({
 											].map(([key, label]) => (
 												<label
 													key={key}
-													className="flex items-center gap-2 text-xs font-semibold text-[color:var(--wb-builder-text-soft)]"
+													className="flex items-center gap-2 text-xs font-semibold text-[color:var(--photon-builder-text-soft)]"
 												>
 													<input
 														type="checkbox"
 														checked={Boolean(
 															field[
-																key as keyof WebsiteBuilderFormFieldDefinition
+																key as keyof PhotonFormFieldDefinition
 															],
 														)}
 														onChange={(event) =>
@@ -332,8 +332,8 @@ export const WebsiteBuilderFormFieldsEditor = ({
 									</div>
 
 									{field.type === "select" ? (
-										<div className="rounded-[16px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] p-3">
-											<div className="mb-3 text-sm font-semibold text-[color:var(--wb-builder-text)]">
+										<div className="rounded-[16px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3">
+											<div className="mb-3 text-sm font-semibold text-[color:var(--photon-builder-text)]">
 												Options
 											</div>
 											<div className="grid gap-2">
@@ -392,7 +392,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 																	}),
 																)
 															}
-															className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--wb-builder-border)] text-[color:var(--wb-builder-text-soft)]"
+															className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] text-[color:var(--photon-builder-text-soft)]"
 														>
 															<Trash2 className="h-4 w-4" />
 														</button>
@@ -408,7 +408,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 														}),
 													)
 												}
-												className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[18px] border border-[color:var(--wb-builder-border)] px-4 py-3 text-sm font-semibold text-[color:var(--wb-builder-text)]"
+												className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[18px] border border-[color:var(--photon-builder-border)] px-4 py-3 text-sm font-semibold text-[color:var(--photon-builder-text)]"
 											>
 												<Plus className="h-4 w-4" /> Add option
 											</button>
@@ -428,7 +428,7 @@ export const WebsiteBuilderFormFieldsEditor = ({
 					emit([...fields, nextField]);
 					setExpandedFieldId(nextField.id);
 				}}
-				className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-[20px] border border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-panel-muted)] px-4 py-3 text-sm font-semibold text-[color:var(--wb-builder-text)] transition hover:border-[color:var(--wb-builder-border-strong)] hover:bg-[color:var(--wb-builder-panel-solid)]"
+				className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] px-4 py-3 text-sm font-semibold text-[color:var(--photon-builder-text)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-panel-solid)]"
 			>
 				<Plus className="h-4 w-4" /> Add field
 			</button>

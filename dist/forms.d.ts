@@ -1,41 +1,41 @@
-import { J as WebsiteBuilderField } from './types-CuFDrLWO.js';
+import { J as PhotonField } from './types-S6aNsw9R.js';
 import { FormEvent, ReactNode, ComponentProps } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
-type WebsiteBuilderFormMode = "fixed" | "extendable" | "freeform";
-type WebsiteBuilderFormFieldType = "text" | "email" | "phone" | "number" | "textarea" | "select" | "checkbox" | "date" | "hidden";
-type WebsiteBuilderFormFieldWidth = "full" | "half" | "third";
-type WebsiteBuilderFormFieldOption = {
+type PhotonFormMode = "fixed" | "extendable" | "freeform";
+type PhotonFormFieldType = "text" | "email" | "phone" | "number" | "textarea" | "select" | "checkbox" | "date" | "hidden";
+type PhotonFormFieldWidth = "full" | "half" | "third";
+type PhotonFormFieldOption = {
     id?: string;
     label: string;
     value: string;
 };
-type WebsiteBuilderFormFieldValidation = {
+type PhotonFormFieldValidation = {
     min?: number;
     max?: number;
     minLength?: number;
     maxLength?: number;
     pattern?: string;
 };
-type WebsiteBuilderFormFieldDefinition = {
+type PhotonFormFieldDefinition = {
     id: string;
     name: string;
-    type: WebsiteBuilderFormFieldType;
+    type: PhotonFormFieldType;
     label: string;
     placeholder?: string;
     helpText?: string;
     required?: boolean;
     defaultValue?: unknown;
-    options?: WebsiteBuilderFormFieldOption[];
-    width?: WebsiteBuilderFormFieldWidth;
+    options?: PhotonFormFieldOption[];
+    width?: PhotonFormFieldWidth;
     locked?: boolean;
     removable?: boolean;
     disabled?: boolean;
-    validation?: WebsiteBuilderFormFieldValidation;
+    validation?: PhotonFormFieldValidation;
 };
-type WebsiteBuilderFormPolicy = {
-    allowedFieldTypes?: WebsiteBuilderFormFieldType[];
-    deniedFieldTypes?: WebsiteBuilderFormFieldType[];
+type PhotonFormPolicy = {
+    allowedFieldTypes?: PhotonFormFieldType[];
+    deniedFieldTypes?: PhotonFormFieldType[];
     requiredFieldIds?: string[];
     lockedFieldIds?: string[];
     removableFieldIds?: string[];
@@ -44,37 +44,37 @@ type WebsiteBuilderFormPolicy = {
     allowReorder?: boolean;
     allowEditFieldNames?: boolean;
 };
-type WebsiteBuilderFormDefinition = {
+type PhotonFormDefinition = {
     id: string;
-    mode?: WebsiteBuilderFormMode;
-    defaultFields: WebsiteBuilderFormFieldDefinition[];
-    policy?: WebsiteBuilderFormPolicy;
+    mode?: PhotonFormMode;
+    defaultFields: PhotonFormFieldDefinition[];
+    policy?: PhotonFormPolicy;
 };
-type WebsiteBuilderResolvedFormField = WebsiteBuilderFormFieldDefinition & {
+type PhotonResolvedFormField = PhotonFormFieldDefinition & {
     sourceIndex: number | null;
 };
-type WebsiteBuilderFormValues = Record<string, unknown>;
-type WebsiteBuilderFormSubmitHandler = (values: WebsiteBuilderFormValues, event: FormEvent<HTMLFormElement>) => void | Promise<void>;
-type WebsiteBuilderFormFieldRenderContext = {
-    field: WebsiteBuilderResolvedFormField;
+type PhotonFormValues = Record<string, unknown>;
+type PhotonFormSubmitHandler = (values: PhotonFormValues, event: FormEvent<HTMLFormElement>) => void | Promise<void>;
+type PhotonFormFieldRenderContext = {
+    field: PhotonResolvedFormField;
     input: ReactNode;
     label: ReactNode;
     helpText: ReactNode;
     error?: ReactNode;
 };
 
-declare const defineWebsiteBuilderForm: (definition: WebsiteBuilderFormDefinition) => WebsiteBuilderFormDefinition;
-declare const createWebsiteBuilderFormFieldsField: (path?: string, options?: {
+declare const definePhotonForm: (definition: PhotonFormDefinition) => PhotonFormDefinition;
+declare const createPhotonFormFieldsField: (path?: string, options?: {
     label?: string;
     description?: string;
     addLabel?: string;
-    defaultItem?: WebsiteBuilderFormFieldDefinition;
-    allowedFieldTypes?: WebsiteBuilderFormFieldType[];
-}) => WebsiteBuilderField;
-declare const resolveWebsiteBuilderFormFields: (fields: readonly WebsiteBuilderFormFieldDefinition[] | undefined, definition: WebsiteBuilderFormDefinition) => WebsiteBuilderResolvedFormField[];
-declare const readWebsiteBuilderFormValues: (form: HTMLFormElement, fields: readonly WebsiteBuilderFormFieldDefinition[]) => WebsiteBuilderFormValues;
+    defaultItem?: PhotonFormFieldDefinition;
+    allowedFieldTypes?: PhotonFormFieldType[];
+}) => PhotonField;
+declare const resolvePhotonFormFields: (fields: readonly PhotonFormFieldDefinition[] | undefined, definition: PhotonFormDefinition) => PhotonResolvedFormField[];
+declare const readPhotonFormValues: (form: HTMLFormElement, fields: readonly PhotonFormFieldDefinition[]) => PhotonFormValues;
 
-type WebsiteBuilderFormClassNames = {
+type PhotonFormClassNames = {
     field?: string;
     label?: string;
     input?: string;
@@ -83,18 +83,18 @@ type WebsiteBuilderFormClassNames = {
     checkboxInput?: string;
     hiddenField?: string;
 };
-type WebsiteBuilderFormProps = Omit<ComponentProps<"form">, "onSubmit"> & {
+type PhotonFormProps = Omit<ComponentProps<"form">, "onSubmit"> & {
     blockId?: string;
     fieldsPath?: string;
-    definition: WebsiteBuilderFormDefinition;
-    fields?: readonly WebsiteBuilderFormFieldDefinition[];
+    definition: PhotonFormDefinition;
+    fields?: readonly PhotonFormFieldDefinition[];
     disabled?: boolean;
-    classNames?: WebsiteBuilderFormClassNames;
+    classNames?: PhotonFormClassNames;
     submitOnEnter?: boolean;
-    onSubmitValues?: WebsiteBuilderFormSubmitHandler;
-    renderField?: (context: WebsiteBuilderFormFieldRenderContext) => ReactNode;
+    onSubmitValues?: PhotonFormSubmitHandler;
+    renderField?: (context: PhotonFormFieldRenderContext) => ReactNode;
     children?: ReactNode;
 };
-declare const WebsiteBuilderForm: ({ blockId, fieldsPath, definition, fields, disabled, classNames, submitOnEnter, onSubmitValues, renderField, children, className, ...props }: WebsiteBuilderFormProps) => react_jsx_runtime.JSX.Element;
+declare const PhotonForm: ({ blockId, fieldsPath, definition, fields, disabled, classNames, submitOnEnter, onSubmitValues, renderField, children, className, ...props }: PhotonFormProps) => react_jsx_runtime.JSX.Element;
 
-export { WebsiteBuilderForm, type WebsiteBuilderFormDefinition, type WebsiteBuilderFormFieldDefinition, type WebsiteBuilderFormFieldOption, type WebsiteBuilderFormFieldRenderContext, type WebsiteBuilderFormFieldType, type WebsiteBuilderFormFieldValidation, type WebsiteBuilderFormFieldWidth, type WebsiteBuilderFormMode, type WebsiteBuilderFormPolicy, type WebsiteBuilderFormSubmitHandler, type WebsiteBuilderFormValues, type WebsiteBuilderResolvedFormField, createWebsiteBuilderFormFieldsField, defineWebsiteBuilderForm, readWebsiteBuilderFormValues, resolveWebsiteBuilderFormFields };
+export { PhotonForm, type PhotonFormDefinition, type PhotonFormFieldDefinition, type PhotonFormFieldOption, type PhotonFormFieldRenderContext, type PhotonFormFieldType, type PhotonFormFieldValidation, type PhotonFormFieldWidth, type PhotonFormMode, type PhotonFormPolicy, type PhotonFormSubmitHandler, type PhotonFormValues, type PhotonResolvedFormField, createPhotonFormFieldsField, definePhotonForm, readPhotonFormValues, resolvePhotonFormFields };

@@ -2,21 +2,21 @@
 
 import clsx from "clsx";
 import { type CSSProperties, memo, useEffect, useRef, useState } from "react";
-import { useWebsiteBuilderStore } from "../../context/website-builder-context";
-import { WebsiteBuilderSurfaceLayoutProvider } from "../../context/website-builder-surface-layout-context";
+import { usePhotonStore } from "../../context/photon-context";
+import { PhotonSurfaceLayoutProvider } from "../../context/photon-surface-layout-context";
 import {
-	getWebsiteBuilderSurfaceRegionBlocks,
-	getWebsiteBuilderSurfaceRegionListId,
-	resolveWebsiteBuilderSurfaceRegionDescriptors,
-	WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
+	getPhotonSurfaceRegionBlocks,
+	getPhotonSurfaceRegionListId,
+	resolvePhotonSurfaceRegionDescriptors,
+	PHOTON_PAGE_SURFACE_REGION_KEY,
 } from "../../helpers/site";
-import type { WebsiteBuilderDocument, WebsiteBuilderSite } from "../../types";
+import type { PhotonDocument, PhotonSite } from "../../types";
 import type { InsertTarget } from "../types";
 import { CanvasBlockList } from "./canvas-block-list";
 
 type SiteSurfaceCanvasProps = {
-	document: WebsiteBuilderDocument;
-	site: WebsiteBuilderSite;
+	document: PhotonDocument;
+	site: PhotonSite;
 	builderEnabled: boolean;
 	collapseControlsEnabled: boolean;
 	respectsCollapsedState: boolean;
@@ -28,10 +28,10 @@ type SiteSurfaceCanvasProps = {
 
 type SiteSurfaceRegionSectionProps = {
 	region: ReturnType<
-		typeof resolveWebsiteBuilderSurfaceRegionDescriptors
+		typeof resolvePhotonSurfaceRegionDescriptors
 	>[number];
-	site: WebsiteBuilderSite;
-	document: WebsiteBuilderDocument;
+	site: PhotonSite;
+	document: PhotonDocument;
 	builderEnabled: boolean;
 	collapseControlsEnabled: boolean;
 	respectsCollapsedState: boolean;
@@ -58,9 +58,9 @@ const SiteSurfaceRegionSection = ({
 	const sectionRef = useRef<HTMLElement | null>(null);
 	const [surfaceWidth, setSurfaceWidth] = useState(0);
 	const blocks =
-		getWebsiteBuilderSurfaceRegionBlocks(document, region.key) ?? [];
-	const regionListId = getWebsiteBuilderSurfaceRegionListId(region.key);
-	const isPageRegion = region.key === WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY;
+		getPhotonSurfaceRegionBlocks(document, region.key) ?? [];
+	const regionListId = getPhotonSurfaceRegionListId(region.key);
+	const isPageRegion = region.key === PHOTON_PAGE_SURFACE_REGION_KEY;
 	const builderRegionInsetClassName = builderEnabled
 		? "px-4 sm:px-5"
 		: undefined;
@@ -70,7 +70,7 @@ const SiteSurfaceRegionSection = ({
 		region.key === "header" &&
 		blocks.some(
 			(block) =>
-				block.module === "website-builder-system" &&
+				block.module === "photon-system" &&
 				block.type === "site-header-shell" &&
 				block.props.sticky === true,
 		);
@@ -90,7 +90,7 @@ const SiteSurfaceRegionSection = ({
 	}, []);
 
 	return (
-		<WebsiteBuilderSurfaceLayoutProvider
+		<PhotonSurfaceLayoutProvider
 			value={{
 				builderEnabled,
 				kind: region.kind,
@@ -100,7 +100,7 @@ const SiteSurfaceRegionSection = ({
 		>
 			<section
 				ref={sectionRef}
-				data-wb-surface-region={region.key}
+				data-photon-surface-region={region.key}
 				className={clsx(
 					"relative [container-type:inline-size]",
 					previewEnabled && stickySiteHeaderRegion && "sticky z-40",
@@ -108,7 +108,7 @@ const SiteSurfaceRegionSection = ({
 				style={
 					previewEnabled && stickySiteHeaderRegion
 						? ({
-								top: "calc(var(--wb-dock-offset, 0px) + var(--wb-site-header-offset, 0px))",
+								top: "calc(var(--photon-dock-offset, 0px) + var(--photon-site-header-offset, 0px))",
 							} as CSSProperties)
 						: undefined
 				}
@@ -123,9 +123,9 @@ const SiteSurfaceRegionSection = ({
 						<div
 							className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.28em]"
 							style={{
-								borderColor: "var(--wb-builder-border)",
-								background: "var(--wb-builder-panel-solid)",
-								color: "var(--wb-builder-text-ghost)",
+								borderColor: "var(--photon-builder-border)",
+								background: "var(--photon-builder-panel-solid)",
+								color: "var(--photon-builder-text-ghost)",
 							}}
 						>
 							{region.label}
@@ -134,9 +134,9 @@ const SiteSurfaceRegionSection = ({
 							<div
 								className="rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]"
 								style={{
-									borderColor: "var(--wb-builder-border-strong)",
-									background: "var(--wb-builder-accent-soft)",
-									color: "var(--wb-builder-accent-text)",
+									borderColor: "var(--photon-builder-border-strong)",
+									background: "var(--photon-builder-accent-soft)",
+									color: "var(--photon-builder-accent-text)",
 								}}
 							>
 								Fixed region
@@ -149,7 +149,7 @@ const SiteSurfaceRegionSection = ({
 					className={clsx(
 						"transition-all duration-500",
 						isPageRegion
-							? "mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] px-[var(--wb-site-gutter,24px)]"
+							? "mx-auto w-full max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] px-[var(--photon-site-gutter,24px)]"
 							: builderSiteFrameInset
 								? clsx("w-full pb-1", builderRegionInsetClassName)
 								: "w-full",
@@ -157,7 +157,7 @@ const SiteSurfaceRegionSection = ({
 					style={
 						isPageRegion
 							? ({
-									"--wb-list-gap": "var(--wb-section-gap,2rem)",
+									"--photon-list-gap": "var(--photon-section-gap,2rem)",
 								} as CSSProperties)
 							: undefined
 					}
@@ -175,7 +175,7 @@ const SiteSurfaceRegionSection = ({
 					/>
 				</div>
 			</section>
-		</WebsiteBuilderSurfaceLayoutProvider>
+		</PhotonSurfaceLayoutProvider>
 	);
 };
 
@@ -190,12 +190,12 @@ const SiteSurfaceCanvasComponent = ({
 	dropTarget,
 	onActivateInsertTarget,
 }: SiteSurfaceCanvasProps) => {
-	const mode = useWebsiteBuilderStore((state) => state.mode);
-	const regions = resolveWebsiteBuilderSurfaceRegionDescriptors(site);
+	const mode = usePhotonStore((state) => state.mode);
+	const regions = resolvePhotonSurfaceRegionDescriptors(site);
 	const previewEnabled = mode !== "builder";
 
 	return (
-		<div className="space-y-[var(--wb-section-gap,2rem)]">
+		<div className="space-y-[var(--photon-section-gap,2rem)]">
 			{regions.map((region) => (
 				<SiteSurfaceRegionSection
 					key={region.key}

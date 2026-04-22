@@ -1,3 +1,3 @@
-export const WEBSITE_BUILDER_SEARCH_QUERY_PARAM = "wb-search-query";
-export const WEBSITE_BUILDER_SEARCH_TARGET_PARAM = "wb-search-target";
-export const WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM = "wb-search-occurrence";
+export const PHOTON_SEARCH_QUERY_PARAM = "photon-search-query";
+export const PHOTON_SEARCH_TARGET_PARAM = "photon-search-target";
+export const PHOTON_SEARCH_OCCURRENCE_PARAM = "photon-search-occurrence";

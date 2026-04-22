@@ -3,100 +3,100 @@
 import clsx from "clsx";
 import type { CSSProperties } from "react";
 import { memo, useEffect, useRef, useState } from "react";
-import { WebsiteBuilderBlockRenderer } from "./components/block-renderer";
-import { WebsiteBuilderProvider } from "./context/website-builder-context";
+import { PhotonBlockRenderer } from "./components/block-renderer";
+import { PhotonProvider } from "./context/photon-context";
 import {
-	useWebsiteBuilderRenderDepth,
-	WebsiteBuilderRenderDepthProvider,
-} from "./context/website-builder-render-depth-context";
-import { WebsiteBuilderSurfaceLayoutProvider } from "./context/website-builder-surface-layout-context";
-import { resolveWebsiteBuilderPublicSiteDesignSettings } from "./helpers/public-site-design";
+	usePhotonRenderDepth,
+	PhotonRenderDepthProvider,
+} from "./context/photon-render-depth-context";
+import { PhotonSurfaceLayoutProvider } from "./context/photon-surface-layout-context";
+import { resolvePhotonPublicSiteDesignSettings } from "./helpers/public-site-design";
 import {
-	getWebsiteBuilderSurfaceRegionBlocks,
-	resolveWebsiteBuilderSurfaceRegionDescriptors,
-	WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY,
+	getPhotonSurfaceRegionBlocks,
+	resolvePhotonSurfaceRegionDescriptors,
+	PHOTON_PAGE_SURFACE_REGION_KEY,
 } from "./helpers/site";
 
 export {
-	getWebsiteBuilderAnchorRel,
-	sanitizeWebsiteBuilderLinkHref,
+	getPhotonAnchorRel,
+	sanitizePhotonLinkHref,
 } from "./helpers/link-url";
 
-import { WebsiteBuilderSearchHighlightEffect } from "./search/website-builder-search-highlight-effect";
+import { PhotonSearchHighlightEffect } from "./search/photon-search-highlight-effect";
 import type {
-	WebsiteBuilderAccountTabExtension,
-	WebsiteBuilderArea,
-	WebsiteBuilderBlock,
-	WebsiteBuilderI18nValue,
-	WebsiteBuilderLinkComponent,
-	WebsiteBuilderRegistry,
-	WebsiteBuilderResolvedPage,
-	WebsiteBuilderSearchHandler,
-	WebsiteBuilderSearchHighlight,
-	WebsiteBuilderSiteFrameExtension,
+	PhotonAccountTabExtension,
+	PhotonArea,
+	PhotonBlock,
+	PhotonI18nValue,
+	PhotonLinkComponent,
+	PhotonRegistry,
+	PhotonResolvedPage,
+	PhotonSearchHandler,
+	PhotonSearchHighlight,
+	PhotonSiteFrameExtension,
 } from "./types";
 
-export type WebsiteBuilderPublicRuntimePageValue = Pick<
-	WebsiteBuilderResolvedPage,
+export type PhotonPublicRuntimePageValue = Pick<
+	PhotonResolvedPage,
 	"page" | "document" | "resources" | "pageSettings" | "runtimeData" | "site"
 >;
 
-type WebsiteBuilderPublicBlockListProps = {
-	blocks: WebsiteBuilderBlock[];
+type PhotonPublicBlockListProps = {
+	blocks: PhotonBlock[];
 };
 
-const WebsiteBuilderPublicBlockItem = ({
+const PhotonPublicBlockItem = ({
 	block,
 }: {
-	block: WebsiteBuilderBlock;
+	block: PhotonBlock;
 }) => {
-	const renderDepth = useWebsiteBuilderRenderDepth();
+	const renderDepth = usePhotonRenderDepth();
 
 	return (
-		<WebsiteBuilderBlockRenderer
+		<PhotonBlockRenderer
 			block={block}
-			renderArea={(area: WebsiteBuilderArea) => (
-				<WebsiteBuilderRenderDepthProvider value={renderDepth + 1}>
-					<WebsiteBuilderPublicBlockList blocks={area.blocks} />
-				</WebsiteBuilderRenderDepthProvider>
+			renderArea={(area: PhotonArea) => (
+				<PhotonRenderDepthProvider value={renderDepth + 1}>
+					<PhotonPublicBlockList blocks={area.blocks} />
+				</PhotonRenderDepthProvider>
 			)}
 		/>
 	);
 };
 
-const WebsiteBuilderPublicBlockList = ({
+const PhotonPublicBlockList = ({
 	blocks,
-}: WebsiteBuilderPublicBlockListProps) => (
-	<div className="space-y-[var(--wb-list-gap,0.75rem)]">
+}: PhotonPublicBlockListProps) => (
+	<div className="space-y-[var(--photon-list-gap,0.75rem)]">
 		{blocks.map((block) => (
-			<WebsiteBuilderPublicBlockItem key={block.id} block={block} />
+			<PhotonPublicBlockItem key={block.id} block={block} />
 		))}
 	</div>
 );
 
-type WebsiteBuilderPublicSurfaceRegionProps = {
+type PhotonPublicSurfaceRegionProps = {
 	region: ReturnType<
-		typeof resolveWebsiteBuilderSurfaceRegionDescriptors
+		typeof resolvePhotonSurfaceRegionDescriptors
 	>[number];
-	page: WebsiteBuilderPublicRuntimePageValue;
+	page: PhotonPublicRuntimePageValue;
 };
 
-const WebsiteBuilderPublicSurfaceRegion = ({
+const PhotonPublicSurfaceRegion = ({
 	region,
 	page,
-}: WebsiteBuilderPublicSurfaceRegionProps) => {
+}: PhotonPublicSurfaceRegionProps) => {
 	const sectionRef = useRef<HTMLElement | null>(null);
 	const [surfaceWidth, setSurfaceWidth] = useState(0);
-	const blocks = getWebsiteBuilderSurfaceRegionBlocks(
+	const blocks = getPhotonSurfaceRegionBlocks(
 		page.document,
 		region.key,
 	);
-	const isPageRegion = region.key === WEBSITE_BUILDER_PAGE_SURFACE_REGION_KEY;
+	const isPageRegion = region.key === PHOTON_PAGE_SURFACE_REGION_KEY;
 	const stickySiteHeaderRegion =
 		region.key === "header" &&
 		(blocks ?? []).some(
 			(block) =>
-				block.module === "website-builder-system" &&
+				block.module === "photon-system" &&
 				block.type === "site-header-shell" &&
 				block.props.sticky === true,
 		);
@@ -118,7 +118,7 @@ const WebsiteBuilderPublicSurfaceRegion = ({
 	}, []);
 
 	return (
-		<WebsiteBuilderSurfaceLayoutProvider
+		<PhotonSurfaceLayoutProvider
 			value={{
 				builderEnabled: false,
 				kind: region.kind,
@@ -128,7 +128,7 @@ const WebsiteBuilderPublicSurfaceRegion = ({
 		>
 			<section
 				ref={sectionRef}
-				data-wb-surface-region={region.key}
+				data-photon-surface-region={region.key}
 				className={clsx(
 					"relative [container-type:inline-size]",
 					stickySiteHeaderRegion && "sticky z-40",
@@ -136,7 +136,7 @@ const WebsiteBuilderPublicSurfaceRegion = ({
 				style={
 					stickySiteHeaderRegion
 						? ({
-								top: "var(--wb-site-header-offset, 0px)",
+								top: "var(--photon-site-header-offset, 0px)",
 							} as CSSProperties)
 						: undefined
 				}
@@ -144,35 +144,35 @@ const WebsiteBuilderPublicSurfaceRegion = ({
 				<div
 					className={
 						isPageRegion
-							? "mx-auto w-full max-w-[calc(var(--wb-site-max-width,1280px)+var(--wb-site-gutter,24px)*2)] px-[var(--wb-site-gutter,24px)]"
+							? "mx-auto w-full max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] px-[var(--photon-site-gutter,24px)]"
 							: "w-full"
 					}
 					style={
 						isPageRegion
 							? ({
-									"--wb-list-gap": "var(--wb-section-gap,2rem)",
+									"--photon-list-gap": "var(--photon-section-gap,2rem)",
 								} as CSSProperties)
 							: undefined
 					}
 				>
-					<WebsiteBuilderPublicBlockList blocks={blocks ?? []} />
+					<PhotonPublicBlockList blocks={blocks ?? []} />
 				</div>
 			</section>
-		</WebsiteBuilderSurfaceLayoutProvider>
+		</PhotonSurfaceLayoutProvider>
 	);
 };
 
-const WebsiteBuilderPublicSurface = memo(function WebsiteBuilderPublicSurface({
+const PhotonPublicSurface = memo(function PhotonPublicSurface({
 	page,
 }: {
-	page: WebsiteBuilderPublicRuntimePageValue;
+	page: PhotonPublicRuntimePageValue;
 }) {
-	const regions = resolveWebsiteBuilderSurfaceRegionDescriptors(page.site);
+	const regions = resolvePhotonSurfaceRegionDescriptors(page.site);
 
 	return (
-		<div className="space-y-[var(--wb-section-gap,2rem)]">
+		<div className="space-y-[var(--photon-section-gap,2rem)]">
 			{regions.map((region) => (
-				<WebsiteBuilderPublicSurfaceRegion
+				<PhotonPublicSurfaceRegion
 					key={region.key}
 					region={region}
 					page={page}
@@ -182,19 +182,19 @@ const WebsiteBuilderPublicSurface = memo(function WebsiteBuilderPublicSurface({
 	);
 });
 
-type WebsiteBuilderPublicPageProps = {
-	page: WebsiteBuilderPublicRuntimePageValue;
-	registry: WebsiteBuilderRegistry;
-	i18n?: WebsiteBuilderI18nValue | null;
-	linkComponent?: WebsiteBuilderLinkComponent;
-	siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
-	accountTabs?: WebsiteBuilderAccountTabExtension[];
+type PhotonPublicPageProps = {
+	page: PhotonPublicRuntimePageValue;
+	registry: PhotonRegistry;
+	i18n?: PhotonI18nValue | null;
+	linkComponent?: PhotonLinkComponent;
+	siteFrameExtensions?: PhotonSiteFrameExtension[];
+	accountTabs?: PhotonAccountTabExtension[];
 	requestAuth?: () => void;
-	searchSite?: WebsiteBuilderSearchHandler;
-	activeSearchHighlight?: WebsiteBuilderSearchHighlight | null;
+	searchSite?: PhotonSearchHandler;
+	activeSearchHighlight?: PhotonSearchHighlight | null;
 };
 
-export const WebsiteBuilderPublicPage = ({
+export const PhotonPublicPage = ({
 	page,
 	registry,
 	i18n,
@@ -204,32 +204,32 @@ export const WebsiteBuilderPublicPage = ({
 	requestAuth,
 	searchSite,
 	activeSearchHighlight = null,
-}: WebsiteBuilderPublicPageProps) => {
-	const designSettings = resolveWebsiteBuilderPublicSiteDesignSettings(
+}: PhotonPublicPageProps) => {
+	const designSettings = resolvePhotonPublicSiteDesignSettings(
 		page.site.settings.design,
 	);
 	const siteSurfaceStyle = {
-		"--wb-site-body-font": designSettings.bodyFontFamily,
-		"--wb-site-heading-font": designSettings.headingFontFamily,
-		"--wb-site-background": designSettings.backgroundColor,
-		"--wb-site-surface": designSettings.surfaceColor,
-		"--wb-site-text": designSettings.textColor,
-		"--wb-site-muted": designSettings.mutedTextColor,
-		"--wb-site-muted-text": designSettings.mutedTextColor,
-		"--wb-site-accent": designSettings.accentColor,
-		"--wb-site-border": designSettings.borderColor,
-		"--wb-site-max-width": designSettings.siteMaxWidth,
-		"--wb-site-gutter": designSettings.pageGutter,
-		"--wb-section-gap": designSettings.sectionGap,
-		"--wb-site-radius": designSettings.radius,
-		"--wb-site-header-offset": designSettings.headerOffset,
+		"--photon-site-body-font": designSettings.bodyFontFamily,
+		"--photon-site-heading-font": designSettings.headingFontFamily,
+		"--photon-site-background": designSettings.backgroundColor,
+		"--photon-site-surface": designSettings.surfaceColor,
+		"--photon-site-text": designSettings.textColor,
+		"--photon-site-muted": designSettings.mutedTextColor,
+		"--photon-site-muted-text": designSettings.mutedTextColor,
+		"--photon-site-accent": designSettings.accentColor,
+		"--photon-site-border": designSettings.borderColor,
+		"--photon-site-max-width": designSettings.siteMaxWidth,
+		"--photon-site-gutter": designSettings.pageGutter,
+		"--photon-section-gap": designSettings.sectionGap,
+		"--photon-site-radius": designSettings.radius,
+		"--photon-site-header-offset": designSettings.headerOffset,
 		backgroundColor: designSettings.backgroundColor,
 		color: designSettings.textColor,
 		fontFamily: designSettings.bodyFontFamily,
 	} as CSSProperties;
 
 	return (
-		<WebsiteBuilderProvider
+		<PhotonProvider
 			initialDocument={page.document}
 			initialResources={page.resources}
 			initialPageSettings={page.pageSettings}
@@ -244,17 +244,17 @@ export const WebsiteBuilderPublicPage = ({
 			searchSite={searchSite}
 			i18n={i18n}
 		>
-			<WebsiteBuilderSearchHighlightEffect
+			<PhotonSearchHighlightEffect
 				activeHighlight={activeSearchHighlight}
 			/>
 			<main
 				className="min-h-screen min-w-0 px-0 transition-colors duration-500"
 				style={siteSurfaceStyle}
-				data-testid="wb-public-runtime"
+				data-testid="photon-public-runtime"
 			>
-				<WebsiteBuilderPublicSurface page={page} />
+				<PhotonPublicSurface page={page} />
 			</main>
-		</WebsiteBuilderProvider>
+		</PhotonProvider>
 	);
 };
 
@@ -265,59 +265,59 @@ export { EditableRichText } from "./components/public/public-editable-rich-text"
 export { EditableText } from "./components/public/public-editable-text";
 export { EditableTextarea } from "./components/public/public-editable-textarea";
 export {
-	renderWebsiteBuilderRichTextHtml,
-	sanitizeWebsiteBuilderRichTextHtml,
+	renderPhotonRichTextHtml,
+	sanitizePhotonRichTextHtml,
 } from "./components/public/sanitize-rich-text";
 export {
-	useWebsiteBuilder,
-	useWebsiteBuilderCanEdit,
-	useWebsiteBuilderFieldValue as useWebsiteBuilderValueAtPath,
-	useWebsiteBuilderStore,
-	WebsiteBuilderLink,
-} from "./context/website-builder-context";
-export { useWebsiteBuilderRenderDepth } from "./context/website-builder-render-depth-context";
+	usePhoton,
+	usePhotonCanEdit,
+	usePhotonFieldValue as usePhotonValueAtPath,
+	usePhotonStore,
+	PhotonLink,
+} from "./context/photon-context";
+export { usePhotonRenderDepth } from "./context/photon-render-depth-context";
 export {
-	createWebsiteBuilderBlockLocalizationSchema,
-	createWebsiteBuilderLocalizedDefault,
-	defineWebsiteBuilderBlockDefinition,
+	createPhotonBlockLocalizationSchema,
+	createPhotonLocalizedDefault,
+	definePhotonBlockDefinition,
 } from "./helpers/document";
-export { createWebsiteBuilderKit } from "./helpers/installable";
-export { createWebsiteBuilderRuntime } from "./helpers/runtime";
+export { createPhotonKit } from "./helpers/installable";
+export { createPhotonRuntime } from "./helpers/runtime";
 export {
-	createWebsiteBuilderAccountTabExtension,
-	createWebsiteBuilderSiteFrameExtension,
-	resolveWebsiteBuilderAccountTabs,
+	createPhotonAccountTabExtension,
+	createPhotonSiteFrameExtension,
+	resolvePhotonAccountTabs,
 } from "./helpers/site-frame-extensions";
-export { getWebsiteBuilderSurfaceModeStyle } from "./helpers/surface-layout";
-export { useWebsiteBuilderI18n } from "./i18n/website-builder-i18n-context";
+export { getPhotonSurfaceModeStyle } from "./helpers/surface-layout";
+export { usePhotonI18n } from "./i18n/photon-i18n-context";
 export {
-	websiteBuilderPublicSystemKit as websiteBuilderSystemKit,
-	websiteBuilderPublicSystemModule as websiteBuilderSystemModule,
+	photonPublicSystemKit as photonSystemKit,
+	photonPublicSystemModule as photonSystemModule,
 } from "./modules/system-public";
 export {
-	WEBSITE_BUILDER_SEARCH_OCCURRENCE_PARAM,
-	WEBSITE_BUILDER_SEARCH_QUERY_PARAM,
-	WEBSITE_BUILDER_SEARCH_TARGET_PARAM,
+	PHOTON_SEARCH_OCCURRENCE_PARAM,
+	PHOTON_SEARCH_QUERY_PARAM,
+	PHOTON_SEARCH_TARGET_PARAM,
 } from "./search/constants";
-export { WebsiteBuilderSiteSearch } from "./search/website-builder-site-search";
+export { PhotonSiteSearch } from "./search/photon-site-search";
 export type {
-	WebsiteBuilderAccountTabExtension,
-	WebsiteBuilderBindingAdapter,
-	WebsiteBuilderBlock,
-	WebsiteBuilderBlockComponentProps,
-	WebsiteBuilderBlockDefinition,
-	WebsiteBuilderBlockLocalizationSchema,
-	WebsiteBuilderDocument,
-	WebsiteBuilderDocumentsMap,
-	WebsiteBuilderField,
-	WebsiteBuilderFieldOption,
-	WebsiteBuilderInstallableKit,
-	WebsiteBuilderLinkComponentProps,
-	WebsiteBuilderLocaleDescriptor,
-	WebsiteBuilderLocaleStatus,
-	WebsiteBuilderModule,
-	WebsiteBuilderPageSettingsPanelDefinition,
-	WebsiteBuilderPageSettingsScope,
-	WebsiteBuilderSiteFrameExtension,
-	WebsiteBuilderSiteSettingsPanelDefinition,
+	PhotonAccountTabExtension,
+	PhotonBindingAdapter,
+	PhotonBlock,
+	PhotonBlockComponentProps,
+	PhotonBlockDefinition,
+	PhotonBlockLocalizationSchema,
+	PhotonDocument,
+	PhotonDocumentsMap,
+	PhotonField,
+	PhotonFieldOption,
+	PhotonInstallableKit,
+	PhotonLinkComponentProps,
+	PhotonLocaleDescriptor,
+	PhotonLocaleStatus,
+	PhotonModule,
+	PhotonPageSettingsPanelDefinition,
+	PhotonPageSettingsScope,
+	PhotonSiteFrameExtension,
+	PhotonSiteSettingsPanelDefinition,
 } from "./types";

@@ -18,15 +18,15 @@ import {
 	PanelsTopLeft,
 	Sparkles,
 } from "lucide-react";
-import type { WebsiteBuilderBlock } from "../../types";
+import type { PhotonBlock } from "../../types";
 import type { InsertTarget } from "../types";
 
 export const FIELD_GROUP_LABELS: Record<string, string> = {
-	content: "websiteBuilder.fieldGroups.content",
-	style: "websiteBuilder.fieldGroups.style",
-	layout: "websiteBuilder.fieldGroups.layout",
-	data: "websiteBuilder.fieldGroups.data",
-	misc: "websiteBuilder.fieldGroups.misc",
+	content: "photon.fieldGroups.content",
+	style: "photon.fieldGroups.style",
+	layout: "photon.fieldGroups.layout",
+	data: "photon.fieldGroups.data",
+	misc: "photon.fieldGroups.misc",
 };
 
 export const STUDIO_ICONS = {
@@ -132,7 +132,7 @@ const createPointerProximityRect = (
 	};
 };
 
-export const websiteBuilderCollisionDetection: CollisionDetection = (args) => {
+export const photonCollisionDetection: CollisionDetection = (args) => {
 	const activeKind = args.active.data.current?.kind;
 	const insertZoneContainers = args.droppableContainers.filter(
 		(container) => container.data.current?.kind === "insert-zone",
@@ -244,6 +244,6 @@ export const matchesTarget = (
 
 export const inputClassName = clsx(
 	"w-full rounded-[20px] border px-4 py-3",
-	"text-sm outline-none transition placeholder:text-[color:var(--wb-builder-text-ghost)]",
-	"border-[color:var(--wb-builder-border)] bg-[color:var(--wb-builder-field)] text-[color:var(--wb-builder-text)] focus:border-[color:var(--wb-builder-border-strong)]",
+	"text-sm outline-none transition placeholder:text-[color:var(--photon-builder-text-ghost)]",
+	"border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] text-[color:var(--photon-builder-text)] focus:border-[color:var(--photon-builder-border-strong)]",
 );

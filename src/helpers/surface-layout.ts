@@ -1,15 +1,15 @@
 import type { CSSProperties } from "react";
-import type { WebsiteBuilderSurfaceMode } from "../types";
+import type { PhotonSurfaceMode } from "../types";
 
-export const getWebsiteBuilderSurfaceModeStyle = (
-	mode: WebsiteBuilderSurfaceMode,
+export const getPhotonSurfaceModeStyle = (
+	mode: PhotonSurfaceMode,
 ): CSSProperties | undefined => {
 	switch (mode) {
 		case "bleed":
 			return {
 				marginInline: "calc(50% - 50cqw)",
 				paddingInline:
-					"max(calc((100cqw - var(--wb-site-max-width, 1280px)) / 2), var(--wb-site-gutter, 24px))",
+					"max(calc((100cqw - var(--photon-site-max-width, 1280px)) / 2), var(--photon-site-gutter, 24px))",
 			};
 		case "full-viewport":
 			return {

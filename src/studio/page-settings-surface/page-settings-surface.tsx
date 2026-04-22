@@ -3,13 +3,13 @@
 import clsx from "clsx";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { WebsiteBuilderFieldEditorList } from "../../components/website-builder-field-editor-list";
+import { PhotonFieldEditorList } from "../../components/photon-field-editor-list";
 import type {
-	WebsiteBuilderField,
-	WebsiteBuilderPageCatalogItem,
-	WebsiteBuilderPageSettings,
-	WebsiteBuilderPageSettingsScope,
-	WebsiteBuilderSite,
+	PhotonField,
+	PhotonPageCatalogItem,
+	PhotonPageSettings,
+	PhotonPageSettingsScope,
+	PhotonSite,
 } from "../../types";
 import type {
 	PageSettingsPanelDefinition,
@@ -18,10 +18,10 @@ import type {
 } from "../types";
 
 type PageSettingsSurfaceProps = {
-	currentPage: WebsiteBuilderPageCatalogItem | null;
-	pageSettings: WebsiteBuilderPageSettings;
+	currentPage: PhotonPageCatalogItem | null;
+	pageSettings: PhotonPageSettings;
 	pageSettingsPanels: PageSettingsPanelDefinition[];
-	site: WebsiteBuilderSite;
+	site: PhotonSite;
 	siteSettingsPanels: SiteSettingsPanelDefinition[];
 	siteSettingsSubtabs: SiteSettingsSubtabDefinition[];
 	getPageSettingValue: (path: string) => unknown;
@@ -32,13 +32,13 @@ type PageSettingsSurfaceProps = {
 	onSiteSettingFocus: (path: string) => void;
 };
 
-const scopeOrder: WebsiteBuilderPageSettingsScope[] = [
+const scopeOrder: PhotonPageSettingsScope[] = [
 	"page",
 	"template",
 	"record",
 ];
 
-const staticPageFields: WebsiteBuilderField[] = [
+const staticPageFields: PhotonField[] = [
 	{
 		path: "name",
 		label: "Name",
@@ -54,7 +54,7 @@ const staticPageFields: WebsiteBuilderField[] = [
 ];
 
 const scopeMeta: Record<
-	WebsiteBuilderPageSettingsScope,
+	PhotonPageSettingsScope,
 	{
 		label: string;
 		eyebrow: string;
@@ -82,8 +82,8 @@ const scopeMeta: Record<
 };
 
 const getScopeSettings = (
-	pageSettings: WebsiteBuilderPageSettings,
-	scope: WebsiteBuilderPageSettingsScope,
+	pageSettings: PhotonPageSettings,
+	scope: PhotonPageSettingsScope,
 ) => {
 	const value = pageSettings[scope];
 
@@ -102,8 +102,8 @@ const readString = (
 };
 
 const resolveAvailableScopes = (
-	pageSettings: WebsiteBuilderPageSettings,
-): WebsiteBuilderPageSettingsScope[] =>
+	pageSettings: PhotonPageSettings,
+): PhotonPageSettingsScope[] =>
 	scopeOrder.filter((scope) => {
 		const value = pageSettings[scope];
 
@@ -111,28 +111,28 @@ const resolveAvailableScopes = (
 	});
 
 const surfaceCardStyle: CSSProperties = {
-	borderColor: "var(--wb-builder-border)",
-	background: "var(--wb-builder-panel-muted)",
-	color: "var(--wb-builder-text)",
+	borderColor: "var(--photon-builder-border)",
+	background: "var(--photon-builder-panel-muted)",
+	color: "var(--photon-builder-text)",
 };
 
 const subtleChipStyle: CSSProperties = {
-	borderColor: "var(--wb-builder-border)",
-	background: "var(--wb-builder-field)",
-	color: "var(--wb-builder-text-soft)",
+	borderColor: "var(--photon-builder-border)",
+	background: "var(--photon-builder-field)",
+	color: "var(--photon-builder-text-soft)",
 };
 
 const emphasizedChipStyle: CSSProperties = {
-	borderColor: "var(--wb-builder-border-strong)",
-	background: "var(--wb-builder-accent-soft)",
-	color: "var(--wb-builder-accent-text)",
+	borderColor: "var(--photon-builder-border-strong)",
+	background: "var(--photon-builder-accent-soft)",
+	color: "var(--photon-builder-accent-text)",
 };
 
 const warningCardStyle: CSSProperties = {
-	borderColor: "var(--wb-builder-border-strong)",
+	borderColor: "var(--photon-builder-border-strong)",
 	background:
-		"linear-gradient(180deg, color-mix(in srgb, var(--wb-builder-accent) 12%, transparent), color-mix(in srgb, var(--wb-builder-panel-solid) 82%, transparent))",
-	color: "var(--wb-builder-text)",
+		"linear-gradient(180deg, color-mix(in srgb, var(--photon-builder-accent) 12%, transparent), color-mix(in srgb, var(--photon-builder-panel-solid) 82%, transparent))",
+	color: "var(--photon-builder-text)",
 };
 
 const SettingsCard = ({
@@ -149,20 +149,20 @@ const SettingsCard = ({
 	<section className="rounded-[28px] border px-5 py-5" style={surfaceCardStyle}>
 		<div
 			className="text-[11px] uppercase tracking-[0.28em]"
-			style={{ color: "var(--wb-builder-text-soft)" }}
+			style={{ color: "var(--photon-builder-text-soft)" }}
 		>
 			{eyebrow}
 		</div>
 		<div
 			className="mt-4 text-2xl font-semibold tracking-[-0.04em]"
-			style={{ color: "var(--wb-builder-text)" }}
+			style={{ color: "var(--photon-builder-text)" }}
 		>
 			{title}
 		</div>
 		{description ? (
 			<div
 				className="mt-3 text-sm leading-7"
-				style={{ color: "var(--wb-builder-text-muted)" }}
+				style={{ color: "var(--photon-builder-text-muted)" }}
 			>
 				{description}
 			</div>
@@ -191,7 +191,7 @@ export const PageSettingsSurface = ({
 	);
 	const [activeTab, setActiveTab] = useState<"page" | "site">("page");
 	const [activeScope, setActiveScope] =
-		useState<WebsiteBuilderPageSettingsScope>(availableScopes[0] ?? "page");
+		useState<PhotonPageSettingsScope>(availableScopes[0] ?? "page");
 	const siteSubtabs = useMemo(
 		() => [
 			{ key: "design", label: "Design" },
@@ -286,19 +286,19 @@ export const PageSettingsSurface = ({
 				key={`${panel.key}:${viewMode ?? "default"}`}
 				className="rounded-[28px] border px-5 py-5"
 				style={surfaceCardStyle}
-				data-testid={`wb-site-settings-panel-${panel.key}${viewMode ? `-${viewMode}` : ""}`}
+				data-testid={`photon-site-settings-panel-${panel.key}${viewMode ? `-${viewMode}` : ""}`}
 			>
 				<div className="mb-4">
 					<div
 						className="text-[11px] uppercase tracking-[0.28em]"
-						style={{ color: "var(--wb-builder-text-soft)" }}
+						style={{ color: "var(--photon-builder-text-soft)" }}
 					>
 						{panel.label}
 					</div>
 					{panel.description ? (
 						<div
 							className="mt-2 text-sm leading-6"
-							style={{ color: "var(--wb-builder-text-muted)" }}
+							style={{ color: "var(--photon-builder-text-muted)" }}
 						>
 							{panel.description}
 						</div>
@@ -323,37 +323,37 @@ export const PageSettingsSurface = ({
 	return (
 		<section
 			className="mx-auto w-full max-w-[1240px] px-1 pb-10"
-			data-testid="wb-page-settings-surface"
+			data-testid="photon-page-settings-surface"
 		>
 			<div
 				className="rounded-[34px] border p-5 sm:p-6"
 				style={{
-					borderColor: "var(--wb-builder-border)",
+					borderColor: "var(--photon-builder-border)",
 					background:
-						"linear-gradient(180deg, var(--wb-builder-panel-solid), var(--wb-builder-panel))",
-					boxShadow: "var(--wb-builder-shadow)",
-					color: "var(--wb-builder-text)",
+						"linear-gradient(180deg, var(--photon-builder-panel-solid), var(--photon-builder-panel))",
+					boxShadow: "var(--photon-builder-shadow)",
+					color: "var(--photon-builder-text)",
 				}}
-				data-testid="wb-builder-settings-shell"
+				data-testid="photon-builder-settings-shell"
 			>
 				<div className="flex flex-col gap-6">
 					<div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
 						<div className="min-w-0">
 							<div
 								className="text-[11px] uppercase tracking-[0.3em]"
-								style={{ color: "var(--wb-builder-text-soft)" }}
+								style={{ color: "var(--photon-builder-text-soft)" }}
 							>
 								Settings mode
 							</div>
 							<div
 								className="mt-3 text-2xl font-semibold tracking-[-0.04em] sm:text-3xl"
-								style={{ color: "var(--wb-builder-text)" }}
+								style={{ color: "var(--photon-builder-text)" }}
 							>
 								Website settings
 							</div>
 							<div
 								className="mt-2 max-w-3xl text-sm leading-7"
-								style={{ color: "var(--wb-builder-text-muted)" }}
+								style={{ color: "var(--photon-builder-text-muted)" }}
 							>
 								Switch between route-specific settings and shared site design
 								without leaving the live website surface.
@@ -363,8 +363,8 @@ export const PageSettingsSurface = ({
 						<div
 							className="inline-flex w-full max-w-full flex-wrap rounded-full border p-1 sm:w-auto"
 							style={{
-								borderColor: "var(--wb-builder-border)",
-								background: "var(--wb-builder-field)",
+								borderColor: "var(--photon-builder-border)",
+								background: "var(--photon-builder-field)",
 							}}
 						>
 							{[
@@ -384,17 +384,17 @@ export const PageSettingsSurface = ({
 									type="button"
 									onClick={() => !tab.disabled && setActiveTab(tab.key)}
 									disabled={tab.disabled}
-									data-testid={`wb-settings-tab-${tab.key}`}
+									data-testid={`photon-settings-tab-${tab.key}`}
 									className={clsx(
 										"cursor-pointer rounded-full px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-35",
 									)}
 									style={
 										activeTab === tab.key
 											? {
-													background: "var(--wb-builder-accent-soft)",
-													color: "var(--wb-builder-accent-text)",
+													background: "var(--photon-builder-accent-soft)",
+													color: "var(--photon-builder-accent-text)",
 												}
-											: { color: "var(--wb-builder-text-muted)" }
+											: { color: "var(--photon-builder-text-muted)" }
 									}
 								>
 									{tab.label}
@@ -408,8 +408,8 @@ export const PageSettingsSurface = ({
 							<div
 								className="inline-flex w-full max-w-full flex-wrap rounded-full border p-1 sm:w-auto"
 								style={{
-									borderColor: "var(--wb-builder-border)",
-									background: "var(--wb-builder-field)",
+									borderColor: "var(--photon-builder-border)",
+									background: "var(--photon-builder-field)",
 								}}
 							>
 								{availableScopes.map((scope) => (
@@ -417,17 +417,17 @@ export const PageSettingsSurface = ({
 										key={scope}
 										type="button"
 										onClick={() => setActiveScope(scope)}
-										data-testid={`wb-settings-scope-${scope}`}
+										data-testid={`photon-settings-scope-${scope}`}
 										className={clsx(
 											"cursor-pointer rounded-full px-4 py-2 text-sm font-semibold transition",
 										)}
 										style={
 											activeScope === scope
 												? {
-														background: "var(--wb-builder-accent-soft)",
-														color: "var(--wb-builder-accent-text)",
+														background: "var(--photon-builder-accent-soft)",
+														color: "var(--photon-builder-accent-text)",
 													}
-												: { color: "var(--wb-builder-text-muted)" }
+												: { color: "var(--photon-builder-text-muted)" }
 										}
 									>
 										{scopeMeta[scope].label}
@@ -472,13 +472,13 @@ export const PageSettingsSurface = ({
 							>
 								<div
 									className="mb-4 text-[11px] uppercase tracking-[0.28em]"
-									style={{ color: "var(--wb-builder-text-soft)" }}
+									style={{ color: "var(--photon-builder-text-soft)" }}
 								>
 									Basics
 								</div>
 
 								{activeScope === "page" ? (
-									<WebsiteBuilderFieldEditorList
+									<PhotonFieldEditorList
 										fields={staticPageFields}
 										subjectId="page-settings"
 										getValue={(path) =>
@@ -510,13 +510,13 @@ export const PageSettingsSurface = ({
 											>
 												<div
 													className="text-[11px] uppercase tracking-[0.24em]"
-													style={{ color: "var(--wb-builder-text-soft)" }}
+													style={{ color: "var(--photon-builder-text-soft)" }}
 												>
 													Name
 												</div>
 												<div
 													className="mt-2 text-sm font-semibold"
-													style={{ color: "var(--wb-builder-text)" }}
+													style={{ color: "var(--photon-builder-text)" }}
 												>
 													{scopeTitle}
 												</div>
@@ -527,13 +527,13 @@ export const PageSettingsSurface = ({
 											>
 												<div
 													className="text-[11px] uppercase tracking-[0.24em]"
-													style={{ color: "var(--wb-builder-text-soft)" }}
+													style={{ color: "var(--photon-builder-text-soft)" }}
 												>
 													Route pattern
 												</div>
 												<div
 													className="mt-2 font-mono text-sm"
-													style={{ color: "var(--wb-builder-text-muted)" }}
+													style={{ color: "var(--photon-builder-text-muted)" }}
 												>
 													{primaryRoute ?? "Not available"}
 												</div>
@@ -544,13 +544,13 @@ export const PageSettingsSurface = ({
 											>
 												<div
 													className="text-[11px] uppercase tracking-[0.24em]"
-													style={{ color: "var(--wb-builder-text-soft)" }}
+													style={{ color: "var(--photon-builder-text-soft)" }}
 												>
 													Current route
 												</div>
 												<div
 													className="mt-2 font-mono text-sm"
-													style={{ color: "var(--wb-builder-text-muted)" }}
+													style={{ color: "var(--photon-builder-text-muted)" }}
 												>
 													{secondaryRoute ??
 														currentPage?.route ??
@@ -578,13 +578,13 @@ export const PageSettingsSurface = ({
 											>
 												<div
 													className="text-[11px] uppercase tracking-[0.24em]"
-													style={{ color: "var(--wb-builder-text-soft)" }}
+													style={{ color: "var(--photon-builder-text-soft)" }}
 												>
 													Current route
 												</div>
 												<div
 													className="mt-2 font-mono text-sm"
-													style={{ color: "var(--wb-builder-text-muted)" }}
+													style={{ color: "var(--photon-builder-text-muted)" }}
 												>
 													{primaryRoute ??
 														currentPage?.route ??
@@ -597,13 +597,13 @@ export const PageSettingsSurface = ({
 											>
 												<div
 													className="text-[11px] uppercase tracking-[0.24em]"
-													style={{ color: "var(--wb-builder-text-soft)" }}
+													style={{ color: "var(--photon-builder-text-soft)" }}
 												>
 													Record key
 												</div>
 												<div
 													className="mt-2 text-sm font-semibold"
-													style={{ color: "var(--wb-builder-text)" }}
+													style={{ color: "var(--photon-builder-text)" }}
 												>
 													{currentPage?.key ?? "Not available"}
 												</div>
@@ -625,14 +625,14 @@ export const PageSettingsSurface = ({
 										<div className="mb-4">
 											<div
 												className="text-[11px] uppercase tracking-[0.28em]"
-												style={{ color: "var(--wb-builder-text-soft)" }}
+												style={{ color: "var(--photon-builder-text-soft)" }}
 											>
 												{panel.label}
 											</div>
 											{panel.description ? (
 												<div
 													className="mt-2 text-sm leading-6"
-													style={{ color: "var(--wb-builder-text-muted)" }}
+													style={{ color: "var(--photon-builder-text-muted)" }}
 												>
 													{panel.description}
 												</div>
@@ -687,25 +687,25 @@ export const PageSettingsSurface = ({
 							<div
 								className="inline-flex w-full max-w-full flex-wrap rounded-full border p-1 sm:w-auto"
 								style={{
-									borderColor: "var(--wb-builder-border)",
-									background: "var(--wb-builder-field)",
+									borderColor: "var(--photon-builder-border)",
+									background: "var(--photon-builder-field)",
 								}}
-								data-testid="wb-site-settings-subtabs"
+								data-testid="photon-site-settings-subtabs"
 							>
 								{siteSubtabs.map((tab) => (
 									<button
 										key={tab.key}
 										type="button"
 										onClick={() => setActiveSiteTab(tab.key)}
-										data-testid={`wb-site-settings-subtab-${tab.key}`}
+										data-testid={`photon-site-settings-subtab-${tab.key}`}
 										className="cursor-pointer rounded-full px-4 py-2 text-sm font-semibold transition"
 										style={
 											activeSiteTab === tab.key
 												? {
-														background: "var(--wb-builder-accent-soft)",
-														color: "var(--wb-builder-accent-text)",
+														background: "var(--photon-builder-accent-soft)",
+														color: "var(--photon-builder-accent-text)",
 													}
-												: { color: "var(--wb-builder-text-muted)" }
+												: { color: "var(--photon-builder-text-muted)" }
 										}
 									>
 										{tab.label}
@@ -728,17 +728,17 @@ export const PageSettingsSurface = ({
 									<section
 										className="rounded-[28px] border px-5 py-5"
 										style={surfaceCardStyle}
-										data-testid="wb-site-settings-panel-locales-empty"
+										data-testid="photon-site-settings-panel-locales-empty"
 									>
 										<div
 											className="text-[11px] uppercase tracking-[0.28em]"
-											style={{ color: "var(--wb-builder-text-soft)" }}
+											style={{ color: "var(--photon-builder-text-soft)" }}
 										>
 											Locales
 										</div>
 										<div
 											className="mt-3 text-sm leading-6"
-											style={{ color: "var(--wb-builder-text-muted)" }}
+											style={{ color: "var(--photon-builder-text-muted)" }}
 										>
 											The locales settings panel is not registered in this
 											build.
@@ -750,19 +750,19 @@ export const PageSettingsSurface = ({
 								<section
 									className="rounded-[28px] border px-5 py-5"
 									style={surfaceCardStyle}
-									data-testid={`wb-site-settings-panel-${siteWorkspaceSubtab.key}`}
+									data-testid={`photon-site-settings-panel-${siteWorkspaceSubtab.key}`}
 								>
 									<div className="mb-4">
 										<div
 											className="text-[11px] uppercase tracking-[0.28em]"
-											style={{ color: "var(--wb-builder-text-soft)" }}
+											style={{ color: "var(--photon-builder-text-soft)" }}
 										>
 											{siteWorkspaceSubtab.label}
 										</div>
 										{siteWorkspaceSubtab.description ? (
 											<div
 												className="mt-2 text-sm leading-6"
-												style={{ color: "var(--wb-builder-text-muted)" }}
+												style={{ color: "var(--photon-builder-text-muted)" }}
 											>
 												{siteWorkspaceSubtab.description}
 											</div>

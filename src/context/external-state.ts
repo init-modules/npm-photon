@@ -1,29 +1,29 @@
-import { getWebsiteBuilderDocumentFingerprint } from "../helpers/document";
-import { getWebsiteBuilderWorkspaceIdentityKey } from "../helpers/workspace";
+import { getPhotonDocumentFingerprint } from "../helpers/document";
+import { getPhotonWorkspaceIdentityKey } from "../helpers/workspace";
 import type {
-	WebsiteBuilderDocument,
-	WebsiteBuilderPageSettings,
-	WebsiteBuilderResources,
-	WebsiteBuilderSite,
-	WebsiteBuilderWorkspaceDescriptor,
+	PhotonDocument,
+	PhotonPageSettings,
+	PhotonResources,
+	PhotonSite,
+	PhotonWorkspaceDescriptor,
 } from "../types";
 
-export const getWebsiteBuilderExternalStateFingerprint = ({
+export const getPhotonExternalStateFingerprint = ({
 	document,
 	resources,
 	pageSettings,
 	site,
 	workspace,
 }: {
-	document: WebsiteBuilderDocument;
-	resources: WebsiteBuilderResources;
-	pageSettings: WebsiteBuilderPageSettings;
-	site: WebsiteBuilderSite;
-	workspace?: WebsiteBuilderWorkspaceDescriptor;
+	document: PhotonDocument;
+	resources: PhotonResources;
+	pageSettings: PhotonPageSettings;
+	site: PhotonSite;
+	workspace?: PhotonWorkspaceDescriptor;
 }) =>
 	JSON.stringify({
-		workspace: getWebsiteBuilderWorkspaceIdentityKey(workspace),
-		document: getWebsiteBuilderDocumentFingerprint(document),
+		workspace: getPhotonWorkspaceIdentityKey(workspace),
+		document: getPhotonDocumentFingerprint(document),
 		resources,
 		pageSettings,
 		site,

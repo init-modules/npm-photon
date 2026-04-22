@@ -23,7 +23,7 @@ export const ContextMenuItem = forwardRef<
 			ref={ref}
 			data-slot="context-menu-item"
 			className={cn(
-				"relative flex cursor-pointer select-none items-center rounded-[1rem] px-3 py-2.5 text-sm font-semibold text-[var(--wb-builder-text-muted)] outline-none transition-colors duration-150 data-[disabled]:pointer-events-none data-[disabled]:opacity-45 data-[highlighted]:bg-[var(--wb-builder-accent-strong)] data-[highlighted]:text-[var(--wb-builder-text)]",
+				"relative flex cursor-pointer select-none items-center rounded-[1rem] px-3 py-2.5 text-sm font-semibold text-[var(--photon-builder-text-muted)] outline-none transition-colors duration-150 data-[disabled]:pointer-events-none data-[disabled]:opacity-45 data-[highlighted]:bg-[var(--photon-builder-accent-strong)] data-[highlighted]:text-[var(--photon-builder-text)]",
 				inset && "pl-9",
 				className,
 			)}

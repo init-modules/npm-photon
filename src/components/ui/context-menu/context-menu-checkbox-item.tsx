@@ -19,7 +19,7 @@ export const ContextMenuCheckboxItem = forwardRef<
 			data-slot="context-menu-checkbox-item"
 			checked={checked}
 			className={cn(
-				"relative flex cursor-pointer select-none items-center rounded-[1rem] py-2.5 pl-9 pr-3 text-sm font-semibold text-[var(--wb-builder-text-muted)] outline-none transition-colors duration-150 data-[disabled]:pointer-events-none data-[disabled]:opacity-45 data-[highlighted]:bg-[var(--wb-builder-accent-strong)] data-[highlighted]:text-[var(--wb-builder-text)]",
+				"relative flex cursor-pointer select-none items-center rounded-[1rem] py-2.5 pl-9 pr-3 text-sm font-semibold text-[var(--photon-builder-text-muted)] outline-none transition-colors duration-150 data-[disabled]:pointer-events-none data-[disabled]:opacity-45 data-[highlighted]:bg-[var(--photon-builder-accent-strong)] data-[highlighted]:text-[var(--photon-builder-text)]",
 				className,
 			)}
 			{...props}
@@ -28,7 +28,7 @@ export const ContextMenuCheckboxItem = forwardRef<
 				<ContextMenuPrimitive.ItemIndicator>
 					<Check
 						className="h-4 w-4"
-						style={{ color: "var(--wb-builder-accent)" }}
+						style={{ color: "var(--photon-builder-accent)" }}
 					/>
 				</ContextMenuPrimitive.ItemIndicator>
 			</span>

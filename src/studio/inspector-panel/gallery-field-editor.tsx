@@ -4,11 +4,11 @@ import clsx from "clsx";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
-	isWebsiteBuilderMediaValue,
-	resolveWebsiteBuilderMediaPreviewUrl,
+	isPhotonMediaValue,
+	resolvePhotonMediaPreviewUrl,
 } from "../../helpers/media";
-import { createWebsiteBuilderNodeId } from "../../helpers/tree";
-import type { WebsiteBuilderMediaUploadHandler } from "../../types";
+import { createPhotonNodeId } from "../../helpers/tree";
+import type { PhotonMediaUploadHandler } from "../../types";
 import { inputClassName } from "../shared";
 
 type InspectorGalleryItem = {
@@ -25,7 +25,7 @@ type GalleryFieldEditorProps = {
 	value: unknown;
 	onFocus: () => void;
 	onApply: (value: unknown) => void;
-	onUpload?: WebsiteBuilderMediaUploadHandler;
+	onUpload?: PhotonMediaUploadHandler;
 };
 
 export const GalleryFieldEditor = ({
@@ -52,31 +52,31 @@ export const GalleryFieldEditor = ({
 						key={item.id ?? `${blockId}-${path}-${index}`}
 						className="rounded-[24px] border p-3"
 						style={{
-							borderColor: "var(--wb-builder-border)",
+							borderColor: "var(--photon-builder-border)",
 							background:
-								"linear-gradient(180deg, var(--wb-builder-panel-solid), var(--wb-builder-panel))",
-							boxShadow: "var(--wb-builder-card-shadow)",
+								"linear-gradient(180deg, var(--photon-builder-panel-solid), var(--photon-builder-panel))",
+							boxShadow: "var(--photon-builder-card-shadow)",
 						}}
-						data-testid={`wb-gallery-field-editor-item-${path}-${index}`}
+						data-testid={`photon-gallery-field-editor-item-${path}-${index}`}
 					>
 						<div className="grid gap-3 sm:grid-cols-[80px_minmax(0,1fr)]">
 							<div
 								className="overflow-hidden rounded-2xl border"
 								style={{
-									borderColor: "var(--wb-builder-border)",
-									background: "var(--wb-builder-field)",
+									borderColor: "var(--photon-builder-border)",
+									background: "var(--photon-builder-field)",
 								}}
 							>
-								{resolveWebsiteBuilderMediaPreviewUrl(item.media) ? (
+								{resolvePhotonMediaPreviewUrl(item.media) ? (
 									<img
-										src={resolveWebsiteBuilderMediaPreviewUrl(item.media)}
+										src={resolvePhotonMediaPreviewUrl(item.media)}
 										alt={item.alt ?? `Gallery item ${index + 1}`}
 										className="aspect-square h-full w-full object-cover"
 									/>
 								) : (
 									<div
 										className="flex aspect-square items-center justify-center text-xs uppercase tracking-[0.22em]"
-										style={{ color: "var(--wb-builder-text-muted)" }}
+										style={{ color: "var(--photon-builder-text-muted)" }}
 									>
 										Media
 									</div>
@@ -87,21 +87,21 @@ export const GalleryFieldEditor = ({
 									<div
 										className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]"
 										style={{
-											borderColor: "var(--wb-builder-border)",
-											background: "var(--wb-builder-field)",
-											color: "var(--wb-builder-text-soft)",
+											borderColor: "var(--photon-builder-border)",
+											background: "var(--photon-builder-field)",
+											color: "var(--photon-builder-text-soft)",
 										}}
 									>
 										{`item ${index + 1}`}
 									</div>
-									{isWebsiteBuilderMediaValue(item.media) &&
+									{isPhotonMediaValue(item.media) &&
 									item.media.temporaryUploadId ? (
 										<div
 											className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]"
 											style={{
-												borderColor: "var(--wb-builder-border-strong)",
-												background: "var(--wb-builder-accent-strong)",
-												color: "var(--wb-builder-accent)",
+												borderColor: "var(--photon-builder-border-strong)",
+												background: "var(--photon-builder-accent-strong)",
+												color: "var(--photon-builder-accent)",
 											}}
 										>
 											staged
@@ -162,9 +162,9 @@ export const GalleryFieldEditor = ({
 										}}
 										className="rounded-full border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.24em] transition"
 										style={{
-											borderColor: "var(--wb-builder-border)",
-											background: "var(--wb-builder-field)",
-											color: "var(--wb-builder-text-soft)",
+											borderColor: "var(--photon-builder-border)",
+											background: "var(--photon-builder-field)",
+											color: "var(--photon-builder-text-soft)",
 										}}
 									>
 										Prev
@@ -185,9 +185,9 @@ export const GalleryFieldEditor = ({
 										}}
 										className="rounded-full border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.24em] transition"
 										style={{
-											borderColor: "var(--wb-builder-border)",
-											background: "var(--wb-builder-field)",
-											color: "var(--wb-builder-text-soft)",
+											borderColor: "var(--photon-builder-border)",
+											background: "var(--photon-builder-field)",
+											color: "var(--photon-builder-text-soft)",
 										}}
 									>
 										Next
@@ -203,9 +203,9 @@ export const GalleryFieldEditor = ({
 										}
 										className="rounded-full border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.24em] transition"
 										style={{
-											borderColor: "var(--wb-builder-border-strong)",
-											background: "var(--wb-builder-accent-strong)",
-											color: "var(--wb-builder-accent)",
+											borderColor: "var(--photon-builder-border-strong)",
+											background: "var(--photon-builder-accent-strong)",
+											color: "var(--photon-builder-accent)",
 										}}
 									>
 										Remove
@@ -220,9 +220,9 @@ export const GalleryFieldEditor = ({
 			<label
 				className="inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition"
 				style={{
-					borderColor: "var(--wb-builder-border-strong)",
-					background: "var(--wb-builder-accent-strong)",
-					color: "var(--wb-builder-accent)",
+					borderColor: "var(--photon-builder-border-strong)",
+					background: "var(--photon-builder-accent-strong)",
+					color: "var(--photon-builder-accent)",
 				}}
 			>
 				<span>
@@ -250,7 +250,7 @@ export const GalleryFieldEditor = ({
 						setIsUploading(true);
 						void Promise.all(
 							files.map(async (file) => ({
-								id: createWebsiteBuilderNodeId(),
+								id: createPhotonNodeId(),
 								media: await onUpload({
 									file,
 									documentId,

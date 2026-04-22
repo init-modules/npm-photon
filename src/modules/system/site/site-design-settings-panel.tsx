@@ -2,134 +2,134 @@
 
 import type { CSSProperties } from "react";
 import React from "react";
-import { WebsiteBuilderFieldEditorList } from "../../../components/website-builder-field-editor-list";
-import { resolveWebsiteBuilderSiteDesignSettings } from "../../../helpers/site-design";
-import { useWebsiteBuilderI18n } from "../../../i18n/website-builder-i18n-context";
+import { PhotonFieldEditorList } from "../../../components/photon-field-editor-list";
+import { resolvePhotonSiteDesignSettings } from "../../../helpers/site-design";
+import { usePhotonI18n } from "../../../i18n/photon-i18n-context";
 import type {
-	WebsiteBuilderField,
-	WebsiteBuilderSiteSettingsPanelDefinition,
-	WebsiteBuilderSiteSettingsPanelProps,
+	PhotonField,
+	PhotonSiteSettingsPanelDefinition,
+	PhotonSiteSettingsPanelProps,
 } from "../../../types";
-import { websiteBuilderSiteColorSchemes } from "./site-color-schemes";
-import { websiteBuilderSiteDesignPresets } from "./site-design-presets";
+import { photonSiteColorSchemes } from "./site-color-schemes";
+import { photonSiteDesignPresets } from "./site-design-presets";
 
-const designFields: WebsiteBuilderField[] = [
+const designFields: PhotonField[] = [
 	{
 		path: "bodyFontFamily",
 		label: "Body font family",
-		labelKey: "websiteBuilder.system.design.bodyFontFamily.label",
+		labelKey: "photon.system.design.bodyFontFamily.label",
 		kind: "text",
 		description: "Any valid CSS font-family stack.",
-		descriptionKey: "websiteBuilder.system.design.bodyFontFamily.description",
+		descriptionKey: "photon.system.design.bodyFontFamily.description",
 	},
 	{
 		path: "headingFontFamily",
 		label: "Heading font family",
-		labelKey: "websiteBuilder.system.design.headingFontFamily.label",
+		labelKey: "photon.system.design.headingFontFamily.label",
 		kind: "text",
 		description:
 			"Used by system header/footer shells and any package that opts into the shared site tokens.",
 		descriptionKey:
-			"websiteBuilder.system.design.headingFontFamily.description",
+			"photon.system.design.headingFontFamily.description",
 	},
 	{
 		path: "backgroundColor",
 		label: "Page background",
-		labelKey: "websiteBuilder.system.design.backgroundColor.label",
+		labelKey: "photon.system.design.backgroundColor.label",
 		kind: "color",
 	},
 	{
 		path: "surfaceColor",
 		label: "Surface color",
-		labelKey: "websiteBuilder.system.design.surfaceColor.label",
+		labelKey: "photon.system.design.surfaceColor.label",
 		kind: "color",
 	},
 	{
 		path: "textColor",
 		label: "Text color",
-		labelKey: "websiteBuilder.system.design.textColor.label",
+		labelKey: "photon.system.design.textColor.label",
 		kind: "color",
 	},
 	{
 		path: "mutedTextColor",
 		label: "Muted text color",
-		labelKey: "websiteBuilder.system.design.mutedTextColor.label",
+		labelKey: "photon.system.design.mutedTextColor.label",
 		kind: "color",
 	},
 	{
 		path: "accentColor",
 		label: "Accent color",
-		labelKey: "websiteBuilder.system.design.accentColor.label",
+		labelKey: "photon.system.design.accentColor.label",
 		kind: "color",
 	},
 	{
 		path: "borderColor",
 		label: "Border color",
-		labelKey: "websiteBuilder.system.design.borderColor.label",
+		labelKey: "photon.system.design.borderColor.label",
 		kind: "color",
 	},
 	{
 		path: "siteMaxWidth",
 		label: "Site max width",
-		labelKey: "websiteBuilder.system.design.siteMaxWidth.label",
+		labelKey: "photon.system.design.siteMaxWidth.label",
 		kind: "text",
 		description:
 			"CSS width value used by the main content rail, for example 1280px or 92rem.",
-		descriptionKey: "websiteBuilder.system.design.siteMaxWidth.description",
+		descriptionKey: "photon.system.design.siteMaxWidth.description",
 	},
 	{
 		path: "pageGutter",
 		label: "Page gutter",
-		labelKey: "websiteBuilder.system.design.pageGutter.label",
+		labelKey: "photon.system.design.pageGutter.label",
 		kind: "text",
 		description: "Horizontal spacing applied around the live page surface.",
-		descriptionKey: "websiteBuilder.system.design.pageGutter.description",
+		descriptionKey: "photon.system.design.pageGutter.description",
 	},
 	{
 		path: "sectionGap",
 		label: "Section gap",
-		labelKey: "websiteBuilder.system.design.sectionGap.label",
+		labelKey: "photon.system.design.sectionGap.label",
 		kind: "text",
 		description:
 			"Vertical spacing between top-level blocks in the page region.",
-		descriptionKey: "websiteBuilder.system.design.sectionGap.description",
+		descriptionKey: "photon.system.design.sectionGap.description",
 	},
 	{
 		path: "radius",
 		label: "Radius",
-		labelKey: "websiteBuilder.system.design.radius.label",
+		labelKey: "photon.system.design.radius.label",
 		kind: "text",
 		description: "Shared radius token consumed by the system shells.",
-		descriptionKey: "websiteBuilder.system.design.radius.description",
+		descriptionKey: "photon.system.design.radius.description",
 	},
 	{
 		path: "headerOffset",
 		label: "Header offset",
-		labelKey: "websiteBuilder.system.design.headerOffset.label",
+		labelKey: "photon.system.design.headerOffset.label",
 		kind: "text",
 		description:
 			"Extra top offset applied to sticky site headers on top of the builder dock.",
-		descriptionKey: "websiteBuilder.system.design.headerOffset.description",
+		descriptionKey: "photon.system.design.headerOffset.description",
 	},
 ];
 
 const summaryCardStyle: CSSProperties = {
-	borderColor: "var(--wb-builder-border)",
-	background: "var(--wb-builder-panel-muted)",
-	color: "var(--wb-builder-text)",
+	borderColor: "var(--photon-builder-border)",
+	background: "var(--photon-builder-panel-muted)",
+	color: "var(--photon-builder-text)",
 };
 
 const highlightCardStyle: CSSProperties = {
-	borderColor: "var(--wb-builder-border-strong)",
+	borderColor: "var(--photon-builder-border-strong)",
 	background:
-		"linear-gradient(180deg, color-mix(in srgb, var(--wb-builder-accent) 10%, transparent), var(--wb-builder-panel-muted))",
-	color: "var(--wb-builder-text)",
+		"linear-gradient(180deg, color-mix(in srgb, var(--photon-builder-accent) 10%, transparent), var(--photon-builder-panel-muted))",
+	color: "var(--photon-builder-text)",
 };
 
 const badgeStyle: CSSProperties = {
-	borderColor: "var(--wb-builder-border)",
-	background: "var(--wb-builder-panel-solid)",
-	color: "var(--wb-builder-text-soft)",
+	borderColor: "var(--photon-builder-border)",
+	background: "var(--photon-builder-panel-solid)",
+	color: "var(--photon-builder-text-soft)",
 };
 
 const tokenPreviewItems = [
@@ -174,46 +174,46 @@ const SiteDesignSettingsPanelBody = ({
 	setValue,
 	focusField,
 	viewMode,
-}: WebsiteBuilderSiteSettingsPanelProps) => {
-	const { translate } = useWebsiteBuilderI18n();
+}: PhotonSiteSettingsPanelProps) => {
+	const { translate } = usePhotonI18n();
 	const resolvedSettings =
-		resolveWebsiteBuilderSiteDesignSettings(scopeSettings);
+		resolvePhotonSiteDesignSettings(scopeSettings);
 	const isAdvancedView = viewMode === "advanced";
 	const activePreset = resolvedSettings.presetId
-		? (websiteBuilderSiteDesignPresets.find(
+		? (photonSiteDesignPresets.find(
 				(candidate) => candidate.id === resolvedSettings.presetId,
 			) ?? null)
 		: null;
 	const activeColorScheme = resolvedSettings.colorSchemeId
-		? (websiteBuilderSiteColorSchemes.find(
+		? (photonSiteColorSchemes.find(
 				(candidate) => candidate.id === resolvedSettings.colorSchemeId,
 			) ?? null)
 		: null;
 
 	if (isAdvancedView) {
 		return (
-			<section className="space-y-4" data-testid="wb-design-manual-tokens">
+			<section className="space-y-4" data-testid="photon-design-manual-tokens">
 				<div className="space-y-2">
 					<div
 						className="text-sm font-semibold"
-						style={{ color: "var(--wb-builder-text)" }}
+						style={{ color: "var(--photon-builder-text)" }}
 					>
 						{translate(
-							"websiteBuilder.system.design.manual.sectionTitle",
+							"photon.system.design.manual.sectionTitle",
 							"Manual tokens",
 						)}
 					</div>
 					<div
 						className="text-sm leading-6"
-						style={{ color: "var(--wb-builder-text-muted)" }}
+						style={{ color: "var(--photon-builder-text-muted)" }}
 					>
 						{translate(
-							"websiteBuilder.system.design.manual.sectionDescription",
+							"photon.system.design.manual.sectionDescription",
 							"Edit the active profile tokens directly here. These overrides live inside the selected profile branch and revision.",
 						)}
 					</div>
 				</div>
-				<WebsiteBuilderFieldEditorList
+				<PhotonFieldEditorList
 					fields={designFields}
 					subjectId="site-design-settings"
 					getValue={getValue}
@@ -225,7 +225,7 @@ const SiteDesignSettingsPanelBody = ({
 	}
 
 	return (
-		<div className="space-y-6" data-testid="wb-design-profile-source-summary">
+		<div className="space-y-6" data-testid="photon-design-profile-source-summary">
 			<section
 				className="rounded-[24px] border p-4 sm:p-5"
 				style={highlightCardStyle}
@@ -233,19 +233,19 @@ const SiteDesignSettingsPanelBody = ({
 				<div className="space-y-2">
 					<div
 						className="text-sm font-semibold"
-						style={{ color: "var(--wb-builder-text)" }}
+						style={{ color: "var(--photon-builder-text)" }}
 					>
 						{translate(
-							"websiteBuilder.system.design.profileSource.sectionTitle",
+							"photon.system.design.profileSource.sectionTitle",
 							"Profile source",
 						)}
 					</div>
 					<div
 						className="text-sm leading-6"
-						style={{ color: "var(--wb-builder-text-muted)" }}
+						style={{ color: "var(--photon-builder-text-muted)" }}
 					>
 						{translate(
-							"websiteBuilder.system.design.profileSource.sectionDescription",
+							"photon.system.design.profileSource.sectionDescription",
 							"Starter presets and design templates are chosen when a website profile is created. This tab shows the current profile source metadata, while token editing lives in Advanced Design.",
 						)}
 					</div>
@@ -255,34 +255,34 @@ const SiteDesignSettingsPanelBody = ({
 					<div
 						className="rounded-[22px] border p-4"
 						style={summaryCardStyle}
-						data-testid="wb-design-source-preset"
+						data-testid="photon-design-source-preset"
 					>
 						<div
 							className="text-[11px] uppercase tracking-[0.28em]"
-							style={{ color: "var(--wb-builder-text-soft)" }}
+							style={{ color: "var(--photon-builder-text-soft)" }}
 						>
 							{translate(
-								"websiteBuilder.system.design.profileSource.presetLabel",
+								"photon.system.design.profileSource.presetLabel",
 								"Starter preset",
 							)}
 						</div>
 						<div
 							className="mt-3 text-lg font-semibold"
-							style={{ color: "var(--wb-builder-text)" }}
+							style={{ color: "var(--photon-builder-text)" }}
 						>
 							{activePreset?.label ??
 								translate(
-									"websiteBuilder.system.design.profileSource.blankPreset",
+									"photon.system.design.profileSource.blankPreset",
 									"Blank or migrated profile",
 								)}
 						</div>
 						<div
 							className="mt-2 text-sm leading-6"
-							style={{ color: "var(--wb-builder-text-muted)" }}
+							style={{ color: "var(--photon-builder-text-muted)" }}
 						>
 							{activePreset?.description ??
 								translate(
-									"websiteBuilder.system.design.profileSource.blankPresetDescription",
+									"photon.system.design.profileSource.blankPresetDescription",
 									"This profile has no starter preset metadata. Its current appearance is defined entirely by the stored design tokens below and the active branch history.",
 								)}
 						</div>
@@ -291,16 +291,16 @@ const SiteDesignSettingsPanelBody = ({
 								label={
 									activePreset?.appearance === "dark"
 										? translate(
-												"websiteBuilder.system.design.appearance.dark",
+												"photon.system.design.appearance.dark",
 												"Dark",
 											)
 										: activePreset?.appearance === "light"
 											? translate(
-													"websiteBuilder.system.design.appearance.light",
+													"photon.system.design.appearance.light",
 													"Light",
 												)
 											: translate(
-													"websiteBuilder.system.design.profileSource.customized",
+													"photon.system.design.profileSource.customized",
 													"Custom",
 												)
 								}
@@ -313,40 +313,40 @@ const SiteDesignSettingsPanelBody = ({
 					<div
 						className="rounded-[22px] border p-4"
 						style={summaryCardStyle}
-						data-testid="wb-design-source-color-scheme"
+						data-testid="photon-design-source-color-scheme"
 					>
 						<div
 							className="text-[11px] uppercase tracking-[0.28em]"
-							style={{ color: "var(--wb-builder-text-soft)" }}
+							style={{ color: "var(--photon-builder-text-soft)" }}
 						>
 							{translate(
-								"websiteBuilder.system.design.profileSource.schemeLabel",
+								"photon.system.design.profileSource.schemeLabel",
 								"Stored palette",
 							)}
 						</div>
 						<div
 							className="mt-3 text-lg font-semibold"
-							style={{ color: "var(--wb-builder-text)" }}
+							style={{ color: "var(--photon-builder-text)" }}
 						>
 							{activeColorScheme?.label ??
 								translate(
-									"websiteBuilder.system.design.profileSource.customPalette",
+									"photon.system.design.profileSource.customPalette",
 									"Manual palette",
 								)}
 						</div>
 						<div
 							className="mt-2 text-sm leading-6"
-							style={{ color: "var(--wb-builder-text-muted)" }}
+							style={{ color: "var(--photon-builder-text-muted)" }}
 						>
 							{activeColorScheme?.description ??
 								translate(
-									"websiteBuilder.system.design.profileSource.customPaletteDescription",
+									"photon.system.design.profileSource.customPaletteDescription",
 									"The current branch stores color tokens directly, so no named palette is attached to this profile state.",
 								)}
 						</div>
 						<div
 							className="mt-4 flex flex-wrap gap-2"
-							data-testid="wb-design-runtime-palette"
+							data-testid="photon-design-runtime-palette"
 						>
 							{tokenPreviewItems.map(({ key, label }) => (
 								<span
@@ -358,7 +358,7 @@ const SiteDesignSettingsPanelBody = ({
 										className="h-3 w-3 rounded-full border"
 										style={{
 											backgroundColor: resolvedSettings[key],
-											borderColor: "var(--wb-builder-border)",
+											borderColor: "var(--photon-builder-border)",
 										}}
 									/>
 									{label}
@@ -372,23 +372,23 @@ const SiteDesignSettingsPanelBody = ({
 			<section
 				className="rounded-[24px] border p-4 sm:p-5"
 				style={summaryCardStyle}
-				data-testid="wb-design-workspace-guidance"
+				data-testid="photon-design-workspace-guidance"
 			>
 				<div
 					className="text-sm font-semibold"
-					style={{ color: "var(--wb-builder-text)" }}
+					style={{ color: "var(--photon-builder-text)" }}
 				>
 					{translate(
-						"websiteBuilder.system.design.workspaceGuidance.title",
+						"photon.system.design.workspaceGuidance.title",
 						"How to change the source",
 					)}
 				</div>
 				<div
 					className="mt-2 text-sm leading-6"
-					style={{ color: "var(--wb-builder-text-muted)" }}
+					style={{ color: "var(--photon-builder-text-muted)" }}
 				>
 					{translate(
-						"websiteBuilder.system.design.workspaceGuidance.description",
+						"photon.system.design.workspaceGuidance.description",
 						"To start from another preset or immutable design template, create a new website profile from the workspace panel. To evolve the current profile, keep editing the stored tokens in Advanced Design.",
 					)}
 				</div>
@@ -397,14 +397,14 @@ const SiteDesignSettingsPanelBody = ({
 	);
 };
 
-export const siteDesignSettingsPanel: WebsiteBuilderSiteSettingsPanelDefinition =
+export const siteDesignSettingsPanel: PhotonSiteSettingsPanelDefinition =
 	{
 		key: "design",
 		label: "Design",
-		labelKey: "websiteBuilder.system.design.panel.label",
+		labelKey: "photon.system.design.panel.label",
 		description:
 			"Profile source metadata and stored runtime design tokens for the current branch.",
-		descriptionKey: "websiteBuilder.system.design.panel.description",
+		descriptionKey: "photon.system.design.panel.description",
 		order: 10,
 		component: (props) => <SiteDesignSettingsPanelBody {...props} />,
 	};

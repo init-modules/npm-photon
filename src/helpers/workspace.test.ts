@@ -1,18 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-	getWebsiteBuilderWorkspaceIdentityKey,
-	normalizeWebsiteBuilderWorkspaceDescriptor,
-	normalizeWebsiteBuilderWorkspaceRef,
+	getPhotonWorkspaceIdentityKey,
+	normalizePhotonWorkspaceDescriptor,
+	normalizePhotonWorkspaceRef,
 } from "./workspace";
 
 test("detached revisions normalize to readonly workspaces by default", () => {
-	const ref = normalizeWebsiteBuilderWorkspaceRef({
+	const ref = normalizePhotonWorkspaceRef({
 		profileId: "profile-a",
 		branch: "main",
 		revisionId: "rev-42",
 	});
-	const descriptor = normalizeWebsiteBuilderWorkspaceDescriptor({
+	const descriptor = normalizePhotonWorkspaceDescriptor({
 		ref: {
 			profileId: "profile-a",
 			branch: "main",
@@ -26,7 +26,7 @@ test("detached revisions normalize to readonly workspaces by default", () => {
 });
 
 test("workspace identity ignores readonly and label metadata", () => {
-	const writableIdentity = getWebsiteBuilderWorkspaceIdentityKey({
+	const writableIdentity = getPhotonWorkspaceIdentityKey({
 		ref: {
 			profileId: "profile-a",
 			branch: "main",
@@ -34,7 +34,7 @@ test("workspace identity ignores readonly and label metadata", () => {
 		headRevisionId: "rev-7",
 		profileName: "Profile A",
 	});
-	const readonlyIdentity = getWebsiteBuilderWorkspaceIdentityKey({
+	const readonlyIdentity = getPhotonWorkspaceIdentityKey({
 		ref: {
 			profileId: "profile-a",
 			branch: "main",
@@ -49,14 +49,14 @@ test("workspace identity ignores readonly and label metadata", () => {
 });
 
 test("workspace identity ignores head revision metadata", () => {
-	const previousHeadIdentity = getWebsiteBuilderWorkspaceIdentityKey({
+	const previousHeadIdentity = getPhotonWorkspaceIdentityKey({
 		ref: {
 			profileId: "profile-a",
 			branch: "main",
 		},
 		headRevisionId: "rev-7",
 	});
-	const advancedHeadIdentity = getWebsiteBuilderWorkspaceIdentityKey({
+	const advancedHeadIdentity = getPhotonWorkspaceIdentityKey({
 		ref: {
 			profileId: "profile-a",
 			branch: "main",

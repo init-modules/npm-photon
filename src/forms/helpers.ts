@@ -1,16 +1,16 @@
-import type { WebsiteBuilderField } from "../types";
+import type { PhotonField } from "../types";
 import type {
-	WebsiteBuilderFormDefinition,
-	WebsiteBuilderFormFieldDefinition,
-	WebsiteBuilderFormFieldType,
-	WebsiteBuilderFormPolicy,
-	WebsiteBuilderFormValues,
-	WebsiteBuilderResolvedFormField,
+	PhotonFormDefinition,
+	PhotonFormFieldDefinition,
+	PhotonFormFieldType,
+	PhotonFormPolicy,
+	PhotonFormValues,
+	PhotonResolvedFormField,
 } from "./types";
 
 const fieldTypeOptions: Array<{
 	label: string;
-	value: WebsiteBuilderFormFieldType;
+	value: PhotonFormFieldType;
 }> = [
 	{ label: "Text", value: "text" },
 	{ label: "Email", value: "email" },
@@ -30,12 +30,12 @@ const widthOptions = [
 ];
 
 const normalizeFieldKey = (
-	field: Pick<WebsiteBuilderFormFieldDefinition, "id" | "name">,
+	field: Pick<PhotonFormFieldDefinition, "id" | "name">,
 ) => field.id.trim() || field.name.trim();
 
 const isAllowedByPolicy = (
-	field: WebsiteBuilderFormFieldDefinition,
-	policy: WebsiteBuilderFormPolicy = {},
+	field: PhotonFormFieldDefinition,
+	policy: PhotonFormPolicy = {},
 ) => {
 	if (
 		policy.allowedFieldTypes?.length &&
@@ -52,10 +52,10 @@ const isAllowedByPolicy = (
 };
 
 const mergeEditableFieldParts = (
-	base: WebsiteBuilderFormFieldDefinition,
-	incoming: WebsiteBuilderFormFieldDefinition | undefined,
-	policy: WebsiteBuilderFormPolicy,
-): WebsiteBuilderFormFieldDefinition => {
+	base: PhotonFormFieldDefinition,
+	incoming: PhotonFormFieldDefinition | undefined,
+	policy: PhotonFormPolicy,
+): PhotonFormFieldDefinition => {
 	if (!incoming) {
 		return base;
 	}
@@ -75,20 +75,20 @@ const mergeEditableFieldParts = (
 	};
 };
 
-export const defineWebsiteBuilderForm = (
-	definition: WebsiteBuilderFormDefinition,
-): WebsiteBuilderFormDefinition => definition;
+export const definePhotonForm = (
+	definition: PhotonFormDefinition,
+): PhotonFormDefinition => definition;
 
-export const createWebsiteBuilderFormFieldsField = (
+export const createPhotonFormFieldsField = (
 	path = "fields",
 	options: {
 		label?: string;
 		description?: string;
 		addLabel?: string;
-		defaultItem?: WebsiteBuilderFormFieldDefinition;
-		allowedFieldTypes?: WebsiteBuilderFormFieldType[];
+		defaultItem?: PhotonFormFieldDefinition;
+		allowedFieldTypes?: PhotonFormFieldType[];
 	} = {},
-): WebsiteBuilderField => {
+): PhotonField => {
 	const typeOptions = options.allowedFieldTypes?.length
 		? fieldTypeOptions.filter((item) =>
 				options.allowedFieldTypes?.includes(item.value),
@@ -201,10 +201,10 @@ export const createWebsiteBuilderFormFieldsField = (
 	};
 };
 
-export const resolveWebsiteBuilderFormFields = (
-	fields: readonly WebsiteBuilderFormFieldDefinition[] | undefined,
-	definition: WebsiteBuilderFormDefinition,
-): WebsiteBuilderResolvedFormField[] => {
+export const resolvePhotonFormFields = (
+	fields: readonly PhotonFormFieldDefinition[] | undefined,
+	definition: PhotonFormDefinition,
+): PhotonResolvedFormField[] => {
 	const mode = definition.mode ?? "extendable";
 	const policy = definition.policy ?? {};
 	const incoming = Array.isArray(fields) ? fields : [];
@@ -265,7 +265,7 @@ export const resolveWebsiteBuilderFormFields = (
 							(item) => normalizeFieldKey(item) === normalizeFieldKey(field),
 						),
 					)
-					.filter((field): field is WebsiteBuilderFormFieldDefinition =>
+					.filter((field): field is PhotonFormFieldDefinition =>
 						Boolean(field),
 					),
 				...filtered.filter(
@@ -291,12 +291,12 @@ export const resolveWebsiteBuilderFormFields = (
 	});
 };
 
-export const readWebsiteBuilderFormValues = (
+export const readPhotonFormValues = (
 	form: HTMLFormElement,
-	fields: readonly WebsiteBuilderFormFieldDefinition[],
-): WebsiteBuilderFormValues => {
+	fields: readonly PhotonFormFieldDefinition[],
+): PhotonFormValues => {
 	const formData = new FormData(form);
-	const values: WebsiteBuilderFormValues = {};
+	const values: PhotonFormValues = {};
 
 	for (const field of fields) {
 		if (!field.name || field.disabled) {
