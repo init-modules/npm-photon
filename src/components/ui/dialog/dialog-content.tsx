@@ -19,9 +19,17 @@ export const DialogContent = forwardRef<
 			: document.querySelector<HTMLElement>(
 					'[data-testid="wb-builder-theme-root"]',
 				);
+	const publicThemeRoot =
+		typeof document === "undefined"
+			? null
+			: document.querySelector<HTMLElement>(
+					'[data-testid="wb-public-runtime"]',
+				);
 
 	return (
-		<DialogPrimitive.Portal container={builderThemeRoot ?? undefined}>
+		<DialogPrimitive.Portal
+			container={builderThemeRoot ?? publicThemeRoot ?? undefined}
+		>
 			<DialogOverlay />
 			<DialogPrimitive.Content
 				ref={ref}

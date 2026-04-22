@@ -5,15 +5,15 @@ import {
   KeyboardMenuList,
   Root,
   useKeyboardMenuController
-} from "./chunk-N3SPUPCV.js";
+} from "./chunk-4OY27MEO.js";
 import {
   EditableText,
   getWebsiteBuilderEditableEditorLoader
-} from "./chunk-QVAFUFZV.js";
+} from "./chunk-5SCOZJAS.js";
 import {
   buildWebsiteBuilderSearchResultHref,
   buildWebsiteBuilderSearchTargetId
-} from "./chunk-JWEWJA2O.js";
+} from "./chunk-VDE2PPT5.js";
 import {
   collectWebsiteBuilderFooterExtensionItems,
   collectWebsiteBuilderHeaderExtensionItems,
@@ -280,6 +280,25 @@ import {
   useState as useState3
 } from "react";
 import { Fragment, jsx as jsx3, jsxs } from "react/jsx-runtime";
+var searchDialogStyle = {
+  background: "color-mix(in oklab, var(--wb-site-background) 88%, var(--wb-site-surface))",
+  borderColor: "color-mix(in oklab, var(--wb-site-border) 24%, transparent)",
+  boxShadow: "0 34px 110px rgba(0,0,0,0.34)"
+};
+var searchDividerStyle = {
+  borderColor: "color-mix(in oklab, var(--wb-site-border) 18%, transparent)"
+};
+var searchPanelStyle = {
+  background: "color-mix(in oklab, var(--wb-site-surface) 34%, transparent)",
+  borderColor: "color-mix(in oklab, var(--wb-site-border) 18%, transparent)"
+};
+var searchResultStyle = (isActive) => ({
+  background: isActive ? "color-mix(in oklab, var(--wb-site-accent) 13%, var(--wb-site-surface))" : "color-mix(in oklab, var(--wb-site-surface) 30%, transparent)",
+  borderColor: isActive ? "color-mix(in oklab, var(--wb-site-accent) 54%, var(--wb-site-border))" : "color-mix(in oklab, var(--wb-site-border) 20%, transparent)"
+});
+var searchResultPillStyle = {
+  borderColor: "color-mix(in oklab, var(--wb-site-border) 24%, transparent)"
+};
 var renderSnippetParts = (snippet, query) => {
   if (!query) {
     return [snippet];
@@ -501,7 +520,8 @@ var WebsiteBuilderSiteSearch = ({
       DialogContent,
       {
         onOpenAutoFocus: handleDialogOpenAutoFocus,
-        className: "w-[min(44rem,calc(100%-1.5rem))] gap-0 overflow-hidden rounded-[32px] border border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_96%,var(--wb-site-background))] p-0 text-[var(--wb-site-text)] shadow-[0_40px_140px_rgba(0,0,0,0.28)]",
+        className: "w-[min(44rem,calc(100%-1.5rem))] gap-0 overflow-hidden rounded-[24px] border p-0 text-[var(--wb-site-text)] backdrop-blur-xl",
+        style: searchDialogStyle,
         children: [
           /* @__PURE__ */ jsxs("div", { className: "sr-only", children: [
             /* @__PURE__ */ jsx3(DialogTitle, { children: translate(
@@ -513,40 +533,61 @@ var WebsiteBuilderSiteSearch = ({
               "Find exact matches across static pages and publication pages."
             ) })
           ] }),
-          /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 border-b border-[var(--wb-site-border)] px-5 py-4", children: [
-            /* @__PURE__ */ jsx3(Search, { className: "h-5 w-5 shrink-0 text-[var(--wb-site-muted-text)]" }),
-            /* @__PURE__ */ jsx3(
-              "input",
-              {
-                ref: searchInputRef,
-                value: query,
-                onChange: (event) => setQuery(event.currentTarget.value),
-                onKeyDown: searchMenu.handleKeyDown,
-                placeholder,
-                role: "combobox",
-                "aria-autocomplete": "list",
-                "aria-controls": searchMenu.listId,
-                "aria-expanded": open,
-                "aria-activedescendant": searchMenu.activeOptionId,
-                className: "min-w-0 flex-1 border-0 bg-transparent text-base text-[var(--wb-site-text)] outline-none placeholder:text-[color-mix(in_srgb,var(--wb-site-muted-text)_72%,transparent)]"
-              }
-            ),
-            /* @__PURE__ */ jsx3(
-              "button",
-              {
-                type: "button",
-                onClick: () => setOpen(false),
-                className: "inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--wb-site-muted-text)] transition hover:bg-[color-mix(in_oklab,var(--wb-site-border)_38%,transparent)] hover:text-[var(--wb-site-text)]",
-                "aria-label": "Close search",
-                children: /* @__PURE__ */ jsx3(X, { className: "h-4 w-4" })
-              }
-            )
-          ] }),
-          /* @__PURE__ */ jsx3("div", { className: "border-b border-[var(--wb-site-border)] px-5 py-3 text-sm text-[var(--wb-site-muted-text)]", children: summaryText }),
-          /* @__PURE__ */ jsx3("div", { className: "max-h-[24rem] overflow-y-auto px-3 py-3", children: loading ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] px-4 py-4 text-sm text-[var(--wb-site-muted-text)]", children: [
-            /* @__PURE__ */ jsx3(Loader2, { className: "h-4 w-4 animate-spin text-[var(--wb-site-accent)]" }),
-            /* @__PURE__ */ jsx3("span", { children: "Searching the live site surface\u2026" })
-          ] }) : /* @__PURE__ */ jsx3(
+          /* @__PURE__ */ jsxs(
+            "div",
+            {
+              className: "flex items-center gap-3 border-b px-5 py-4",
+              style: searchDividerStyle,
+              children: [
+                /* @__PURE__ */ jsx3(Search, { className: "h-5 w-5 shrink-0 text-[var(--wb-site-muted-text)]" }),
+                /* @__PURE__ */ jsx3(
+                  "input",
+                  {
+                    ref: searchInputRef,
+                    value: query,
+                    onChange: (event) => setQuery(event.currentTarget.value),
+                    onKeyDown: searchMenu.handleKeyDown,
+                    placeholder,
+                    role: "combobox",
+                    "aria-autocomplete": "list",
+                    "aria-controls": searchMenu.listId,
+                    "aria-expanded": open,
+                    "aria-activedescendant": searchMenu.activeOptionId,
+                    className: "min-w-0 flex-1 border-0 bg-transparent text-base text-[var(--wb-site-text)] outline-none placeholder:text-[color-mix(in_srgb,var(--wb-site-muted-text)_72%,transparent)]"
+                  }
+                ),
+                /* @__PURE__ */ jsx3(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => setOpen(false),
+                    className: "inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--wb-site-muted-text)] transition hover:bg-[color-mix(in_oklab,var(--wb-site-border)_38%,transparent)] hover:text-[var(--wb-site-text)]",
+                    "aria-label": "Close search",
+                    children: /* @__PURE__ */ jsx3(X, { className: "h-4 w-4" })
+                  }
+                )
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsx3(
+            "div",
+            {
+              className: "border-b px-5 py-3 text-sm text-[var(--wb-site-muted-text)]",
+              style: searchDividerStyle,
+              children: summaryText
+            }
+          ),
+          /* @__PURE__ */ jsx3("div", { className: "max-h-[24rem] overflow-y-auto px-3 py-3", children: loading ? /* @__PURE__ */ jsxs(
+            "div",
+            {
+              className: "flex items-center gap-3 rounded-[20px] border px-4 py-4 text-sm text-[var(--wb-site-muted-text)]",
+              style: searchPanelStyle,
+              children: [
+                /* @__PURE__ */ jsx3(Loader2, { className: "h-4 w-4 animate-spin text-[var(--wb-site-accent)]" }),
+                /* @__PURE__ */ jsx3("span", { children: "Searching the live site surface\u2026" })
+              ]
+            }
+          ) : /* @__PURE__ */ jsx3(
             KeyboardMenuList,
             {
               controller: searchMenu,
@@ -554,53 +595,76 @@ var WebsiteBuilderSiteSearch = ({
               getItemId: (result) => result.id,
               listLabel: "Website search results",
               className: "space-y-2",
-              emptyState: /* @__PURE__ */ jsx3("div", { className: "rounded-[24px] border border-dashed border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] px-4 py-8 text-center text-sm leading-7 text-[var(--wb-site-muted-text)]", children: hasQuery ? "No blocks matched this query yet." : "Search static page copy and publication content from the live site shell." }),
+              emptyState: /* @__PURE__ */ jsx3(
+                "div",
+                {
+                  className: "rounded-[20px] border border-dashed px-4 py-8 text-center text-sm leading-7 text-[var(--wb-site-muted-text)]",
+                  style: searchPanelStyle,
+                  children: hasQuery ? "No blocks matched this query yet." : "Search static page copy and publication content from the live site shell."
+                }
+              ),
               renderItem: (result, { isActive }) => {
                 const snippetParts = renderSnippetParts(
                   result.snippet,
                   deferredQuery || query.trim()
                 );
-                return /* @__PURE__ */ jsx3("div", { "data-wb-search-result-id": result.id, children: /* @__PURE__ */ jsxs(
-                  WebsiteBuilderLink,
+                return /* @__PURE__ */ jsx3(
+                  "div",
                   {
-                    navigateInPreviewOnly: false,
-                    href: buildWebsiteBuilderSearchResultHref(
-                      result,
-                      deferredQuery || query.trim(),
-                      mode,
-                      isAdmin,
-                      {
-                        locale,
-                        contentLocale,
-                        currentSearchParams: typeof window === "undefined" ? void 0 : new URLSearchParams(window.location.search),
-                        workspaceSelection: workspace?.ref?.profileId ? {
-                          profileId: workspace.ref.profileId,
-                          branch: workspace.ref.branch,
-                          revisionId: workspace.ref.revisionId ?? null
-                        } : null
-                      }
-                    ),
-                    onClick: () => setOpen(false),
+                    "data-wb-search-result-id": result.id,
+                    style: searchResultStyle(isActive),
                     className: clsx3(
-                      "block rounded-[24px] border px-4 py-4 transition",
-                      isActive ? "border-[var(--wb-site-accent)] bg-[color-mix(in_oklab,var(--wb-site-accent)_14%,var(--wb-site-surface))]" : "border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] hover:border-[color-mix(in_oklab,var(--wb-site-accent)_46%,var(--wb-site-border))] hover:bg-[color-mix(in_oklab,var(--wb-site-accent)_10%,var(--wb-site-surface))]"
+                      "rounded-[20px] border transition",
+                      isActive ? "hover:bg-[color-mix(in_oklab,var(--wb-site-accent)_16%,var(--wb-site-surface))]" : "hover:bg-[color-mix(in_oklab,var(--wb-site-accent)_10%,var(--wb-site-surface))]"
                     ),
-                    children: [
-                      /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-4", children: [
-                        /* @__PURE__ */ jsxs("div", { className: "min-w-0", children: [
-                          /* @__PURE__ */ jsx3("div", { className: "text-sm font-semibold text-[var(--wb-site-text)]", children: result.pageName }),
-                          /* @__PURE__ */ jsx3("div", { className: "mt-1 text-[11px] uppercase tracking-[0.24em] text-[var(--wb-site-muted-text)]", children: result.route })
-                        ] }),
-                        /* @__PURE__ */ jsx3("div", { className: "shrink-0 rounded-full border border-[var(--wb-site-border)] px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-[var(--wb-site-muted-text)]", children: result.pageKind })
-                      ] }),
-                      /* @__PURE__ */ jsxs("div", { className: "mt-3 text-sm leading-7 text-[var(--wb-site-muted-text)]", children: [
-                        snippetParts[0],
-                        snippetParts[1] ? /* @__PURE__ */ jsx3("mark", { className: "rounded-full bg-[color-mix(in_oklab,var(--wb-site-accent)_24%,var(--wb-site-surface))] px-1.5 py-0.5 text-[var(--wb-site-text)]", children: snippetParts[1] }) : null,
-                        snippetParts[2] ?? ""
-                      ] })
-                    ]
+                    children: /* @__PURE__ */ jsxs(
+                      WebsiteBuilderLink,
+                      {
+                        navigateInPreviewOnly: false,
+                        locale,
+                        href: buildWebsiteBuilderSearchResultHref(
+                          result,
+                          deferredQuery || query.trim(),
+                          mode,
+                          isAdmin,
+                          {
+                            locale,
+                            contentLocale,
+                            currentSearchParams: typeof window === "undefined" ? void 0 : new URLSearchParams(window.location.search),
+                            workspaceSelection: workspace?.ref?.profileId ? {
+                              profileId: workspace.ref.profileId,
+                              branch: workspace.ref.branch,
+                              revisionId: workspace.ref.revisionId ?? null
+                            } : null
+                          }
+                        ),
+                        onClick: () => setOpen(false),
+                        className: "block px-4 py-4",
+                        children: [
+                          /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-4", children: [
+                            /* @__PURE__ */ jsxs("div", { className: "min-w-0", children: [
+                              /* @__PURE__ */ jsx3("div", { className: "text-sm font-semibold text-[var(--wb-site-text)]", children: result.pageName }),
+                              /* @__PURE__ */ jsx3("div", { className: "mt-1 text-[11px] uppercase tracking-[0.24em] text-[var(--wb-site-muted-text)]", children: result.route })
+                            ] }),
+                            /* @__PURE__ */ jsx3(
+                              "div",
+                              {
+                                className: "shrink-0 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-[var(--wb-site-muted-text)]",
+                                style: searchResultPillStyle,
+                                children: result.pageKind
+                              }
+                            )
+                          ] }),
+                          /* @__PURE__ */ jsxs("div", { className: "mt-3 text-sm leading-7 text-[var(--wb-site-muted-text)]", children: [
+                            snippetParts[0],
+                            snippetParts[1] ? /* @__PURE__ */ jsx3("mark", { className: "rounded-full bg-[color-mix(in_oklab,var(--wb-site-accent)_24%,var(--wb-site-surface))] px-1.5 py-0.5 text-[var(--wb-site-text)]", children: snippetParts[1] }) : null,
+                            snippetParts[2] ?? ""
+                          ] })
+                        ]
+                      }
+                    )
                   }
-                ) });
+                );
               }
             }
           ) })

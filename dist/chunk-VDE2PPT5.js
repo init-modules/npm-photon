@@ -22,15 +22,40 @@ var preserveWebsiteBuilderSearchParams = (currentSearchParams) => {
   });
   return searchParams;
 };
-var buildWebsiteBuilderSearchResultHref = (result, query, mode, isAdmin, options) => {
-  const localePrefix = options?.locale === "en" && !result.route.startsWith("/en") ? "/en" : "";
-  const url = new URL(
-    `${localePrefix}${result.route}`,
-    "https://website-builder.local"
+var normalizeWebsiteBuilderSearchRoute = (route, locale, contentLocale) => {
+  const url = new URL(route.trim() || "/", "https://website-builder.local");
+  let pathname = url.pathname || "/";
+  const localeCandidates = [.../* @__PURE__ */ new Set([locale, contentLocale])].filter(
+    (value) => Boolean(value)
   );
+  for (const candidate of localeCandidates) {
+    const prefix = `/${candidate}`;
+    if (pathname === prefix) {
+      pathname = "/";
+      break;
+    }
+    if (pathname.startsWith(`${prefix}/`)) {
+      pathname = pathname.slice(prefix.length) || "/";
+      break;
+    }
+  }
+  return `${pathname}${url.search}${url.hash}`;
+};
+var buildWebsiteBuilderSearchResultHref = (result, query, mode, isAdmin, options) => {
+  const normalizedRoute = normalizeWebsiteBuilderSearchRoute(
+    result.route,
+    options?.locale,
+    options?.contentLocale
+  );
+  const routeUrl = new URL(normalizedRoute, "https://website-builder.local");
+  const targetPathname = isAdmin ? `/wb-admin${routeUrl.pathname === "/" ? "" : routeUrl.pathname}` : routeUrl.pathname;
+  const url = new URL(targetPathname, "https://website-builder.local");
   const searchParams = preserveWebsiteBuilderSearchParams(
     options?.currentSearchParams ?? new URLSearchParams()
   );
+  routeUrl.searchParams.forEach((value, key) => {
+    searchParams.set(key, value);
+  });
   if (isAdmin && mode !== "preview") {
     searchParams.set("mode", mode);
   } else {
@@ -61,7 +86,7 @@ var buildWebsiteBuilderSearchResultHref = (result, query, mode, isAdmin, options
     String(result.occurrence)
   );
   const serializedSearch = searchParams.toString();
-  return serializedSearch ? `${url.pathname}?${serializedSearch}` : url.pathname;
+  return `${url.pathname}${serializedSearch ? `?${serializedSearch}` : ""}${routeUrl.hash}`;
 };
 
 export {

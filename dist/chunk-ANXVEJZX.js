@@ -5,7 +5,7 @@ import {
 } from "./chunk-PVXBOLON.js";
 import {
   buildWebsiteBuilderSearchTargetId
-} from "./chunk-JWEWJA2O.js";
+} from "./chunk-VDE2PPT5.js";
 import {
   createActivationProps,
   editableFrameClassName

@@ -3,17 +3,17 @@ import {
 } from "./chunk-KTGPTN7J.js";
 import {
   EditableRichText
-} from "./chunk-JGS37X2F.js";
+} from "./chunk-ANXVEJZX.js";
 import {
   EditableText
-} from "./chunk-RX4FBNFE.js";
+} from "./chunk-Y6D4BGPA.js";
 import {
   EditableTextarea
-} from "./chunk-EL5UNIVL.js";
+} from "./chunk-66WWIKR4.js";
 import {
   WebsiteBuilderFieldEditorList,
   WebsiteBuilderStudio
-} from "./chunk-T7JSQIFT.js";
+} from "./chunk-FNCMHNHC.js";
 import {
   WebsiteBuilderRichTextEditor,
   renderWebsiteBuilderRichTextHtml,
@@ -23,7 +23,7 @@ import {
   WebsiteBuilderSiteSearch,
   siteFooterShellDefinition,
   siteHeaderShellDefinition
-} from "./chunk-Q4KY55GU.js";
+} from "./chunk-IVZCBRYA.js";
 import {
   KeyboardMenuList,
   WebsiteBuilderBlockRenderer,
@@ -31,12 +31,12 @@ import {
   WebsiteBuilderSearchHighlightEffect,
   useKeyboardMenuController,
   useWebsiteBuilderRenderDepth
-} from "./chunk-N3SPUPCV.js";
-import "./chunk-QVAFUFZV.js";
+} from "./chunk-4OY27MEO.js";
+import "./chunk-5SCOZJAS.js";
 import {
   buildWebsiteBuilderSearchResultHref,
   buildWebsiteBuilderSearchTargetId
-} from "./chunk-JWEWJA2O.js";
+} from "./chunk-VDE2PPT5.js";
 import {
   normalizeWebsiteBuilderSelectionForMode,
   resolveWebsiteBuilderAccess,
@@ -186,19 +186,19 @@ registerLoader(
 );
 registerLoader(
   "richText",
-  () => import("./editable-rich-text-XRNLRPV6.js").then(
+  () => import("./editable-rich-text-463NPRLF.js").then(
     (module) => module.EditableRichText
   )
 );
 registerLoader(
   "text",
-  () => import("./editable-text-WG4VYV6G.js").then(
+  () => import("./editable-text-UQ5CBASI.js").then(
     (module) => module.EditableText
   )
 );
 registerLoader(
   "textarea",
-  () => import("./editable-textarea-UBDGI6YP.js").then(
+  () => import("./editable-textarea-FEEVUOGG.js").then(
     (module) => module.EditableTextarea
   )
 );

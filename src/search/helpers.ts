@@ -32,6 +32,34 @@ const preserveWebsiteBuilderSearchParams = (
 	return searchParams;
 };
 
+const normalizeWebsiteBuilderSearchRoute = (
+	route: string,
+	locale?: string,
+	contentLocale?: string,
+) => {
+	const url = new URL(route.trim() || "/", "https://website-builder.local");
+	let pathname = url.pathname || "/";
+	const localeCandidates = [...new Set([locale, contentLocale])].filter(
+		(value): value is string => Boolean(value),
+	);
+
+	for (const candidate of localeCandidates) {
+		const prefix = `/${candidate}`;
+
+		if (pathname === prefix) {
+			pathname = "/";
+			break;
+		}
+
+		if (pathname.startsWith(`${prefix}/`)) {
+			pathname = pathname.slice(prefix.length) || "/";
+			break;
+		}
+	}
+
+	return `${pathname}${url.search}${url.hash}`;
+};
+
 export const buildWebsiteBuilderSearchResultHref = (
 	result: WebsiteBuilderSearchResult,
 	query: string,
@@ -48,15 +76,23 @@ export const buildWebsiteBuilderSearchResultHref = (
 		} | null;
 	},
 ) => {
-	const localePrefix =
-		options?.locale === "en" && !result.route.startsWith("/en") ? "/en" : "";
-	const url = new URL(
-		`${localePrefix}${result.route}`,
-		"https://website-builder.local",
+	const normalizedRoute = normalizeWebsiteBuilderSearchRoute(
+		result.route,
+		options?.locale,
+		options?.contentLocale,
 	);
+	const routeUrl = new URL(normalizedRoute, "https://website-builder.local");
+	const targetPathname = isAdmin
+		? `/wb-admin${routeUrl.pathname === "/" ? "" : routeUrl.pathname}`
+		: routeUrl.pathname;
+	const url = new URL(targetPathname, "https://website-builder.local");
 	const searchParams = preserveWebsiteBuilderSearchParams(
 		options?.currentSearchParams ?? new URLSearchParams(),
 	);
+
+	routeUrl.searchParams.forEach((value, key) => {
+		searchParams.set(key, value);
+	});
 
 	if (isAdmin && mode !== "preview") {
 		searchParams.set("mode", mode);
@@ -94,7 +130,7 @@ export const buildWebsiteBuilderSearchResultHref = (
 
 	const serializedSearch = searchParams.toString();
 
-	return serializedSearch
-		? `${url.pathname}?${serializedSearch}`
-		: url.pathname;
+	return `${url.pathname}${serializedSearch ? `?${serializedSearch}` : ""}${
+		routeUrl.hash
+	}`;
 };

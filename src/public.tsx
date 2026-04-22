@@ -31,6 +31,7 @@ import type {
 	WebsiteBuilderLinkComponent,
 	WebsiteBuilderRegistry,
 	WebsiteBuilderResolvedPage,
+	WebsiteBuilderSearchHandler,
 	WebsiteBuilderSearchHighlight,
 	WebsiteBuilderSiteFrameExtension,
 } from "./types";
@@ -189,6 +190,7 @@ type WebsiteBuilderPublicPageProps = {
 	siteFrameExtensions?: WebsiteBuilderSiteFrameExtension[];
 	accountTabs?: WebsiteBuilderAccountTabExtension[];
 	requestAuth?: () => void;
+	searchSite?: WebsiteBuilderSearchHandler;
 	activeSearchHighlight?: WebsiteBuilderSearchHighlight | null;
 };
 
@@ -200,6 +202,7 @@ export const WebsiteBuilderPublicPage = ({
 	siteFrameExtensions,
 	accountTabs,
 	requestAuth,
+	searchSite,
 	activeSearchHighlight = null,
 }: WebsiteBuilderPublicPageProps) => {
 	const designSettings = resolveWebsiteBuilderPublicSiteDesignSettings(
@@ -238,6 +241,7 @@ export const WebsiteBuilderPublicPage = ({
 			siteFrameExtensions={siteFrameExtensions}
 			accountTabs={accountTabs}
 			requestAuth={requestAuth}
+			searchSite={searchSite}
 			i18n={i18n}
 		>
 			<WebsiteBuilderSearchHighlightEffect

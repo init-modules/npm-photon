@@ -546,22 +546,31 @@ var DialogContent = forwardRef2(({ className, ...props }, ref) => {
   const builderThemeRoot = typeof document === "undefined" ? null : document.querySelector(
     '[data-testid="wb-builder-theme-root"]'
   );
-  return /* @__PURE__ */ jsxs3(DialogPrimitive2.Portal, { container: builderThemeRoot ?? void 0, children: [
-    /* @__PURE__ */ jsx5(DialogOverlay, {}),
-    /* @__PURE__ */ jsx5(
-      DialogPrimitive2.Content,
-      {
-        ref,
-        "data-slot": "dialog-content",
-        "data-testid": "wb-dialog-content",
-        className: cn(
-          "fixed left-1/2 top-1/2 z-50 grid w-[min(32rem,calc(100%-2rem))] -translate-x-1/2 -translate-y-1/2 gap-5 rounded-[1.75rem] border border-[color:var(--wb-builder-border-strong)] bg-[linear-gradient(180deg,var(--wb-builder-panel-solid),var(--wb-builder-panel))] p-6 text-[color:var(--wb-builder-text)] shadow-[var(--wb-builder-shadow)] backdrop-blur-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-          className
-        ),
-        ...props
-      }
-    )
-  ] });
+  const publicThemeRoot = typeof document === "undefined" ? null : document.querySelector(
+    '[data-testid="wb-public-runtime"]'
+  );
+  return /* @__PURE__ */ jsxs3(
+    DialogPrimitive2.Portal,
+    {
+      container: builderThemeRoot ?? publicThemeRoot ?? void 0,
+      children: [
+        /* @__PURE__ */ jsx5(DialogOverlay, {}),
+        /* @__PURE__ */ jsx5(
+          DialogPrimitive2.Content,
+          {
+            ref,
+            "data-slot": "dialog-content",
+            "data-testid": "wb-dialog-content",
+            className: cn(
+              "fixed left-1/2 top-1/2 z-50 grid w-[min(32rem,calc(100%-2rem))] -translate-x-1/2 -translate-y-1/2 gap-5 rounded-[1.75rem] border border-[color:var(--wb-builder-border-strong)] bg-[linear-gradient(180deg,var(--wb-builder-panel-solid),var(--wb-builder-panel))] p-6 text-[color:var(--wb-builder-text)] shadow-[var(--wb-builder-shadow)] backdrop-blur-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+              className
+            ),
+            ...props
+          }
+        )
+      ]
+    }
+  );
 });
 DialogContent.displayName = DialogPrimitive2.Content.displayName;
 

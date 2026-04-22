@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { Loader2, Search, X } from "lucide-react";
 import {
+	type CSSProperties,
 	startTransition,
 	useDeferredValue,
 	useEffect,
@@ -36,6 +37,36 @@ type WebsiteBuilderSiteSearchProps = {
 	placeholderPath: string;
 	className?: string;
 };
+
+const searchDialogStyle = {
+	background:
+		"color-mix(in oklab, var(--wb-site-background) 88%, var(--wb-site-surface))",
+	borderColor: "color-mix(in oklab, var(--wb-site-border) 24%, transparent)",
+	boxShadow: "0 34px 110px rgba(0,0,0,0.34)",
+} satisfies CSSProperties;
+
+const searchDividerStyle = {
+	borderColor: "color-mix(in oklab, var(--wb-site-border) 18%, transparent)",
+} satisfies CSSProperties;
+
+const searchPanelStyle = {
+	background: "color-mix(in oklab, var(--wb-site-surface) 34%, transparent)",
+	borderColor: "color-mix(in oklab, var(--wb-site-border) 18%, transparent)",
+} satisfies CSSProperties;
+
+const searchResultStyle = (isActive: boolean) =>
+	({
+		background: isActive
+			? "color-mix(in oklab, var(--wb-site-accent) 13%, var(--wb-site-surface))"
+			: "color-mix(in oklab, var(--wb-site-surface) 30%, transparent)",
+		borderColor: isActive
+			? "color-mix(in oklab, var(--wb-site-accent) 54%, var(--wb-site-border))"
+			: "color-mix(in oklab, var(--wb-site-border) 20%, transparent)",
+	}) satisfies CSSProperties;
+
+const searchResultPillStyle = {
+	borderColor: "color-mix(in oklab, var(--wb-site-border) 24%, transparent)",
+} satisfies CSSProperties;
 
 const renderSnippetParts = (snippet: string, query: string) => {
 	if (!query) {
@@ -278,7 +309,8 @@ export const WebsiteBuilderSiteSearch = ({
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent
 					onOpenAutoFocus={handleDialogOpenAutoFocus}
-					className="w-[min(44rem,calc(100%-1.5rem))] gap-0 overflow-hidden rounded-[32px] border border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_96%,var(--wb-site-background))] p-0 text-[var(--wb-site-text)] shadow-[0_40px_140px_rgba(0,0,0,0.28)]"
+					className="w-[min(44rem,calc(100%-1.5rem))] gap-0 overflow-hidden rounded-[24px] border p-0 text-[var(--wb-site-text)] backdrop-blur-xl"
+					style={searchDialogStyle}
 				>
 					<div className="sr-only">
 						<DialogTitle>
@@ -295,7 +327,10 @@ export const WebsiteBuilderSiteSearch = ({
 						</DialogDescription>
 					</div>
 
-					<div className="flex items-center gap-3 border-b border-[var(--wb-site-border)] px-5 py-4">
+					<div
+						className="flex items-center gap-3 border-b px-5 py-4"
+						style={searchDividerStyle}
+					>
 						<Search className="h-5 w-5 shrink-0 text-[var(--wb-site-muted-text)]" />
 						<input
 							ref={searchInputRef}
@@ -320,13 +355,19 @@ export const WebsiteBuilderSiteSearch = ({
 						</button>
 					</div>
 
-					<div className="border-b border-[var(--wb-site-border)] px-5 py-3 text-sm text-[var(--wb-site-muted-text)]">
+					<div
+						className="border-b px-5 py-3 text-sm text-[var(--wb-site-muted-text)]"
+						style={searchDividerStyle}
+					>
 						{summaryText}
 					</div>
 
 					<div className="max-h-[24rem] overflow-y-auto px-3 py-3">
 						{loading ? (
-							<div className="flex items-center gap-3 rounded-[24px] border border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] px-4 py-4 text-sm text-[var(--wb-site-muted-text)]">
+							<div
+								className="flex items-center gap-3 rounded-[20px] border px-4 py-4 text-sm text-[var(--wb-site-muted-text)]"
+								style={searchPanelStyle}
+							>
 								<Loader2 className="h-4 w-4 animate-spin text-[var(--wb-site-accent)]" />
 								<span>Searching the live site surface…</span>
 							</div>
@@ -338,7 +379,10 @@ export const WebsiteBuilderSiteSearch = ({
 								listLabel="Website search results"
 								className="space-y-2"
 								emptyState={
-									<div className="rounded-[24px] border border-dashed border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] px-4 py-8 text-center text-sm leading-7 text-[var(--wb-site-muted-text)]">
+									<div
+										className="rounded-[20px] border border-dashed px-4 py-8 text-center text-sm leading-7 text-[var(--wb-site-muted-text)]"
+										style={searchPanelStyle}
+									>
 										{hasQuery
 											? "No blocks matched this query yet."
 											: "Search static page copy and publication content from the live site shell."}
@@ -351,9 +395,19 @@ export const WebsiteBuilderSiteSearch = ({
 									);
 
 									return (
-										<div data-wb-search-result-id={result.id}>
+										<div
+											data-wb-search-result-id={result.id}
+											style={searchResultStyle(isActive)}
+											className={clsx(
+												"rounded-[20px] border transition",
+												isActive
+													? "hover:bg-[color-mix(in_oklab,var(--wb-site-accent)_16%,var(--wb-site-surface))]"
+													: "hover:bg-[color-mix(in_oklab,var(--wb-site-accent)_10%,var(--wb-site-surface))]",
+											)}
+										>
 											<WebsiteBuilderLink
 												navigateInPreviewOnly={false}
+												locale={locale}
 												href={buildWebsiteBuilderSearchResultHref(
 													result,
 													deferredQuery || query.trim(),
@@ -376,12 +430,7 @@ export const WebsiteBuilderSiteSearch = ({
 													},
 												)}
 												onClick={() => setOpen(false)}
-												className={clsx(
-													"block rounded-[24px] border px-4 py-4 transition",
-													isActive
-														? "border-[var(--wb-site-accent)] bg-[color-mix(in_oklab,var(--wb-site-accent)_14%,var(--wb-site-surface))]"
-														: "border-[var(--wb-site-border)] bg-[color-mix(in_oklab,var(--wb-site-surface)_86%,var(--wb-site-background))] hover:border-[color-mix(in_oklab,var(--wb-site-accent)_46%,var(--wb-site-border))] hover:bg-[color-mix(in_oklab,var(--wb-site-accent)_10%,var(--wb-site-surface))]",
-												)}
+												className="block px-4 py-4"
 											>
 												<div className="flex items-start justify-between gap-4">
 													<div className="min-w-0">
@@ -392,7 +441,10 @@ export const WebsiteBuilderSiteSearch = ({
 															{result.route}
 														</div>
 													</div>
-													<div className="shrink-0 rounded-full border border-[var(--wb-site-border)] px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-[var(--wb-site-muted-text)]">
+													<div
+														className="shrink-0 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-[var(--wb-site-muted-text)]"
+														style={searchResultPillStyle}
+													>
 														{result.pageKind}
 													</div>
 												</div>

@@ -7,21 +7,21 @@ import {
   resolveWebsiteBuilderPublicSiteDesignSettings,
   siteFooterShellDefinition,
   siteHeaderShellDefinition
-} from "./chunk-Q4KY55GU.js";
+} from "./chunk-IVZCBRYA.js";
 import {
   WebsiteBuilderBlockRenderer,
   WebsiteBuilderRenderDepthProvider,
   WebsiteBuilderSearchHighlightEffect,
   WebsiteBuilderSurfaceLayoutProvider,
   useWebsiteBuilderRenderDepth
-} from "./chunk-N3SPUPCV.js";
+} from "./chunk-4OY27MEO.js";
 import {
   EditableText,
   getWebsiteBuilderEditableEditorLoader
-} from "./chunk-QVAFUFZV.js";
+} from "./chunk-5SCOZJAS.js";
 import {
   buildWebsiteBuilderSearchTargetId
-} from "./chunk-JWEWJA2O.js";
+} from "./chunk-VDE2PPT5.js";
 import {
   createWebsiteBuilderRuntime
 } from "./chunk-JBXEMZUN.js";
@@ -915,6 +915,7 @@ var WebsiteBuilderPublicPage = ({
   siteFrameExtensions,
   accountTabs,
   requestAuth,
+  searchSite,
   activeSearchHighlight = null
 }) => {
   const designSettings = resolveWebsiteBuilderPublicSiteDesignSettings(
@@ -953,6 +954,7 @@ var WebsiteBuilderPublicPage = ({
       siteFrameExtensions,
       accountTabs,
       requestAuth,
+      searchSite,
       i18n,
       children: [
         /* @__PURE__ */ jsx5(
