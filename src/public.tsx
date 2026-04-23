@@ -3,18 +3,20 @@
 import clsx from "clsx";
 import type { CSSProperties } from "react";
 import { memo, useEffect, useRef, useState } from "react";
-import { PhotonBlockRenderer } from "./components/block-renderer";
-import { PhotonProvider } from "./context/photon-context";
 import {
-	usePhotonRenderDepth,
+	PhotonProvider,
+	usePhotonStore,
+} from "./context/photon-public-context";
+import {
 	PhotonRenderDepthProvider,
+	usePhotonRenderDepth,
 } from "./context/photon-render-depth-context";
 import { PhotonSurfaceLayoutProvider } from "./context/photon-surface-layout-context";
 import { resolvePhotonPublicSiteDesignSettings } from "./helpers/public-site-design";
 import {
 	getPhotonSurfaceRegionBlocks,
-	resolvePhotonSurfaceRegionDescriptors,
 	PHOTON_PAGE_SURFACE_REGION_KEY,
+	resolvePhotonSurfaceRegionDescriptors,
 } from "./helpers/site";
 
 export {
@@ -45,15 +47,23 @@ type PhotonPublicBlockListProps = {
 	blocks: PhotonBlock[];
 };
 
-const PhotonPublicBlockItem = ({
-	block,
-}: {
-	block: PhotonBlock;
-}) => {
+const PhotonPublicBlockItem = ({ block }: { block: PhotonBlock }) => {
 	const renderDepth = usePhotonRenderDepth();
+	const registry = usePhotonStore((state) => state.registry);
+	const definition = registry.getDefinition(block.module, block.type);
+
+	if (!definition) {
+		return (
+			<div className="rounded-[28px] border border-rose-400/30 bg-rose-500/10 p-6 text-sm text-rose-100">
+				Unknown block: {block.module}/{block.type}
+			</div>
+		);
+	}
+
+	const Component = definition.component;
 
 	return (
-		<PhotonBlockRenderer
+		<Component
 			block={block}
 			renderArea={(area: PhotonArea) => (
 				<PhotonRenderDepthProvider value={renderDepth + 1}>
@@ -64,9 +74,7 @@ const PhotonPublicBlockItem = ({
 	);
 };
 
-const PhotonPublicBlockList = ({
-	blocks,
-}: PhotonPublicBlockListProps) => (
+const PhotonPublicBlockList = ({ blocks }: PhotonPublicBlockListProps) => (
 	<div className="space-y-[var(--photon-list-gap,0.75rem)]">
 		{blocks.map((block) => (
 			<PhotonPublicBlockItem key={block.id} block={block} />
@@ -75,9 +83,7 @@ const PhotonPublicBlockList = ({
 );
 
 type PhotonPublicSurfaceRegionProps = {
-	region: ReturnType<
-		typeof resolvePhotonSurfaceRegionDescriptors
-	>[number];
+	region: ReturnType<typeof resolvePhotonSurfaceRegionDescriptors>[number];
 	page: PhotonPublicRuntimePageValue;
 };
 
@@ -87,10 +93,7 @@ const PhotonPublicSurfaceRegion = ({
 }: PhotonPublicSurfaceRegionProps) => {
 	const sectionRef = useRef<HTMLElement | null>(null);
 	const [surfaceWidth, setSurfaceWidth] = useState(0);
-	const blocks = getPhotonSurfaceRegionBlocks(
-		page.document,
-		region.key,
-	);
+	const blocks = getPhotonSurfaceRegionBlocks(page.document, region.key);
 	const isPageRegion = region.key === PHOTON_PAGE_SURFACE_REGION_KEY;
 	const stickySiteHeaderRegion =
 		region.key === "header" &&
@@ -244,9 +247,7 @@ export const PhotonPublicPage = ({
 			searchSite={searchSite}
 			i18n={i18n}
 		>
-			<PhotonSearchHighlightEffect
-				activeHighlight={activeSearchHighlight}
-			/>
+			<PhotonSearchHighlightEffect activeHighlight={activeSearchHighlight} />
 			<main
 				className="min-h-screen min-w-0 px-0 transition-colors duration-500"
 				style={siteSurfaceStyle}
@@ -269,12 +270,13 @@ export {
 	sanitizePhotonRichTextHtml,
 } from "./components/public/sanitize-rich-text";
 export {
+	PhotonLink,
+	PhotonProvider,
 	usePhoton,
 	usePhotonCanEdit,
 	usePhotonFieldValue as usePhotonValueAtPath,
 	usePhotonStore,
-	PhotonLink,
-} from "./context/photon-context";
+} from "./context/photon-public-context";
 export { usePhotonRenderDepth } from "./context/photon-render-depth-context";
 export {
 	createPhotonBlockLocalizationSchema,
@@ -284,11 +286,11 @@ export {
 export { createPhotonKit } from "./helpers/installable";
 export { createPhotonRuntime } from "./helpers/runtime";
 export {
-	createPhotonAccountTabExtension,
-	createPhotonSiteFrameExtension,
-	resolvePhotonAccountTabs,
-} from "./helpers/site-frame-extensions";
-export { getPhotonSurfaceModeStyle } from "./helpers/surface-layout";
+	createPhotonPublicAccountTabExtension as createPhotonAccountTabExtension,
+	createPhotonPublicSiteFrameExtension as createPhotonSiteFrameExtension,
+	resolvePhotonPublicAccountTabs as resolvePhotonAccountTabs,
+} from "./helpers/public-site-frame-extensions";
+export { getPhotonPublicSurfaceModeStyle as getPhotonSurfaceModeStyle } from "./helpers/public-surface-layout";
 export { usePhotonI18n } from "./i18n/photon-i18n-context";
 export {
 	photonPublicSystemKit as photonSystemKit,

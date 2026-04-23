@@ -5,8 +5,8 @@ import type {
 	PhotonSite,
 	PhotonSiteRegion,
 } from "../types";
+import { createPhotonAreaListId } from "./list-id";
 import { clonePhotonValue } from "./path";
-import { createPhotonAreaListId } from "./tree";
 
 const PHOTON_SURFACE_REGION_AREA_ID = "content";
 export const PHOTON_PAGE_SURFACE_REGION_KEY = "page";
@@ -27,10 +27,7 @@ type PhotonSurfaceRegionDescriptor = {
 const createPhotonSurfaceRegionBlockId = (regionKey: string) =>
 	`__photon_surface_region:${regionKey}__`;
 
-const isPhotonSurfaceRegionBlock = (
-	block: PhotonBlock,
-	regionKey?: string,
-) => {
+const isPhotonSurfaceRegionBlock = (block: PhotonBlock, regionKey?: string) => {
 	if (!block.id.startsWith("__photon_surface_region:")) {
 		return false;
 	}
@@ -40,12 +37,9 @@ const isPhotonSurfaceRegionBlock = (
 		: true;
 };
 
-const getPhotonSurfaceRegionArea = (
-	block: PhotonBlock,
-): PhotonArea | null =>
-	block.areas?.find(
-		(area) => area.id === PHOTON_SURFACE_REGION_AREA_ID,
-	) ?? null;
+const getPhotonSurfaceRegionArea = (block: PhotonBlock): PhotonArea | null =>
+	block.areas?.find((area) => area.id === PHOTON_SURFACE_REGION_AREA_ID) ??
+	null;
 
 const getPhotonSiteRegionDescriptors = (
 	site: PhotonSite,
@@ -65,9 +59,9 @@ const removeDuplicatedPhotonSiteShellBlocks = (
 	site: PhotonSite,
 ) =>
 	blocks.filter((block) => {
-		const regionEntry = Object.entries(
-			PHOTON_SITE_SHELL_REGION_TYPES,
-		).find(([, type]) => type === block.type);
+		const regionEntry = Object.entries(PHOTON_SITE_SHELL_REGION_TYPES).find(
+			([, type]) => type === block.type,
+		);
 
 		if (!regionEntry) {
 			return true;
@@ -259,9 +253,7 @@ export const getPhotonSurfaceRegionListId = (regionKey: string) =>
 		PHOTON_SURFACE_REGION_AREA_ID,
 	);
 
-const findFirstEditableBlockId = (
-	blocks: PhotonBlock[],
-): string | null => {
+const findFirstEditableBlockId = (blocks: PhotonBlock[]): string | null => {
 	for (const block of blocks) {
 		if (isPhotonSurfaceRegionBlock(block)) {
 			const area = getPhotonSurfaceRegionArea(block);

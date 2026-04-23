@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import {
 	usePhotonCanEdit,
 	usePhotonFieldValue,
-} from "../../context/photon-context";
+} from "../../context/photon-public-context";
 import { getPhotonEditableEditorLoader } from "../../helpers/editable-editor-loaders";
 import { PHOTON_EMPTY_TEXT } from "../../helpers/path";
 import { buildPhotonSearchTargetId } from "../../search/helpers";

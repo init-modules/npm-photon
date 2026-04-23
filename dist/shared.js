@@ -25,30 +25,34 @@ import {
   sanitizePhotonLinkHref
 } from "./chunk-V7CN23YR.js";
 import {
-  DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
-  DEFAULT_PHOTON_WORKSPACE_REF,
-  PHOTON_ROOT_LIST_ID,
-  canEditPhotonWorkspace,
-  canSavePhotonWorkspace,
   clonePhotonBlockTreeWithNewIds,
-  clonePhotonValue,
   collectBlockIds,
-  createPhotonAreaListId,
-  createPhotonNodeId,
   duplicatePhotonBlockInDocument,
   findPhotonBlock,
   getFirstPhotonBlockId,
-  getPhotonWorkspaceIdentityKey,
-  getPhotonWorkspaceKey,
   insertPhotonBlockInDocument,
-  isPhotonWorkspaceReadonly,
   movePhotonBlockInDocument,
-  normalizePhotonWorkspaceCapabilities,
-  normalizePhotonWorkspaceDescriptor,
-  normalizePhotonWorkspaceRef,
   removePhotonBlockFromDocument,
   updatePhotonBlockInDocument
-} from "./chunk-5MWE2CZQ.js";
+} from "./chunk-UZJ5GO74.js";
+import {
+  PHOTON_ROOT_LIST_ID,
+  createPhotonAreaListId,
+  createPhotonNodeId
+} from "./chunk-U2HNHTED.js";
+import {
+  DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
+  DEFAULT_PHOTON_WORKSPACE_REF,
+  canEditPhotonWorkspace,
+  canSavePhotonWorkspace,
+  clonePhotonValue,
+  getPhotonWorkspaceIdentityKey,
+  getPhotonWorkspaceKey,
+  isPhotonWorkspaceReadonly,
+  normalizePhotonWorkspaceCapabilities,
+  normalizePhotonWorkspaceDescriptor,
+  normalizePhotonWorkspaceRef
+} from "./chunk-KAITZE7U.js";
 export {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
   DEFAULT_PHOTON_WORKSPACE_REF,

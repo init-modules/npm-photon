@@ -1,8 +1,10 @@
 import {
-  clonePhotonValue,
   createPhotonAreaListId,
   createPhotonNodeId
-} from "./chunk-5MWE2CZQ.js";
+} from "./chunk-U2HNHTED.js";
+import {
+  clonePhotonValue
+} from "./chunk-KAITZE7U.js";
 
 // src/helpers/site.ts
 var PHOTON_SURFACE_REGION_AREA_ID = "content";
@@ -19,9 +21,7 @@ var isPhotonSurfaceRegionBlock = (block, regionKey) => {
   }
   return regionKey ? block.id === createPhotonSurfaceRegionBlockId(regionKey) : true;
 };
-var getPhotonSurfaceRegionArea = (block) => block.areas?.find(
-  (area) => area.id === PHOTON_SURFACE_REGION_AREA_ID
-) ?? null;
+var getPhotonSurfaceRegionArea = (block) => block.areas?.find((area) => area.id === PHOTON_SURFACE_REGION_AREA_ID) ?? null;
 var getPhotonSiteRegionDescriptors = (site) => Object.values(site.regions).sort((left, right) => left.order - right.order).map((region) => ({
   key: region.key,
   label: region.label,
@@ -30,9 +30,9 @@ var getPhotonSiteRegionDescriptors = (site) => Object.values(site.regions).sort(
   kind: "site"
 }));
 var removeDuplicatedPhotonSiteShellBlocks = (blocks, site) => blocks.filter((block) => {
-  const regionEntry = Object.entries(
-    PHOTON_SITE_SHELL_REGION_TYPES
-  ).find(([, type]) => type === block.type);
+  const regionEntry = Object.entries(PHOTON_SITE_SHELL_REGION_TYPES).find(
+    ([, type]) => type === block.type
+  );
   if (!regionEntry) {
     return true;
   }
@@ -294,9 +294,7 @@ var createPhotonRegistry = (entries) => {
     pageSettingsPanels,
     siteSettingsPanels,
     getDefinition(moduleName, blockType) {
-      return definitions.get(
-        getPhotonDefinitionKey(moduleName, blockType)
-      );
+      return definitions.get(getPhotonDefinitionKey(moduleName, blockType));
     },
     getBindingAdapter(key) {
       return bindingAdapters.get(key);
@@ -312,10 +310,7 @@ var createPhotonRegistry = (entries) => {
         (moduleEntry) => moduleEntry.blocks.map((definition) => ({
           ...definition,
           module: moduleEntry.module,
-          key: getPhotonDefinitionKey(
-            moduleEntry.module,
-            definition.type
-          )
+          key: getPhotonDefinitionKey(moduleEntry.module, definition.type)
         }))
       );
     }
@@ -406,20 +401,14 @@ var collectPhotonFieldLocalization = (field, schema, basePath, inheritedLocaliza
     return;
   }
   if (!currentPath) {
-    throw new Error(
-      "Photon field localization requires a concrete path."
-    );
+    throw new Error("Photon field localization requires a concrete path.");
   }
   if (!effectiveLocalization) {
     throw new Error(
       `Photon field "${currentPath}" is missing explicit localization metadata.`
     );
   }
-  registerPhotonFieldLocalization(
-    schema,
-    effectiveLocalization,
-    currentPath
-  );
+  registerPhotonFieldLocalization(schema, effectiveLocalization, currentPath);
 };
 var createPhotonBlockLocalizationSchema = (fields) => {
   const schema = {

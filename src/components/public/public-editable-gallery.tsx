@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import {
 	usePhotonCanEdit,
 	usePhotonFieldValue,
-} from "../../context/photon-context";
+} from "../../context/photon-public-context";
 import { getPhotonEditableEditorLoader } from "../../helpers/editable-editor-loaders";
 import { resolvePhotonMediaPreviewUrl } from "../../helpers/media";
 
@@ -205,8 +205,7 @@ const EditableGalleryStatic = ({
 				items.map((item, index) => (
 					<PublicGalleryItemCard
 						key={
-							item.id ??
-							`${index}-${resolvePhotonMediaPreviewUrl(item.media)}`
+							item.id ?? `${index}-${resolvePhotonMediaPreviewUrl(item.media)}`
 						}
 						item={item}
 						index={index}
@@ -257,7 +256,8 @@ const PublicGalleryItemCard = ({
 				borderColor: "var(--photon-gallery-card-border, rgba(255,255,255,0.1))",
 				background:
 					"var(--photon-gallery-card-bg, radial-gradient(circle_at_top_left,rgba(34,211,238,0.12),transparent_48%),linear-gradient(180deg,rgba(8,17,30,0.97),rgba(5,11,20,0.99)))",
-				boxShadow: "var(--photon-gallery-card-shadow, 0 24px 56px rgba(0,0,0,0.2))",
+				boxShadow:
+					"var(--photon-gallery-card-shadow, 0 24px 56px rgba(0,0,0,0.2))",
 			}}
 		>
 			<div
@@ -281,7 +281,8 @@ const PublicGalleryItemCard = ({
 						style={{
 							background:
 								"var(--photon-gallery-fallback-bg, radial-gradient(circle_at_top,rgba(34,211,238,0.12),transparent_28%),linear-gradient(180deg,rgba(7,17,31,0.92),rgba(5,11,20,0.98)))",
-							color: "var(--photon-gallery-fallback-text, rgba(255,255,255,0.48))",
+							color:
+								"var(--photon-gallery-fallback-text, rgba(255,255,255,0.48))",
 						}}
 					>
 						Media slot
@@ -294,7 +295,9 @@ const PublicGalleryItemCard = ({
 						"text-[11px] font-semibold uppercase tracking-[0.2em]",
 						labelClassName,
 					)}
-					style={{ color: "var(--photon-gallery-label, rgba(255,255,255,0.54))" }}
+					style={{
+						color: "var(--photon-gallery-label, rgba(255,255,255,0.54))",
+					}}
 				>
 					{item.eyebrow || `Item ${index + 1}`}
 				</p>
@@ -317,7 +320,8 @@ const PublicGalleryItemCard = ({
 						style={{
 							borderColor:
 								"var(--photon-gallery-file-border, rgba(255,255,255,0.08))",
-							background: "var(--photon-gallery-file-bg, rgba(255,255,255,0.05))",
+							background:
+								"var(--photon-gallery-file-bg, rgba(255,255,255,0.05))",
 							color: "var(--photon-gallery-file-text, rgba(255,255,255,0.5))",
 						}}
 					>

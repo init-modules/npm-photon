@@ -1,6 +1,6 @@
 import {
   PHOTON_EMPTY_TEXT
-} from "./chunk-5MWE2CZQ.js";
+} from "./chunk-KAITZE7U.js";
 
 // src/components/rich-text-editor.tsx
 import Placeholder from "@tiptap/extension-placeholder";

@@ -5,16 +5,19 @@ import { ArrowRight, CircleUserRound, LogIn, ShoppingCart } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { EditableImage } from "../../../components/public/public-editable-image";
 import { EditableText } from "../../../components/public/public-editable-text";
-import { PhotonLink, usePhotonStore } from "../../../context/photon-context";
+import {
+	PhotonLink,
+	usePhotonStore,
+} from "../../../context/photon-public-context";
 import {
 	createPhotonLocalizedDefault,
 	definePhotonBlockDefinition,
 } from "../../../helpers/document";
 import { isPhotonPublicFramelessSiteDesign } from "../../../helpers/public-site-design";
 import {
-	collectPhotonHeaderExtensionItems,
-	resolvePhotonSiteFrameExtensions,
-} from "../../../helpers/site-frame-extensions";
+	collectPhotonPublicHeaderExtensionItems,
+	resolvePhotonPublicSiteFrameExtensions,
+} from "../../../helpers/public-site-frame-extensions";
 import { usePhotonI18n } from "../../../i18n/photon-i18n-context";
 import { PhotonSiteSearch } from "../../../search/photon-site-search";
 import type {
@@ -257,8 +260,8 @@ const SiteHeaderShell = ({
 	const disabledExtensionItemIds = normalizePhotonSiteStringItems(
 		block.props.disabledExtensionItemIds,
 	);
-	const headerExtensionItems = collectPhotonHeaderExtensionItems(
-		resolvePhotonSiteFrameExtensions(
+	const headerExtensionItems = collectPhotonPublicHeaderExtensionItems(
+		resolvePhotonPublicSiteFrameExtensions(
 			siteFrameExtensions,
 			disabledExtensionIds,
 		).filter(

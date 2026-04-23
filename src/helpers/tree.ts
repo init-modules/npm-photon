@@ -1,22 +1,11 @@
-import type {
-	PhotonArea,
-	PhotonBlock,
-	PhotonDocument,
-} from "../types";
+import type { PhotonArea, PhotonBlock, PhotonDocument } from "../types";
+import { createPhotonAreaListId, PHOTON_ROOT_LIST_ID } from "./list-id";
+import { createPhotonNodeId } from "./node-id";
 import { clonePhotonValue } from "./path";
 
+export { createPhotonAreaListId, PHOTON_ROOT_LIST_ID } from "./list-id";
+export { createPhotonNodeId } from "./node-id";
 export { clonePhotonValue } from "./path";
-
-export const PHOTON_ROOT_LIST_ID = "root";
-
-export const createPhotonAreaListId = (
-	blockId: string,
-	areaId: string,
-) => `area:${blockId}:${areaId}`;
-
-const randomSegment = () => Math.random().toString(36).slice(2, 10);
-
-export const createPhotonNodeId = () => `photon_${randomSegment()}`;
 
 const cloneAreaTree = (
 	areas: PhotonArea[] | undefined,
@@ -45,9 +34,8 @@ export const clonePhotonBlockTreeWithNewIds = <
 	areas: cloneAreaTree(block.areas),
 });
 
-export const getFirstPhotonBlockId = (
-	blocks: PhotonBlock[],
-): string | null => blocks[0]?.id ?? null;
+export const getFirstPhotonBlockId = (blocks: PhotonBlock[]): string | null =>
+	blocks[0]?.id ?? null;
 
 export const findPhotonBlock = (
 	blocks: PhotonBlock[],
@@ -355,8 +343,7 @@ export const insertPhotonBlockInDocument = (
 export const removePhotonBlockFromDocument = (
 	document: PhotonDocument,
 	blockId: string,
-) =>
-	removeBlockFromList(document.blocks, blockId, PHOTON_ROOT_LIST_ID);
+) => removeBlockFromList(document.blocks, blockId, PHOTON_ROOT_LIST_ID);
 
 export const duplicatePhotonBlockInDocument = (
 	document: PhotonDocument,

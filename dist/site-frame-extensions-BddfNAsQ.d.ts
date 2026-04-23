@@ -1,4 +1,4 @@
-import { u as PhotonSiteFrameExtension, v as PhotonSiteFrameNavigationColumn, w as PhotonSiteFrameLinkItem, x as PhotonSiteFrameActionItem, y as PhotonAccountTabExtension } from './types-S6aNsw9R.js';
+import { u as PhotonSiteFrameExtension, v as PhotonSiteFrameNavigationColumn, w as PhotonSiteFrameLinkItem, x as PhotonSiteFrameActionItem, y as PhotonAccountTabExtension } from './types-BAycJgQn.js';
 
 declare const createPhotonSiteFrameExtension: (extension: PhotonSiteFrameExtension) => PhotonSiteFrameExtension;
 declare const createPhotonAccountTabExtension: (tab: PhotonAccountTabExtension) => PhotonAccountTabExtension;
@@ -14,4 +14,4 @@ declare const collectPhotonFooterExtensionItems: (extensions: readonly PhotonSit
     legalLinks: PhotonSiteFrameLinkItem[];
 };
 
-export { createPhotonSiteFrameExtension as a, collectPhotonFooterExtensionItems as b, createPhotonAccountTabExtension as c, collectPhotonHeaderExtensionItems as d, resolvePhotonSiteFrameExtensions as e, resolvePhotonAccountTabs as r };
+export { collectPhotonHeaderExtensionItems as a, createPhotonAccountTabExtension as b, collectPhotonFooterExtensionItems as c, createPhotonSiteFrameExtension as d, resolvePhotonSiteFrameExtensions as e, resolvePhotonAccountTabs as r };

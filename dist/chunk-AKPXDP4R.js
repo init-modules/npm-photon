@@ -2,7 +2,7 @@ import {
   PhotonRichTextEditor,
   photonRichTextContentClassName,
   renderPhotonRichTextHtml
-} from "./chunk-TM2YIVFS.js";
+} from "./chunk-KSRBTT5H.js";
 import {
   buildPhotonSearchTargetId
 } from "./chunk-FRFYYFDJ.js";
@@ -14,10 +14,10 @@ import {
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonStore
-} from "./chunk-XOQNSI7G.js";
+} from "./chunk-BIMQCHT5.js";
 import {
   PHOTON_EMPTY_TEXT
-} from "./chunk-5MWE2CZQ.js";
+} from "./chunk-KAITZE7U.js";
 
 // src/components/editable/editable-rich-text.tsx
 import clsx from "clsx";

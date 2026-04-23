@@ -15,13 +15,11 @@ import type {
 	PhotonSiteSettingsPanelDefinition,
 } from "../types";
 import { resolvePhotonModules } from "./installable";
+import { createPhotonNodeId } from "./node-id";
 import { clonePhotonValue } from "./path";
-import { createPhotonNodeId } from "./tree";
 
-export const getPhotonDefinitionKey = (
-	moduleName: string,
-	blockType: string,
-) => `${moduleName}::${blockType}`;
+export const getPhotonDefinitionKey = (moduleName: string, blockType: string) =>
+	`${moduleName}::${blockType}`;
 
 export const createPhotonRegistry = (
 	entries: PhotonRegistryEntry[],
@@ -80,9 +78,7 @@ export const createPhotonRegistry = (
 		pageSettingsPanels,
 		siteSettingsPanels,
 		getDefinition(moduleName, blockType) {
-			return definitions.get(
-				getPhotonDefinitionKey(moduleName, blockType),
-			);
+			return definitions.get(getPhotonDefinitionKey(moduleName, blockType));
 		},
 		getBindingAdapter(key) {
 			return bindingAdapters.get(key);
@@ -98,10 +94,7 @@ export const createPhotonRegistry = (
 				moduleEntry.blocks.map((definition) => ({
 					...definition,
 					module: moduleEntry.module,
-					key: getPhotonDefinitionKey(
-						moduleEntry.module,
-						definition.type,
-					),
+					key: getPhotonDefinitionKey(moduleEntry.module, definition.type),
 				})),
 			);
 		},
@@ -222,9 +215,7 @@ const collectPhotonFieldLocalization = (
 	}
 
 	if (!currentPath) {
-		throw new Error(
-			"Photon field localization requires a concrete path.",
-		);
+		throw new Error("Photon field localization requires a concrete path.");
 	}
 
 	if (!effectiveLocalization) {
@@ -233,11 +224,7 @@ const collectPhotonFieldLocalization = (
 		);
 	}
 
-	registerPhotonFieldLocalization(
-		schema,
-		effectiveLocalization,
-		currentPath,
-	);
+	registerPhotonFieldLocalization(schema, effectiveLocalization, currentPath);
 };
 
 export const createPhotonBlockLocalizationSchema = (
@@ -258,9 +245,7 @@ export const createPhotonBlockLocalizationSchema = (
 	return schema;
 };
 
-export const createPhotonLocalizationManifest = (
-	modules: PhotonModule[],
-) =>
+export const createPhotonLocalizationManifest = (modules: PhotonModule[]) =>
 	Object.fromEntries(
 		modules.flatMap((moduleEntry) =>
 			moduleEntry.blocks.map((definition) => [
@@ -339,9 +324,7 @@ export const createPhotonBlock = <
 	};
 };
 
-export const definePhotonBlockDefinition = <
-	Props extends PhotonBlockProps,
->(
+export const definePhotonBlockDefinition = <Props extends PhotonBlockProps>(
 	definition: PhotonBlockDefinition<Props>,
 ): PhotonBlockDefinition<Props> => ({
 	...definition,
@@ -363,9 +346,7 @@ export const movePhotonArrayItem = <T>(
 	return next;
 };
 
-export const getPhotonDocumentFingerprint = (
-	document: PhotonDocument,
-) =>
+export const getPhotonDocumentFingerprint = (document: PhotonDocument) =>
 	JSON.stringify({
 		id: document.id,
 		name: document.name,

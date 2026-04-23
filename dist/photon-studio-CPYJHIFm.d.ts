@@ -1,6 +1,6 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
-import { b as PhotonDocument, m as PhotonResources, k as PhotonPageSettings, p as PhotonSite, A as PhotonRegistry, t as PhotonWorkspaceDescriptor, s as PhotonWorkspaceCapabilities, B as PhotonRevisionDescriptor, C as PhotonBranchPolicyState, D as PhotonMergePreview, E as PhotonMode, i as PhotonPageCatalogItem, F as PhotonMediaUploadHandler, G as PhotonSearchHandler, n as PhotonSearchHighlight, H as PhotonLinkComponent, u as PhotonSiteFrameExtension, y as PhotonAccountTabExtension, I as PhotonI18nValue, J as PhotonField, K as PhotonPageSettingsPanelDefinition, L as PhotonSiteSettingsPanelDefinition } from './types-S6aNsw9R.js';
+import { b as PhotonDocument, m as PhotonResources, k as PhotonPageSettings, p as PhotonSite, A as PhotonRegistry, t as PhotonWorkspaceDescriptor, s as PhotonWorkspaceCapabilities, B as PhotonRevisionDescriptor, C as PhotonBranchPolicyState, D as PhotonMergePreview, E as PhotonMode, i as PhotonPageCatalogItem, F as PhotonMediaUploadHandler, G as PhotonSearchHandler, n as PhotonSearchHighlight, H as PhotonLinkComponent, u as PhotonSiteFrameExtension, y as PhotonAccountTabExtension, I as PhotonI18nValue, J as PhotonField, K as PhotonPageSettingsPanelDefinition, L as PhotonSiteSettingsPanelDefinition } from './types-BAycJgQn.js';
 
 type InsertTarget = {
     listId: string;

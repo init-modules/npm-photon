@@ -23,11 +23,11 @@ import {
 	useKeyboardMenuController,
 } from "../components/ui/keyboard-menu";
 import {
+	PhotonLink,
 	usePhotonCanEdit,
 	usePhotonFieldValue,
 	usePhotonStore,
-	PhotonLink,
-} from "../context/photon-context";
+} from "../context/photon-public-context";
 import { usePhotonI18n } from "../i18n/photon-i18n-context";
 import type { PhotonSearchResult } from "../types";
 import { buildPhotonSearchResultHref } from "./helpers";
@@ -41,17 +41,21 @@ type PhotonSiteSearchProps = {
 const searchDialogStyle = {
 	background:
 		"color-mix(in oklab, var(--photon-site-background) 88%, var(--photon-site-surface))",
-	borderColor: "color-mix(in oklab, var(--photon-site-border) 24%, transparent)",
+	borderColor:
+		"color-mix(in oklab, var(--photon-site-border) 24%, transparent)",
 	boxShadow: "0 34px 110px rgba(0,0,0,0.34)",
 } satisfies CSSProperties;
 
 const searchDividerStyle = {
-	borderColor: "color-mix(in oklab, var(--photon-site-border) 18%, transparent)",
+	borderColor:
+		"color-mix(in oklab, var(--photon-site-border) 18%, transparent)",
 } satisfies CSSProperties;
 
 const searchPanelStyle = {
-	background: "color-mix(in oklab, var(--photon-site-surface) 34%, transparent)",
-	borderColor: "color-mix(in oklab, var(--photon-site-border) 18%, transparent)",
+	background:
+		"color-mix(in oklab, var(--photon-site-surface) 34%, transparent)",
+	borderColor:
+		"color-mix(in oklab, var(--photon-site-border) 18%, transparent)",
 } satisfies CSSProperties;
 
 const searchResultStyle = (isActive: boolean) =>
@@ -65,7 +69,8 @@ const searchResultStyle = (isActive: boolean) =>
 	}) satisfies CSSProperties;
 
 const searchResultPillStyle = {
-	borderColor: "color-mix(in oklab, var(--photon-site-border) 24%, transparent)",
+	borderColor:
+		"color-mix(in oklab, var(--photon-site-border) 24%, transparent)",
 } satisfies CSSProperties;
 
 const renderSnippetParts = (snippet: string, query: string) => {
@@ -101,8 +106,7 @@ export const PhotonSiteSearch = ({
 	const isAdmin = usePhotonStore((state) => state.isAdmin);
 	const workspace = usePhotonStore((state) => state.workspace);
 	const placeholder = String(
-		usePhotonFieldValue(blockId, placeholderPath) ??
-			"Search the website",
+		usePhotonFieldValue(blockId, placeholderPath) ?? "Search the website",
 	);
 	const [open, setOpen] = useState(false);
 	const [query, setQuery] = useState("");
@@ -282,10 +286,7 @@ export const PhotonSiteSearch = ({
 					type="button"
 					onClick={() => setOpen(true)}
 					className="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-[var(--photon-site-muted)] transition hover:bg-black/5 hover:text-[var(--photon-site-text)]"
-					aria-label={translate(
-						"photon.search.open",
-						"Search the website",
-					)}
+					aria-label={translate("photon.search.open", "Search the website")}
 				>
 					<Search className="h-4 w-4" />
 				</button>
@@ -314,10 +315,7 @@ export const PhotonSiteSearch = ({
 				>
 					<div className="sr-only">
 						<DialogTitle>
-							{translate(
-								"photon.search.dialogTitle",
-								"Search the website",
-							)}
+							{translate("photon.search.dialogTitle", "Search the website")}
 						</DialogTitle>
 						<DialogDescription>
 							{translate(

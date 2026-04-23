@@ -183,17 +183,13 @@ export const PhotonProvider = ({
 
 	useEffect(() => {
 		storeRef.current?.setState((state) => {
-			const normalizedWorkspace =
-				normalizePhotonWorkspaceDescriptor(workspace);
+			const normalizedWorkspace = normalizePhotonWorkspaceDescriptor(workspace);
 			const normalizedCapabilities =
 				normalizePhotonWorkspaceCapabilities(capabilities);
 			const nextMode = !isAdmin ? "preview" : state.mode;
 			const nextEditable =
 				isAdmin &&
-				canEditPhotonWorkspace(
-					normalizedWorkspace,
-					normalizedCapabilities,
-				);
+				canEditPhotonWorkspace(normalizedWorkspace, normalizedCapabilities);
 
 			if (
 				state.isAdmin === isAdmin &&
@@ -257,9 +253,7 @@ export const usePhotonStoreApi = () => {
 	const context = useContext(PhotonContext);
 
 	if (!context) {
-		throw new Error(
-			"usePhoton must be used within PhotonProvider",
-		);
+		throw new Error("usePhoton must be used within PhotonProvider");
 	}
 
 	return context;
@@ -279,13 +273,8 @@ export const usePhoton = () => {
 	return useStore(store);
 };
 
-export const usePhotonFieldValue = (
-	blockId: string,
-	path: string,
-): unknown =>
-	usePhotonStore((state) =>
-		getPhotonFieldValue(state, blockId, path),
-	);
+export const usePhotonFieldValue = (blockId: string, path: string): unknown =>
+	usePhotonStore((state) => getPhotonFieldValue(state, blockId, path));
 
 export const usePhotonCanEdit = () =>
 	usePhotonStore(
@@ -302,10 +291,7 @@ export const usePhotonPersistedState = () => {
 	const site = usePhotonStore((state) => state.site);
 
 	return useMemo(() => {
-		const persistedState = decomposePhotonSurfaceDocument(
-			document,
-			site,
-		);
+		const persistedState = decomposePhotonSurfaceDocument(document, site);
 
 		return {
 			document: persistedState.pageDocument,

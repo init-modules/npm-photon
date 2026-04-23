@@ -5,16 +5,19 @@ import { ArrowRight, Send } from "lucide-react";
 import { EditableImage } from "../../../components/public/public-editable-image";
 import { EditableText } from "../../../components/public/public-editable-text";
 import { EditableTextarea } from "../../../components/public/public-editable-textarea";
-import { PhotonLink, usePhotonStore } from "../../../context/photon-context";
+import {
+	PhotonLink,
+	usePhotonStore,
+} from "../../../context/photon-public-context";
 import {
 	createPhotonLocalizedDefault,
 	definePhotonBlockDefinition,
 } from "../../../helpers/document";
 import { isPhotonPublicFramelessSiteDesign } from "../../../helpers/public-site-design";
 import {
-	collectPhotonFooterExtensionItems,
-	resolvePhotonSiteFrameExtensions,
-} from "../../../helpers/site-frame-extensions";
+	collectPhotonPublicFooterExtensionItems,
+	resolvePhotonPublicSiteFrameExtensions,
+} from "../../../helpers/public-site-frame-extensions";
 import type { PhotonBlockComponentProps, PhotonField } from "../../../types";
 import {
 	normalizePhotonSiteLinkItems,
@@ -241,8 +244,11 @@ const SiteFooterShell = ({
 	const disabledExtensionItemIds = normalizePhotonSiteStringItems(
 		block.props.disabledExtensionItemIds,
 	);
-	const footerExtensionItems = collectPhotonFooterExtensionItems(
-		resolvePhotonSiteFrameExtensions(siteFrameExtensions, disabledExtensionIds),
+	const footerExtensionItems = collectPhotonPublicFooterExtensionItems(
+		resolvePhotonPublicSiteFrameExtensions(
+			siteFrameExtensions,
+			disabledExtensionIds,
+		),
 		disabledExtensionItemIds,
 	);
 	const navigationColumns = [

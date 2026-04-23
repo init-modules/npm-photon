@@ -1,4 +1,4 @@
-import { W as PhotonSiteDesignSettings, X as PhotonResolvedSiteDesignSettings, Y as PhotonSiteComponentVariants, a as PhotonBlock, b as PhotonDocument, s as PhotonWorkspaceCapabilities, Z as PhotonWorkspaceRef, t as PhotonWorkspaceDescriptor } from './types-S6aNsw9R.js';
+import { W as PhotonSiteDesignSettings, X as PhotonResolvedSiteDesignSettings, Y as PhotonSiteComponentVariants, a as PhotonBlock, b as PhotonDocument, s as PhotonWorkspaceCapabilities, Z as PhotonWorkspaceRef, t as PhotonWorkspaceDescriptor } from './types-BAycJgQn.js';
 
 declare const PHOTON_EMPTY_TEXT = "Untitled";
 declare const clonePhotonValue: <T>(value: T) => T;
@@ -23,7 +23,9 @@ declare const resolvePhotonSiteDesignSettings: (value: unknown) => PhotonResolve
 
 declare const PHOTON_ROOT_LIST_ID = "root";
 declare const createPhotonAreaListId: (blockId: string, areaId: string) => string;
+
 declare const createPhotonNodeId: () => string;
+
 declare const clonePhotonBlockTreeWithNewIds: <Props extends Record<string, unknown> = Record<string, unknown>>(block: PhotonBlock<Props>) => PhotonBlock<Props>;
 declare const getFirstPhotonBlockId: (blocks: PhotonBlock[]) => string | null;
 declare const findPhotonBlock: (blocks: PhotonBlock[], blockId: string) => PhotonBlock | null;

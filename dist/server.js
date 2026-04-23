@@ -1,6 +1,6 @@
 import {
   createPhotonRuntime
-} from "./chunk-HHFFJ7R4.js";
+} from "./chunk-TSSJCQJA.js";
 import {
   collectPhotonFooterExtensionItems,
   collectPhotonHeaderExtensionItems,
@@ -56,35 +56,39 @@ import {
   resolvePhotonSurfaceRegionDescriptors,
   resolvePhotonSurfaceRegionForBlockId,
   resolvePhotonSurfaceRegionForListId
-} from "./chunk-U33YWAMI.js";
+} from "./chunk-YNXZBS6V.js";
+import {
+  clonePhotonBlockTreeWithNewIds,
+  collectBlockIds,
+  duplicatePhotonBlockInDocument,
+  findPhotonBlock,
+  getFirstPhotonBlockId,
+  insertPhotonBlockInDocument,
+  movePhotonBlockInDocument,
+  removePhotonBlockFromDocument,
+  updatePhotonBlockInDocument
+} from "./chunk-UZJ5GO74.js";
+import {
+  PHOTON_ROOT_LIST_ID,
+  createPhotonAreaListId,
+  createPhotonNodeId
+} from "./chunk-U2HNHTED.js";
 import {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
   DEFAULT_PHOTON_WORKSPACE_REF,
   PHOTON_EMPTY_TEXT,
-  PHOTON_ROOT_LIST_ID,
   canEditPhotonWorkspace,
   canSavePhotonWorkspace,
-  clonePhotonBlockTreeWithNewIds,
   clonePhotonValue,
-  collectBlockIds,
-  createPhotonAreaListId,
-  createPhotonNodeId,
-  duplicatePhotonBlockInDocument,
-  findPhotonBlock,
-  getFirstPhotonBlockId,
   getPhotonWorkspaceIdentityKey,
   getPhotonWorkspaceKey,
   getValueAtPath,
-  insertPhotonBlockInDocument,
   isPhotonWorkspaceReadonly,
-  movePhotonBlockInDocument,
   normalizePhotonWorkspaceCapabilities,
   normalizePhotonWorkspaceDescriptor,
   normalizePhotonWorkspaceRef,
-  removePhotonBlockFromDocument,
-  setValueAtPath,
-  updatePhotonBlockInDocument
-} from "./chunk-5MWE2CZQ.js";
+  setValueAtPath
+} from "./chunk-KAITZE7U.js";
 export {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
   DEFAULT_PHOTON_WORKSPACE_REF,

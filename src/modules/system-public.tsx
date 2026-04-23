@@ -4,14 +4,14 @@ import clsx from "clsx";
 import type { CSSProperties, ReactNode } from "react";
 import { EditableText } from "../components/public/public-editable-text";
 import { EditableTextarea } from "../components/public/public-editable-textarea";
-import { usePhotonStore } from "../context/photon-context";
+import { usePhotonStore } from "../context/photon-public-context";
 import {
 	createPhotonLocalizedDefault,
 	definePhotonBlockDefinition,
 } from "../helpers/document";
 import { createPhotonKit } from "../helpers/installable";
 import { isPhotonPublicFramelessSiteDesign } from "../helpers/public-site-design";
-import { getPhotonSurfaceModeStyle } from "../helpers/surface-layout";
+import { getPhotonPublicSurfaceModeStyle } from "../helpers/public-surface-layout";
 import type {
 	PhotonArea,
 	PhotonBlock,
@@ -19,8 +19,8 @@ import type {
 	PhotonInstallableKit,
 	PhotonModule,
 } from "../types";
-import { siteFooterShellDefinition } from "./system/site/site-footer-shell-definition";
-import { siteHeaderShellDefinition } from "./system/site/site-header-shell-definition";
+import { siteFooterShellDefinition } from "./system/site/site-footer-shell-public-definition";
+import { siteHeaderShellDefinition } from "./system/site/site-header-shell-public-definition";
 
 type SplitLayoutColumn = {
 	areaId: string;
@@ -49,7 +49,7 @@ const surfaceStyles: Record<SplitLayoutProps["surface"], string> = {
 const getColumnConfig = (
 	columns: SplitLayoutColumn[],
 	area: PhotonArea,
-	index: number,
+	_index: number,
 ) =>
 	columns.find((column) => column.areaId === area.id) ?? {
 		areaId: area.id,
@@ -66,17 +66,14 @@ const SplitLayout = ({
 	renderArea?: (area: PhotonArea, index: number) => ReactNode;
 }) => {
 	const mode = usePhotonStore((state) => state.mode);
-	const siteDesign = usePhotonStore(
-		(state) => state.site.settings.design,
-	);
+	const siteDesign = usePhotonStore((state) => state.site.settings.design);
 	const columns = block.props.columns ?? [];
 	const areas = block.areas ?? [];
 	const templateColumns = areas
 		.map((area, index) => getColumnConfig(columns, area, index).width)
 		.join(" ");
 	const surface = surfaceStyles[block.props.surface] ?? surfaceStyles.glass;
-	const framelessSurface =
-		isPhotonPublicFramelessSiteDesign(siteDesign);
+	const framelessSurface = isPhotonPublicFramelessSiteDesign(siteDesign);
 	const stickyPreviewEnabled = mode !== "builder";
 
 	return (
@@ -88,11 +85,11 @@ const SplitLayout = ({
 					: "rounded-[38px] border shadow-[0_28px_90px_rgba(2,12,27,0.16)]",
 				!framelessSurface && surface,
 			)}
-			style={
-				framelessSurface
-					? (getPhotonSurfaceModeStyle("bleed") as CSSProperties)
-					: undefined
-			}
+				style={
+					framelessSurface
+						? (getPhotonPublicSurfaceModeStyle("bleed") as CSSProperties)
+						: undefined
+				}
 		>
 			<div className="max-w-3xl">
 				<EditableText blockId={block.id} path="eyebrow" />
@@ -301,9 +298,8 @@ export const photonPublicSystemModule: PhotonModule = {
 	],
 };
 
-export const photonPublicSystemKit: PhotonInstallableKit =
-	createPhotonKit({
-		key: "photon-system",
-		label: "Photon System",
-		modules: [photonPublicSystemModule],
-	});
+export const photonPublicSystemKit: PhotonInstallableKit = createPhotonKit({
+	key: "photon-system",
+	label: "Photon System",
+	modules: [photonPublicSystemModule],
+});

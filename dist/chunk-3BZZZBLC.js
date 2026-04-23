@@ -1,7 +1,3 @@
-import {
-  usePhotonStore
-} from "./chunk-XOQNSI7G.js";
-
 // src/context/photon-surface-layout-context.tsx
 import { createContext, useContext } from "react";
 import { jsx } from "react/jsx-runtime";
@@ -244,26 +240,6 @@ var PhotonSearchHighlightEffect = ({
   return null;
 };
 
-// src/components/block-renderer.tsx
-import { jsx as jsx2, jsxs } from "react/jsx-runtime";
-var PhotonBlockRenderer = ({
-  block,
-  renderArea
-}) => {
-  const registry = usePhotonStore((state) => state.registry);
-  const definition = registry.getDefinition(block.module, block.type);
-  if (!definition) {
-    return /* @__PURE__ */ jsxs("div", { className: "rounded-[28px] border border-rose-400/30 bg-rose-500/10 p-6 text-sm text-rose-100", children: [
-      "Unknown block: ",
-      block.module,
-      "/",
-      block.type
-    ] });
-  }
-  const Component = definition.component;
-  return /* @__PURE__ */ jsx2(Component, { block, renderArea });
-};
-
 // src/context/photon-render-depth-context.tsx
 import { createContext as createContext2, useContext as useContext2 } from "react";
 var PhotonRenderDepthContext = createContext2(0);
@@ -280,7 +256,7 @@ import {
   useRef,
   useState
 } from "react";
-import { jsx as jsx3, jsxs as jsxs2 } from "react/jsx-runtime";
+import { jsx as jsx2, jsxs } from "react/jsx-runtime";
 var moveIndex = (currentIndex, total, direction) => {
   if (total === 0) {
     return -1;
@@ -460,7 +436,7 @@ var KeyboardMenuList = ({
 }) => {
   const hasItems = sections.some((section) => section.items.length > 0);
   if (!hasItems) {
-    return /* @__PURE__ */ jsx3(
+    return /* @__PURE__ */ jsx2(
       "div",
       {
         ...controller.getListProps({
@@ -471,22 +447,22 @@ var KeyboardMenuList = ({
       }
     );
   }
-  return /* @__PURE__ */ jsx3(
+  return /* @__PURE__ */ jsx2(
     "div",
     {
       ...controller.getListProps({
         "aria-label": listLabel,
         className: clsx("outline-none", className)
       }),
-      children: sections.map((section) => /* @__PURE__ */ jsxs2("section", { className: "space-y-2", children: [
-        section.label ? /* @__PURE__ */ jsx3("div", { className: "px-2 text-[11px] uppercase tracking-[0.28em] text-[color:var(--photon-builder-text-soft)]", children: section.label }) : null,
-        /* @__PURE__ */ jsx3("div", { className: "space-y-1", children: section.items.map((item) => {
+      children: sections.map((section) => /* @__PURE__ */ jsxs("section", { className: "space-y-2", children: [
+        section.label ? /* @__PURE__ */ jsx2("div", { className: "px-2 text-[11px] uppercase tracking-[0.28em] text-[color:var(--photon-builder-text-soft)]", children: section.label }) : null,
+        /* @__PURE__ */ jsx2("div", { className: "space-y-1", children: section.items.map((item) => {
           const itemId = getItemId(item);
           const optionId = controller.getOptionId(itemId);
           const isActive = controller.activeItemId === itemId;
           const isDisabled = isItemDisabled?.(item) === true;
           const isSelected = selectedItemId === itemId;
-          return /* @__PURE__ */ jsx3(
+          return /* @__PURE__ */ jsx2(
             "div",
             {
               ref: controller.getOptionRef(itemId),
@@ -523,9 +499,9 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   forwardRef
 } from "react";
-import { jsx as jsx4 } from "react/jsx-runtime";
+import { jsx as jsx3 } from "react/jsx-runtime";
 var DialogOverlay = forwardRef(({ className, ...props }, ref) => {
-  return /* @__PURE__ */ jsx4(
+  return /* @__PURE__ */ jsx3(
     DialogPrimitive.Overlay,
     {
       ref,
@@ -541,7 +517,7 @@ var DialogOverlay = forwardRef(({ className, ...props }, ref) => {
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 // src/components/ui/dialog/dialog-content.tsx
-import { jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
+import { jsx as jsx4, jsxs as jsxs2 } from "react/jsx-runtime";
 var DialogContent = forwardRef2(({ className, ...props }, ref) => {
   const builderThemeRoot = typeof document === "undefined" ? null : document.querySelector(
     '[data-testid="photon-builder-theme-root"]'
@@ -549,13 +525,13 @@ var DialogContent = forwardRef2(({ className, ...props }, ref) => {
   const publicThemeRoot = typeof document === "undefined" ? null : document.querySelector(
     '[data-testid="photon-public-runtime"]'
   );
-  return /* @__PURE__ */ jsxs3(
+  return /* @__PURE__ */ jsxs2(
     DialogPrimitive2.Portal,
     {
       container: builderThemeRoot ?? publicThemeRoot ?? void 0,
       children: [
-        /* @__PURE__ */ jsx5(DialogOverlay, {}),
-        /* @__PURE__ */ jsx5(
+        /* @__PURE__ */ jsx4(DialogOverlay, {}),
+        /* @__PURE__ */ jsx4(
           DialogPrimitive2.Content,
           {
             ref,
@@ -579,9 +555,9 @@ import * as DialogPrimitive3 from "@radix-ui/react-dialog";
 import {
   forwardRef as forwardRef3
 } from "react";
-import { jsx as jsx6 } from "react/jsx-runtime";
+import { jsx as jsx5 } from "react/jsx-runtime";
 var DialogDescription = forwardRef3(({ className, ...props }, ref) => {
-  return /* @__PURE__ */ jsx6(
+  return /* @__PURE__ */ jsx5(
     DialogPrimitive3.Description,
     {
       ref,
@@ -601,9 +577,9 @@ import * as DialogPrimitive4 from "@radix-ui/react-dialog";
 import {
   forwardRef as forwardRef4
 } from "react";
-import { jsx as jsx7 } from "react/jsx-runtime";
+import { jsx as jsx6 } from "react/jsx-runtime";
 var DialogTitle = forwardRef4(({ className, ...props }, ref) => {
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx6(
     DialogPrimitive4.Title,
     {
       ref,
@@ -624,12 +600,12 @@ import {
 } from "@radix-ui/react-dialog";
 
 // src/components/ui/dialog/dialog-footer.tsx
-import { jsx as jsx8 } from "react/jsx-runtime";
+import { jsx as jsx7 } from "react/jsx-runtime";
 var DialogFooter = ({
   className,
   ...props
 }) => {
-  return /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsx7(
     "div",
     {
       "data-slot": "dialog-footer",
@@ -643,12 +619,12 @@ var DialogFooter = ({
 };
 
 // src/components/ui/dialog/dialog-header.tsx
-import { jsx as jsx9 } from "react/jsx-runtime";
+import { jsx as jsx8 } from "react/jsx-runtime";
 var DialogHeader = ({
   className,
   ...props
 }) => {
-  return /* @__PURE__ */ jsx9(
+  return /* @__PURE__ */ jsx8(
     "div",
     {
       "data-slot": "dialog-header",
@@ -663,7 +639,6 @@ export {
   usePhotonSurfaceLayoutMetrics,
   usePhotonSurfaceBreakpoints,
   PhotonSearchHighlightEffect,
-  PhotonBlockRenderer,
   PhotonRenderDepthProvider,
   usePhotonRenderDepth,
   cn,

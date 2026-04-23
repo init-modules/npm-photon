@@ -1,6 +1,6 @@
 import {
   PhotonRichTextEditor
-} from "./chunk-TM2YIVFS.js";
+} from "./chunk-KSRBTT5H.js";
 import {
   DialogContent,
   DialogDescription,
@@ -8,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
   KeyboardMenuList,
-  PhotonBlockRenderer,
   PhotonRenderDepthProvider,
   PhotonSearchHighlightEffect,
   PhotonSurfaceLayoutProvider,
@@ -16,10 +15,15 @@ import {
   cn,
   useKeyboardMenuController,
   usePhotonRenderDepth
-} from "./chunk-57U64XQ4.js";
+} from "./chunk-3BZZZBLC.js";
 import {
   resolvePhotonSiteDesignSettings
 } from "./chunk-UVEN3EYU.js";
+import {
+  PhotonProvider,
+  usePhotonPersistedState,
+  usePhotonStore
+} from "./chunk-BIMQCHT5.js";
 import {
   isPhotonMediaValue,
   resolvePhotonMediaPreviewUrl,
@@ -27,11 +31,8 @@ import {
   updatePhotonMediaUrl
 } from "./chunk-QQDDM7OM.js";
 import {
-  PhotonProvider,
-  usePhotonI18n,
-  usePhotonPersistedState,
-  usePhotonStore
-} from "./chunk-XOQNSI7G.js";
+  usePhotonI18n
+} from "./chunk-NV6FZ3PQ.js";
 import {
   PHOTON_PAGE_SURFACE_REGION_KEY,
   getPhotonDocumentFingerprint,
@@ -41,19 +42,43 @@ import {
   resolvePhotonSurfaceRegionDescriptors,
   resolvePhotonSurfaceRegionForBlockId,
   resolvePhotonSurfaceRegionForListId
-} from "./chunk-U33YWAMI.js";
+} from "./chunk-YNXZBS6V.js";
+import {
+  findPhotonBlock
+} from "./chunk-UZJ5GO74.js";
+import {
+  createPhotonAreaListId,
+  createPhotonNodeId
+} from "./chunk-U2HNHTED.js";
 import {
   canSavePhotonWorkspace,
   clonePhotonValue,
-  createPhotonAreaListId,
-  createPhotonNodeId,
-  findPhotonBlock,
   getPhotonWorkspaceIdentityKey,
   getValueAtPath,
   normalizePhotonWorkspaceCapabilities,
   normalizePhotonWorkspaceDescriptor,
   setValueAtPath
-} from "./chunk-5MWE2CZQ.js";
+} from "./chunk-KAITZE7U.js";
+
+// src/components/block-renderer.tsx
+import { jsx, jsxs } from "react/jsx-runtime";
+var PhotonBlockRenderer = ({
+  block,
+  renderArea
+}) => {
+  const registry = usePhotonStore((state) => state.registry);
+  const definition = registry.getDefinition(block.module, block.type);
+  if (!definition) {
+    return /* @__PURE__ */ jsxs("div", { className: "rounded-[28px] border border-rose-400/30 bg-rose-500/10 p-6 text-sm text-rose-100", children: [
+      "Unknown block: ",
+      block.module,
+      "/",
+      block.type
+    ] });
+  }
+  const Component = definition.component;
+  return /* @__PURE__ */ jsx(Component, { block, renderArea });
+};
 
 // src/studio/inspector-panel/field-editor.tsx
 import clsx4 from "clsx";
@@ -72,9 +97,9 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import {
   forwardRef
 } from "react";
-import { jsx } from "react/jsx-runtime";
+import { jsx as jsx2 } from "react/jsx-runtime";
 var DropdownMenuContent = forwardRef(({ className, sideOffset = 8, ...props }, ref) => {
-  return /* @__PURE__ */ jsx(DropdownMenuPrimitive.Portal, { children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsx2(DropdownMenuPrimitive.Portal, { children: /* @__PURE__ */ jsx2(
     DropdownMenuPrimitive.Content,
     {
       ref,
@@ -102,9 +127,9 @@ import { Check } from "lucide-react";
 import {
   forwardRef as forwardRef2
 } from "react";
-import { jsx as jsx2, jsxs } from "react/jsx-runtime";
+import { jsx as jsx3, jsxs as jsxs2 } from "react/jsx-runtime";
 var DropdownMenuRadioItem = forwardRef2(({ className, children, ...props }, ref) => {
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxs2(
     DropdownMenuPrimitive2.RadioItem,
     {
       ref,
@@ -119,7 +144,7 @@ var DropdownMenuRadioItem = forwardRef2(({ className, children, ...props }, ref)
       ...props,
       children: [
         children,
-        /* @__PURE__ */ jsx2("span", { className: "absolute right-3 inline-flex h-4 w-4 items-center justify-center", children: /* @__PURE__ */ jsx2(DropdownMenuPrimitive2.ItemIndicator, { children: /* @__PURE__ */ jsx2(
+        /* @__PURE__ */ jsx3("span", { className: "absolute right-3 inline-flex h-4 w-4 items-center justify-center", children: /* @__PURE__ */ jsx3(DropdownMenuPrimitive2.ItemIndicator, { children: /* @__PURE__ */ jsx3(
           Check,
           {
             className: "h-4 w-4",
@@ -303,18 +328,18 @@ var inputClassName = clsx(
 );
 
 // src/studio/shared/status-chip.tsx
-import { jsx as jsx3 } from "react/jsx-runtime";
+import { jsx as jsx4 } from "react/jsx-runtime";
 
 // src/studio/shared/toolbar-button.tsx
 import clsx2 from "clsx";
-import { jsx as jsx4 } from "react/jsx-runtime";
+import { jsx as jsx5 } from "react/jsx-runtime";
 var ToolbarButton = ({
   children,
   onClick,
   disabled = false,
   className
 }) => {
-  return /* @__PURE__ */ jsx4(
+  return /* @__PURE__ */ jsx5(
     "button",
     {
       type: "button",
@@ -331,10 +356,10 @@ var ToolbarButton = ({
 };
 
 // src/studio/shared/toolbar-chip-button.tsx
-import { jsx as jsx5 } from "react/jsx-runtime";
+import { jsx as jsx6 } from "react/jsx-runtime";
 
 // src/forms/form-fields-editor.tsx
-import { jsx as jsx6, jsxs as jsxs2 } from "react/jsx-runtime";
+import { jsx as jsx7, jsxs as jsxs3 } from "react/jsx-runtime";
 var fieldTypes = [
   { value: "text", label: "Text" },
   { value: "email", label: "Email" },
@@ -395,25 +420,25 @@ var PhotonFormFieldsEditor = ({
       )
     );
   };
-  return /* @__PURE__ */ jsxs2("div", { className: "space-y-3", children: [
-    /* @__PURE__ */ jsx6("div", { className: "space-y-2 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-2", children: fields.map((field, index) => {
+  return /* @__PURE__ */ jsxs3("div", { className: "space-y-3", children: [
+    /* @__PURE__ */ jsx7("div", { className: "space-y-2 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-2", children: fields.map((field, index) => {
       const isExpanded = expandedFieldId === field.id;
       const options = field.options ?? [];
-      return /* @__PURE__ */ jsxs2(
+      return /* @__PURE__ */ jsxs3(
         "div",
         {
           className: "rounded-[18px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] p-3",
           children: [
-            /* @__PURE__ */ jsxs2("div", { className: "flex items-center justify-between gap-3", children: [
-              /* @__PURE__ */ jsxs2(
+            /* @__PURE__ */ jsxs3("div", { className: "flex items-center justify-between gap-3", children: [
+              /* @__PURE__ */ jsxs3(
                 "button",
                 {
                   type: "button",
                   onClick: () => setExpandedFieldId(isExpanded ? null : field.id),
                   className: "min-w-0 cursor-pointer text-left",
                   children: [
-                    /* @__PURE__ */ jsx6("div", { className: "truncate text-sm font-semibold text-[color:var(--photon-builder-text)]", children: field.label || field.id || "Field" }),
-                    /* @__PURE__ */ jsxs2("div", { className: "mt-1 truncate font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--photon-builder-text-ghost)]", children: [
+                    /* @__PURE__ */ jsx7("div", { className: "truncate text-sm font-semibold text-[color:var(--photon-builder-text)]", children: field.label || field.id || "Field" }),
+                    /* @__PURE__ */ jsxs3("div", { className: "mt-1 truncate font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--photon-builder-text-ghost)]", children: [
                       field.type,
                       " / ",
                       field.name
@@ -421,8 +446,8 @@ var PhotonFormFieldsEditor = ({
                   ]
                 }
               ),
-              /* @__PURE__ */ jsxs2("div", { className: "flex shrink-0 items-center gap-1", children: [
-                /* @__PURE__ */ jsx6(
+              /* @__PURE__ */ jsxs3("div", { className: "flex shrink-0 items-center gap-1", children: [
+                /* @__PURE__ */ jsx7(
                   "button",
                   {
                     type: "button",
@@ -431,10 +456,10 @@ var PhotonFormFieldsEditor = ({
                       movePhotonArrayItem(fields, index, index - 1)
                     ),
                     className: "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] text-[color:var(--photon-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40",
-                    children: /* @__PURE__ */ jsx6(ArrowUp, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx7(ArrowUp, { className: "h-4 w-4" })
                   }
                 ),
-                /* @__PURE__ */ jsx6(
+                /* @__PURE__ */ jsx7(
                   "button",
                   {
                     type: "button",
@@ -443,10 +468,10 @@ var PhotonFormFieldsEditor = ({
                       movePhotonArrayItem(fields, index, index + 1)
                     ),
                     className: "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] text-[color:var(--photon-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40",
-                    children: /* @__PURE__ */ jsx6(ArrowDown, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx7(ArrowDown, { className: "h-4 w-4" })
                   }
                 ),
-                /* @__PURE__ */ jsx6(
+                /* @__PURE__ */ jsx7(
                   "button",
                   {
                     type: "button",
@@ -455,16 +480,16 @@ var PhotonFormFieldsEditor = ({
                       fields.filter((_, fieldIndex) => fieldIndex !== index)
                     ),
                     className: "inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] text-[color:var(--photon-builder-text-soft)] disabled:cursor-not-allowed disabled:opacity-40",
-                    children: /* @__PURE__ */ jsx6(Trash2, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx7(Trash2, { className: "h-4 w-4" })
                   }
                 )
               ] })
             ] }),
-            isExpanded ? /* @__PURE__ */ jsxs2("div", { className: "mt-4 grid gap-3", children: [
-              /* @__PURE__ */ jsxs2("div", { className: "grid gap-3 sm:grid-cols-2", children: [
-                /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
+            isExpanded ? /* @__PURE__ */ jsxs3("div", { className: "mt-4 grid gap-3", children: [
+              /* @__PURE__ */ jsxs3("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+                /* @__PURE__ */ jsxs3("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
                   "Label",
-                  /* @__PURE__ */ jsx6(
+                  /* @__PURE__ */ jsx7(
                     "input",
                     {
                       value: field.label ?? "",
@@ -478,9 +503,9 @@ var PhotonFormFieldsEditor = ({
                     }
                   )
                 ] }),
-                /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
+                /* @__PURE__ */ jsxs3("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
                   "Type",
-                  /* @__PURE__ */ jsx6(
+                  /* @__PURE__ */ jsx7(
                     "select",
                     {
                       value: field.type,
@@ -491,15 +516,15 @@ var PhotonFormFieldsEditor = ({
                         })
                       ),
                       className: inputClassName,
-                      children: fieldTypes.map((item) => /* @__PURE__ */ jsx6("option", { value: item.value, children: item.label }, item.value))
+                      children: fieldTypes.map((item) => /* @__PURE__ */ jsx7("option", { value: item.value, children: item.label }, item.value))
                     }
                   )
                 ] })
               ] }),
-              /* @__PURE__ */ jsxs2("div", { className: "grid gap-3 sm:grid-cols-2", children: [
-                /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
+              /* @__PURE__ */ jsxs3("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+                /* @__PURE__ */ jsxs3("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
                   "Field id",
-                  /* @__PURE__ */ jsx6(
+                  /* @__PURE__ */ jsx7(
                     "input",
                     {
                       value: field.id ?? "",
@@ -513,9 +538,9 @@ var PhotonFormFieldsEditor = ({
                     }
                   )
                 ] }),
-                /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
+                /* @__PURE__ */ jsxs3("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
                   "Input name",
-                  /* @__PURE__ */ jsx6(
+                  /* @__PURE__ */ jsx7(
                     "input",
                     {
                       value: field.name ?? "",
@@ -530,9 +555,9 @@ var PhotonFormFieldsEditor = ({
                   )
                 ] })
               ] }),
-              /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
+              /* @__PURE__ */ jsxs3("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
                 "Placeholder",
-                /* @__PURE__ */ jsx6(
+                /* @__PURE__ */ jsx7(
                   "input",
                   {
                     value: field.placeholder ?? "",
@@ -546,9 +571,9 @@ var PhotonFormFieldsEditor = ({
                   }
                 )
               ] }),
-              /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
+              /* @__PURE__ */ jsxs3("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
                 "Help text",
-                /* @__PURE__ */ jsx6(
+                /* @__PURE__ */ jsx7(
                   "textarea",
                   {
                     rows: 3,
@@ -563,10 +588,10 @@ var PhotonFormFieldsEditor = ({
                   }
                 )
               ] }),
-              /* @__PURE__ */ jsxs2("div", { className: "grid gap-3 sm:grid-cols-2", children: [
-                /* @__PURE__ */ jsxs2("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
+              /* @__PURE__ */ jsxs3("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+                /* @__PURE__ */ jsxs3("label", { className: "grid gap-2 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: [
                   "Width",
-                  /* @__PURE__ */ jsx6(
+                  /* @__PURE__ */ jsx7(
                     "select",
                     {
                       value: field.width ?? "full",
@@ -577,19 +602,19 @@ var PhotonFormFieldsEditor = ({
                         })
                       ),
                       className: inputClassName,
-                      children: widthOptions.map((item) => /* @__PURE__ */ jsx6("option", { value: item.value, children: item.label }, item.value))
+                      children: widthOptions.map((item) => /* @__PURE__ */ jsx7("option", { value: item.value, children: item.label }, item.value))
                     }
                   )
                 ] }),
-                /* @__PURE__ */ jsx6("div", { className: "grid grid-cols-2 gap-2 pt-7", children: [
+                /* @__PURE__ */ jsx7("div", { className: "grid grid-cols-2 gap-2 pt-7", children: [
                   ["required", "Required"],
                   ["disabled", "Disabled"]
-                ].map(([key, label]) => /* @__PURE__ */ jsxs2(
+                ].map(([key, label]) => /* @__PURE__ */ jsxs3(
                   "label",
                   {
                     className: "flex items-center gap-2 text-xs font-semibold text-[color:var(--photon-builder-text-soft)]",
                     children: [
-                      /* @__PURE__ */ jsx6(
+                      /* @__PURE__ */ jsx7(
                         "input",
                         {
                           type: "checkbox",
@@ -609,14 +634,14 @@ var PhotonFormFieldsEditor = ({
                   key
                 )) })
               ] }),
-              field.type === "select" ? /* @__PURE__ */ jsxs2("div", { className: "rounded-[16px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3", children: [
-                /* @__PURE__ */ jsx6("div", { className: "mb-3 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: "Options" }),
-                /* @__PURE__ */ jsx6("div", { className: "grid gap-2", children: options.map((option, optionIndex) => /* @__PURE__ */ jsxs2(
+              field.type === "select" ? /* @__PURE__ */ jsxs3("div", { className: "rounded-[16px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3", children: [
+                /* @__PURE__ */ jsx7("div", { className: "mb-3 text-sm font-semibold text-[color:var(--photon-builder-text)]", children: "Options" }),
+                /* @__PURE__ */ jsx7("div", { className: "grid gap-2", children: options.map((option, optionIndex) => /* @__PURE__ */ jsxs3(
                   "div",
                   {
                     className: "grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]",
                     children: [
-                      /* @__PURE__ */ jsx6(
+                      /* @__PURE__ */ jsx7(
                         "input",
                         {
                           value: option.label,
@@ -634,7 +659,7 @@ var PhotonFormFieldsEditor = ({
                           placeholder: "Label"
                         }
                       ),
-                      /* @__PURE__ */ jsx6(
+                      /* @__PURE__ */ jsx7(
                         "input",
                         {
                           value: option.value,
@@ -652,7 +677,7 @@ var PhotonFormFieldsEditor = ({
                           placeholder: "Value"
                         }
                       ),
-                      /* @__PURE__ */ jsx6(
+                      /* @__PURE__ */ jsx7(
                         "button",
                         {
                           type: "button",
@@ -664,14 +689,14 @@ var PhotonFormFieldsEditor = ({
                             })
                           ),
                           className: "inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] text-[color:var(--photon-builder-text-soft)]",
-                          children: /* @__PURE__ */ jsx6(Trash2, { className: "h-4 w-4" })
+                          children: /* @__PURE__ */ jsx7(Trash2, { className: "h-4 w-4" })
                         }
                       )
                     ]
                   },
                   optionIndex
                 )) }),
-                /* @__PURE__ */ jsxs2(
+                /* @__PURE__ */ jsxs3(
                   "button",
                   {
                     type: "button",
@@ -682,7 +707,7 @@ var PhotonFormFieldsEditor = ({
                     ),
                     className: "mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[18px] border border-[color:var(--photon-builder-border)] px-4 py-3 text-sm font-semibold text-[color:var(--photon-builder-text)]",
                     children: [
-                      /* @__PURE__ */ jsx6(Plus, { className: "h-4 w-4" }),
+                      /* @__PURE__ */ jsx7(Plus, { className: "h-4 w-4" }),
                       " Add option"
                     ]
                   }
@@ -694,7 +719,7 @@ var PhotonFormFieldsEditor = ({
         `${field.id}:${index}`
       );
     }) }),
-    /* @__PURE__ */ jsxs2(
+    /* @__PURE__ */ jsxs3(
       "button",
       {
         type: "button",
@@ -705,7 +730,7 @@ var PhotonFormFieldsEditor = ({
         },
         className: "inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] px-4 py-3 text-sm font-semibold text-[color:var(--photon-builder-text)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-panel-solid)]",
         children: [
-          /* @__PURE__ */ jsx6(Plus, { className: "h-4 w-4" }),
+          /* @__PURE__ */ jsx7(Plus, { className: "h-4 w-4" }),
           " Add field"
         ]
       }
@@ -717,7 +742,7 @@ var PhotonFormFieldsEditor = ({
 import clsx3 from "clsx";
 import { useState as useState2 } from "react";
 import { toast } from "sonner";
-import { jsx as jsx7, jsxs as jsxs3 } from "react/jsx-runtime";
+import { jsx as jsx8, jsxs as jsxs4 } from "react/jsx-runtime";
 var GalleryFieldEditor = ({
   blockId,
   path,
@@ -732,8 +757,8 @@ var GalleryFieldEditor = ({
   const updateItems = (nextItems) => {
     onApply(nextItems);
   };
-  return /* @__PURE__ */ jsxs3("div", { className: "space-y-4", children: [
-    /* @__PURE__ */ jsx7("div", { className: "space-y-3", children: items.map((item, index) => /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsxs4("div", { className: "space-y-4", children: [
+    /* @__PURE__ */ jsx8("div", { className: "space-y-3", children: items.map((item, index) => /* @__PURE__ */ jsx8(
       "div",
       {
         className: "rounded-[24px] border p-3",
@@ -743,8 +768,8 @@ var GalleryFieldEditor = ({
           boxShadow: "var(--photon-builder-card-shadow)"
         },
         "data-testid": `photon-gallery-field-editor-item-${path}-${index}`,
-        children: /* @__PURE__ */ jsxs3("div", { className: "grid gap-3 sm:grid-cols-[80px_minmax(0,1fr)]", children: [
-          /* @__PURE__ */ jsx7(
+        children: /* @__PURE__ */ jsxs4("div", { className: "grid gap-3 sm:grid-cols-[80px_minmax(0,1fr)]", children: [
+          /* @__PURE__ */ jsx8(
             "div",
             {
               className: "overflow-hidden rounded-2xl border",
@@ -752,14 +777,14 @@ var GalleryFieldEditor = ({
                 borderColor: "var(--photon-builder-border)",
                 background: "var(--photon-builder-field)"
               },
-              children: resolvePhotonMediaPreviewUrl(item.media) ? /* @__PURE__ */ jsx7(
+              children: resolvePhotonMediaPreviewUrl(item.media) ? /* @__PURE__ */ jsx8(
                 "img",
                 {
                   src: resolvePhotonMediaPreviewUrl(item.media),
                   alt: item.alt ?? `Gallery item ${index + 1}`,
                   className: "aspect-square h-full w-full object-cover"
                 }
-              ) : /* @__PURE__ */ jsx7(
+              ) : /* @__PURE__ */ jsx8(
                 "div",
                 {
                   className: "flex aspect-square items-center justify-center text-xs uppercase tracking-[0.22em]",
@@ -769,9 +794,9 @@ var GalleryFieldEditor = ({
               )
             }
           ),
-          /* @__PURE__ */ jsxs3("div", { className: "space-y-3", children: [
-            /* @__PURE__ */ jsxs3("div", { className: "flex flex-wrap gap-2", children: [
-              /* @__PURE__ */ jsx7(
+          /* @__PURE__ */ jsxs4("div", { className: "space-y-3", children: [
+            /* @__PURE__ */ jsxs4("div", { className: "flex flex-wrap gap-2", children: [
+              /* @__PURE__ */ jsx8(
                 "div",
                 {
                   className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -783,7 +808,7 @@ var GalleryFieldEditor = ({
                   children: `item ${index + 1}`
                 }
               ),
-              isPhotonMediaValue(item.media) && item.media.temporaryUploadId ? /* @__PURE__ */ jsx7(
+              isPhotonMediaValue(item.media) && item.media.temporaryUploadId ? /* @__PURE__ */ jsx8(
                 "div",
                 {
                   className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -796,7 +821,7 @@ var GalleryFieldEditor = ({
                 }
               ) : null
             ] }),
-            /* @__PURE__ */ jsx7(
+            /* @__PURE__ */ jsx8(
               "input",
               {
                 value: item.alt ?? "",
@@ -813,7 +838,7 @@ var GalleryFieldEditor = ({
                 className: inputClassName
               }
             ),
-            /* @__PURE__ */ jsx7(
+            /* @__PURE__ */ jsx8(
               "textarea",
               {
                 rows: 3,
@@ -831,8 +856,8 @@ var GalleryFieldEditor = ({
                 className: clsx3(inputClassName, "min-h-[92px] resize-y")
               }
             ),
-            /* @__PURE__ */ jsxs3("div", { className: "flex gap-2", children: [
-              /* @__PURE__ */ jsx7(
+            /* @__PURE__ */ jsxs4("div", { className: "flex gap-2", children: [
+              /* @__PURE__ */ jsx8(
                 "button",
                 {
                   type: "button",
@@ -856,7 +881,7 @@ var GalleryFieldEditor = ({
                   children: "Prev"
                 }
               ),
-              /* @__PURE__ */ jsx7(
+              /* @__PURE__ */ jsx8(
                 "button",
                 {
                   type: "button",
@@ -880,7 +905,7 @@ var GalleryFieldEditor = ({
                   children: "Next"
                 }
               ),
-              /* @__PURE__ */ jsx7(
+              /* @__PURE__ */ jsx8(
                 "button",
                 {
                   type: "button",
@@ -904,7 +929,7 @@ var GalleryFieldEditor = ({
       },
       item.id ?? `${blockId}-${path}-${index}`
     )) }),
-    /* @__PURE__ */ jsxs3(
+    /* @__PURE__ */ jsxs4(
       "label",
       {
         className: "inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition",
@@ -914,8 +939,8 @@ var GalleryFieldEditor = ({
           color: "var(--photon-builder-accent)"
         },
         children: [
-          /* @__PURE__ */ jsx7("span", { children: isUploading ? "Uploading..." : items.length > 0 ? "Add more media" : "Add media" }),
-          /* @__PURE__ */ jsx7(
+          /* @__PURE__ */ jsx8("span", { children: isUploading ? "Uploading..." : items.length > 0 ? "Add more media" : "Add media" }),
+          /* @__PURE__ */ jsx8(
             "input",
             {
               type: "file",
@@ -976,7 +1001,7 @@ var formatMediaFileSize = (size) => {
 };
 
 // src/studio/inspector-panel/image-field-editor.tsx
-import { jsx as jsx8, jsxs as jsxs4 } from "react/jsx-runtime";
+import { jsx as jsx9, jsxs as jsxs5 } from "react/jsx-runtime";
 var ImageFieldEditor = ({
   blockId,
   path,
@@ -989,8 +1014,8 @@ var ImageFieldEditor = ({
   const [isUploading, setIsUploading] = useState3(false);
   const source = resolvePhotonMediaPreviewUrl(value);
   const mediaValue = isPhotonMediaValue(value) ? value : null;
-  return /* @__PURE__ */ jsxs4("div", { className: "space-y-3", children: [
-    /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsxs5("div", { className: "space-y-3", children: [
+    /* @__PURE__ */ jsx9(
       "div",
       {
         className: "overflow-hidden rounded-[24px] border",
@@ -1000,14 +1025,14 @@ var ImageFieldEditor = ({
           boxShadow: "var(--photon-builder-card-shadow)"
         },
         "data-testid": `photon-image-field-editor-preview-${path}`,
-        children: source ? /* @__PURE__ */ jsx8(
+        children: source ? /* @__PURE__ */ jsx9(
           "img",
           {
             src: source,
             alt: "Inspector media preview",
             className: "aspect-[4/3] w-full object-cover"
           }
-        ) : /* @__PURE__ */ jsx8(
+        ) : /* @__PURE__ */ jsx9(
           "div",
           {
             className: "flex aspect-[4/3] items-center justify-center px-6 text-center text-sm",
@@ -1017,8 +1042,8 @@ var ImageFieldEditor = ({
         )
       }
     ),
-    /* @__PURE__ */ jsxs4("div", { className: "flex flex-wrap gap-2", children: [
-      mediaValue?.temporaryUploadId ? /* @__PURE__ */ jsx8(
+    /* @__PURE__ */ jsxs5("div", { className: "flex flex-wrap gap-2", children: [
+      mediaValue?.temporaryUploadId ? /* @__PURE__ */ jsx9(
         "div",
         {
           className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -1030,7 +1055,7 @@ var ImageFieldEditor = ({
           children: "staged upload"
         }
       ) : null,
-      mediaValue?.fileName ? /* @__PURE__ */ jsx8(
+      mediaValue?.fileName ? /* @__PURE__ */ jsx9(
         "div",
         {
           className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -1042,7 +1067,7 @@ var ImageFieldEditor = ({
           children: mediaValue.fileName
         }
       ) : null,
-      mediaValue?.size ? /* @__PURE__ */ jsx8(
+      mediaValue?.size ? /* @__PURE__ */ jsx9(
         "div",
         {
           className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -1055,7 +1080,7 @@ var ImageFieldEditor = ({
         }
       ) : null
     ] }),
-    /* @__PURE__ */ jsx8(
+    /* @__PURE__ */ jsx9(
       "input",
       {
         type: "text",
@@ -1067,8 +1092,8 @@ var ImageFieldEditor = ({
         className: inputClassName
       }
     ),
-    /* @__PURE__ */ jsxs4("div", { className: "flex flex-wrap items-center gap-2", children: [
-      /* @__PURE__ */ jsxs4(
+    /* @__PURE__ */ jsxs5("div", { className: "flex flex-wrap items-center gap-2", children: [
+      /* @__PURE__ */ jsxs5(
         "label",
         {
           className: "inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition",
@@ -1078,8 +1103,8 @@ var ImageFieldEditor = ({
             color: "var(--photon-builder-accent)"
           },
           children: [
-            /* @__PURE__ */ jsx8("span", { children: isUploading ? "Uploading..." : source ? "Replace media" : "Upload media" }),
-            /* @__PURE__ */ jsx8(
+            /* @__PURE__ */ jsx9("span", { children: isUploading ? "Uploading..." : source ? "Replace media" : "Upload media" }),
+            /* @__PURE__ */ jsx9(
               "input",
               {
                 type: "file",
@@ -1111,7 +1136,7 @@ var ImageFieldEditor = ({
           ]
         }
       ),
-      /* @__PURE__ */ jsx8(
+      /* @__PURE__ */ jsx9(
         "button",
         {
           type: "button",
@@ -1132,7 +1157,7 @@ var ImageFieldEditor = ({
 // src/studio/inspector-panel/json-field-editor.tsx
 import { WandSparkles } from "lucide-react";
 import { useEffect, useState as useState4 } from "react";
-import { jsx as jsx9, jsxs as jsxs5 } from "react/jsx-runtime";
+import { jsx as jsx10, jsxs as jsxs6 } from "react/jsx-runtime";
 var JsonFieldEditor = ({
   blockId,
   path,
@@ -1147,8 +1172,8 @@ var JsonFieldEditor = ({
     setDraft(JSON.stringify(initialValue, null, 2));
     setError(null);
   }, [blockId, path, initialValue]);
-  return /* @__PURE__ */ jsxs5("div", { "data-testid": `photon-json-field-editor-${testIdSuffix}`, children: [
-    /* @__PURE__ */ jsx9(
+  return /* @__PURE__ */ jsxs6("div", { "data-testid": `photon-json-field-editor-${testIdSuffix}`, children: [
+    /* @__PURE__ */ jsx10(
       "textarea",
       {
         "data-testid": `photon-json-field-editor-input-${testIdSuffix}`,
@@ -1167,8 +1192,8 @@ var JsonFieldEditor = ({
         }
       }
     ),
-    /* @__PURE__ */ jsxs5("div", { className: "mt-3 flex items-center justify-between gap-3", children: [
-      /* @__PURE__ */ jsxs5(
+    /* @__PURE__ */ jsxs6("div", { className: "mt-3 flex items-center justify-between gap-3", children: [
+      /* @__PURE__ */ jsxs6(
         "button",
         {
           "data-testid": `photon-json-field-editor-apply-${testIdSuffix}`,
@@ -1189,12 +1214,12 @@ var JsonFieldEditor = ({
             color: "var(--photon-builder-accent)"
           },
           children: [
-            /* @__PURE__ */ jsx9(WandSparkles, { className: "h-3.5 w-3.5" }),
+            /* @__PURE__ */ jsx10(WandSparkles, { className: "h-3.5 w-3.5" }),
             "Apply JSON"
           ]
         }
       ),
-      error ? /* @__PURE__ */ jsx9(
+      error ? /* @__PURE__ */ jsx10(
         "div",
         {
           className: "text-xs",
@@ -1207,7 +1232,7 @@ var JsonFieldEditor = ({
 };
 
 // src/studio/inspector-panel/field-editor.tsx
-import { jsx as jsx10, jsxs as jsxs6 } from "react/jsx-runtime";
+import { jsx as jsx11, jsxs as jsxs7 } from "react/jsx-runtime";
 var joinFieldPath = (parentPath, childPath) => {
   if (!childPath) {
     return parentPath;
@@ -1265,18 +1290,18 @@ var SelectFieldEditor = ({
   const [hasMounted, setHasMounted] = useState5(false);
   const selectedValue = String(value ?? "");
   const activeOption = (field.options ?? []).find((option) => option.value === selectedValue) ?? null;
-  const trigger = /* @__PURE__ */ jsxs6(
+  const trigger = /* @__PURE__ */ jsxs7(
     "button",
     {
       type: "button",
       onFocus: () => onFocus(),
       className: "inline-flex h-auto w-full min-w-0 cursor-pointer items-center justify-between gap-3 rounded-[20px] border px-4 py-3 text-left text-sm font-semibold shadow-none transition-[border-color,background-color] border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] text-[color:var(--photon-builder-text)] hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-panel-solid)] focus-visible:border-[color:var(--photon-builder-border-strong)] focus-visible:bg-[color:var(--photon-builder-panel-solid)]",
       children: [
-        /* @__PURE__ */ jsx10("span", { className: "min-w-0 truncate", children: translate(
+        /* @__PURE__ */ jsx11("span", { className: "min-w-0 truncate", children: translate(
           activeOption?.labelKey ?? activeOption?.label ?? "Select value",
           activeOption?.label ?? "Select value"
         ) }),
-        /* @__PURE__ */ jsx10(ChevronDown, { className: "h-4 w-4 shrink-0 text-[color:var(--photon-builder-text-soft)]" })
+        /* @__PURE__ */ jsx11(ChevronDown, { className: "h-4 w-4 shrink-0 text-[color:var(--photon-builder-text-soft)]" })
       ]
     }
   );
@@ -1286,14 +1311,14 @@ var SelectFieldEditor = ({
   if (!hasMounted) {
     return trigger;
   }
-  return /* @__PURE__ */ jsxs6(Root2, { modal: false, children: [
-    /* @__PURE__ */ jsx10(Trigger, { asChild: true, children: trigger }),
-    /* @__PURE__ */ jsx10(DropdownMenuContent, { align: "start", className: "min-w-[14rem]", children: /* @__PURE__ */ jsx10(
+  return /* @__PURE__ */ jsxs7(Root2, { modal: false, children: [
+    /* @__PURE__ */ jsx11(Trigger, { asChild: true, children: trigger }),
+    /* @__PURE__ */ jsx11(DropdownMenuContent, { align: "start", className: "min-w-[14rem]", children: /* @__PURE__ */ jsx11(
       RadioGroup,
       {
         value: selectedValue,
         onValueChange: (nextValue) => onChange(nextValue),
-        children: (field.options ?? []).map((option) => /* @__PURE__ */ jsx10(
+        children: (field.options ?? []).map((option) => /* @__PURE__ */ jsx11(
           DropdownMenuRadioItem,
           {
             value: option.value,
@@ -1316,15 +1341,15 @@ var ObjectFieldEditor = ({
   hidePathLabel
 }) => {
   const objectValue = normalizeObjectValue(value);
-  return /* @__PURE__ */ jsx10("div", { className: "space-y-3 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3", children: (field.fields ?? []).map((childField, index) => {
+  return /* @__PURE__ */ jsx11("div", { className: "space-y-3 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3", children: (field.fields ?? []).map((childField, index) => {
     const childPath = childField.path ?? "";
     const childAbsolutePath = joinFieldPath(absolutePath ?? "", childPath);
     const childValue = childPath ? getValueAtPath(objectValue, childPath) : objectValue;
-    return /* @__PURE__ */ jsx10(
+    return /* @__PURE__ */ jsx11(
       "div",
       {
         className: "rounded-[18px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] p-3",
-        children: /* @__PURE__ */ jsx10(
+        children: /* @__PURE__ */ jsx11(
           FieldEditor,
           {
             field: childField,
@@ -1368,8 +1393,8 @@ var RepeaterFieldEditor = ({
     });
     updateItems([...items, defaultItem]);
   };
-  return /* @__PURE__ */ jsxs6("div", { className: "space-y-3", children: [
-    /* @__PURE__ */ jsx10("div", { className: "space-y-3 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3", children: items.map((item, index) => {
+  return /* @__PURE__ */ jsxs7("div", { className: "space-y-3", children: [
+    /* @__PURE__ */ jsx11("div", { className: "space-y-3 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3", children: items.map((item, index) => {
       const itemAbsolutePath = joinFieldPath(
         absolutePath ?? "",
         String(index)
@@ -1382,13 +1407,13 @@ var RepeaterFieldEditor = ({
         field.itemLabelKey ?? field.itemLabel ?? "Item",
         field.itemLabel ?? "Item"
       );
-      return /* @__PURE__ */ jsxs6(
+      return /* @__PURE__ */ jsxs7(
         "div",
         {
           className: "rounded-[18px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] p-3",
           children: [
-            /* @__PURE__ */ jsxs6("div", { className: "mb-3 flex items-center justify-between gap-3", children: [
-              /* @__PURE__ */ jsx10("div", { className: "min-w-0", children: /* @__PURE__ */ jsx10(
+            /* @__PURE__ */ jsxs7("div", { className: "mb-3 flex items-center justify-between gap-3", children: [
+              /* @__PURE__ */ jsx11("div", { className: "min-w-0", children: /* @__PURE__ */ jsx11(
                 "div",
                 {
                   className: "truncate text-sm font-semibold",
@@ -1396,8 +1421,8 @@ var RepeaterFieldEditor = ({
                   children: itemLabel
                 }
               ) }),
-              /* @__PURE__ */ jsxs6("div", { className: "flex shrink-0 items-center gap-1", children: [
-                /* @__PURE__ */ jsx10(
+              /* @__PURE__ */ jsxs7("div", { className: "flex shrink-0 items-center gap-1", children: [
+                /* @__PURE__ */ jsx11(
                   "button",
                   {
                     type: "button",
@@ -1407,10 +1432,10 @@ var RepeaterFieldEditor = ({
                     ),
                     className: "inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-2 text-[color:var(--photon-builder-text-soft)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
                     "aria-label": `Move ${itemLabel} up`,
-                    children: /* @__PURE__ */ jsx10(ArrowUp2, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx11(ArrowUp2, { className: "h-4 w-4" })
                   }
                 ),
-                /* @__PURE__ */ jsx10(
+                /* @__PURE__ */ jsx11(
                   "button",
                   {
                     type: "button",
@@ -1420,10 +1445,10 @@ var RepeaterFieldEditor = ({
                     ),
                     className: "inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-2 text-[color:var(--photon-builder-text-soft)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
                     "aria-label": `Move ${itemLabel} down`,
-                    children: /* @__PURE__ */ jsx10(ArrowDown2, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx11(ArrowDown2, { className: "h-4 w-4" })
                   }
                 ),
-                /* @__PURE__ */ jsx10(
+                /* @__PURE__ */ jsx11(
                   "button",
                   {
                     type: "button",
@@ -1432,12 +1457,12 @@ var RepeaterFieldEditor = ({
                     ),
                     className: "inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-2 text-[color:var(--photon-builder-text-soft)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:text-[color:var(--photon-builder-text)]",
                     "aria-label": `Remove ${itemLabel}`,
-                    children: /* @__PURE__ */ jsx10(Trash22, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx11(Trash22, { className: "h-4 w-4" })
                   }
                 )
               ] })
             ] }),
-            itemField ? /* @__PURE__ */ jsx10(
+            itemField ? /* @__PURE__ */ jsx11(
               FieldEditor,
               {
                 field: itemField,
@@ -1452,7 +1477,7 @@ var RepeaterFieldEditor = ({
                   )
                 )
               }
-            ) : /* @__PURE__ */ jsx10("div", { className: "space-y-3", children: (field.fields ?? []).map((childField, childIndex) => {
+            ) : /* @__PURE__ */ jsx11("div", { className: "space-y-3", children: (field.fields ?? []).map((childField, childIndex) => {
               const itemObject = normalizeObjectValue(item);
               const childPath = childField.path ?? "";
               const childAbsolutePath = joinFieldPath(
@@ -1460,11 +1485,11 @@ var RepeaterFieldEditor = ({
                 childPath
               );
               const childValue = childPath ? getValueAtPath(itemObject, childPath) : itemObject;
-              return /* @__PURE__ */ jsx10(
+              return /* @__PURE__ */ jsx11(
                 "div",
                 {
                   className: "rounded-[16px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3",
-                  children: /* @__PURE__ */ jsx10(
+                  children: /* @__PURE__ */ jsx11(
                     FieldEditor,
                     {
                       field: childField,
@@ -1503,14 +1528,14 @@ var RepeaterFieldEditor = ({
         itemAbsolutePath
       );
     }) }),
-    /* @__PURE__ */ jsxs6(
+    /* @__PURE__ */ jsxs7(
       "button",
       {
         type: "button",
         onClick: addItem,
         className: "inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] px-4 py-3 text-sm font-semibold text-[color:var(--photon-builder-text)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-panel-solid)]",
         children: [
-          /* @__PURE__ */ jsx10(Plus2, { className: "h-4 w-4" }),
+          /* @__PURE__ */ jsx11(Plus2, { className: "h-4 w-4" }),
           translate(
             field.addLabelKey ?? field.addLabel ?? "Add item",
             field.addLabel ?? "Add item"
@@ -1533,9 +1558,9 @@ var FieldEditor = ({
   const uploadMedia = usePhotonStore((state) => state.uploadMedia);
   const { translate } = usePhotonI18n();
   const path = absolutePath ?? field.path ?? "";
-  return /* @__PURE__ */ jsxs6("div", { children: [
-    /* @__PURE__ */ jsxs6("div", { className: "mb-2 flex items-center justify-between gap-3", children: [
-      /* @__PURE__ */ jsx10(
+  return /* @__PURE__ */ jsxs7("div", { children: [
+    /* @__PURE__ */ jsxs7("div", { className: "mb-2 flex items-center justify-between gap-3", children: [
+      /* @__PURE__ */ jsx11(
         "div",
         {
           className: "text-sm font-semibold",
@@ -1546,7 +1571,7 @@ var FieldEditor = ({
           )
         }
       ),
-      path && !hidePathLabel ? /* @__PURE__ */ jsx10(
+      path && !hidePathLabel ? /* @__PURE__ */ jsx11(
         "button",
         {
           type: "button",
@@ -1557,7 +1582,7 @@ var FieldEditor = ({
         }
       ) : null
     ] }),
-    field.description ? /* @__PURE__ */ jsx10(
+    field.description ? /* @__PURE__ */ jsx11(
       "div",
       {
         className: "mb-2 text-xs leading-5",
@@ -1568,7 +1593,7 @@ var FieldEditor = ({
         )
       }
     ) : null,
-    field.kind === "textarea" ? /* @__PURE__ */ jsx10(
+    field.kind === "textarea" ? /* @__PURE__ */ jsx11(
       "textarea",
       {
         rows: 5,
@@ -1578,7 +1603,7 @@ var FieldEditor = ({
         className: inputClassName
       }
     ) : null,
-    field.kind === "rich-text" ? /* @__PURE__ */ jsx10(
+    field.kind === "rich-text" ? /* @__PURE__ */ jsx11(
       PhotonRichTextEditor,
       {
         value: String(value ?? ""),
@@ -1588,7 +1613,7 @@ var FieldEditor = ({
         surfaceClassName: "border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)]"
       }
     ) : null,
-    field.kind === "json" ? /* @__PURE__ */ jsx10(
+    field.kind === "json" ? /* @__PURE__ */ jsx11(
       JsonFieldEditor,
       {
         blockId,
@@ -1598,7 +1623,7 @@ var FieldEditor = ({
         onApply: onChange
       }
     ) : null,
-    field.kind === "object" ? /* @__PURE__ */ jsx10(
+    field.kind === "object" ? /* @__PURE__ */ jsx11(
       ObjectFieldEditor,
       {
         field,
@@ -1609,7 +1634,7 @@ var FieldEditor = ({
         absolutePath: path
       }
     ) : null,
-    field.kind === "repeater" ? /* @__PURE__ */ jsx10(
+    field.kind === "repeater" ? /* @__PURE__ */ jsx11(
       RepeaterFieldEditor,
       {
         field,
@@ -1620,7 +1645,7 @@ var FieldEditor = ({
         absolutePath: path
       }
     ) : null,
-    field.kind === "form-fields" ? /* @__PURE__ */ jsx10(
+    field.kind === "form-fields" ? /* @__PURE__ */ jsx11(
       PhotonFormFieldsEditor,
       {
         value,
@@ -1629,7 +1654,7 @@ var FieldEditor = ({
         absolutePath: path
       }
     ) : null,
-    field.kind === "select" ? /* @__PURE__ */ jsx10(
+    field.kind === "select" ? /* @__PURE__ */ jsx11(
       SelectFieldEditor,
       {
         field,
@@ -1638,8 +1663,8 @@ var FieldEditor = ({
         onFocus
       }
     ) : null,
-    field.kind === "toggle" ? /* @__PURE__ */ jsxs6("label", { className: "inline-flex cursor-pointer items-center gap-3 rounded-2xl border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] px-4 py-3 text-sm text-[color:var(--photon-builder-text)]", children: [
-      /* @__PURE__ */ jsx10(
+    field.kind === "toggle" ? /* @__PURE__ */ jsxs7("label", { className: "inline-flex cursor-pointer items-center gap-3 rounded-2xl border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] px-4 py-3 text-sm text-[color:var(--photon-builder-text)]", children: [
+      /* @__PURE__ */ jsx11(
         "input",
         {
           type: "checkbox",
@@ -1650,7 +1675,7 @@ var FieldEditor = ({
       ),
       "Enable value"
     ] }) : null,
-    field.kind === "tags" ? /* @__PURE__ */ jsx10(
+    field.kind === "tags" ? /* @__PURE__ */ jsx11(
       "textarea",
       {
         rows: 4,
@@ -1663,7 +1688,7 @@ var FieldEditor = ({
         className: inputClassName
       }
     ) : null,
-    field.kind === "image" ? /* @__PURE__ */ jsx10(
+    field.kind === "image" ? /* @__PURE__ */ jsx11(
       ImageFieldEditor,
       {
         blockId,
@@ -1675,7 +1700,7 @@ var FieldEditor = ({
         onUpload: uploadMedia
       }
     ) : null,
-    field.kind === "gallery" ? /* @__PURE__ */ jsx10(
+    field.kind === "gallery" ? /* @__PURE__ */ jsx11(
       GalleryFieldEditor,
       {
         blockId,
@@ -1687,7 +1712,7 @@ var FieldEditor = ({
         onUpload: uploadMedia
       }
     ) : null,
-    ["text", "url", "color"].includes(field.kind) ? /* @__PURE__ */ jsx10(
+    ["text", "url", "color"].includes(field.kind) ? /* @__PURE__ */ jsx11(
       "input",
       {
         type: field.kind === "color" ? "color" : field.kind === "url" ? "url" : "text",
@@ -1700,7 +1725,7 @@ var FieldEditor = ({
         )
       }
     ) : null,
-    field.kind === "number" ? /* @__PURE__ */ jsx10(
+    field.kind === "number" ? /* @__PURE__ */ jsx11(
       "input",
       {
         type: "number",
@@ -1717,7 +1742,7 @@ var FieldEditor = ({
 };
 
 // src/components/photon-field-editor-list.tsx
-import { jsx as jsx11 } from "react/jsx-runtime";
+import { jsx as jsx12 } from "react/jsx-runtime";
 var PhotonFieldEditorList = ({
   fields,
   subjectId,
@@ -1725,7 +1750,7 @@ var PhotonFieldEditorList = ({
   onChange,
   onFocus
 }) => {
-  return /* @__PURE__ */ jsx11("div", { className: "space-y-4", children: fields.map((field) => /* @__PURE__ */ jsx11(
+  return /* @__PURE__ */ jsx12("div", { className: "space-y-4", children: fields.map((field) => /* @__PURE__ */ jsx12(
     FieldEditor,
     {
       field,
@@ -1758,9 +1783,9 @@ import { createPortal } from "react-dom";
 import { toast as toast4 } from "sonner";
 
 // src/studio/canvas/block-overlay-card.tsx
-import { jsx as jsx12, jsxs as jsxs7 } from "react/jsx-runtime";
+import { jsx as jsx13, jsxs as jsxs8 } from "react/jsx-runtime";
 var BlockOverlayCard = ({ block }) => {
-  return /* @__PURE__ */ jsxs7(
+  return /* @__PURE__ */ jsxs8(
     "div",
     {
       className: "rounded-[24px] border px-4 py-4 text-sm backdrop-blur-xl",
@@ -1771,7 +1796,7 @@ var BlockOverlayCard = ({ block }) => {
         boxShadow: "var(--photon-builder-shadow)"
       },
       children: [
-        /* @__PURE__ */ jsx12(
+        /* @__PURE__ */ jsx13(
           "div",
           {
             className: "text-[11px] uppercase tracking-[0.28em]",
@@ -1779,8 +1804,8 @@ var BlockOverlayCard = ({ block }) => {
             children: block.module
           }
         ),
-        /* @__PURE__ */ jsx12("div", { className: "mt-2 font-semibold", children: block.type }),
-        /* @__PURE__ */ jsx12("div", { className: "mt-1", style: { color: "var(--photon-builder-text-muted)" }, children: "Move block into any visible insert zone." })
+        /* @__PURE__ */ jsx13("div", { className: "mt-2 font-semibold", children: block.type }),
+        /* @__PURE__ */ jsx13("div", { className: "mt-1", style: { color: "var(--photon-builder-text-muted)" }, children: "Move block into any visible insert zone." })
       ]
     }
   );
@@ -1800,7 +1825,7 @@ import {
   Trash2 as Trash23
 } from "lucide-react";
 import { memo, useEffect as useEffect3, useState as useState6 } from "react";
-import { Fragment, jsx as jsx13, jsxs as jsxs8 } from "react/jsx-runtime";
+import { Fragment, jsx as jsx14, jsxs as jsxs9 } from "react/jsx-runtime";
 var CanvasBlockShellComponent = ({
   block,
   blockLabel,
@@ -1835,8 +1860,8 @@ var CanvasBlockShellComponent = ({
     "border transition",
     isSelected ? "border-[color:var(--photon-builder-border-strong)] shadow-[0_0_0_1px_var(--photon-builder-accent-strong)]" : "border-[color:var(--photon-builder-border)] group-hover:border-[color:var(--photon-builder-border-strong)]"
   );
-  const chromeBadges = builderEnabled ? /* @__PURE__ */ jsxs8(Fragment, { children: [
-    /* @__PURE__ */ jsx13(
+  const chromeBadges = builderEnabled ? /* @__PURE__ */ jsxs9(Fragment, { children: [
+    /* @__PURE__ */ jsx14(
       "div",
       {
         className: "rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em]",
@@ -1848,7 +1873,7 @@ var CanvasBlockShellComponent = ({
         children: blockLabel
       }
     ),
-    /* @__PURE__ */ jsx13(
+    /* @__PURE__ */ jsx14(
       "div",
       {
         className: "rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -1861,8 +1886,8 @@ var CanvasBlockShellComponent = ({
       }
     )
   ] }) : null;
-  const chromeControls = chromeEnabled ? /* @__PURE__ */ jsxs8(Fragment, { children: [
-    /* @__PURE__ */ jsx13(
+  const chromeControls = chromeEnabled ? /* @__PURE__ */ jsxs9(Fragment, { children: [
+    /* @__PURE__ */ jsx14(
       "button",
       {
         type: "button",
@@ -1876,11 +1901,11 @@ var CanvasBlockShellComponent = ({
           background: "var(--photon-builder-panel-solid)",
           color: "var(--photon-builder-text-muted)"
         },
-        children: isCollapsed ? /* @__PURE__ */ jsx13(ChevronDown2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx13(ChevronUp, { className: "h-4 w-4" })
+        children: isCollapsed ? /* @__PURE__ */ jsx14(ChevronDown2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx14(ChevronUp, { className: "h-4 w-4" })
       }
     ),
-    builderEnabled ? /* @__PURE__ */ jsxs8(Fragment, { children: [
-      /* @__PURE__ */ jsx13(
+    builderEnabled ? /* @__PURE__ */ jsxs9(Fragment, { children: [
+      /* @__PURE__ */ jsx14(
         "button",
         {
           type: "button",
@@ -1894,10 +1919,10 @@ var CanvasBlockShellComponent = ({
             background: "var(--photon-builder-panel-solid)",
             color: "var(--photon-builder-text-muted)"
           },
-          children: /* @__PURE__ */ jsx13(Copy, { className: "h-4 w-4" })
+          children: /* @__PURE__ */ jsx14(Copy, { className: "h-4 w-4" })
         }
       ),
-      /* @__PURE__ */ jsx13(
+      /* @__PURE__ */ jsx14(
         "button",
         {
           type: "button",
@@ -1911,10 +1936,10 @@ var CanvasBlockShellComponent = ({
             background: "var(--photon-builder-panel-solid)",
             color: "var(--photon-builder-text-muted)"
           },
-          children: /* @__PURE__ */ jsx13(Trash23, { className: "h-4 w-4" })
+          children: /* @__PURE__ */ jsx14(Trash23, { className: "h-4 w-4" })
         }
       ),
-      /* @__PURE__ */ jsx13(
+      /* @__PURE__ */ jsx14(
         "button",
         {
           type: "button",
@@ -1927,13 +1952,13 @@ var CanvasBlockShellComponent = ({
             background: "var(--photon-builder-panel-solid)",
             color: "var(--photon-builder-text-muted)"
           },
-          children: /* @__PURE__ */ jsx13(GripVertical, { className: "h-4 w-4" })
+          children: /* @__PURE__ */ jsx14(GripVertical, { className: "h-4 w-4" })
         }
       )
     ] }) : null
   ] }) : null;
   if (edgeToEdgeChrome && chromeEnabled) {
-    return /* @__PURE__ */ jsxs8(
+    return /* @__PURE__ */ jsxs9(
       "article",
       {
         ref: hasMounted ? setNodeRef : void 0,
@@ -1952,11 +1977,11 @@ var CanvasBlockShellComponent = ({
           hasMounted && isDragging && "opacity-0"
         ),
         children: [
-          chromeEnabled ? /* @__PURE__ */ jsxs8("div", { className: "mb-3 flex items-start justify-between gap-3", children: [
-            /* @__PURE__ */ jsx13("div", { className: "pointer-events-none flex min-h-10 max-w-[70%] flex-wrap items-center gap-2", children: chromeBadges }),
-            /* @__PURE__ */ jsx13("div", { className: "relative z-10 flex shrink-0 items-center gap-2", children: chromeControls })
+          chromeEnabled ? /* @__PURE__ */ jsxs9("div", { className: "mb-3 flex items-start justify-between gap-3", children: [
+            /* @__PURE__ */ jsx14("div", { className: "pointer-events-none flex min-h-10 max-w-[70%] flex-wrap items-center gap-2", children: chromeBadges }),
+            /* @__PURE__ */ jsx14("div", { className: "relative z-10 flex shrink-0 items-center gap-2", children: chromeControls })
           ] }) : null,
-          /* @__PURE__ */ jsx13(
+          /* @__PURE__ */ jsx14(
             "div",
             {
               className: clsx5(
@@ -1970,7 +1995,7 @@ var CanvasBlockShellComponent = ({
       }
     );
   }
-  return /* @__PURE__ */ jsxs8(
+  return /* @__PURE__ */ jsxs9(
     "article",
     {
       ref: hasMounted ? setNodeRef : void 0,
@@ -1989,7 +2014,7 @@ var CanvasBlockShellComponent = ({
         hasMounted && isDragging && "opacity-0"
       ),
       children: [
-        chromeEnabled ? /* @__PURE__ */ jsx13(
+        chromeEnabled ? /* @__PURE__ */ jsx14(
           "div",
           {
             className: clsx5(
@@ -1998,9 +2023,9 @@ var CanvasBlockShellComponent = ({
             )
           }
         ) : null,
-        builderEnabled ? /* @__PURE__ */ jsx13("div", { className: "pointer-events-none absolute left-5 top-5 z-10 flex max-w-[70%] flex-wrap items-center gap-2", children: chromeBadges }) : null,
-        chromeEnabled ? /* @__PURE__ */ jsx13("div", { className: "absolute right-5 top-5 z-10 flex items-center gap-2", children: chromeControls }) : null,
-        /* @__PURE__ */ jsx13(
+        builderEnabled ? /* @__PURE__ */ jsx14("div", { className: "pointer-events-none absolute left-5 top-5 z-10 flex max-w-[70%] flex-wrap items-center gap-2", children: chromeBadges }) : null,
+        chromeEnabled ? /* @__PURE__ */ jsx14("div", { className: "absolute right-5 top-5 z-10 flex items-center gap-2", children: chromeControls }) : null,
+        /* @__PURE__ */ jsx14(
           "div",
           {
             className: clsx5(
@@ -2020,7 +2045,7 @@ var CanvasBlockShell = memo(CanvasBlockShellComponent);
 import { useDroppable } from "@dnd-kit/core";
 import clsx6 from "clsx";
 import { Plus as Plus3 } from "lucide-react";
-import { jsx as jsx14, jsxs as jsxs9 } from "react/jsx-runtime";
+import { jsx as jsx15, jsxs as jsxs10 } from "react/jsx-runtime";
 var CanvasInsertZone = ({
   listId,
   index,
@@ -2043,7 +2068,7 @@ var CanvasInsertZone = ({
   if (!builderEnabled) {
     return null;
   }
-  return /* @__PURE__ */ jsxs9(
+  return /* @__PURE__ */ jsxs10(
     "div",
     {
       ref: setNodeRef,
@@ -2053,7 +2078,7 @@ var CanvasInsertZone = ({
         isEmpty && !isDragging && "py-4"
       ),
       children: [
-        /* @__PURE__ */ jsx14(
+        /* @__PURE__ */ jsx15(
           "div",
           {
             className: clsx6(
@@ -2067,7 +2092,7 @@ var CanvasInsertZone = ({
             }
           }
         ),
-        /* @__PURE__ */ jsx14(
+        /* @__PURE__ */ jsx15(
           "div",
           {
             className: clsx6(
@@ -2078,7 +2103,7 @@ var CanvasInsertZone = ({
             }
           }
         ),
-        /* @__PURE__ */ jsxs9(
+        /* @__PURE__ */ jsxs10(
           "button",
           {
             type: "button",
@@ -2093,7 +2118,7 @@ var CanvasInsertZone = ({
               color: isActive || isOver ? "var(--photon-builder-accent-text)" : isManual ? "var(--photon-builder-text)" : "var(--photon-builder-text-muted)"
             },
             children: [
-              /* @__PURE__ */ jsx14(Plus3, { className: "h-3.5 w-3.5" }),
+              /* @__PURE__ */ jsx15(Plus3, { className: "h-3.5 w-3.5" }),
               isEmpty ? isDragging ? "Drop first block here" : "Insert first block" : isDragging ? "Drop block here" : "Insert here"
             ]
           }
@@ -2104,11 +2129,11 @@ var CanvasInsertZone = ({
 };
 
 // src/studio/canvas/collapsed-block-preview.tsx
-import { jsx as jsx15, jsxs as jsxs10 } from "react/jsx-runtime";
+import { jsx as jsx16, jsxs as jsxs11 } from "react/jsx-runtime";
 var CollapsedBlockPreview = ({
   block
 }) => {
-  return /* @__PURE__ */ jsxs10(
+  return /* @__PURE__ */ jsxs11(
     "div",
     {
       className: "rounded-[28px] border border-dashed px-5 py-5 text-sm",
@@ -2118,7 +2143,7 @@ var CollapsedBlockPreview = ({
         color: "var(--photon-builder-text-muted)"
       },
       children: [
-        /* @__PURE__ */ jsx15(
+        /* @__PURE__ */ jsx16(
           "div",
           {
             className: "font-semibold",
@@ -2126,14 +2151,14 @@ var CollapsedBlockPreview = ({
             children: block.type
           }
         ),
-        /* @__PURE__ */ jsx15("div", { className: "mt-2", style: { color: "var(--photon-builder-text-soft)" }, children: block.areas?.length ? `${block.areas.length} layout area${block.areas.length > 1 ? "s" : ""} hidden while collapsed.` : "Collapsed to keep the canvas compact while you work on neighboring sections." })
+        /* @__PURE__ */ jsx16("div", { className: "mt-2", style: { color: "var(--photon-builder-text-soft)" }, children: block.areas?.length ? `${block.areas.length} layout area${block.areas.length > 1 ? "s" : ""} hidden while collapsed.` : "Collapsed to keep the canvas compact while you work on neighboring sections." })
       ]
     }
   );
 };
 
 // src/studio/canvas/canvas-block-item.tsx
-import { jsx as jsx16, jsxs as jsxs11 } from "react/jsx-runtime";
+import { jsx as jsx17, jsxs as jsxs12 } from "react/jsx-runtime";
 var CanvasBlockItemComponent = ({
   block,
   index,
@@ -2165,8 +2190,8 @@ var CanvasBlockItemComponent = ({
   );
   const definition = registry.getDefinition(block.module, block.type);
   const chromeStyle = definition?.category === "Site Frame" ? "edge-to-edge" : "default";
-  return /* @__PURE__ */ jsxs11(Fragment2, { children: [
-    /* @__PURE__ */ jsx16(
+  return /* @__PURE__ */ jsxs12(Fragment2, { children: [
+    /* @__PURE__ */ jsx17(
       CanvasBlockShell,
       {
         block,
@@ -2184,11 +2209,11 @@ var CanvasBlockItemComponent = ({
         onDelete: () => removeBlock(block.id),
         onSelect: () => selectBlock(block.id),
         onToggleCollapse: () => toggleBlockCollapse(block.id),
-        children: respectsCollapsedState && isCollapsed ? /* @__PURE__ */ jsx16(CollapsedBlockPreview, { block }) : /* @__PURE__ */ jsx16(
+        children: respectsCollapsedState && isCollapsed ? /* @__PURE__ */ jsx17(CollapsedBlockPreview, { block }) : /* @__PURE__ */ jsx17(
           PhotonBlockRenderer,
           {
             block,
-            renderArea: (area) => /* @__PURE__ */ jsx16(PhotonRenderDepthProvider, { value: renderDepth + 1, children: /* @__PURE__ */ jsx16(
+            renderArea: (area) => /* @__PURE__ */ jsx17(PhotonRenderDepthProvider, { value: renderDepth + 1, children: /* @__PURE__ */ jsx17(
               CanvasBlockList,
               {
                 blocks: area.blocks,
@@ -2206,7 +2231,7 @@ var CanvasBlockItemComponent = ({
         )
       }
     ),
-    /* @__PURE__ */ jsx16(
+    /* @__PURE__ */ jsx17(
       CanvasInsertZone,
       {
         listId,
@@ -2223,7 +2248,7 @@ var CanvasBlockItemComponent = ({
 var CanvasBlockItem = memo2(CanvasBlockItemComponent);
 
 // src/studio/canvas/canvas-block-list.tsx
-import { jsx as jsx17, jsxs as jsxs12 } from "react/jsx-runtime";
+import { jsx as jsx18, jsxs as jsxs13 } from "react/jsx-runtime";
 var CanvasBlockList = ({
   blocks,
   listId,
@@ -2234,8 +2259,8 @@ var CanvasBlockList = ({
   manualInsertTarget,
   dropTarget,
   onActivateInsertTarget
-}) => /* @__PURE__ */ jsxs12("div", { className: "space-y-[var(--photon-list-gap,0.75rem)]", children: [
-  /* @__PURE__ */ jsx17(
+}) => /* @__PURE__ */ jsxs13("div", { className: "space-y-[var(--photon-list-gap,0.75rem)]", children: [
+  /* @__PURE__ */ jsx18(
     CanvasInsertZone,
     {
       listId,
@@ -2248,7 +2273,7 @@ var CanvasBlockList = ({
       onActivate: () => onActivateInsertTarget({ listId, index: 0 })
     }
   ),
-  blocks.map((block, index) => /* @__PURE__ */ jsx17(
+  blocks.map((block, index) => /* @__PURE__ */ jsx18(
     CanvasBlockItem,
     {
       block,
@@ -2269,7 +2294,7 @@ var CanvasBlockList = ({
 // src/studio/canvas/site-surface-canvas.tsx
 import clsx7 from "clsx";
 import { memo as memo3, useEffect as useEffect4, useRef, useState as useState7 } from "react";
-import { jsx as jsx18, jsxs as jsxs13 } from "react/jsx-runtime";
+import { jsx as jsx19, jsxs as jsxs14 } from "react/jsx-runtime";
 var SiteSurfaceRegionSection = ({
   region,
   site,
@@ -2304,7 +2329,7 @@ var SiteSurfaceRegionSection = ({
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
-  return /* @__PURE__ */ jsx18(
+  return /* @__PURE__ */ jsx19(
     PhotonSurfaceLayoutProvider,
     {
       value: {
@@ -2313,7 +2338,7 @@ var SiteSurfaceRegionSection = ({
         regionKey: region.key,
         width: surfaceWidth
       },
-      children: /* @__PURE__ */ jsxs13(
+      children: /* @__PURE__ */ jsxs14(
         "section",
         {
           ref: sectionRef,
@@ -2326,7 +2351,7 @@ var SiteSurfaceRegionSection = ({
             top: "calc(var(--photon-dock-offset, 0px) + var(--photon-site-header-offset, 0px))"
           } : void 0,
           children: [
-            builderEnabled ? /* @__PURE__ */ jsxs13(
+            builderEnabled ? /* @__PURE__ */ jsxs14(
               "div",
               {
                 className: clsx7(
@@ -2334,7 +2359,7 @@ var SiteSurfaceRegionSection = ({
                   builderRegionInsetClassName
                 ),
                 children: [
-                  /* @__PURE__ */ jsx18(
+                  /* @__PURE__ */ jsx19(
                     "div",
                     {
                       className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.28em]",
@@ -2346,7 +2371,7 @@ var SiteSurfaceRegionSection = ({
                       children: region.label
                     }
                   ),
-                  region.lockedOnCanvas ? /* @__PURE__ */ jsx18(
+                  region.lockedOnCanvas ? /* @__PURE__ */ jsx19(
                     "div",
                     {
                       className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -2361,7 +2386,7 @@ var SiteSurfaceRegionSection = ({
                 ]
               }
             ) : null,
-            /* @__PURE__ */ jsx18(
+            /* @__PURE__ */ jsx19(
               "div",
               {
                 className: clsx7(
@@ -2371,7 +2396,7 @@ var SiteSurfaceRegionSection = ({
                 style: isPageRegion ? {
                   "--photon-list-gap": "var(--photon-section-gap,2rem)"
                 } : void 0,
-                children: /* @__PURE__ */ jsx18(
+                children: /* @__PURE__ */ jsx19(
                   CanvasBlockList,
                   {
                     blocks,
@@ -2407,7 +2432,7 @@ var SiteSurfaceCanvasComponent = ({
   const mode = usePhotonStore((state) => state.mode);
   const regions = resolvePhotonSurfaceRegionDescriptors(site);
   const previewEnabled = mode !== "builder";
-  return /* @__PURE__ */ jsx18("div", { className: "space-y-[var(--photon-section-gap,2rem)]", children: regions.map((region) => /* @__PURE__ */ jsx18(
+  return /* @__PURE__ */ jsx19("div", { className: "space-y-[var(--photon-section-gap,2rem)]", children: regions.map((region) => /* @__PURE__ */ jsx19(
     SiteSurfaceRegionSection,
     {
       region,
@@ -2434,18 +2459,18 @@ import { useEffect as useEffect8, useRef as useRef2 } from "react";
 
 // src/studio/editor-dock/editor-dock-brand.tsx
 import { PanelsTopLeft as PanelsTopLeft2 } from "lucide-react";
-import { jsx as jsx19, jsxs as jsxs14 } from "react/jsx-runtime";
+import { jsx as jsx20, jsxs as jsxs15 } from "react/jsx-runtime";
 var EditorDockBrand = ({
   title,
   compact = false
 }) => {
   const { translate } = usePhotonI18n();
-  return /* @__PURE__ */ jsxs14(
+  return /* @__PURE__ */ jsxs15(
     "div",
     {
       className: `flex min-w-0 items-start transition-[gap] duration-300 ease-out ${compact ? "gap-2.5" : "gap-3"}`,
       children: [
-        /* @__PURE__ */ jsx19(
+        /* @__PURE__ */ jsx20(
           "div",
           {
             className: `flex items-center justify-center rounded-2xl border transition-[width,height,transform] duration-300 ease-out ${compact ? "h-10 w-10" : "h-11 w-11"}`,
@@ -2454,11 +2479,11 @@ var EditorDockBrand = ({
               background: "var(--photon-builder-accent-strong)",
               color: "var(--photon-builder-accent)"
             },
-            children: /* @__PURE__ */ jsx19(PanelsTopLeft2, { className: "h-5 w-5" })
+            children: /* @__PURE__ */ jsx20(PanelsTopLeft2, { className: "h-5 w-5" })
           }
         ),
-        /* @__PURE__ */ jsxs14("div", { className: "min-w-0", children: [
-          /* @__PURE__ */ jsx19(
+        /* @__PURE__ */ jsxs15("div", { className: "min-w-0", children: [
+          /* @__PURE__ */ jsx20(
             "div",
             {
               className: "text-[11px] uppercase tracking-[0.3em]",
@@ -2466,7 +2491,7 @@ var EditorDockBrand = ({
               children: translate("photon.brand", "Photon")
             }
           ),
-          /* @__PURE__ */ jsx19(
+          /* @__PURE__ */ jsx20(
             "div",
             {
               className: `font-semibold tracking-[-0.03em] transition-[font-size] duration-300 ease-out ${compact ? "text-base" : "text-lg"}`,
@@ -2483,7 +2508,7 @@ var EditorDockBrand = ({
 // src/studio/editor-dock/editor-locale-select.tsx
 import { ChevronDown as ChevronDown3 } from "lucide-react";
 import { useEffect as useEffect5, useState as useState8 } from "react";
-import { jsx as jsx20, jsxs as jsxs15 } from "react/jsx-runtime";
+import { jsx as jsx21, jsxs as jsxs16 } from "react/jsx-runtime";
 var EditorLocaleSelect = ({
   label,
   value,
@@ -2498,34 +2523,34 @@ var EditorLocaleSelect = ({
   if (options.length <= 1 || !activeOption || typeof onChange !== "function") {
     return null;
   }
-  const trigger = /* @__PURE__ */ jsxs15(
+  const trigger = /* @__PURE__ */ jsxs16(
     "button",
     {
       type: "button",
       "aria-label": label,
       className: "inline-flex h-11 min-w-[10.25rem] cursor-pointer items-center justify-between gap-3 rounded-full border px-4 text-sm font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[border-color,background-color,box-shadow,color] duration-200 ease-out outline-none border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] text-[color:var(--photon-builder-text)] hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-field)] focus-visible:border-[color:var(--photon-builder-border-strong)] focus-visible:bg-[color:var(--photon-builder-accent-strong)]",
       children: [
-        /* @__PURE__ */ jsxs15("span", { className: "flex min-w-0 items-center gap-2.5", children: [
-          /* @__PURE__ */ jsx20("span", { className: "text-[10px] uppercase tracking-[0.24em] text-[color:var(--photon-builder-text-soft)]", children: label }),
-          /* @__PURE__ */ jsx20("span", { className: "truncate uppercase", children: activeOption.label })
+        /* @__PURE__ */ jsxs16("span", { className: "flex min-w-0 items-center gap-2.5", children: [
+          /* @__PURE__ */ jsx21("span", { className: "text-[10px] uppercase tracking-[0.24em] text-[color:var(--photon-builder-text-soft)]", children: label }),
+          /* @__PURE__ */ jsx21("span", { className: "truncate uppercase", children: activeOption.label })
         ] }),
-        /* @__PURE__ */ jsx20(ChevronDown3, { className: "h-4 w-4 shrink-0 text-[color:var(--photon-builder-text-soft)] transition-transform duration-200 ease-out" })
+        /* @__PURE__ */ jsx21(ChevronDown3, { className: "h-4 w-4 shrink-0 text-[color:var(--photon-builder-text-soft)] transition-transform duration-200 ease-out" })
       ]
     }
   );
   if (!hasMounted) {
     return trigger;
   }
-  return /* @__PURE__ */ jsxs15(Root2, { modal: false, children: [
-    /* @__PURE__ */ jsx20(Trigger, { asChild: true, children: trigger }),
-    /* @__PURE__ */ jsx20(DropdownMenuContent, { align: "start", children: /* @__PURE__ */ jsx20(
+  return /* @__PURE__ */ jsxs16(Root2, { modal: false, children: [
+    /* @__PURE__ */ jsx21(Trigger, { asChild: true, children: trigger }),
+    /* @__PURE__ */ jsx21(DropdownMenuContent, { align: "start", children: /* @__PURE__ */ jsx21(
       RadioGroup,
       {
         value,
         onValueChange: (nextLocale) => onChange(nextLocale),
-        children: options.map((option) => /* @__PURE__ */ jsx20(DropdownMenuRadioItem, { value: option.code, children: /* @__PURE__ */ jsxs15("span", { className: "flex items-center gap-2.5", children: [
-          /* @__PURE__ */ jsx20("span", { className: "text-[10px] uppercase tracking-[0.24em] text-[color:var(--photon-builder-text-soft)]", children: label }),
-          /* @__PURE__ */ jsx20("span", { className: "uppercase", children: option.label })
+        children: options.map((option) => /* @__PURE__ */ jsx21(DropdownMenuRadioItem, { value: option.code, children: /* @__PURE__ */ jsxs16("span", { className: "flex items-center gap-2.5", children: [
+          /* @__PURE__ */ jsx21("span", { className: "text-[10px] uppercase tracking-[0.24em] text-[color:var(--photon-builder-text-soft)]", children: label }),
+          /* @__PURE__ */ jsx21("span", { className: "uppercase", children: option.label })
         ] }) }, option.code))
       }
     ) })
@@ -2535,7 +2560,7 @@ var EditorLocaleSelect = ({
 // src/studio/editor-dock/editor-mode-select.tsx
 import { ChevronDown as ChevronDown4, Eye, PanelsTopLeft as PanelsTopLeft3, PenLine } from "lucide-react";
 import { useEffect as useEffect6, useState as useState9 } from "react";
-import { jsx as jsx21, jsxs as jsxs16 } from "react/jsx-runtime";
+import { jsx as jsx22, jsxs as jsxs17 } from "react/jsx-runtime";
 var MODE_OPTIONS = [
   { label: "Preview", value: "preview", icon: Eye },
   { label: "Content", value: "content", icon: PenLine },
@@ -2556,27 +2581,27 @@ var EditorModeSelect = ({
   useEffect6(() => {
     setOptimisticValue(activeValue);
   }, [activeValue]);
-  const trigger = /* @__PURE__ */ jsxs16(
+  const trigger = /* @__PURE__ */ jsxs17(
     "button",
     {
       type: "button",
       "aria-label": "Editing mode",
       className: "inline-flex h-11 min-w-[10.25rem] cursor-pointer items-center justify-between gap-3 rounded-full border px-4 text-sm font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[border-color,background-color,box-shadow,color] duration-200 ease-out outline-none border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] text-[color:var(--photon-builder-text)] hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-field)] focus-visible:border-[color:var(--photon-builder-border-strong)] focus-visible:bg-[color:var(--photon-builder-accent-strong)]",
       children: [
-        /* @__PURE__ */ jsxs16("span", { className: "flex min-w-0 items-center gap-2.5", children: [
-          /* @__PURE__ */ jsx21(ActiveIcon, { className: "h-4 w-4 text-[color:var(--photon-builder-accent)]" }),
-          /* @__PURE__ */ jsx21("span", { children: activeOption.label })
+        /* @__PURE__ */ jsxs17("span", { className: "flex min-w-0 items-center gap-2.5", children: [
+          /* @__PURE__ */ jsx22(ActiveIcon, { className: "h-4 w-4 text-[color:var(--photon-builder-accent)]" }),
+          /* @__PURE__ */ jsx22("span", { children: activeOption.label })
         ] }),
-        /* @__PURE__ */ jsx21(ChevronDown4, { className: "h-4 w-4 text-[color:var(--photon-builder-text-soft)] transition-transform duration-200 ease-out" })
+        /* @__PURE__ */ jsx22(ChevronDown4, { className: "h-4 w-4 text-[color:var(--photon-builder-text-soft)] transition-transform duration-200 ease-out" })
       ]
     }
   );
   if (!hasMounted) {
     return trigger;
   }
-  return /* @__PURE__ */ jsxs16(Root2, { modal: false, children: [
-    /* @__PURE__ */ jsx21(Trigger, { asChild: true, children: trigger }),
-    /* @__PURE__ */ jsx21(DropdownMenuContent, { align: "start", children: /* @__PURE__ */ jsx21(
+  return /* @__PURE__ */ jsxs17(Root2, { modal: false, children: [
+    /* @__PURE__ */ jsx22(Trigger, { asChild: true, children: trigger }),
+    /* @__PURE__ */ jsx22(DropdownMenuContent, { align: "start", children: /* @__PURE__ */ jsx22(
       RadioGroup,
       {
         value: optimisticValue,
@@ -2587,9 +2612,9 @@ var EditorModeSelect = ({
         },
         children: MODE_OPTIONS.map((option) => {
           const OptionIcon = option.icon;
-          return /* @__PURE__ */ jsx21(DropdownMenuRadioItem, { value: option.value, children: /* @__PURE__ */ jsxs16("span", { className: "flex items-center gap-2.5", children: [
-            /* @__PURE__ */ jsx21(OptionIcon, { className: "h-4 w-4 text-[color:var(--photon-builder-accent)]" }),
-            /* @__PURE__ */ jsx21("span", { children: option.label })
+          return /* @__PURE__ */ jsx22(DropdownMenuRadioItem, { value: option.value, children: /* @__PURE__ */ jsxs17("span", { className: "flex items-center gap-2.5", children: [
+            /* @__PURE__ */ jsx22(OptionIcon, { className: "h-4 w-4 text-[color:var(--photon-builder-accent)]" }),
+            /* @__PURE__ */ jsx22("span", { children: option.label })
           ] }) }, option.value);
         })
       }
@@ -2631,7 +2656,7 @@ var translatePhotonFieldGroup = (group, translate) => translate(FIELD_GROUP_KEYS
 var translatePhotonPageGroup = (group, translate) => translate(PAGE_GROUP_KEYS[group] ?? group, group);
 
 // src/studio/editor-dock/editor-page-browser.tsx
-import { Fragment as Fragment3, jsx as jsx22, jsxs as jsxs17 } from "react/jsx-runtime";
+import { Fragment as Fragment3, jsx as jsx23, jsxs as jsxs18 } from "react/jsx-runtime";
 var EditorPageBrowser = ({
   activeMode,
   currentPage,
@@ -2690,9 +2715,9 @@ var EditorPageBrowser = ({
     }
     window.requestAnimationFrame(() => pageMenu.focusList());
   }, [menuOpen]);
-  return /* @__PURE__ */ jsxs17(Fragment3, { children: [
-    /* @__PURE__ */ jsxs17(Root2, { open: menuOpen, onOpenChange: setMenuOpen, modal: false, children: [
-      /* @__PURE__ */ jsx22(Trigger, { asChild: true, children: /* @__PURE__ */ jsxs17(
+  return /* @__PURE__ */ jsxs18(Fragment3, { children: [
+    /* @__PURE__ */ jsxs18(Root2, { open: menuOpen, onOpenChange: setMenuOpen, modal: false, children: [
+      /* @__PURE__ */ jsx23(Trigger, { asChild: true, children: /* @__PURE__ */ jsxs18(
         "button",
         {
           type: "button",
@@ -2702,28 +2727,28 @@ var EditorPageBrowser = ({
             compact ? "h-10" : "h-11"
           ),
           children: [
-            /* @__PURE__ */ jsxs17("span", { className: "min-w-0", children: [
-              /* @__PURE__ */ jsxs17("span", { className: "flex items-center gap-2.5", children: [
-                /* @__PURE__ */ jsx22(FolderTree, { className: "h-4 w-4 text-[color:var(--photon-builder-accent)]" }),
-                /* @__PURE__ */ jsx22("span", { className: "truncate text-sm font-semibold", children: currentPage?.name ?? translate(
+            /* @__PURE__ */ jsxs18("span", { className: "min-w-0", children: [
+              /* @__PURE__ */ jsxs18("span", { className: "flex items-center gap-2.5", children: [
+                /* @__PURE__ */ jsx23(FolderTree, { className: "h-4 w-4 text-[color:var(--photon-builder-accent)]" }),
+                /* @__PURE__ */ jsx23("span", { className: "truncate text-sm font-semibold", children: currentPage?.name ?? translate(
                   "photon.pageBrowser.groups.pages",
                   "Pages"
                 ) })
               ] }),
-              /* @__PURE__ */ jsx22("span", { className: "mt-0.5 block truncate text-[11px] uppercase tracking-[0.22em] text-[color:var(--photon-builder-text-soft)]", children: currentRouteLabel })
+              /* @__PURE__ */ jsx23("span", { className: "mt-0.5 block truncate text-[11px] uppercase tracking-[0.22em] text-[color:var(--photon-builder-text-soft)]", children: currentRouteLabel })
             ] }),
-            /* @__PURE__ */ jsx22(ChevronDown5, { className: "h-4 w-4 shrink-0 text-[color:var(--photon-builder-text-soft)]" })
+            /* @__PURE__ */ jsx23(ChevronDown5, { className: "h-4 w-4 shrink-0 text-[color:var(--photon-builder-text-soft)]" })
           ]
         }
       ) }),
-      /* @__PURE__ */ jsxs17(DropdownMenuContent, { className: "w-[22rem] p-0", children: [
-        /* @__PURE__ */ jsxs17(
+      /* @__PURE__ */ jsxs18(DropdownMenuContent, { className: "w-[22rem] p-0", children: [
+        /* @__PURE__ */ jsxs18(
           "div",
           {
             className: "border-b px-4 py-4",
             style: { borderColor: "var(--photon-builder-border)" },
             children: [
-              /* @__PURE__ */ jsx22(
+              /* @__PURE__ */ jsx23(
                 "div",
                 {
                   className: "text-[11px] uppercase tracking-[0.28em]",
@@ -2731,7 +2756,7 @@ var EditorPageBrowser = ({
                   children: translate("photon.pageBrowser.title", "Page Browser")
                 }
               ),
-              /* @__PURE__ */ jsx22(
+              /* @__PURE__ */ jsx23(
                 "div",
                 {
                   className: "mt-2 text-sm leading-6",
@@ -2742,7 +2767,7 @@ var EditorPageBrowser = ({
                   )
                 }
               ),
-              onCreatePage ? /* @__PURE__ */ jsxs17(
+              onCreatePage ? /* @__PURE__ */ jsxs18(
                 "button",
                 {
                   type: "button",
@@ -2759,7 +2784,7 @@ var EditorPageBrowser = ({
                     color: "var(--photon-builder-accent)"
                   },
                   children: [
-                    /* @__PURE__ */ jsx22(FilePlus2, { className: "h-4 w-4" }),
+                    /* @__PURE__ */ jsx23(FilePlus2, { className: "h-4 w-4" }),
                     translate("photon.pageBrowser.newPage", "New Page")
                   ]
                 }
@@ -2767,7 +2792,7 @@ var EditorPageBrowser = ({
             ]
           }
         ),
-        /* @__PURE__ */ jsx22(
+        /* @__PURE__ */ jsx23(
           KeyboardMenuList,
           {
             controller: pageMenu,
@@ -2782,7 +2807,7 @@ var EditorPageBrowser = ({
             className: "max-h-[26rem] space-y-4 overflow-y-auto px-3 py-3",
             renderItem: (page, { isActive, isDisabled, isSelected }) => {
               const routeLabel = page.routePattern ?? page.route;
-              return /* @__PURE__ */ jsxs17(
+              return /* @__PURE__ */ jsxs18(
                 "button",
                 {
                   type: "button",
@@ -2802,8 +2827,8 @@ var EditorPageBrowser = ({
                     color: "var(--photon-builder-text)"
                   },
                   children: [
-                    /* @__PURE__ */ jsxs17("div", { className: "min-w-0", children: [
-                      /* @__PURE__ */ jsx22(
+                    /* @__PURE__ */ jsxs18("div", { className: "min-w-0", children: [
+                      /* @__PURE__ */ jsx23(
                         "div",
                         {
                           className: "truncate text-sm font-semibold",
@@ -2811,7 +2836,7 @@ var EditorPageBrowser = ({
                           children: page.name
                         }
                       ),
-                      /* @__PURE__ */ jsx22(
+                      /* @__PURE__ */ jsx23(
                         "div",
                         {
                           className: "mt-1 truncate font-mono text-[10px] uppercase tracking-[0.22em]",
@@ -2819,7 +2844,7 @@ var EditorPageBrowser = ({
                           children: routeLabel
                         }
                       ),
-                      page.description ? /* @__PURE__ */ jsx22(
+                      page.description ? /* @__PURE__ */ jsx23(
                         "div",
                         {
                           className: "mt-2 text-xs leading-5",
@@ -2828,7 +2853,7 @@ var EditorPageBrowser = ({
                         }
                       ) : null
                     ] }),
-                    /* @__PURE__ */ jsx22(
+                    /* @__PURE__ */ jsx23(
                       "div",
                       {
                         className: "shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -2848,7 +2873,7 @@ var EditorPageBrowser = ({
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsx22(
+    /* @__PURE__ */ jsx23(
       Root,
       {
         open: dialogOpen,
@@ -2858,14 +2883,14 @@ var EditorPageBrowser = ({
             resetCreateForm();
           }
         },
-        children: /* @__PURE__ */ jsxs17(DialogContent, { "data-testid": "photon-page-browser-create-dialog", children: [
-          /* @__PURE__ */ jsxs17(DialogHeader, { children: [
-            /* @__PURE__ */ jsx22(DialogTitle, { children: "Create Page" }),
-            /* @__PURE__ */ jsx22(DialogDescription, { children: "Add a new static page to the live website and start editing it in the same builder surface." })
+        children: /* @__PURE__ */ jsxs18(DialogContent, { "data-testid": "photon-page-browser-create-dialog", children: [
+          /* @__PURE__ */ jsxs18(DialogHeader, { children: [
+            /* @__PURE__ */ jsx23(DialogTitle, { children: "Create Page" }),
+            /* @__PURE__ */ jsx23(DialogDescription, { children: "Add a new static page to the live website and start editing it in the same builder surface." })
           ] }),
-          /* @__PURE__ */ jsxs17("div", { className: "space-y-4", children: [
-            /* @__PURE__ */ jsxs17("label", { className: "block", children: [
-              /* @__PURE__ */ jsx22(
+          /* @__PURE__ */ jsxs18("div", { className: "space-y-4", children: [
+            /* @__PURE__ */ jsxs18("label", { className: "block", children: [
+              /* @__PURE__ */ jsx23(
                 "div",
                 {
                   className: "mb-2 text-[11px] uppercase tracking-[0.24em]",
@@ -2873,7 +2898,7 @@ var EditorPageBrowser = ({
                   children: "Page Name"
                 }
               ),
-              /* @__PURE__ */ jsx22(
+              /* @__PURE__ */ jsx23(
                 "input",
                 {
                   "data-testid": "photon-page-browser-create-name",
@@ -2889,8 +2914,8 @@ var EditorPageBrowser = ({
                 }
               )
             ] }),
-            /* @__PURE__ */ jsxs17("label", { className: "block", children: [
-              /* @__PURE__ */ jsx22(
+            /* @__PURE__ */ jsxs18("label", { className: "block", children: [
+              /* @__PURE__ */ jsx23(
                 "div",
                 {
                   className: "mb-2 text-[11px] uppercase tracking-[0.24em]",
@@ -2898,7 +2923,7 @@ var EditorPageBrowser = ({
                   children: "Route"
                 }
               ),
-              /* @__PURE__ */ jsx22(
+              /* @__PURE__ */ jsx23(
                 "input",
                 {
                   "data-testid": "photon-page-browser-create-route",
@@ -2914,8 +2939,8 @@ var EditorPageBrowser = ({
                 }
               )
             ] }),
-            canDuplicateCurrent ? /* @__PURE__ */ jsxs17("div", { className: "space-y-2", children: [
-              /* @__PURE__ */ jsx22(
+            canDuplicateCurrent ? /* @__PURE__ */ jsxs18("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx23(
                 "div",
                 {
                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -2923,8 +2948,8 @@ var EditorPageBrowser = ({
                   children: "Starting Point"
                 }
               ),
-              /* @__PURE__ */ jsxs17("div", { className: "grid gap-2 sm:grid-cols-2", children: [
-                /* @__PURE__ */ jsxs17(
+              /* @__PURE__ */ jsxs18("div", { className: "grid gap-2 sm:grid-cols-2", children: [
+                /* @__PURE__ */ jsxs18(
                   "button",
                   {
                     type: "button",
@@ -2942,12 +2967,12 @@ var EditorPageBrowser = ({
                       color: "var(--photon-builder-text-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx22("div", { className: "text-sm font-semibold", children: "Blank page" }),
-                      /* @__PURE__ */ jsx22("div", { className: "mt-1 text-xs leading-5", children: "Start from a clean canvas." })
+                      /* @__PURE__ */ jsx23("div", { className: "text-sm font-semibold", children: "Blank page" }),
+                      /* @__PURE__ */ jsx23("div", { className: "mt-1 text-xs leading-5", children: "Start from a clean canvas." })
                     ]
                   }
                 ),
-                /* @__PURE__ */ jsxs17(
+                /* @__PURE__ */ jsxs18(
                   "button",
                   {
                     type: "button",
@@ -2965,16 +2990,16 @@ var EditorPageBrowser = ({
                       color: "var(--photon-builder-text-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx22("div", { className: "text-sm font-semibold", children: "Duplicate current" }),
-                      /* @__PURE__ */ jsx22("div", { className: "mt-1 text-xs leading-5", children: "Copy the current page layout into the new route." })
+                      /* @__PURE__ */ jsx23("div", { className: "text-sm font-semibold", children: "Duplicate current" }),
+                      /* @__PURE__ */ jsx23("div", { className: "mt-1 text-xs leading-5", children: "Copy the current page layout into the new route." })
                     ]
                   }
                 )
               ] })
             ] }) : null
           ] }),
-          /* @__PURE__ */ jsxs17(DialogFooter, { children: [
-            /* @__PURE__ */ jsx22(
+          /* @__PURE__ */ jsxs18(DialogFooter, { children: [
+            /* @__PURE__ */ jsx23(
               "button",
               {
                 type: "button",
@@ -2988,7 +3013,7 @@ var EditorPageBrowser = ({
                 children: "Cancel"
               }
             ),
-            /* @__PURE__ */ jsx22(
+            /* @__PURE__ */ jsx23(
               "button",
               {
                 type: "button",
@@ -3043,9 +3068,9 @@ import { Check as Check2 } from "lucide-react";
 import {
   forwardRef as forwardRef3
 } from "react";
-import { jsx as jsx23, jsxs as jsxs18 } from "react/jsx-runtime";
+import { jsx as jsx24, jsxs as jsxs19 } from "react/jsx-runtime";
 var ContextMenuCheckboxItem = forwardRef3(({ className, children, checked, ...props }, ref) => {
-  return /* @__PURE__ */ jsxs18(
+  return /* @__PURE__ */ jsxs19(
     ContextMenuPrimitive.CheckboxItem,
     {
       ref,
@@ -3057,7 +3082,7 @@ var ContextMenuCheckboxItem = forwardRef3(({ className, children, checked, ...pr
       ),
       ...props,
       children: [
-        /* @__PURE__ */ jsx23("span", { className: "absolute left-3 inline-flex h-4 w-4 items-center justify-center", children: /* @__PURE__ */ jsx23(ContextMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx23(
+        /* @__PURE__ */ jsx24("span", { className: "absolute left-3 inline-flex h-4 w-4 items-center justify-center", children: /* @__PURE__ */ jsx24(ContextMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx24(
           Check2,
           {
             className: "h-4 w-4",
@@ -3076,9 +3101,9 @@ import * as ContextMenuPrimitive2 from "@radix-ui/react-context-menu";
 import {
   forwardRef as forwardRef4
 } from "react";
-import { jsx as jsx24 } from "react/jsx-runtime";
+import { jsx as jsx25 } from "react/jsx-runtime";
 var ContextMenuContent = forwardRef4(({ className, ...props }, ref) => {
-  return /* @__PURE__ */ jsx24(ContextMenuPrimitive2.Portal, { children: /* @__PURE__ */ jsx24(
+  return /* @__PURE__ */ jsx25(ContextMenuPrimitive2.Portal, { children: /* @__PURE__ */ jsx25(
     ContextMenuPrimitive2.Content,
     {
       ref,
@@ -3104,9 +3129,9 @@ import * as ContextMenuPrimitive3 from "@radix-ui/react-context-menu";
 import {
   forwardRef as forwardRef5
 } from "react";
-import { jsx as jsx25 } from "react/jsx-runtime";
+import { jsx as jsx26 } from "react/jsx-runtime";
 var ContextMenuItem = forwardRef5(({ className, inset, ...props }, ref) => {
-  return /* @__PURE__ */ jsx25(
+  return /* @__PURE__ */ jsx26(
     ContextMenuPrimitive3.Item,
     {
       ref,
@@ -3127,9 +3152,9 @@ import * as ContextMenuPrimitive4 from "@radix-ui/react-context-menu";
 import {
   forwardRef as forwardRef6
 } from "react";
-import { jsx as jsx26 } from "react/jsx-runtime";
+import { jsx as jsx27 } from "react/jsx-runtime";
 var ContextMenuSeparator = forwardRef6(({ className, ...props }, ref) => {
-  return /* @__PURE__ */ jsx26(
+  return /* @__PURE__ */ jsx27(
     ContextMenuPrimitive4.Separator,
     {
       ref,
@@ -3142,19 +3167,19 @@ var ContextMenuSeparator = forwardRef6(({ className, ...props }, ref) => {
 ContextMenuSeparator.displayName = ContextMenuPrimitive4.Separator.displayName;
 
 // src/studio/editor-dock/editor-reset-dialog.tsx
-import { jsx as jsx27, jsxs as jsxs19 } from "react/jsx-runtime";
+import { jsx as jsx28, jsxs as jsxs20 } from "react/jsx-runtime";
 var EditorResetDialog = ({
   open,
   onOpenChange,
   onConfirm
 }) => {
-  return /* @__PURE__ */ jsx27(Root, { open, onOpenChange, children: /* @__PURE__ */ jsxs19(DialogContent, { children: [
-    /* @__PURE__ */ jsxs19(DialogHeader, { children: [
-      /* @__PURE__ */ jsx27(DialogTitle, { children: "Discard local draft?" }),
-      /* @__PURE__ */ jsx27(DialogDescription, { children: "This will remove every unsaved local change and restore the last version synced with Laravel." })
+  return /* @__PURE__ */ jsx28(Root, { open, onOpenChange, children: /* @__PURE__ */ jsxs20(DialogContent, { children: [
+    /* @__PURE__ */ jsxs20(DialogHeader, { children: [
+      /* @__PURE__ */ jsx28(DialogTitle, { children: "Discard local draft?" }),
+      /* @__PURE__ */ jsx28(DialogDescription, { children: "This will remove every unsaved local change and restore the last version synced with Laravel." })
     ] }),
-    /* @__PURE__ */ jsxs19(DialogFooter, { children: [
-      /* @__PURE__ */ jsx27(
+    /* @__PURE__ */ jsxs20(DialogFooter, { children: [
+      /* @__PURE__ */ jsx28(
         "button",
         {
           type: "button",
@@ -3163,7 +3188,7 @@ var EditorResetDialog = ({
           children: "Cancel"
         }
       ),
-      /* @__PURE__ */ jsx27(
+      /* @__PURE__ */ jsx28(
         "button",
         {
           type: "button",
@@ -3212,7 +3237,7 @@ var getSaveButtonMeta = ({
 };
 
 // src/studio/editor-dock/editor-save-button.tsx
-import { Fragment as Fragment4, jsx as jsx28, jsxs as jsxs20 } from "react/jsx-runtime";
+import { Fragment as Fragment4, jsx as jsx29, jsxs as jsxs21 } from "react/jsx-runtime";
 var EditorSaveButton = ({
   activeMode,
   autosaveEnabled,
@@ -3232,9 +3257,9 @@ var EditorSaveButton = ({
     hasUnsavedChanges,
     saveState
   });
-  return /* @__PURE__ */ jsxs20(Fragment4, { children: [
-    /* @__PURE__ */ jsxs20(Root3, { children: [
-      /* @__PURE__ */ jsx28(Trigger2, { asChild: true, children: /* @__PURE__ */ jsxs20(
+  return /* @__PURE__ */ jsxs21(Fragment4, { children: [
+    /* @__PURE__ */ jsxs21(Root3, { children: [
+      /* @__PURE__ */ jsx29(Trigger2, { asChild: true, children: /* @__PURE__ */ jsxs21(
         "button",
         {
           type: "button",
@@ -3244,23 +3269,23 @@ var EditorSaveButton = ({
             meta.className
           ),
           children: [
-            saveState === "saving" ? /* @__PURE__ */ jsx28(LoaderCircle, { className: "h-4 w-4 animate-spin" }) : /* @__PURE__ */ jsx28(Save, { className: "h-4 w-4" }),
-            /* @__PURE__ */ jsx28(
+            saveState === "saving" ? /* @__PURE__ */ jsx29(LoaderCircle, { className: "h-4 w-4 animate-spin" }) : /* @__PURE__ */ jsx29(Save, { className: "h-4 w-4" }),
+            /* @__PURE__ */ jsx29(
               "span",
               {
                 className: clsx9("h-2.5 w-2.5 rounded-full", meta.dotClassName)
               }
             ),
-            /* @__PURE__ */ jsx28("span", { children: meta.label })
+            /* @__PURE__ */ jsx29("span", { children: meta.label })
           ]
         }
       ) }),
-      /* @__PURE__ */ jsxs20(ContextMenuContent, { children: [
-        /* @__PURE__ */ jsxs20(ContextMenuItem, { onSelect: onSave, children: [
-          /* @__PURE__ */ jsx28(Save, { className: "mr-3 h-4 w-4 text-[color:var(--photon-builder-text-soft)]" }),
+      /* @__PURE__ */ jsxs21(ContextMenuContent, { children: [
+        /* @__PURE__ */ jsxs21(ContextMenuItem, { onSelect: onSave, children: [
+          /* @__PURE__ */ jsx29(Save, { className: "mr-3 h-4 w-4 text-[color:var(--photon-builder-text-soft)]" }),
           "Save now"
         ] }),
-        /* @__PURE__ */ jsx28(
+        /* @__PURE__ */ jsx29(
           ContextMenuCheckboxItem,
           {
             checked: autosaveEnabled,
@@ -3268,7 +3293,7 @@ var EditorSaveButton = ({
             children: "Autosave"
           }
         ),
-        /* @__PURE__ */ jsxs20(
+        /* @__PURE__ */ jsxs21(
           ContextMenuItem,
           {
             disabled: !hasUnsavedChanges,
@@ -3276,19 +3301,19 @@ var EditorSaveButton = ({
               setResetDialogOpen(true);
             },
             children: [
-              /* @__PURE__ */ jsx28(History, { className: "mr-3 h-4 w-4 text-[color:var(--photon-builder-text-soft)]" }),
+              /* @__PURE__ */ jsx29(History, { className: "mr-3 h-4 w-4 text-[color:var(--photon-builder-text-soft)]" }),
               "Revert local draft"
             ]
           }
         ),
-        /* @__PURE__ */ jsx28(ContextMenuSeparator, {}),
-        activeMode === "preview" && collapsedBlockCount > 0 ? /* @__PURE__ */ jsxs20(ContextMenuItem, { onSelect: onPreviewCollapsedChange, children: [
-          /* @__PURE__ */ jsx28(ChevronRight, { className: "mr-3 h-4 w-4 rotate-90 text-[color:var(--photon-builder-text-soft)]" }),
+        /* @__PURE__ */ jsx29(ContextMenuSeparator, {}),
+        activeMode === "preview" && collapsedBlockCount > 0 ? /* @__PURE__ */ jsxs21(ContextMenuItem, { onSelect: onPreviewCollapsedChange, children: [
+          /* @__PURE__ */ jsx29(ChevronRight, { className: "mr-3 h-4 w-4 rotate-90 text-[color:var(--photon-builder-text-soft)]" }),
           showCollapsedInPreview ? "Show full layout" : "Show collapsed blocks"
         ] }) : null
       ] })
     ] }),
-    /* @__PURE__ */ jsx28(
+    /* @__PURE__ */ jsx29(
       EditorResetDialog,
       {
         open: resetDialogOpen,
@@ -3303,7 +3328,7 @@ var EditorSaveButton = ({
 };
 
 // src/studio/editor-dock/editor-dock.tsx
-import { Fragment as Fragment5, jsx as jsx29, jsxs as jsxs21 } from "react/jsx-runtime";
+import { Fragment as Fragment5, jsx as jsx30, jsxs as jsxs22 } from "react/jsx-runtime";
 var PHOTON_EDITOR_DOCK_FALLBACK_HEIGHT = 80;
 var EditorDock = ({
   activeMode,
@@ -3363,7 +3388,7 @@ var EditorDock = ({
     observer.observe(node);
     return () => observer.disconnect();
   }, [onHeightChange]);
-  return /* @__PURE__ */ jsx29(
+  return /* @__PURE__ */ jsx30(
     "header",
     {
       ref: headerRef,
@@ -3376,7 +3401,7 @@ var EditorDock = ({
         borderColor: "var(--photon-builder-border)",
         color: "var(--photon-builder-text)"
       },
-      children: /* @__PURE__ */ jsx29(
+      children: /* @__PURE__ */ jsx30(
         "div",
         {
           className: clsx10(
@@ -3384,7 +3409,7 @@ var EditorDock = ({
             compact ? "gap-2 py-2.5" : "gap-3 py-3"
           ),
           style: { maxWidth: "1720px" },
-          children: /* @__PURE__ */ jsxs21(
+          children: /* @__PURE__ */ jsxs22(
             "div",
             {
               className: clsx10(
@@ -3392,8 +3417,8 @@ var EditorDock = ({
                 canManage ? "xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center" : "lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
               ),
               children: [
-                /* @__PURE__ */ jsx29(EditorDockBrand, { title, compact }),
-                /* @__PURE__ */ jsx29(
+                /* @__PURE__ */ jsx30(EditorDockBrand, { title, compact }),
+                /* @__PURE__ */ jsx30(
                   "div",
                   {
                     className: clsx10(
@@ -3401,8 +3426,8 @@ var EditorDock = ({
                       "flex-wrap lg:flex-nowrap",
                       canManage ? "xl:justify-end" : "lg:justify-end"
                     ),
-                    children: canManage ? /* @__PURE__ */ jsxs21(Fragment5, { children: [
-                      /* @__PURE__ */ jsx29(
+                    children: canManage ? /* @__PURE__ */ jsxs22(Fragment5, { children: [
+                      /* @__PURE__ */ jsx30(
                         EditorPageBrowser,
                         {
                           activeMode,
@@ -3412,7 +3437,7 @@ var EditorDock = ({
                           onCreatePage
                         }
                       ),
-                      /* @__PURE__ */ jsx29(
+                      /* @__PURE__ */ jsx30(
                         EditorLocaleSelect,
                         {
                           label: translate(
@@ -3424,7 +3449,7 @@ var EditorDock = ({
                           onChange: onContentLocaleChange
                         }
                       ),
-                      showInterfaceLocaleControl ? /* @__PURE__ */ jsx29(
+                      showInterfaceLocaleControl ? /* @__PURE__ */ jsx30(
                         EditorLocaleSelect,
                         {
                           label: translate(
@@ -3436,7 +3461,7 @@ var EditorDock = ({
                           onChange: onInterfaceLocaleChange
                         }
                       ) : null,
-                      workspaceControl ? /* @__PURE__ */ jsxs21(
+                      workspaceControl ? /* @__PURE__ */ jsxs22(
                         "button",
                         {
                           type: "button",
@@ -3446,13 +3471,13 @@ var EditorDock = ({
                           "aria-label": workspaceControl.isOpen ? "Hide workspace panel" : "Show workspace panel",
                           "data-testid": "photon-workspace-toggle",
                           children: [
-                            /* @__PURE__ */ jsx29(WorkspaceIcon, { className: "h-4 w-4 text-[color:var(--photon-builder-accent)]" }),
-                            /* @__PURE__ */ jsx29("span", { children: "Workspace" })
+                            /* @__PURE__ */ jsx30(WorkspaceIcon, { className: "h-4 w-4 text-[color:var(--photon-builder-accent)]" }),
+                            /* @__PURE__ */ jsx30("span", { children: "Workspace" })
                           ]
                         }
                       ) : null,
-                      /* @__PURE__ */ jsx29(EditorModeSelect, { value: activeMode, onChange: onModeChange }),
-                      /* @__PURE__ */ jsx29(
+                      /* @__PURE__ */ jsx30(EditorModeSelect, { value: activeMode, onChange: onModeChange }),
+                      /* @__PURE__ */ jsx30(
                         EditorSaveButton,
                         {
                           activeMode,
@@ -3467,12 +3492,12 @@ var EditorDock = ({
                           onSave
                         }
                       ),
-                      /* @__PURE__ */ jsxs21(ToolbarButton, { onClick: onLogout, children: [
-                        /* @__PURE__ */ jsx29(LogOut, { className: "h-4 w-4" }),
+                      /* @__PURE__ */ jsxs22(ToolbarButton, { onClick: onLogout, children: [
+                        /* @__PURE__ */ jsx30(LogOut, { className: "h-4 w-4" }),
                         translate("photon.auth.logOut", "Log out")
                       ] })
-                    ] }) : /* @__PURE__ */ jsxs21(ToolbarButton, { onClick: onAuthOpen, children: [
-                      /* @__PURE__ */ jsx29(LogIn, { className: "h-4 w-4" }),
+                    ] }) : /* @__PURE__ */ jsxs22(ToolbarButton, { onClick: onAuthOpen, children: [
+                      /* @__PURE__ */ jsx30(LogIn, { className: "h-4 w-4" }),
                       translate("photon.auth.signIn", "Admin sign in")
                     ] })
                   }
@@ -3488,12 +3513,12 @@ var EditorDock = ({
 
 // src/studio/palette-panel/palette-overlay-card.tsx
 import { Boxes } from "lucide-react";
-import { jsx as jsx30, jsxs as jsxs22 } from "react/jsx-runtime";
+import { jsx as jsx31, jsxs as jsxs23 } from "react/jsx-runtime";
 var PaletteOverlayCard = ({
   definition
 }) => {
   const Icon = STUDIO_ICONS[definition.icon] ?? Boxes;
-  return /* @__PURE__ */ jsx30(
+  return /* @__PURE__ */ jsx31(
     "div",
     {
       className: "w-[13.5rem] min-w-[13.5rem] max-w-[13.5rem] overflow-hidden rounded-[30px] border px-3.5 py-3.5 text-left backdrop-blur-xl",
@@ -3503,8 +3528,8 @@ var PaletteOverlayCard = ({
         color: "var(--photon-builder-text)",
         boxShadow: "var(--photon-builder-shadow)"
       },
-      children: /* @__PURE__ */ jsxs22("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ jsx30(
+      children: /* @__PURE__ */ jsxs23("div", { className: "flex items-center gap-3", children: [
+        /* @__PURE__ */ jsx31(
           "div",
           {
             className: "flex h-11 w-11 shrink-0 items-center justify-center rounded-[20px] border",
@@ -3513,11 +3538,11 @@ var PaletteOverlayCard = ({
               background: "var(--photon-builder-field)",
               color: "var(--photon-builder-accent)"
             },
-            children: /* @__PURE__ */ jsx30(Icon, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx31(Icon, { className: "h-4 w-4" })
           }
         ),
-        /* @__PURE__ */ jsxs22("div", { className: "min-w-0 flex-1", children: [
-          /* @__PURE__ */ jsx30(
+        /* @__PURE__ */ jsxs23("div", { className: "min-w-0 flex-1", children: [
+          /* @__PURE__ */ jsx31(
             "div",
             {
               className: "text-[10px] uppercase tracking-[0.26em]",
@@ -3525,8 +3550,8 @@ var PaletteOverlayCard = ({
               children: definition.category
             }
           ),
-          /* @__PURE__ */ jsx30("div", { className: "mt-1 truncate text-[1.05rem] font-semibold leading-6", children: definition.label }),
-          /* @__PURE__ */ jsx30(
+          /* @__PURE__ */ jsx31("div", { className: "mt-1 truncate text-[1.05rem] font-semibold leading-6", children: definition.label }),
+          /* @__PURE__ */ jsx31(
             "div",
             {
               className: "mt-2 text-[10px] uppercase tracking-[0.26em]",
@@ -3555,7 +3580,7 @@ import { useDraggable as useDraggable2 } from "@dnd-kit/core";
 import clsx11 from "clsx";
 import { Boxes as Boxes2 } from "lucide-react";
 import { useEffect as useEffect9, useState as useState12 } from "react";
-import { jsx as jsx31, jsxs as jsxs23 } from "react/jsx-runtime";
+import { jsx as jsx32, jsxs as jsxs24 } from "react/jsx-runtime";
 var PaletteCard = ({
   definition,
   isSelected,
@@ -3577,7 +3602,7 @@ var PaletteCard = ({
   useEffect9(() => {
     setHasMounted(true);
   }, []);
-  return /* @__PURE__ */ jsxs23(
+  return /* @__PURE__ */ jsxs24(
     "button",
     {
       type: "button",
@@ -3598,7 +3623,7 @@ var PaletteCard = ({
         boxShadow: "var(--photon-builder-card-shadow)"
       },
       children: [
-        /* @__PURE__ */ jsx31(
+        /* @__PURE__ */ jsx32(
           "div",
           {
             className: "flex h-12 w-12 shrink-0 items-center justify-center rounded-[20px] border",
@@ -3608,10 +3633,10 @@ var PaletteCard = ({
               color: isSelected ? "var(--photon-builder-accent)" : "var(--photon-builder-text-soft)",
               boxShadow: "var(--photon-builder-card-shadow)"
             },
-            children: /* @__PURE__ */ jsx31(Icon, { className: "h-4 w-4" })
+            children: /* @__PURE__ */ jsx32(Icon, { className: "h-4 w-4" })
           }
         ),
-        /* @__PURE__ */ jsx31("div", { className: "min-w-0 flex-1", children: /* @__PURE__ */ jsx31(
+        /* @__PURE__ */ jsx32("div", { className: "min-w-0 flex-1", children: /* @__PURE__ */ jsx32(
           "div",
           {
             className: "truncate text-[15px] font-semibold",
@@ -3625,7 +3650,7 @@ var PaletteCard = ({
 };
 
 // src/studio/palette-panel/palette-panel.tsx
-import { jsx as jsx32, jsxs as jsxs24 } from "react/jsx-runtime";
+import { jsx as jsx33, jsxs as jsxs25 } from "react/jsx-runtime";
 var PalettePanelComponent = ({
   search,
   onSearchChange,
@@ -3682,15 +3707,15 @@ var PalettePanelComponent = ({
     }
     return left.value.localeCompare(right.value);
   });
-  return /* @__PURE__ */ jsxs24("div", { className: "flex h-full flex-col", children: [
-    /* @__PURE__ */ jsxs24(
+  return /* @__PURE__ */ jsxs25("div", { className: "flex h-full flex-col", children: [
+    /* @__PURE__ */ jsxs25(
       "div",
       {
         className: "border-b px-5 py-5",
         style: { borderColor: "var(--photon-builder-border)" },
         children: [
-          /* @__PURE__ */ jsxs24("div", { className: "flex items-center justify-between gap-3", children: [
-            /* @__PURE__ */ jsx32(
+          /* @__PURE__ */ jsxs25("div", { className: "flex items-center justify-between gap-3", children: [
+            /* @__PURE__ */ jsx33(
               "div",
               {
                 className: "text-[11px] uppercase tracking-[0.28em]",
@@ -3698,7 +3723,7 @@ var PalettePanelComponent = ({
                 children: translate("photon.palette.title", "Palette")
               }
             ),
-            onCollapse ? /* @__PURE__ */ jsx32(
+            onCollapse ? /* @__PURE__ */ jsx33(
               "button",
               {
                 type: "button",
@@ -3709,19 +3734,19 @@ var PalettePanelComponent = ({
                   background: "var(--photon-builder-panel-muted)",
                   color: "var(--photon-builder-text-soft)"
                 },
-                children: /* @__PURE__ */ jsx32(ChevronLeft, { className: "h-4 w-4" })
+                children: /* @__PURE__ */ jsx33(ChevronLeft, { className: "h-4 w-4" })
               }
             ) : null
           ] }),
-          /* @__PURE__ */ jsxs24("div", { className: "relative mt-4", children: [
-            /* @__PURE__ */ jsx32(
+          /* @__PURE__ */ jsxs25("div", { className: "relative mt-4", children: [
+            /* @__PURE__ */ jsx33(
               Search,
               {
                 className: "pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2",
                 style: { color: "var(--photon-builder-text-soft)" }
               }
             ),
-            /* @__PURE__ */ jsx32(
+            /* @__PURE__ */ jsx33(
               "input",
               {
                 value: search,
@@ -3738,8 +3763,8 @@ var PalettePanelComponent = ({
                 }
               }
             ),
-            /* @__PURE__ */ jsx32("div", { className: "absolute right-2 top-1/2 -translate-y-1/2", children: /* @__PURE__ */ jsxs24(Root2, { modal: false, children: [
-              /* @__PURE__ */ jsx32(Trigger, { asChild: true, children: /* @__PURE__ */ jsx32(
+            /* @__PURE__ */ jsx33("div", { className: "absolute right-2 top-1/2 -translate-y-1/2", children: /* @__PURE__ */ jsxs25(Root2, { modal: false, children: [
+              /* @__PURE__ */ jsx33(Trigger, { asChild: true, children: /* @__PURE__ */ jsx33(
                 "button",
                 {
                   type: "button",
@@ -3750,17 +3775,17 @@ var PalettePanelComponent = ({
                     background: paletteFamily !== "all" || palettePackage !== "all" ? "var(--photon-builder-card-selected)" : "var(--photon-builder-panel-muted)",
                     color: "var(--photon-builder-text-soft)"
                   },
-                  children: /* @__PURE__ */ jsx32(SlidersHorizontal, { className: "h-4 w-4" })
+                  children: /* @__PURE__ */ jsx33(SlidersHorizontal, { className: "h-4 w-4" })
                 }
               ) }),
-              /* @__PURE__ */ jsxs24(
+              /* @__PURE__ */ jsxs25(
                 DropdownMenuContent,
                 {
                   align: "end",
                   className: "w-[20rem] space-y-4 p-3",
                   children: [
-                    /* @__PURE__ */ jsxs24("div", { className: "space-y-2", children: [
-                      /* @__PURE__ */ jsx32(
+                    /* @__PURE__ */ jsxs25("div", { className: "space-y-2", children: [
+                      /* @__PURE__ */ jsx33(
                         "div",
                         {
                           className: "text-[11px] font-semibold uppercase tracking-[0.24em]",
@@ -3768,8 +3793,8 @@ var PalettePanelComponent = ({
                           children: "Family"
                         }
                       ),
-                      /* @__PURE__ */ jsxs24("div", { className: "flex flex-wrap gap-2", children: [
-                        /* @__PURE__ */ jsx32(
+                      /* @__PURE__ */ jsxs25("div", { className: "flex flex-wrap gap-2", children: [
+                        /* @__PURE__ */ jsx33(
                           "button",
                           {
                             type: "button",
@@ -3783,7 +3808,7 @@ var PalettePanelComponent = ({
                             children: "All"
                           }
                         ),
-                        familyOptions.map((family) => /* @__PURE__ */ jsx32(
+                        familyOptions.map((family) => /* @__PURE__ */ jsx33(
                           "button",
                           {
                             type: "button",
@@ -3802,8 +3827,8 @@ var PalettePanelComponent = ({
                         ))
                       ] })
                     ] }),
-                    /* @__PURE__ */ jsxs24("div", { className: "space-y-2", children: [
-                      /* @__PURE__ */ jsx32(
+                    /* @__PURE__ */ jsxs25("div", { className: "space-y-2", children: [
+                      /* @__PURE__ */ jsx33(
                         "div",
                         {
                           className: "text-[11px] font-semibold uppercase tracking-[0.24em]",
@@ -3811,8 +3836,8 @@ var PalettePanelComponent = ({
                           children: "Package"
                         }
                       ),
-                      /* @__PURE__ */ jsxs24("div", { className: "flex flex-wrap gap-2", children: [
-                        /* @__PURE__ */ jsx32(
+                      /* @__PURE__ */ jsxs25("div", { className: "flex flex-wrap gap-2", children: [
+                        /* @__PURE__ */ jsx33(
                           "button",
                           {
                             type: "button",
@@ -3826,7 +3851,7 @@ var PalettePanelComponent = ({
                             children: "All"
                           }
                         ),
-                        packageOptions.map((pkg) => /* @__PURE__ */ jsx32(
+                        packageOptions.map((pkg) => /* @__PURE__ */ jsx33(
                           "button",
                           {
                             type: "button",
@@ -3853,8 +3878,8 @@ var PalettePanelComponent = ({
         ]
       }
     ),
-    /* @__PURE__ */ jsx32("div", { className: "flex-1 overflow-y-auto px-4 py-4", children: /* @__PURE__ */ jsx32("div", { className: "space-y-4", children: paletteGroups.map((familyGroup) => /* @__PURE__ */ jsxs24("section", { className: "space-y-3", children: [
-      /* @__PURE__ */ jsxs24(
+    /* @__PURE__ */ jsx33("div", { className: "flex-1 overflow-y-auto px-4 py-4", children: /* @__PURE__ */ jsx33("div", { className: "space-y-4", children: paletteGroups.map((familyGroup) => /* @__PURE__ */ jsxs25("section", { className: "space-y-3", children: [
+      /* @__PURE__ */ jsxs25(
         "button",
         {
           type: "button",
@@ -3866,8 +3891,8 @@ var PalettePanelComponent = ({
             background: "var(--photon-builder-panel-muted)"
           },
           children: [
-            /* @__PURE__ */ jsxs24("div", { className: "flex items-center gap-3", children: [
-              /* @__PURE__ */ jsx32(
+            /* @__PURE__ */ jsxs25("div", { className: "flex items-center gap-3", children: [
+              /* @__PURE__ */ jsx33(
                 "div",
                 {
                   className: "rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.3em]",
@@ -3879,20 +3904,20 @@ var PalettePanelComponent = ({
                   children: familyGroup.family
                 }
               ),
-              /* @__PURE__ */ jsx32("span", { className: "font-mono text-[11px] uppercase tracking-[0.24em] text-[color:var(--photon-builder-text-ghost)]", children: familyGroup.groups.reduce(
+              /* @__PURE__ */ jsx33("span", { className: "font-mono text-[11px] uppercase tracking-[0.24em] text-[color:var(--photon-builder-text-ghost)]", children: familyGroup.groups.reduce(
                 (total, group) => total + group.definitions.length,
                 0
               ) })
             ] }),
-            /* @__PURE__ */ jsx32("div", { style: { color: "var(--photon-builder-text-ghost)" }, children: collapsedFamilies.includes(familyGroup.family) ? /* @__PURE__ */ jsx32(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx32(ChevronDown6, { className: "h-4 w-4" }) })
+            /* @__PURE__ */ jsx33("div", { style: { color: "var(--photon-builder-text-ghost)" }, children: collapsedFamilies.includes(familyGroup.family) ? /* @__PURE__ */ jsx33(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx33(ChevronDown6, { className: "h-4 w-4" }) })
           ]
         }
       ),
       collapsedFamilies.includes(familyGroup.family) ? null : familyGroup.groups.map(({ group, definitions }) => {
         const key = `${familyGroup.family}:${group}`;
         const collapsed = collapsedGroups.includes(key);
-        return /* @__PURE__ */ jsxs24("section", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxs24(
+        return /* @__PURE__ */ jsxs25("section", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxs25(
             "button",
             {
               type: "button",
@@ -3900,8 +3925,8 @@ var PalettePanelComponent = ({
               className: "flex w-full cursor-pointer items-center justify-between gap-3 rounded-[18px] px-2 py-1.5 text-left transition",
               style: { color: "var(--photon-builder-text)" },
               children: [
-                /* @__PURE__ */ jsxs24("div", { className: "flex items-center gap-3", children: [
-                  /* @__PURE__ */ jsx32(
+                /* @__PURE__ */ jsxs25("div", { className: "flex items-center gap-3", children: [
+                  /* @__PURE__ */ jsx33(
                     "div",
                     {
                       className: "text-[11px] uppercase tracking-[0.28em]",
@@ -3912,19 +3937,19 @@ var PalettePanelComponent = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx32("span", { className: "font-mono text-[10px] uppercase tracking-[0.24em]", children: definitions.length })
+                  /* @__PURE__ */ jsx33("span", { className: "font-mono text-[10px] uppercase tracking-[0.24em]", children: definitions.length })
                 ] }),
-                /* @__PURE__ */ jsx32(
+                /* @__PURE__ */ jsx33(
                   "div",
                   {
                     style: { color: "var(--photon-builder-text-ghost)" },
-                    children: collapsed ? /* @__PURE__ */ jsx32(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx32(ChevronDown6, { className: "h-4 w-4" })
+                    children: collapsed ? /* @__PURE__ */ jsx33(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx33(ChevronDown6, { className: "h-4 w-4" })
                   }
                 )
               ]
             }
           ),
-          collapsed ? null : /* @__PURE__ */ jsx32("div", { className: "space-y-2", children: definitions.map((definition) => /* @__PURE__ */ jsx32(
+          collapsed ? null : /* @__PURE__ */ jsx33("div", { className: "space-y-2", children: definitions.map((definition) => /* @__PURE__ */ jsx33(
             PaletteCard,
             {
               definition,
@@ -5275,12 +5300,12 @@ import { ChevronDown as ChevronDown7, ChevronUp as ChevronUp2, History as Histor
 
 // src/studio/canvas/canvas-surface-mode-toggle.tsx
 import clsx12 from "clsx";
-import { jsx as jsx33 } from "react/jsx-runtime";
+import { jsx as jsx34 } from "react/jsx-runtime";
 var CanvasSurfaceModeToggle = ({
   value,
   onChange
 }) => {
-  return /* @__PURE__ */ jsx33(
+  return /* @__PURE__ */ jsx34(
     "div",
     {
       className: "pointer-events-auto inline-flex items-center gap-1 rounded-[14px] border p-1",
@@ -5298,7 +5323,7 @@ var CanvasSurfaceModeToggle = ({
           key: "settings",
           label: "Settings"
         }
-      ].map((option) => /* @__PURE__ */ jsx33(
+      ].map((option) => /* @__PURE__ */ jsx34(
         "button",
         {
           type: "button",
@@ -5320,14 +5345,14 @@ var CanvasSurfaceModeToggle = ({
 };
 
 // src/studio/canvas/canvas-top-toolbar.tsx
-import { jsx as jsx34, jsxs as jsxs25 } from "react/jsx-runtime";
+import { jsx as jsx35, jsxs as jsxs26 } from "react/jsx-runtime";
 var CanvasTopToolbarButton = ({
   label,
   onClick,
   disabled = false,
   children
 }) => {
-  return /* @__PURE__ */ jsxs25(
+  return /* @__PURE__ */ jsxs26(
     "button",
     {
       type: "button",
@@ -5343,7 +5368,7 @@ var CanvasTopToolbarButton = ({
       },
       children: [
         children,
-        /* @__PURE__ */ jsx34(
+        /* @__PURE__ */ jsx35(
           "span",
           {
             className: "pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md border px-2 py-1 text-[10px] font-semibold opacity-0 transition duration-150 group-hover:-translate-y-0.5 group-hover:opacity-100",
@@ -5373,7 +5398,7 @@ var CanvasTopToolbar = ({
   onExpandAll
 }) => {
   const { translate } = usePhotonI18n();
-  return /* @__PURE__ */ jsx34(
+  return /* @__PURE__ */ jsx35(
     "div",
     {
       className: clsx13(
@@ -5386,7 +5411,7 @@ var CanvasTopToolbar = ({
         right: rightOffset
       },
       "data-testid": "photon-canvas-toolbar",
-      children: /* @__PURE__ */ jsx34(
+      children: /* @__PURE__ */ jsx35(
         "div",
         {
           className: "border-b backdrop-blur-xl",
@@ -5395,15 +5420,15 @@ var CanvasTopToolbar = ({
             background: "linear-gradient(180deg, var(--photon-builder-panel-solid), var(--photon-builder-panel))",
             boxShadow: "var(--photon-builder-shadow)"
           },
-          children: /* @__PURE__ */ jsxs25("div", { className: "flex h-10 items-center justify-between gap-3 px-4 sm:px-6 lg:px-8", children: [
-            /* @__PURE__ */ jsx34(
+          children: /* @__PURE__ */ jsxs26("div", { className: "flex h-10 items-center justify-between gap-3 px-4 sm:px-6 lg:px-8", children: [
+            /* @__PURE__ */ jsx35(
               CanvasSurfaceModeToggle,
               {
                 value: surfaceMode,
                 onChange: onSurfaceModeChange
               }
             ),
-            /* @__PURE__ */ jsxs25(
+            /* @__PURE__ */ jsxs26(
               "div",
               {
                 className: clsx13(
@@ -5416,7 +5441,7 @@ var CanvasTopToolbar = ({
                   boxShadow: "var(--photon-builder-shadow)"
                 },
                 children: [
-                  /* @__PURE__ */ jsx34(
+                  /* @__PURE__ */ jsx35(
                     CanvasTopToolbarButton,
                     {
                       label: translate(
@@ -5425,10 +5450,10 @@ var CanvasTopToolbar = ({
                       ),
                       onClick: onReset,
                       disabled: !canReset || surfaceMode !== "canvas",
-                      children: /* @__PURE__ */ jsx34(History2, { className: clsx13("h-[13px] w-[13px]") })
+                      children: /* @__PURE__ */ jsx35(History2, { className: clsx13("h-[13px] w-[13px]") })
                     }
                   ),
-                  /* @__PURE__ */ jsx34(
+                  /* @__PURE__ */ jsx35(
                     CanvasTopToolbarButton,
                     {
                       label: translate(
@@ -5437,10 +5462,10 @@ var CanvasTopToolbar = ({
                       ),
                       onClick: onCollapseAll,
                       disabled: surfaceMode !== "canvas",
-                      children: /* @__PURE__ */ jsx34(ChevronDown7, { className: "h-[13px] w-[13px]" })
+                      children: /* @__PURE__ */ jsx35(ChevronDown7, { className: "h-[13px] w-[13px]" })
                     }
                   ),
-                  /* @__PURE__ */ jsx34(
+                  /* @__PURE__ */ jsx35(
                     CanvasTopToolbarButton,
                     {
                       label: translate(
@@ -5449,7 +5474,7 @@ var CanvasTopToolbar = ({
                       ),
                       onClick: onExpandAll,
                       disabled: surfaceMode !== "canvas",
-                      children: /* @__PURE__ */ jsx34(ChevronUp2, { className: "h-[13px] w-[13px]" })
+                      children: /* @__PURE__ */ jsx35(ChevronUp2, { className: "h-[13px] w-[13px]" })
                     }
                   )
                 ]
@@ -5465,7 +5490,7 @@ var CanvasTopToolbar = ({
 // src/studio/page-settings-surface/page-settings-surface.tsx
 import clsx14 from "clsx";
 import { useEffect as useEffect13, useMemo as useMemo4, useState as useState17 } from "react";
-import { Fragment as Fragment6, jsx as jsx35, jsxs as jsxs26 } from "react/jsx-runtime";
+import { Fragment as Fragment6, jsx as jsx36, jsxs as jsxs27 } from "react/jsx-runtime";
 var scopeOrder = [
   "page",
   "template",
@@ -5539,8 +5564,8 @@ var SettingsCard = ({
   title,
   description,
   children
-}) => /* @__PURE__ */ jsxs26("section", { className: "rounded-[28px] border px-5 py-5", style: surfaceCardStyle, children: [
-  /* @__PURE__ */ jsx35(
+}) => /* @__PURE__ */ jsxs27("section", { className: "rounded-[28px] border px-5 py-5", style: surfaceCardStyle, children: [
+  /* @__PURE__ */ jsx36(
     "div",
     {
       className: "text-[11px] uppercase tracking-[0.28em]",
@@ -5548,7 +5573,7 @@ var SettingsCard = ({
       children: eyebrow
     }
   ),
-  /* @__PURE__ */ jsx35(
+  /* @__PURE__ */ jsx36(
     "div",
     {
       className: "mt-4 text-2xl font-semibold tracking-[-0.04em]",
@@ -5556,7 +5581,7 @@ var SettingsCard = ({
       children: title
     }
   ),
-  description ? /* @__PURE__ */ jsx35(
+  description ? /* @__PURE__ */ jsx36(
     "div",
     {
       className: "mt-3 text-sm leading-7",
@@ -5564,7 +5589,7 @@ var SettingsCard = ({
       children: description
     }
   ) : null,
-  children ? /* @__PURE__ */ jsx35("div", { className: "mt-5", children }) : null
+  children ? /* @__PURE__ */ jsx36("div", { className: "mt-5", children }) : null
 ] });
 var PageSettingsSurface = ({
   currentPage,
@@ -5645,15 +5670,15 @@ var PageSettingsSurface = ({
     }
     const scopeSettings2 = typeof site.settings[panel.key] === "object" && site.settings[panel.key] !== null ? site.settings[panel.key] : {};
     const PanelComponent = panel.component;
-    return /* @__PURE__ */ jsxs26(
+    return /* @__PURE__ */ jsxs27(
       "section",
       {
         className: "rounded-[28px] border px-5 py-5",
         style: surfaceCardStyle,
         "data-testid": `photon-site-settings-panel-${panel.key}${viewMode ? `-${viewMode}` : ""}`,
         children: [
-          /* @__PURE__ */ jsxs26("div", { className: "mb-4", children: [
-            /* @__PURE__ */ jsx35(
+          /* @__PURE__ */ jsxs27("div", { className: "mb-4", children: [
+            /* @__PURE__ */ jsx36(
               "div",
               {
                 className: "text-[11px] uppercase tracking-[0.28em]",
@@ -5661,7 +5686,7 @@ var PageSettingsSurface = ({
                 children: panel.label
               }
             ),
-            panel.description ? /* @__PURE__ */ jsx35(
+            panel.description ? /* @__PURE__ */ jsx36(
               "div",
               {
                 className: "mt-2 text-sm leading-6",
@@ -5670,7 +5695,7 @@ var PageSettingsSurface = ({
               }
             ) : null
           ] }),
-          /* @__PURE__ */ jsx35(
+          /* @__PURE__ */ jsx36(
             PanelComponent,
             {
               currentPage,
@@ -5688,12 +5713,12 @@ var PageSettingsSurface = ({
       `${panel.key}:${viewMode ?? "default"}`
     );
   };
-  return /* @__PURE__ */ jsx35(
+  return /* @__PURE__ */ jsx36(
     "section",
     {
       className: "mx-auto w-full max-w-[1240px] px-1 pb-10",
       "data-testid": "photon-page-settings-surface",
-      children: /* @__PURE__ */ jsx35(
+      children: /* @__PURE__ */ jsx36(
         "div",
         {
           className: "rounded-[34px] border p-5 sm:p-6",
@@ -5704,10 +5729,10 @@ var PageSettingsSurface = ({
             color: "var(--photon-builder-text)"
           },
           "data-testid": "photon-builder-settings-shell",
-          children: /* @__PURE__ */ jsxs26("div", { className: "flex flex-col gap-6", children: [
-            /* @__PURE__ */ jsxs26("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
-              /* @__PURE__ */ jsxs26("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx35(
+          children: /* @__PURE__ */ jsxs27("div", { className: "flex flex-col gap-6", children: [
+            /* @__PURE__ */ jsxs27("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
+              /* @__PURE__ */ jsxs27("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx36(
                   "div",
                   {
                     className: "text-[11px] uppercase tracking-[0.3em]",
@@ -5715,7 +5740,7 @@ var PageSettingsSurface = ({
                     children: "Settings mode"
                   }
                 ),
-                /* @__PURE__ */ jsx35(
+                /* @__PURE__ */ jsx36(
                   "div",
                   {
                     className: "mt-3 text-2xl font-semibold tracking-[-0.04em] sm:text-3xl",
@@ -5723,7 +5748,7 @@ var PageSettingsSurface = ({
                     children: "Website settings"
                   }
                 ),
-                /* @__PURE__ */ jsx35(
+                /* @__PURE__ */ jsx36(
                   "div",
                   {
                     className: "mt-2 max-w-3xl text-sm leading-7",
@@ -5732,7 +5757,7 @@ var PageSettingsSurface = ({
                   }
                 )
               ] }),
-              /* @__PURE__ */ jsx35(
+              /* @__PURE__ */ jsx36(
                 "div",
                 {
                   className: "inline-flex w-full max-w-full flex-wrap rounded-full border p-1 sm:w-auto",
@@ -5751,7 +5776,7 @@ var PageSettingsSurface = ({
                       label: "Site",
                       disabled: false
                     }
-                  ].map((tab) => /* @__PURE__ */ jsx35(
+                  ].map((tab) => /* @__PURE__ */ jsx36(
                     "button",
                     {
                       type: "button",
@@ -5772,8 +5797,8 @@ var PageSettingsSurface = ({
                 }
               )
             ] }),
-            activeTab === "page" && availableScopes.length > 0 ? /* @__PURE__ */ jsxs26(Fragment6, { children: [
-              /* @__PURE__ */ jsx35(
+            activeTab === "page" && availableScopes.length > 0 ? /* @__PURE__ */ jsxs27(Fragment6, { children: [
+              /* @__PURE__ */ jsx36(
                 "div",
                 {
                   className: "inline-flex w-full max-w-full flex-wrap rounded-full border p-1 sm:w-auto",
@@ -5781,7 +5806,7 @@ var PageSettingsSurface = ({
                     borderColor: "var(--photon-builder-border)",
                     background: "var(--photon-builder-field)"
                   },
-                  children: availableScopes.map((scope) => /* @__PURE__ */ jsx35(
+                  children: availableScopes.map((scope) => /* @__PURE__ */ jsx36(
                     "button",
                     {
                       type: "button",
@@ -5800,14 +5825,14 @@ var PageSettingsSurface = ({
                   ))
                 }
               ),
-              /* @__PURE__ */ jsx35(
+              /* @__PURE__ */ jsx36(
                 SettingsCard,
                 {
                   eyebrow: scopeMeta[activeScope].eyebrow,
                   title: scopeTitle,
                   description: scopeMeta[activeScope].description,
-                  children: /* @__PURE__ */ jsxs26("div", { className: "flex flex-wrap items-center gap-2", children: [
-                    /* @__PURE__ */ jsx35(
+                  children: /* @__PURE__ */ jsxs27("div", { className: "flex flex-wrap items-center gap-2", children: [
+                    /* @__PURE__ */ jsx36(
                       "div",
                       {
                         className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -5815,7 +5840,7 @@ var PageSettingsSurface = ({
                         children: scopeMeta[activeScope].label
                       }
                     ),
-                    primaryRoute ? /* @__PURE__ */ jsx35(
+                    primaryRoute ? /* @__PURE__ */ jsx36(
                       "div",
                       {
                         className: "rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -5823,7 +5848,7 @@ var PageSettingsSurface = ({
                         children: primaryRoute
                       }
                     ) : null,
-                    activeScope === "template" && currentPage?.isDynamic ? /* @__PURE__ */ jsx35(
+                    activeScope === "template" && currentPage?.isDynamic ? /* @__PURE__ */ jsx36(
                       "div",
                       {
                         className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -5834,13 +5859,13 @@ var PageSettingsSurface = ({
                   ] })
                 }
               ),
-              /* @__PURE__ */ jsxs26(
+              /* @__PURE__ */ jsxs27(
                 "section",
                 {
                   className: "rounded-[28px] border px-5 py-5",
                   style: surfaceCardStyle,
                   children: [
-                    /* @__PURE__ */ jsx35(
+                    /* @__PURE__ */ jsx36(
                       "div",
                       {
                         className: "mb-4 text-[11px] uppercase tracking-[0.28em]",
@@ -5848,7 +5873,7 @@ var PageSettingsSurface = ({
                         children: "Basics"
                       }
                     ),
-                    activeScope === "page" ? /* @__PURE__ */ jsx35(
+                    activeScope === "page" ? /* @__PURE__ */ jsx36(
                       PhotonFieldEditorList,
                       {
                         fields: staticPageFields,
@@ -5858,8 +5883,8 @@ var PageSettingsSurface = ({
                         onFocus: (path) => onPageSettingFocus(`${activeScope}.${path}`)
                       }
                     ) : null,
-                    activeScope === "template" ? /* @__PURE__ */ jsxs26("div", { className: "space-y-4", children: [
-                      /* @__PURE__ */ jsx35(
+                    activeScope === "template" ? /* @__PURE__ */ jsxs27("div", { className: "space-y-4", children: [
+                      /* @__PURE__ */ jsx36(
                         "div",
                         {
                           className: "rounded-2xl border px-4 py-3 text-sm leading-6",
@@ -5867,14 +5892,14 @@ var PageSettingsSurface = ({
                           children: "Template structure stays shared here. The current route below is the live record you are previewing while editing that shared template."
                         }
                       ),
-                      /* @__PURE__ */ jsxs26("div", { className: "grid gap-3 md:grid-cols-2", children: [
-                        /* @__PURE__ */ jsxs26(
+                      /* @__PURE__ */ jsxs27("div", { className: "grid gap-3 md:grid-cols-2", children: [
+                        /* @__PURE__ */ jsxs27(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
                             style: surfaceCardStyle,
                             children: [
-                              /* @__PURE__ */ jsx35(
+                              /* @__PURE__ */ jsx36(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -5882,7 +5907,7 @@ var PageSettingsSurface = ({
                                   children: "Name"
                                 }
                               ),
-                              /* @__PURE__ */ jsx35(
+                              /* @__PURE__ */ jsx36(
                                 "div",
                                 {
                                   className: "mt-2 text-sm font-semibold",
@@ -5893,13 +5918,13 @@ var PageSettingsSurface = ({
                             ]
                           }
                         ),
-                        /* @__PURE__ */ jsxs26(
+                        /* @__PURE__ */ jsxs27(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
                             style: surfaceCardStyle,
                             children: [
-                              /* @__PURE__ */ jsx35(
+                              /* @__PURE__ */ jsx36(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -5907,7 +5932,7 @@ var PageSettingsSurface = ({
                                   children: "Route pattern"
                                 }
                               ),
-                              /* @__PURE__ */ jsx35(
+                              /* @__PURE__ */ jsx36(
                                 "div",
                                 {
                                   className: "mt-2 font-mono text-sm",
@@ -5918,13 +5943,13 @@ var PageSettingsSurface = ({
                             ]
                           }
                         ),
-                        /* @__PURE__ */ jsxs26(
+                        /* @__PURE__ */ jsxs27(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3 md:col-span-2",
                             style: surfaceCardStyle,
                             children: [
-                              /* @__PURE__ */ jsx35(
+                              /* @__PURE__ */ jsx36(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -5932,7 +5957,7 @@ var PageSettingsSurface = ({
                                   children: "Current route"
                                 }
                               ),
-                              /* @__PURE__ */ jsx35(
+                              /* @__PURE__ */ jsx36(
                                 "div",
                                 {
                                   className: "mt-2 font-mono text-sm",
@@ -5945,8 +5970,8 @@ var PageSettingsSurface = ({
                         )
                       ] })
                     ] }) : null,
-                    activeScope === "record" ? /* @__PURE__ */ jsxs26("div", { className: "space-y-4", children: [
-                      /* @__PURE__ */ jsx35(
+                    activeScope === "record" ? /* @__PURE__ */ jsxs27("div", { className: "space-y-4", children: [
+                      /* @__PURE__ */ jsx36(
                         "div",
                         {
                           className: "rounded-2xl border px-4 py-3 text-sm leading-6",
@@ -5954,14 +5979,14 @@ var PageSettingsSurface = ({
                           children: "Record settings affect only the live entity behind the current route. Shared builder structure remains owned by the template scope."
                         }
                       ),
-                      /* @__PURE__ */ jsxs26("div", { className: "grid gap-3 md:grid-cols-2", children: [
-                        /* @__PURE__ */ jsxs26(
+                      /* @__PURE__ */ jsxs27("div", { className: "grid gap-3 md:grid-cols-2", children: [
+                        /* @__PURE__ */ jsxs27(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
                             style: surfaceCardStyle,
                             children: [
-                              /* @__PURE__ */ jsx35(
+                              /* @__PURE__ */ jsx36(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -5969,7 +5994,7 @@ var PageSettingsSurface = ({
                                   children: "Current route"
                                 }
                               ),
-                              /* @__PURE__ */ jsx35(
+                              /* @__PURE__ */ jsx36(
                                 "div",
                                 {
                                   className: "mt-2 font-mono text-sm",
@@ -5980,13 +6005,13 @@ var PageSettingsSurface = ({
                             ]
                           }
                         ),
-                        /* @__PURE__ */ jsxs26(
+                        /* @__PURE__ */ jsxs27(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
                             style: surfaceCardStyle,
                             children: [
-                              /* @__PURE__ */ jsx35(
+                              /* @__PURE__ */ jsx36(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -5994,7 +6019,7 @@ var PageSettingsSurface = ({
                                   children: "Record key"
                                 }
                               ),
-                              /* @__PURE__ */ jsx35(
+                              /* @__PURE__ */ jsx36(
                                 "div",
                                 {
                                   className: "mt-2 text-sm font-semibold",
@@ -6012,14 +6037,14 @@ var PageSettingsSurface = ({
               ),
               scopedPanels.map((panel) => {
                 const PanelComponent = panel.component;
-                return /* @__PURE__ */ jsxs26(
+                return /* @__PURE__ */ jsxs27(
                   "section",
                   {
                     className: "rounded-[28px] border px-5 py-5",
                     style: surfaceCardStyle,
                     children: [
-                      /* @__PURE__ */ jsxs26("div", { className: "mb-4", children: [
-                        /* @__PURE__ */ jsx35(
+                      /* @__PURE__ */ jsxs27("div", { className: "mb-4", children: [
+                        /* @__PURE__ */ jsx36(
                           "div",
                           {
                             className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6027,7 +6052,7 @@ var PageSettingsSurface = ({
                             children: panel.label
                           }
                         ),
-                        panel.description ? /* @__PURE__ */ jsx35(
+                        panel.description ? /* @__PURE__ */ jsx36(
                           "div",
                           {
                             className: "mt-2 text-sm leading-6",
@@ -6036,7 +6061,7 @@ var PageSettingsSurface = ({
                           }
                         ) : null
                       ] }),
-                      /* @__PURE__ */ jsx35(
+                      /* @__PURE__ */ jsx36(
                         PanelComponent,
                         {
                           scope: activeScope,
@@ -6054,15 +6079,15 @@ var PageSettingsSurface = ({
                 );
               })
             ] }) : null,
-            activeTab === "site" ? /* @__PURE__ */ jsxs26(Fragment6, { children: [
-              /* @__PURE__ */ jsx35(
+            activeTab === "site" ? /* @__PURE__ */ jsxs27(Fragment6, { children: [
+              /* @__PURE__ */ jsx36(
                 SettingsCard,
                 {
                   eyebrow: "Site settings",
                   title: "Shared design system",
                   description: sitePanelDescription,
-                  children: /* @__PURE__ */ jsxs26("div", { className: "flex flex-wrap items-center gap-2", children: [
-                    /* @__PURE__ */ jsxs26(
+                  children: /* @__PURE__ */ jsxs27("div", { className: "flex flex-wrap items-center gap-2", children: [
+                    /* @__PURE__ */ jsxs27(
                       "div",
                       {
                         className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6073,7 +6098,7 @@ var PageSettingsSurface = ({
                         ]
                       }
                     ),
-                    Object.values(site.regions).map((region) => /* @__PURE__ */ jsx35(
+                    Object.values(site.regions).map((region) => /* @__PURE__ */ jsx36(
                       "div",
                       {
                         className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6085,7 +6110,7 @@ var PageSettingsSurface = ({
                   ] })
                 }
               ),
-              /* @__PURE__ */ jsx35(
+              /* @__PURE__ */ jsx36(
                 "div",
                 {
                   className: "inline-flex w-full max-w-full flex-wrap rounded-full border p-1 sm:w-auto",
@@ -6094,7 +6119,7 @@ var PageSettingsSurface = ({
                     background: "var(--photon-builder-field)"
                   },
                   "data-testid": "photon-site-settings-subtabs",
-                  children: siteSubtabs.map((tab) => /* @__PURE__ */ jsx35(
+                  children: siteSubtabs.map((tab) => /* @__PURE__ */ jsx36(
                     "button",
                     {
                       type: "button",
@@ -6113,14 +6138,14 @@ var PageSettingsSurface = ({
               ),
               activeSiteTab === "design" ? renderSitePanel(siteDesignPanel, "curated") : null,
               activeSiteTab === "advanced-design" ? renderSitePanel(siteDesignPanel, "advanced") : null,
-              activeSiteTab === "locales" ? siteLocalesPanel ? renderSitePanel(siteLocalesPanel) : remainingSitePanels.length > 0 ? remainingSitePanels.map((panel) => renderSitePanel(panel)) : /* @__PURE__ */ jsxs26(
+              activeSiteTab === "locales" ? siteLocalesPanel ? renderSitePanel(siteLocalesPanel) : remainingSitePanels.length > 0 ? remainingSitePanels.map((panel) => renderSitePanel(panel)) : /* @__PURE__ */ jsxs27(
                 "section",
                 {
                   className: "rounded-[28px] border px-5 py-5",
                   style: surfaceCardStyle,
                   "data-testid": "photon-site-settings-panel-locales-empty",
                   children: [
-                    /* @__PURE__ */ jsx35(
+                    /* @__PURE__ */ jsx36(
                       "div",
                       {
                         className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6128,7 +6153,7 @@ var PageSettingsSurface = ({
                         children: "Locales"
                       }
                     ),
-                    /* @__PURE__ */ jsx35(
+                    /* @__PURE__ */ jsx36(
                       "div",
                       {
                         className: "mt-3 text-sm leading-6",
@@ -6139,15 +6164,15 @@ var PageSettingsSurface = ({
                   ]
                 }
               ) : null,
-              siteWorkspaceSubtab ? /* @__PURE__ */ jsxs26(
+              siteWorkspaceSubtab ? /* @__PURE__ */ jsxs27(
                 "section",
                 {
                   className: "rounded-[28px] border px-5 py-5",
                   style: surfaceCardStyle,
                   "data-testid": `photon-site-settings-panel-${siteWorkspaceSubtab.key}`,
                   children: [
-                    /* @__PURE__ */ jsxs26("div", { className: "mb-4", children: [
-                      /* @__PURE__ */ jsx35(
+                    /* @__PURE__ */ jsxs27("div", { className: "mb-4", children: [
+                      /* @__PURE__ */ jsx36(
                         "div",
                         {
                           className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6155,7 +6180,7 @@ var PageSettingsSurface = ({
                           children: siteWorkspaceSubtab.label
                         }
                       ),
-                      siteWorkspaceSubtab.description ? /* @__PURE__ */ jsx35(
+                      siteWorkspaceSubtab.description ? /* @__PURE__ */ jsx36(
                         "div",
                         {
                           className: "mt-2 text-sm leading-6",
@@ -6164,7 +6189,7 @@ var PageSettingsSurface = ({
                         }
                       ) : null
                     ] }),
-                    /* @__PURE__ */ jsx35(siteWorkspaceSubtab.component, {})
+                    /* @__PURE__ */ jsx36(siteWorkspaceSubtab.component, {})
                   ]
                 }
               ) : null
@@ -6180,7 +6205,7 @@ var PageSettingsSurface = ({
 import clsx15 from "clsx";
 import { ChevronDown as ChevronDown8, ChevronRight as ChevronRight3 } from "lucide-react";
 import { memo as memo5, useEffect as useEffect14, useMemo as useMemo5, useState as useState18 } from "react";
-import { Fragment as Fragment7, jsx as jsx36, jsxs as jsxs27 } from "react/jsx-runtime";
+import { Fragment as Fragment7, jsx as jsx37, jsxs as jsxs28 } from "react/jsx-runtime";
 var readString2 = (settings, key) => {
   const value = settings[key];
   return typeof value === "string" && value.trim() !== "" ? value : void 0;
@@ -6260,7 +6285,7 @@ var InspectorPanelComponent = ({
       setActiveTab("block");
     }
   }, [selectedBlock]);
-  return /* @__PURE__ */ jsxs27(
+  return /* @__PURE__ */ jsxs28(
     "div",
     {
       className: "flex h-full flex-col",
@@ -6269,7 +6294,7 @@ var InspectorPanelComponent = ({
         color: "var(--photon-builder-text)"
       },
       children: [
-        /* @__PURE__ */ jsx36(
+        /* @__PURE__ */ jsx37(
           "div",
           {
             className: "border-b px-5 py-5",
@@ -6277,9 +6302,9 @@ var InspectorPanelComponent = ({
               borderColor: "var(--photon-builder-border)",
               background: "var(--photon-builder-shell-strong)"
             },
-            children: /* @__PURE__ */ jsxs27("div", { className: "flex items-center justify-between gap-3", children: [
-              /* @__PURE__ */ jsxs27("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsx36(
+            children: /* @__PURE__ */ jsxs28("div", { className: "flex items-center justify-between gap-3", children: [
+              /* @__PURE__ */ jsxs28("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx37(
                   "div",
                   {
                     className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6287,7 +6312,7 @@ var InspectorPanelComponent = ({
                     children: translate("photon.studio.inspector.title", "Inspector")
                   }
                 ),
-                /* @__PURE__ */ jsxs27(
+                /* @__PURE__ */ jsxs28(
                   "div",
                   {
                     className: "mt-4 inline-flex rounded-full border p-1",
@@ -6296,7 +6321,7 @@ var InspectorPanelComponent = ({
                       background: "var(--photon-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsx37(
                         "button",
                         {
                           type: "button",
@@ -6311,7 +6336,7 @@ var InspectorPanelComponent = ({
                           children: translate("photon.studio.inspector.blockTab", "Block")
                         }
                       ),
-                      /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsx37(
                         "button",
                         {
                           type: "button",
@@ -6330,7 +6355,7 @@ var InspectorPanelComponent = ({
                   }
                 )
               ] }),
-              onCollapse ? /* @__PURE__ */ jsx36(
+              onCollapse ? /* @__PURE__ */ jsx37(
                 "button",
                 {
                   type: "button",
@@ -6341,20 +6366,20 @@ var InspectorPanelComponent = ({
                     background: "var(--photon-builder-panel-muted)",
                     color: "var(--photon-builder-text-soft)"
                   },
-                  children: /* @__PURE__ */ jsx36(ChevronRight3, { className: "h-4 w-4" })
+                  children: /* @__PURE__ */ jsx37(ChevronRight3, { className: "h-4 w-4" })
                 }
               ) : null
             ] })
           }
         ),
-        /* @__PURE__ */ jsxs27(
+        /* @__PURE__ */ jsxs28(
           "div",
           {
             className: "flex-1 space-y-5 overflow-y-auto px-4 py-4",
             style: { background: "var(--photon-builder-shell-muted)" },
             children: [
-              activeTab === "block" && !selectedBlock && inspectorDefinition ? /* @__PURE__ */ jsxs27(Fragment7, { children: [
-                /* @__PURE__ */ jsxs27(
+              activeTab === "block" && !selectedBlock && inspectorDefinition ? /* @__PURE__ */ jsxs28(Fragment7, { children: [
+                /* @__PURE__ */ jsxs28(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6363,7 +6388,7 @@ var InspectorPanelComponent = ({
                       background: "var(--photon-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsx37(
                         "div",
                         {
                           className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6371,7 +6396,7 @@ var InspectorPanelComponent = ({
                           children: "Palette block"
                         }
                       ),
-                      /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsx37(
                         "div",
                         {
                           className: "mt-3 text-lg font-semibold",
@@ -6379,8 +6404,8 @@ var InspectorPanelComponent = ({
                           children: inspectorDefinition.label
                         }
                       ),
-                      /* @__PURE__ */ jsxs27("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
-                        /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsxs28("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
+                        /* @__PURE__ */ jsx37(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -6392,7 +6417,7 @@ var InspectorPanelComponent = ({
                             children: inspectorDefinition.module
                           }
                         ),
-                        /* @__PURE__ */ jsx36(
+                        /* @__PURE__ */ jsx37(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6407,7 +6432,7 @@ var InspectorPanelComponent = ({
                             )
                           }
                         ),
-                        /* @__PURE__ */ jsxs27(
+                        /* @__PURE__ */ jsxs28(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6423,7 +6448,7 @@ var InspectorPanelComponent = ({
                           }
                         )
                       ] }),
-                      /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsx37(
                         "div",
                         {
                           className: "mt-4 text-sm leading-6",
@@ -6434,7 +6459,7 @@ var InspectorPanelComponent = ({
                     ]
                   }
                 ),
-                Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsxs27(
+                Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsxs28(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6443,8 +6468,8 @@ var InspectorPanelComponent = ({
                       background: "var(--photon-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsxs27("div", { className: "mb-4 flex items-center justify-between gap-3", children: [
-                        /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsxs28("div", { className: "mb-4 flex items-center justify-between gap-3", children: [
+                        /* @__PURE__ */ jsx37(
                           "div",
                           {
                             className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6455,7 +6480,7 @@ var InspectorPanelComponent = ({
                             )
                           }
                         ),
-                        /* @__PURE__ */ jsx36(
+                        /* @__PURE__ */ jsx37(
                           "div",
                           {
                             className: "font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -6464,7 +6489,7 @@ var InspectorPanelComponent = ({
                           }
                         )
                       ] }),
-                      /* @__PURE__ */ jsx36("div", { className: "space-y-3", children: fields.map((field) => /* @__PURE__ */ jsxs27(
+                      /* @__PURE__ */ jsx37("div", { className: "space-y-3", children: fields.map((field) => /* @__PURE__ */ jsxs28(
                         "div",
                         {
                           className: "rounded-2xl border px-4 py-3",
@@ -6473,8 +6498,8 @@ var InspectorPanelComponent = ({
                             background: "var(--photon-builder-field)"
                           },
                           children: [
-                            /* @__PURE__ */ jsxs27("div", { className: "flex items-center justify-between gap-3", children: [
-                              /* @__PURE__ */ jsx36(
+                            /* @__PURE__ */ jsxs28("div", { className: "flex items-center justify-between gap-3", children: [
+                              /* @__PURE__ */ jsx37(
                                 "div",
                                 {
                                   className: "text-sm font-semibold",
@@ -6482,7 +6507,7 @@ var InspectorPanelComponent = ({
                                   children: field.label
                                 }
                               ),
-                              /* @__PURE__ */ jsx36(
+                              /* @__PURE__ */ jsx37(
                                 "div",
                                 {
                                   className: "rounded-full border px-2 py-1 text-[10px] uppercase tracking-[0.22em]",
@@ -6494,7 +6519,7 @@ var InspectorPanelComponent = ({
                                 }
                               )
                             ] }),
-                            /* @__PURE__ */ jsx36(
+                            /* @__PURE__ */ jsx37(
                               "div",
                               {
                                 className: "mt-2 font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -6502,7 +6527,7 @@ var InspectorPanelComponent = ({
                                 children: field.path
                               }
                             ),
-                            field.description ? /* @__PURE__ */ jsx36(
+                            field.description ? /* @__PURE__ */ jsx37(
                               "div",
                               {
                                 className: "mt-2 text-xs leading-5",
@@ -6519,8 +6544,8 @@ var InspectorPanelComponent = ({
                   groupKey
                 ))
               ] }) : null,
-              activeTab === "block" && selectedBlock ? /* @__PURE__ */ jsxs27(Fragment7, { children: [
-                /* @__PURE__ */ jsxs27(
+              activeTab === "block" && selectedBlock ? /* @__PURE__ */ jsxs28(Fragment7, { children: [
+                /* @__PURE__ */ jsxs28(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6529,7 +6554,7 @@ var InspectorPanelComponent = ({
                       background: "var(--photon-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsx37(
                         "div",
                         {
                           className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6537,7 +6562,7 @@ var InspectorPanelComponent = ({
                           children: "Selected block"
                         }
                       ),
-                      /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsx37(
                         "div",
                         {
                           className: "mt-3 text-lg font-semibold",
@@ -6545,8 +6570,8 @@ var InspectorPanelComponent = ({
                           children: inspectorDefinition?.label ?? selectedBlock.type
                         }
                       ),
-                      /* @__PURE__ */ jsxs27("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
-                        /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsxs28("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
+                        /* @__PURE__ */ jsx37(
                           "div",
                           {
                             className: "font-mono text-[11px] uppercase tracking-[0.24em]",
@@ -6554,7 +6579,7 @@ var InspectorPanelComponent = ({
                             children: selectedBlock.module
                           }
                         ),
-                        inspectorDefinition ? /* @__PURE__ */ jsx36(
+                        inspectorDefinition ? /* @__PURE__ */ jsx37(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6570,7 +6595,7 @@ var InspectorPanelComponent = ({
                           }
                         ) : null
                       ] }),
-                      inspectorDefinition?.description ? /* @__PURE__ */ jsx36(
+                      inspectorDefinition?.description ? /* @__PURE__ */ jsx37(
                         "div",
                         {
                           className: "mt-4 text-sm leading-6",
@@ -6578,7 +6603,7 @@ var InspectorPanelComponent = ({
                           children: inspectorDefinition.description
                         }
                       ) : null,
-                      selectedFieldPath ? /* @__PURE__ */ jsxs27(
+                      selectedFieldPath ? /* @__PURE__ */ jsxs28(
                         "div",
                         {
                           className: "mt-4 rounded-2xl border px-3 py-3 text-sm",
@@ -6590,14 +6615,14 @@ var InspectorPanelComponent = ({
                           children: [
                             "Active field:",
                             " ",
-                            /* @__PURE__ */ jsx36("span", { className: "font-mono", children: selectedFieldPath })
+                            /* @__PURE__ */ jsx37("span", { className: "font-mono", children: selectedFieldPath })
                           ]
                         }
                       ) : null
                     ]
                   }
                 ),
-                Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsxs27(
+                Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsxs28(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6606,7 +6631,7 @@ var InspectorPanelComponent = ({
                       background: "var(--photon-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsx37(
                         "div",
                         {
                           className: "mb-4 text-[11px] uppercase tracking-[0.28em]",
@@ -6617,7 +6642,7 @@ var InspectorPanelComponent = ({
                           )
                         }
                       ),
-                      groupKey === "content" && editableLocales.length > 1 && fields.some((field) => fieldSupportsLocalization(field)) ? /* @__PURE__ */ jsx36(
+                      groupKey === "content" && editableLocales.length > 1 && fields.some((field) => fieldSupportsLocalization(field)) ? /* @__PURE__ */ jsx37(
                         "div",
                         {
                           className: "mb-4 inline-flex flex-wrap rounded-full border p-1",
@@ -6625,7 +6650,7 @@ var InspectorPanelComponent = ({
                             borderColor: "var(--photon-builder-border)",
                             background: "var(--photon-builder-panel)"
                           },
-                          children: editableLocales.map((locale) => /* @__PURE__ */ jsx36(
+                          children: editableLocales.map((locale) => /* @__PURE__ */ jsx37(
                             "button",
                             {
                               type: "button",
@@ -6641,7 +6666,7 @@ var InspectorPanelComponent = ({
                           ))
                         }
                       ) : null,
-                      /* @__PURE__ */ jsx36("div", { className: "space-y-4", children: fields.map((field) => /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsx37("div", { className: "space-y-4", children: fields.map((field) => /* @__PURE__ */ jsx37(
                         FieldEditor,
                         {
                           field,
@@ -6656,7 +6681,7 @@ var InspectorPanelComponent = ({
                   },
                   groupKey
                 )),
-                /* @__PURE__ */ jsxs27(
+                /* @__PURE__ */ jsxs28(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6665,14 +6690,14 @@ var InspectorPanelComponent = ({
                       background: "var(--photon-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsxs27(
+                      /* @__PURE__ */ jsxs28(
                         "button",
                         {
                           type: "button",
                           onClick: () => setShowBlockJson((current) => !current),
                           className: "flex w-full cursor-pointer items-center justify-between gap-3 text-left",
                           children: [
-                            /* @__PURE__ */ jsx36(
+                            /* @__PURE__ */ jsx37(
                               "div",
                               {
                                 className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6680,13 +6705,13 @@ var InspectorPanelComponent = ({
                                 children: "Raw block manifest"
                               }
                             ),
-                            showBlockJson ? /* @__PURE__ */ jsx36(
+                            showBlockJson ? /* @__PURE__ */ jsx37(
                               ChevronDown8,
                               {
                                 className: "h-4 w-4",
                                 style: { color: "var(--photon-builder-text-soft)" }
                               }
-                            ) : /* @__PURE__ */ jsx36(
+                            ) : /* @__PURE__ */ jsx37(
                               ChevronRight3,
                               {
                                 className: "h-4 w-4",
@@ -6696,7 +6721,7 @@ var InspectorPanelComponent = ({
                           ]
                         }
                       ),
-                      showBlockJson ? /* @__PURE__ */ jsx36(
+                      showBlockJson ? /* @__PURE__ */ jsx37(
                         "pre",
                         {
                           className: "mt-4 h-[320px] overflow-x-auto rounded-2xl border p-4 text-xs leading-6",
@@ -6712,8 +6737,8 @@ var InspectorPanelComponent = ({
                   }
                 )
               ] }) : null,
-              activeTab === "block" ? /* @__PURE__ */ jsxs27(Fragment7, { children: [
-                /* @__PURE__ */ jsxs27(
+              activeTab === "block" ? /* @__PURE__ */ jsxs28(Fragment7, { children: [
+                /* @__PURE__ */ jsxs28(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6722,14 +6747,14 @@ var InspectorPanelComponent = ({
                       background: "var(--photon-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsxs27(
+                      /* @__PURE__ */ jsxs28(
                         "button",
                         {
                           type: "button",
                           onClick: () => setShowDocumentJson((current) => !current),
                           className: "flex w-full cursor-pointer items-center justify-between gap-3 text-left",
                           children: [
-                            /* @__PURE__ */ jsx36(
+                            /* @__PURE__ */ jsx37(
                               "div",
                               {
                                 className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6737,13 +6762,13 @@ var InspectorPanelComponent = ({
                                 children: "Document JSON"
                               }
                             ),
-                            showDocumentJson ? /* @__PURE__ */ jsx36(
+                            showDocumentJson ? /* @__PURE__ */ jsx37(
                               ChevronDown8,
                               {
                                 className: "h-4 w-4",
                                 style: { color: "var(--photon-builder-text-soft)" }
                               }
-                            ) : /* @__PURE__ */ jsx36(
+                            ) : /* @__PURE__ */ jsx37(
                               ChevronRight3,
                               {
                                 className: "h-4 w-4",
@@ -6753,7 +6778,7 @@ var InspectorPanelComponent = ({
                           ]
                         }
                       ),
-                      showDocumentJson ? /* @__PURE__ */ jsx36(
+                      showDocumentJson ? /* @__PURE__ */ jsx37(
                         "pre",
                         {
                           className: "mt-4 max-h-[320px] overflow-auto rounded-2xl border p-4 text-xs leading-6",
@@ -6768,7 +6793,7 @@ var InspectorPanelComponent = ({
                     ]
                   }
                 ),
-                !definitionFields.length && !hasBlockContext ? /* @__PURE__ */ jsx36(
+                !definitionFields.length && !hasBlockContext ? /* @__PURE__ */ jsx37(
                   "section",
                   {
                     className: "rounded-[24px] border border-dashed px-4 py-4 text-sm leading-6",
@@ -6780,8 +6805,8 @@ var InspectorPanelComponent = ({
                   }
                 ) : null
               ] }) : null,
-              activeTab === "page" ? /* @__PURE__ */ jsxs27(Fragment7, { children: [
-                /* @__PURE__ */ jsxs27(
+              activeTab === "page" ? /* @__PURE__ */ jsxs28(Fragment7, { children: [
+                /* @__PURE__ */ jsxs28(
                   "section",
                   {
                     className: "rounded-[24px] border border-dashed px-4 py-4 text-sm leading-6",
@@ -6790,7 +6815,7 @@ var InspectorPanelComponent = ({
                       color: "var(--photon-builder-text-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsxs27(
+                      /* @__PURE__ */ jsxs28(
                         "div",
                         {
                           className: "text-[11px] uppercase tracking-[0.28em]",
@@ -6801,7 +6826,7 @@ var InspectorPanelComponent = ({
                           ]
                         }
                       ),
-                      /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsx37(
                         "div",
                         {
                           className: "mt-3 text-lg font-semibold",
@@ -6809,8 +6834,8 @@ var InspectorPanelComponent = ({
                           children: summaryName
                         }
                       ),
-                      /* @__PURE__ */ jsxs27("div", { className: "mt-2 flex flex-wrap items-center gap-2", children: [
-                        /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsxs28("div", { className: "mt-2 flex flex-wrap items-center gap-2", children: [
+                        /* @__PURE__ */ jsx37(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -6822,7 +6847,7 @@ var InspectorPanelComponent = ({
                             children: currentPage?.kind ?? "page"
                           }
                         ),
-                        /* @__PURE__ */ jsx36(
+                        /* @__PURE__ */ jsx37(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
@@ -6834,9 +6859,9 @@ var InspectorPanelComponent = ({
                             children: currentPage?.route ?? document2.route
                           }
                         ),
-                        currentPage?.isDynamic ? /* @__PURE__ */ jsx36("div", { className: "rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-amber-100/80", children: "Dynamic template" }) : null
+                        currentPage?.isDynamic ? /* @__PURE__ */ jsx37("div", { className: "rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-amber-100/80", children: "Dynamic template" }) : null
                       ] }),
-                      /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsx37(
                         "div",
                         {
                           className: "mt-4 rounded-2xl border px-3 py-3 text-sm leading-6",
@@ -6851,7 +6876,7 @@ var InspectorPanelComponent = ({
                     ]
                   }
                 ),
-                /* @__PURE__ */ jsxs27(
+                /* @__PURE__ */ jsxs28(
                   "section",
                   {
                     className: "rounded-[24px] border px-4 py-4",
@@ -6860,7 +6885,7 @@ var InspectorPanelComponent = ({
                       background: "var(--photon-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsx36(
+                      /* @__PURE__ */ jsx37(
                         "div",
                         {
                           className: "mb-4 text-[11px] uppercase tracking-[0.28em]",
@@ -6868,8 +6893,8 @@ var InspectorPanelComponent = ({
                           children: "Basics"
                         }
                       ),
-                      /* @__PURE__ */ jsxs27("div", { className: "space-y-3", children: [
-                        /* @__PURE__ */ jsxs27(
+                      /* @__PURE__ */ jsxs28("div", { className: "space-y-3", children: [
+                        /* @__PURE__ */ jsxs28(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
@@ -6878,7 +6903,7 @@ var InspectorPanelComponent = ({
                               background: "var(--photon-builder-field)"
                             },
                             children: [
-                              /* @__PURE__ */ jsx36(
+                              /* @__PURE__ */ jsx37(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -6886,7 +6911,7 @@ var InspectorPanelComponent = ({
                                   children: "Name"
                                 }
                               ),
-                              /* @__PURE__ */ jsx36(
+                              /* @__PURE__ */ jsx37(
                                 "div",
                                 {
                                   className: "mt-2 text-sm font-semibold",
@@ -6897,7 +6922,7 @@ var InspectorPanelComponent = ({
                             ]
                           }
                         ),
-                        /* @__PURE__ */ jsxs27(
+                        /* @__PURE__ */ jsxs28(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
@@ -6906,7 +6931,7 @@ var InspectorPanelComponent = ({
                               background: "var(--photon-builder-field)"
                             },
                             children: [
-                              /* @__PURE__ */ jsx36(
+                              /* @__PURE__ */ jsx37(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -6914,7 +6939,7 @@ var InspectorPanelComponent = ({
                                   children: currentPage?.isDynamic ? "Route pattern" : "Path"
                                 }
                               ),
-                              /* @__PURE__ */ jsx36(
+                              /* @__PURE__ */ jsx37(
                                 "div",
                                 {
                                   className: "mt-2 font-mono text-sm",
@@ -6925,7 +6950,7 @@ var InspectorPanelComponent = ({
                             ]
                           }
                         ),
-                        currentPage?.isDynamic ? /* @__PURE__ */ jsxs27(
+                        currentPage?.isDynamic ? /* @__PURE__ */ jsxs28(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
@@ -6934,7 +6959,7 @@ var InspectorPanelComponent = ({
                               background: "var(--photon-builder-field)"
                             },
                             children: [
-                              /* @__PURE__ */ jsx36(
+                              /* @__PURE__ */ jsx37(
                                 "div",
                                 {
                                   className: "text-[11px] uppercase tracking-[0.24em]",
@@ -6942,7 +6967,7 @@ var InspectorPanelComponent = ({
                                   children: "Current route"
                                 }
                               ),
-                              /* @__PURE__ */ jsx36(
+                              /* @__PURE__ */ jsx37(
                                 "div",
                                 {
                                   className: "mt-2 font-mono text-sm",
@@ -6968,7 +6993,7 @@ var InspectorPanelComponent = ({
 var InspectorPanel = memo5(InspectorPanelComponent);
 
 // src/studio/photon-studio/builder-mobile-panels.tsx
-import { jsx as jsx37, jsxs as jsxs28 } from "react/jsx-runtime";
+import { jsx as jsx38, jsxs as jsxs29 } from "react/jsx-runtime";
 var BuilderMobilePanels = ({
   search,
   onSearchChange,
@@ -6994,8 +7019,8 @@ var BuilderMobilePanels = ({
   currentPage,
   onContentLocaleChange
 }) => {
-  return /* @__PURE__ */ jsxs28("div", { className: "mt-6 grid gap-4 lg:hidden", children: [
-    /* @__PURE__ */ jsx37(
+  return /* @__PURE__ */ jsxs29("div", { className: "mt-6 grid gap-4 lg:hidden", children: [
+    /* @__PURE__ */ jsx38(
       PalettePanel,
       {
         search,
@@ -7016,7 +7041,7 @@ var BuilderMobilePanels = ({
         manualInsertTarget
       }
     ),
-    /* @__PURE__ */ jsx37(
+    /* @__PURE__ */ jsx38(
       InspectorPanel,
       {
         definitionFields,
@@ -7041,13 +7066,13 @@ import {
 // src/studio/photon-studio/builder-sidebar-edge-toggle.tsx
 import clsx16 from "clsx";
 import { ChevronLeft as ChevronLeft2, ChevronRight as ChevronRight4 } from "lucide-react";
-import { jsx as jsx38 } from "react/jsx-runtime";
+import { jsx as jsx39 } from "react/jsx-runtime";
 var BuilderSidebarEdgeToggle = ({
   side,
   dockHeight,
   onExpand
 }) => {
-  return /* @__PURE__ */ jsx38(
+  return /* @__PURE__ */ jsx39(
     "div",
     {
       className: clsx16(
@@ -7057,7 +7082,7 @@ var BuilderSidebarEdgeToggle = ({
       style: {
         top: dockHeight
       },
-      children: /* @__PURE__ */ jsx38("div", { className: "group relative h-full w-full", children: /* @__PURE__ */ jsx38(
+      children: /* @__PURE__ */ jsx39("div", { className: "group relative h-full w-full", children: /* @__PURE__ */ jsx39(
         "button",
         {
           type: "button",
@@ -7072,7 +7097,7 @@ var BuilderSidebarEdgeToggle = ({
             background: "var(--photon-builder-panel-solid)",
             color: "var(--photon-builder-text-muted)"
           },
-          children: side === "left" ? /* @__PURE__ */ jsx38(ChevronRight4, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx38(ChevronLeft2, { className: "h-4 w-4" })
+          children: side === "left" ? /* @__PURE__ */ jsx39(ChevronRight4, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx39(ChevronLeft2, { className: "h-4 w-4" })
         }
       ) })
     }
@@ -7081,12 +7106,12 @@ var BuilderSidebarEdgeToggle = ({
 
 // src/studio/photon-studio/builder-sidebar-resize-handle.tsx
 import clsx17 from "clsx";
-import { jsx as jsx39, jsxs as jsxs29 } from "react/jsx-runtime";
+import { jsx as jsx40, jsxs as jsxs30 } from "react/jsx-runtime";
 var BuilderSidebarResizeHandle = ({
   side,
   onPointerDown
 }) => {
-  return /* @__PURE__ */ jsxs29(
+  return /* @__PURE__ */ jsxs30(
     "button",
     {
       type: "button",
@@ -7097,15 +7122,15 @@ var BuilderSidebarResizeHandle = ({
         side === "left" ? "right-0 translate-x-1/2" : "left-0 -translate-x-1/2"
       ),
       children: [
-        /* @__PURE__ */ jsx39("span", { className: "absolute inset-y-0 left-1/2 w-3 -translate-x-1/2 rounded-full bg-cyan-300/0 opacity-0 transition-[background-color,opacity] duration-200 delay-500 group-hover:bg-cyan-300/12 group-hover:opacity-100 group-focus-visible:bg-cyan-300/12 group-focus-visible:opacity-100 group-active:delay-0 group-active:bg-cyan-300/18 group-active:opacity-100" }),
-        /* @__PURE__ */ jsx39("span", { className: "absolute inset-y-8 left-1/2 w-px -translate-x-1/2 rounded-full bg-white/12 opacity-50 transition-[background-color,opacity] duration-200 delay-500 group-hover:bg-cyan-300/55 group-hover:opacity-100 group-focus-visible:bg-cyan-300/55 group-focus-visible:opacity-100 group-active:delay-0 group-active:bg-cyan-300/65 group-active:opacity-100" })
+        /* @__PURE__ */ jsx40("span", { className: "absolute inset-y-0 left-1/2 w-3 -translate-x-1/2 rounded-full bg-cyan-300/0 opacity-0 transition-[background-color,opacity] duration-200 delay-500 group-hover:bg-cyan-300/12 group-hover:opacity-100 group-focus-visible:bg-cyan-300/12 group-focus-visible:opacity-100 group-active:delay-0 group-active:bg-cyan-300/18 group-active:opacity-100" }),
+        /* @__PURE__ */ jsx40("span", { className: "absolute inset-y-8 left-1/2 w-px -translate-x-1/2 rounded-full bg-white/12 opacity-50 transition-[background-color,opacity] duration-200 delay-500 group-hover:bg-cyan-300/55 group-hover:opacity-100 group-focus-visible:bg-cyan-300/55 group-focus-visible:opacity-100 group-active:delay-0 group-active:bg-cyan-300/65 group-active:opacity-100" })
       ]
     }
   );
 };
 
 // src/studio/photon-studio/builder-sidebars.tsx
-import { Fragment as Fragment8, jsx as jsx40, jsxs as jsxs30 } from "react/jsx-runtime";
+import { Fragment as Fragment8, jsx as jsx41, jsxs as jsxs31 } from "react/jsx-runtime";
 var BuilderSidebars = ({
   sidebarsVisible,
   dockHeight,
@@ -7153,8 +7178,8 @@ var BuilderSidebars = ({
     }, 0);
     return () => window.clearTimeout(timeoutId);
   }, []);
-  return /* @__PURE__ */ jsxs30(Fragment8, { children: [
-    transitionsEnabled && sidebarsVisible && leftCollapsed ? /* @__PURE__ */ jsx40(
+  return /* @__PURE__ */ jsxs31(Fragment8, { children: [
+    transitionsEnabled && sidebarsVisible && leftCollapsed ? /* @__PURE__ */ jsx41(
       BuilderSidebarEdgeToggle,
       {
         side: "left",
@@ -7162,7 +7187,7 @@ var BuilderSidebars = ({
         onExpand: onExpandLeft
       }
     ) : null,
-    transitionsEnabled && sidebarsVisible && rightCollapsed ? /* @__PURE__ */ jsx40(
+    transitionsEnabled && sidebarsVisible && rightCollapsed ? /* @__PURE__ */ jsx41(
       BuilderSidebarEdgeToggle,
       {
         side: "right",
@@ -7170,7 +7195,7 @@ var BuilderSidebars = ({
         onExpand: onExpandRight
       }
     ) : null,
-    /* @__PURE__ */ jsxs30(
+    /* @__PURE__ */ jsxs31(
       "div",
       {
         className: clsx18(
@@ -7182,7 +7207,7 @@ var BuilderSidebars = ({
           "--photon-right-sidebar-width": `${rightReservedWidth}px`
         },
         children: [
-          /* @__PURE__ */ jsx40(
+          /* @__PURE__ */ jsx41(
             "aside",
             {
               className: clsx18(
@@ -7198,7 +7223,7 @@ var BuilderSidebars = ({
               },
               "aria-hidden": !sidebarsVisible || leftCollapsed,
               "data-testid": "photon-builder-sidebar-left",
-              children: /* @__PURE__ */ jsxs30(
+              children: /* @__PURE__ */ jsxs31(
                 "div",
                 {
                   className: clsx18(
@@ -7211,7 +7236,7 @@ var BuilderSidebars = ({
                     boxShadow: "var(--photon-builder-sidebar-shadow)"
                   },
                   children: [
-                    /* @__PURE__ */ jsx40(
+                    /* @__PURE__ */ jsx41(
                       PalettePanel,
                       {
                         search,
@@ -7233,7 +7258,7 @@ var BuilderSidebars = ({
                         onCollapse: onToggleLeftCollapsed
                       }
                     ),
-                    /* @__PURE__ */ jsx40(
+                    /* @__PURE__ */ jsx41(
                       BuilderSidebarResizeHandle,
                       {
                         side: "left",
@@ -7245,8 +7270,8 @@ var BuilderSidebars = ({
               )
             }
           ),
-          /* @__PURE__ */ jsx40("div", { className: "min-w-0", children }),
-          /* @__PURE__ */ jsx40(
+          /* @__PURE__ */ jsx41("div", { className: "min-w-0", children }),
+          /* @__PURE__ */ jsx41(
             "aside",
             {
               className: clsx18(
@@ -7262,7 +7287,7 @@ var BuilderSidebars = ({
               },
               "aria-hidden": !sidebarsVisible || rightCollapsed,
               "data-testid": "photon-builder-sidebar-right",
-              children: /* @__PURE__ */ jsxs30(
+              children: /* @__PURE__ */ jsxs31(
                 "div",
                 {
                   className: clsx18(
@@ -7275,7 +7300,7 @@ var BuilderSidebars = ({
                     boxShadow: "var(--photon-builder-sidebar-shadow)"
                   },
                   children: [
-                    /* @__PURE__ */ jsx40(
+                    /* @__PURE__ */ jsx41(
                       InspectorPanel,
                       {
                         definitionFields,
@@ -7288,7 +7313,7 @@ var BuilderSidebars = ({
                         onCollapse: onToggleRightCollapsed
                       }
                     ),
-                    /* @__PURE__ */ jsx40(
+                    /* @__PURE__ */ jsx41(
                       BuilderSidebarResizeHandle,
                       {
                         side: "right",
@@ -7307,7 +7332,7 @@ var BuilderSidebars = ({
 };
 
 // src/studio/photon-studio/photon-stage.tsx
-import { jsx as jsx41, jsxs as jsxs31 } from "react/jsx-runtime";
+import { jsx as jsx42, jsxs as jsxs32 } from "react/jsx-runtime";
 var clampChannel = (value) => Math.max(0, Math.min(255, Math.round(value)));
 var HEX_COLOR_PATTERN = /^#([\da-f]{3}|[\da-f]{6})$/i;
 var RGB_COLOR_PATTERN = /^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*[\d.]+\s*)?\)$/i;
@@ -7595,7 +7620,7 @@ var PhotonStage = ({
       }
     };
   }, [builderThemeStyle, canManage]);
-  return /* @__PURE__ */ jsxs31(
+  return /* @__PURE__ */ jsxs32(
     "div",
     {
       className: "relative z-10 transition-[background-color,color] duration-500",
@@ -7605,7 +7630,7 @@ var PhotonStage = ({
         parseColor(designSettings.backgroundColor) ?? { r: 8, g: 19, b: 33 }
       ) < 0.38 ? "dark" : "light",
       children: [
-        canManage ? /* @__PURE__ */ jsx41(
+        canManage ? /* @__PURE__ */ jsx42(
           EditorDock,
           {
             activeMode,
@@ -7635,7 +7660,7 @@ var PhotonStage = ({
             onSave
           }
         ) : null,
-        /* @__PURE__ */ jsxs31(
+        /* @__PURE__ */ jsxs32(
           BuilderSidebars,
           {
             sidebarsVisible,
@@ -7674,7 +7699,7 @@ var PhotonStage = ({
             onExpandRight,
             onResizeStart,
             children: [
-              /* @__PURE__ */ jsx41(
+              /* @__PURE__ */ jsx42(
                 CanvasTopToolbar,
                 {
                   visible: builderEnabled,
@@ -7689,7 +7714,7 @@ var PhotonStage = ({
                   onExpandAll
                 }
               ),
-              /* @__PURE__ */ jsxs31(
+              /* @__PURE__ */ jsxs32(
                 "main",
                 {
                   className: clsx19(
@@ -7699,14 +7724,14 @@ var PhotonStage = ({
                   ),
                   style: mainStyle,
                   children: [
-                    /* @__PURE__ */ jsx41(
+                    /* @__PURE__ */ jsx42(
                       "div",
                       {
                         className: clsx19(
                           "mx-auto transition-[max-width,opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
                           canvasSurfaceVisible ? "max-w-none" : "max-w-[1480px]"
                         ),
-                        children: builderEnabled && builderSurfaceMode === "settings" ? /* @__PURE__ */ jsx41(
+                        children: builderEnabled && builderSurfaceMode === "settings" ? /* @__PURE__ */ jsx42(
                           PageSettingsSurface,
                           {
                             currentPage,
@@ -7722,7 +7747,7 @@ var PhotonStage = ({
                             onSiteSettingChange,
                             onSiteSettingFocus
                           }
-                        ) : /* @__PURE__ */ jsxs31(
+                        ) : /* @__PURE__ */ jsxs32(
                           "div",
                           {
                             className: clsx19(
@@ -7737,14 +7762,14 @@ var PhotonStage = ({
                               } : {}
                             },
                             children: [
-                              builderEnabled ? /* @__PURE__ */ jsx41(
+                              builderEnabled ? /* @__PURE__ */ jsx42(
                                 "div",
                                 {
                                   className: "pointer-events-none absolute inset-0 rounded-[28px]",
                                   style: { background: "var(--photon-builder-elevation)" }
                                 }
                               ) : null,
-                              /* @__PURE__ */ jsx41("div", { className: "relative", children: /* @__PURE__ */ jsx41(
+                              /* @__PURE__ */ jsx42("div", { className: "relative", children: /* @__PURE__ */ jsx42(
                                 SiteSurfaceCanvas,
                                 {
                                   document: document2,
@@ -7763,8 +7788,8 @@ var PhotonStage = ({
                         )
                       }
                     ),
-                    contentEnabled && contentNotice ? /* @__PURE__ */ jsx41("div", { className: "mx-auto mt-4 max-w-[1480px]", children: contentNotice }) : null,
-                    builderEnabled && builderSurfaceMode === "canvas" ? /* @__PURE__ */ jsx41(
+                    contentEnabled && contentNotice ? /* @__PURE__ */ jsx42("div", { className: "mx-auto mt-4 max-w-[1480px]", children: contentNotice }) : null,
+                    builderEnabled && builderSurfaceMode === "canvas" ? /* @__PURE__ */ jsx42(
                       BuilderMobilePanels,
                       {
                         search,
@@ -7804,7 +7829,7 @@ var PhotonStage = ({
 };
 
 // src/studio/photon-studio/photon-studio-inner.tsx
-import { jsx as jsx42, jsxs as jsxs32 } from "react/jsx-runtime";
+import { jsx as jsx43, jsxs as jsxs33 } from "react/jsx-runtime";
 var PhotonStudioInner = ({
   initialDocument,
   initialResources = {},
@@ -8101,14 +8126,14 @@ var PhotonStudioInner = ({
     );
   };
   const contentNotice = renderContentNotice ?? null;
-  return /* @__PURE__ */ jsxs32("div", { className: "relative min-h-screen", children: [
-    /* @__PURE__ */ jsx42(
+  return /* @__PURE__ */ jsxs33("div", { className: "relative min-h-screen", children: [
+    /* @__PURE__ */ jsx43(
       PhotonSearchHighlightEffect,
       {
         activeHighlight: activeSearchHighlight
       }
     ),
-    /* @__PURE__ */ jsxs32(
+    /* @__PURE__ */ jsxs33(
       DndContext,
       {
         id: "photon-studio",
@@ -8119,7 +8144,7 @@ var PhotonStudioInner = ({
         onDragEnd: handleDragEnd,
         onDragCancel: handleDragCancel,
         children: [
-          /* @__PURE__ */ jsx42(
+          /* @__PURE__ */ jsx43(
             PhotonStage,
             {
               activeMode,
@@ -8218,13 +8243,13 @@ var PhotonStudioInner = ({
             }
           ),
           hasMounted ? createPortal(
-            /* @__PURE__ */ jsx42(
+            /* @__PURE__ */ jsx43(
               DragOverlay,
               {
                 adjustScale: false,
                 dropAnimation: null,
                 modifiers: dragOverlayModifiers,
-                children: activeDragKind === "palette" && activePaletteDefinition ? /* @__PURE__ */ jsx42(PaletteOverlayCard, { definition: activePaletteDefinition }) : activeBlock ? /* @__PURE__ */ jsx42(BlockOverlayCard, { block: activeBlock }) : null
+                children: activeDragKind === "palette" && activePaletteDefinition ? /* @__PURE__ */ jsx43(PaletteOverlayCard, { definition: activePaletteDefinition }) : activeBlock ? /* @__PURE__ */ jsx43(BlockOverlayCard, { block: activeBlock }) : null
               }
             ),
             globalThis.document.body
@@ -8236,7 +8261,7 @@ var PhotonStudioInner = ({
 };
 
 // src/studio/photon-studio/photon-studio.tsx
-import { jsx as jsx43 } from "react/jsx-runtime";
+import { jsx as jsx44 } from "react/jsx-runtime";
 var PhotonStudio = ({
   initialDocument,
   initialResources,
@@ -8278,7 +8303,7 @@ var PhotonStudio = ({
   renderContentNotice,
   siteSettingsSubtabs
 }) => {
-  return /* @__PURE__ */ jsx43(
+  return /* @__PURE__ */ jsx44(
     PhotonProvider,
     {
       initialDocument,
@@ -8297,7 +8322,7 @@ var PhotonStudio = ({
       siteFrameExtensions,
       accountTabs,
       i18n,
-      children: /* @__PURE__ */ jsx43(
+      children: /* @__PURE__ */ jsx44(
         PhotonStudioInner,
         {
           initialDocument,
@@ -8339,6 +8364,7 @@ var PhotonStudio = ({
 };
 
 export {
+  PhotonBlockRenderer,
   PhotonFieldEditorList,
   PhotonStudio
 };

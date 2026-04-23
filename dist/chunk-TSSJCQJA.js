@@ -3,7 +3,7 @@ import {
   collectPhotonDocuments,
   collectPhotonSiteFrameExtensions,
   createPhotonRegistry
-} from "./chunk-U33YWAMI.js";
+} from "./chunk-YNXZBS6V.js";
 
 // src/helpers/runtime.ts
 var createPhotonRuntime = (entries) => ({

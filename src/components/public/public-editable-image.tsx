@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import {
 	usePhotonCanEdit,
 	usePhotonFieldValue,
-} from "../../context/photon-context";
+} from "../../context/photon-public-context";
 import { getPhotonEditableEditorLoader } from "../../helpers/editable-editor-loaders";
 import { resolvePhotonMediaPreviewUrl } from "../../helpers/media";
 
@@ -32,9 +32,7 @@ export const EditableImage = ({
 	const canEdit = usePhotonCanEdit();
 	const rawValue = usePhotonFieldValue(blockId, path);
 	const source = resolvePhotonMediaPreviewUrl(rawValue);
-	const altValue = altPath
-		? usePhotonFieldValue(blockId, altPath)
-		: null;
+	const altValue = usePhotonFieldValue(blockId, altPath ?? path);
 	const alt = altPath ? String(altValue ?? fallbackAlt) : fallbackAlt;
 	const [EditableImageEditor, setEditableImageEditor] =
 		useState<EditableImageEditorComponent | null>(null);

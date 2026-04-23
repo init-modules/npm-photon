@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import {
 	usePhotonCanEdit,
 	usePhotonFieldValue,
-} from "../../context/photon-context";
+} from "../../context/photon-public-context";
 import { getPhotonEditableEditorLoader } from "../../helpers/editable-editor-loaders";
 import { PHOTON_EMPTY_TEXT } from "../../helpers/path";
 import { buildPhotonSearchTargetId } from "../../search/helpers";
@@ -74,15 +74,14 @@ export const EditableRichText = ({
 	}
 
 	return (
-		<div
-			data-photon-search-target={buildPhotonSearchTargetId(blockId, path)}
-		>
+		<div data-photon-search-target={buildPhotonSearchTargetId(blockId, path)}>
 			<div
 				className={clsx(
 					richTextContentClassName,
 					className,
 					!value && "text-[color:var(--photon-site-muted)] opacity-60",
 				)}
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: renderPhotonRichTextHtml sanitizes the rich text payload before rendering.
 				dangerouslySetInnerHTML={{
 					__html: renderPhotonRichTextHtml(value, placeholder),
 				}}

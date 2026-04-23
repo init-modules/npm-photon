@@ -1,4 +1,7 @@
 import {
+  PhotonI18nProvider
+} from "./chunk-NV6FZ3PQ.js";
+import {
   PHOTON_PAGE_SURFACE_REGION_KEY,
   composePhotonSurfaceDocument,
   createPhotonBlock,
@@ -6,72 +9,37 @@ import {
   getFirstPhotonSurfaceEditableBlockId,
   getPhotonDocumentFingerprint,
   getPhotonSurfaceRegionListId
-} from "./chunk-U33YWAMI.js";
+} from "./chunk-YNXZBS6V.js";
 import {
   getPhotonAnchorRel,
   sanitizePhotonLinkHref
 } from "./chunk-V7CN23YR.js";
 import {
-  canEditPhotonWorkspace,
-  clonePhotonValue,
   collectBlockIds,
   duplicatePhotonBlockInDocument,
   findPhotonBlock,
-  getPhotonWorkspaceIdentityKey,
-  getValueAtPath,
   insertPhotonBlockInDocument,
   movePhotonBlockInDocument,
+  removePhotonBlockFromDocument,
+  updatePhotonBlockInDocument
+} from "./chunk-UZJ5GO74.js";
+import {
+  canEditPhotonWorkspace,
+  clonePhotonValue,
+  getPhotonWorkspaceIdentityKey,
+  getValueAtPath,
   normalizePhotonWorkspaceCapabilities,
   normalizePhotonWorkspaceDescriptor,
-  removePhotonBlockFromDocument,
-  setValueAtPath,
-  updatePhotonBlockInDocument
-} from "./chunk-5MWE2CZQ.js";
-
-// src/i18n/photon-i18n-context.tsx
-import { createContext, useContext, useMemo } from "react";
-import { jsx } from "react/jsx-runtime";
-var createDefaultTranslate = () => (key, fallback) => fallback ?? key;
-var defaultValue = {
-  defaultLocale: "en",
-  locale: "en",
-  contentLocale: "en",
-  interfaceLocale: "en",
-  interfaceLocales: [
-    { code: "en", label: "English" },
-    { code: "ru", label: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439" }
-  ],
-  locales: [],
-  publicLocales: [],
-  editableLocales: [],
-  showLocaleSwitcher: false,
-  translate: createDefaultTranslate()
-};
-var PhotonI18nContext = createContext(defaultValue);
-var PhotonI18nProvider = ({
-  children,
-  value
-}) => {
-  const nextValue = useMemo(
-    () => ({
-      ...defaultValue,
-      ...value,
-      translate: value?.translate ?? defaultValue.translate
-    }),
-    [value]
-  );
-  return /* @__PURE__ */ jsx(PhotonI18nContext.Provider, { value: nextValue, children });
-};
-var usePhotonI18n = () => useContext(PhotonI18nContext);
-var resolvePhotonText = (value, translate, fallback) => translate(value, fallback ?? value);
+  setValueAtPath
+} from "./chunk-KAITZE7U.js";
 
 // src/context/photon-context.tsx
 import {
-  createContext as createContext2,
+  createContext,
   createElement,
-  useContext as useContext2,
+  useContext,
   useEffect,
-  useMemo as useMemo2,
+  useMemo,
   useRef
 } from "react";
 import { useStore } from "zustand";
@@ -549,8 +517,8 @@ var createPhotonStore = ({
 };
 
 // src/context/photon-context.tsx
-import { jsx as jsx2 } from "react/jsx-runtime";
-var PhotonContext = createContext2(null);
+import { jsx } from "react/jsx-runtime";
+var PhotonContext = createContext(null);
 var DefaultPhotonLinkComponent = ({
   href,
   locale: _locale,
@@ -588,7 +556,7 @@ var PhotonProvider = ({
   accountTabs = []
 }) => {
   const storeRef = useRef(null);
-  const externalStateFingerprint = useMemo2(
+  const externalStateFingerprint = useMemo(
     () => getPhotonExternalStateFingerprint({
       document: initialDocument,
       resources: initialResources,
@@ -659,10 +627,7 @@ var PhotonProvider = ({
       const normalizedWorkspace = normalizePhotonWorkspaceDescriptor(workspace);
       const normalizedCapabilities = normalizePhotonWorkspaceCapabilities(capabilities);
       const nextMode = !isAdmin ? "preview" : state.mode;
-      const nextEditable = isAdmin && canEditPhotonWorkspace(
-        normalizedWorkspace,
-        normalizedCapabilities
-      );
+      const nextEditable = isAdmin && canEditPhotonWorkspace(normalizedWorkspace, normalizedCapabilities);
       if (state.isAdmin === isAdmin && state.uploadMedia === uploadMedia && state.searchSite === searchSite && state.requestAuth === requestAuth && state.linkComponent === linkComponent && JSON.stringify(state.siteFrameExtensions) === JSON.stringify(siteFrameExtensions) && JSON.stringify(state.accountTabs) === JSON.stringify(accountTabs) && state.contentLocale === (i18n?.contentLocale ?? state.contentLocale) && state.defaultLocale === (i18n?.defaultLocale ?? state.defaultLocale) && state.mode === nextMode && JSON.stringify(state.capabilities) === JSON.stringify(normalizedCapabilities) && JSON.stringify(state.workspace) === JSON.stringify(normalizedWorkspace)) {
         return state;
       }
@@ -695,14 +660,12 @@ var PhotonProvider = ({
     uploadMedia,
     workspace
   ]);
-  return /* @__PURE__ */ jsx2(PhotonI18nProvider, { value: i18n, children: /* @__PURE__ */ jsx2(PhotonContext.Provider, { value: storeRef.current, children }) });
+  return /* @__PURE__ */ jsx(PhotonI18nProvider, { value: i18n, children: /* @__PURE__ */ jsx(PhotonContext.Provider, { value: storeRef.current, children }) });
 };
 var usePhotonStoreApi = () => {
-  const context = useContext2(PhotonContext);
+  const context = useContext(PhotonContext);
   if (!context) {
-    throw new Error(
-      "usePhoton must be used within PhotonProvider"
-    );
+    throw new Error("usePhoton must be used within PhotonProvider");
   }
   return context;
 };
@@ -714,9 +677,7 @@ var usePhoton = () => {
   const store = usePhotonStoreApi();
   return useStore(store);
 };
-var usePhotonFieldValue = (blockId, path) => usePhotonStore(
-  (state) => getPhotonFieldValue(state, blockId, path)
-);
+var usePhotonFieldValue = (blockId, path) => usePhotonStore((state) => getPhotonFieldValue(state, blockId, path));
 var usePhotonCanEdit = () => usePhotonStore(
   (state) => state.isAdmin && state.mode !== "preview" && canEditPhotonWorkspace(state.workspace, state.capabilities)
 );
@@ -725,11 +686,8 @@ var usePhotonPersistedState = () => {
   const resources = usePhotonStore((state) => state.resources);
   const pageSettings = usePhotonStore((state) => state.pageSettings);
   const site = usePhotonStore((state) => state.site);
-  return useMemo2(() => {
-    const persistedState = decomposePhotonSurfaceDocument(
-      document,
-      site
-    );
+  return useMemo(() => {
+    const persistedState = decomposePhotonSurfaceDocument(document, site);
     return {
       document: persistedState.pageDocument,
       resources,
@@ -746,14 +704,14 @@ var PhotonLink = ({
   const mode = usePhotonStore((state) => state.mode);
   const LinkComponent = usePhotonStore((state) => state.linkComponent);
   const disableNavigation = navigateInPreviewOnly && mode !== "preview";
-  return /* @__PURE__ */ jsx2(
+  return /* @__PURE__ */ jsx(
     "span",
     {
       className: "contents",
       onClickCapture: disableNavigation ? (event) => {
         event.preventDefault();
       } : void 0,
-      children: /* @__PURE__ */ jsx2(
+      children: /* @__PURE__ */ jsx(
         LinkComponent,
         {
           ...props,
@@ -772,9 +730,6 @@ var PhotonLink = ({
 };
 
 export {
-  PhotonI18nProvider,
-  usePhotonI18n,
-  resolvePhotonText,
   PhotonProvider,
   usePhotonStoreApi,
   usePhotonStore,
