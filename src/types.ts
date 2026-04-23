@@ -585,6 +585,19 @@ export type PhotonI18nValue = {
 	translate: (key: string, fallback?: string) => string;
 };
 
+export type PhotonNavigationQueryKeys = {
+	mode: string;
+	contentLocale: string;
+	profile: string;
+	branch: string;
+	revision: string;
+};
+
+export type PhotonNavigationConfig = {
+	adminPathPrefix?: string;
+	queryKeys?: Partial<PhotonNavigationQueryKeys>;
+};
+
 export type PhotonSelectedField = {
 	blockId: string;
 	path: string;

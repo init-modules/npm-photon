@@ -27,6 +27,7 @@ import type {
 	PhotonLinkComponent,
 	PhotonLinkComponentProps,
 	PhotonMode,
+	PhotonNavigationConfig,
 	PhotonPageSettings,
 	PhotonRegistry,
 	PhotonResources,
@@ -50,6 +51,7 @@ type PhotonPublicContextValue = {
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
 	linkComponent: PhotonLinkComponent;
+	navigation: PhotonNavigationConfig;
 	siteFrameExtensions: PhotonSiteFrameExtension[];
 	accountTabs: PhotonAccountTabExtension[];
 	contentLocale: string;
@@ -71,6 +73,7 @@ type PhotonPublicProviderProps = {
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
 	linkComponent?: PhotonLinkComponent;
+	navigation?: PhotonNavigationConfig;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
 	accountTabs?: PhotonAccountTabExtension[];
 };
@@ -163,6 +166,7 @@ export const PhotonProvider = ({
 	searchSite,
 	requestAuth,
 	linkComponent = DefaultPhotonLinkComponent,
+	navigation = {},
 	siteFrameExtensions = [],
 	accountTabs = [],
 }: PhotonPublicProviderProps) => {
@@ -180,6 +184,7 @@ export const PhotonProvider = ({
 			searchSite,
 			requestAuth,
 			linkComponent,
+			navigation,
 			siteFrameExtensions,
 			accountTabs,
 			contentLocale: i18n?.contentLocale ?? "en",
@@ -197,6 +202,7 @@ export const PhotonProvider = ({
 			initialSite,
 			isAdmin,
 			linkComponent,
+			navigation,
 			registry,
 			requestAuth,
 			searchSite,

@@ -36,6 +36,7 @@ import type {
 	PhotonLinkComponent,
 	PhotonMediaUploadHandler,
 	PhotonMode,
+	PhotonNavigationConfig,
 	PhotonPageSettings,
 	PhotonRegistry,
 	PhotonResources,
@@ -76,6 +77,7 @@ export type PhotonStoreState = {
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
 	linkComponent: PhotonLinkComponent;
+	navigation: PhotonNavigationConfig;
 	siteFrameExtensions: PhotonSiteFrameExtension[];
 	accountTabs: PhotonAccountTabExtension[];
 	contentLocale: string;
@@ -146,6 +148,7 @@ export type PhotonStoreInit = {
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
 	linkComponent: PhotonLinkComponent;
+	navigation?: PhotonNavigationConfig;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
 	accountTabs?: PhotonAccountTabExtension[];
 	i18n?: {
@@ -318,6 +321,7 @@ export const createPhotonStore = ({
 	searchSite,
 	requestAuth,
 	linkComponent,
+	navigation = {},
 	siteFrameExtensions = [],
 	accountTabs = [],
 	i18n,
@@ -358,6 +362,7 @@ export const createPhotonStore = ({
 		searchSite,
 		requestAuth,
 		linkComponent,
+		navigation: clonePhotonValue(navigation),
 		siteFrameExtensions: clonePhotonValue(siteFrameExtensions),
 		accountTabs: clonePhotonValue(accountTabs),
 		contentLocale,

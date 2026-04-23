@@ -31,6 +31,7 @@ import type {
 	PhotonBlock,
 	PhotonI18nValue,
 	PhotonLinkComponent,
+	PhotonNavigationConfig,
 	PhotonRegistry,
 	PhotonResolvedPage,
 	PhotonSearchHandler,
@@ -195,6 +196,7 @@ type PhotonPublicPageProps = {
 	requestAuth?: () => void;
 	searchSite?: PhotonSearchHandler;
 	activeSearchHighlight?: PhotonSearchHighlight | null;
+	navigation?: PhotonNavigationConfig;
 };
 
 export const PhotonPublicPage = ({
@@ -207,6 +209,7 @@ export const PhotonPublicPage = ({
 	requestAuth,
 	searchSite,
 	activeSearchHighlight = null,
+	navigation,
 }: PhotonPublicPageProps) => {
 	const designSettings = resolvePhotonPublicSiteDesignSettings(
 		page.site.settings.design,
@@ -246,6 +249,7 @@ export const PhotonPublicPage = ({
 			requestAuth={requestAuth}
 			searchSite={searchSite}
 			i18n={i18n}
+			navigation={navigation}
 		>
 			<PhotonSearchHighlightEffect activeHighlight={activeSearchHighlight} />
 			<main

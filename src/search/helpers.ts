@@ -1,4 +1,9 @@
-import type { PhotonMode, PhotonSearchResult } from "../types";
+import type {
+	PhotonMode,
+	PhotonNavigationConfig,
+	PhotonNavigationQueryKeys,
+	PhotonSearchResult,
+} from "../types";
 import {
 	PHOTON_SEARCH_OCCURRENCE_PARAM,
 	PHOTON_SEARCH_QUERY_PARAM,
@@ -10,17 +15,44 @@ export const buildPhotonSearchTargetId = (
 	path: string,
 ) => `${blockId}::${path}`;
 
-const preservedPhotonSearchQueryParams = new Set([
-	"photonProfile",
-	"photonBranch",
-	"photonRevision",
-	"mode",
-	"contentLocale",
-]);
+const DEFAULT_PHOTON_NAVIGATION_QUERY_KEYS: PhotonNavigationQueryKeys = {
+	mode: "mode",
+	contentLocale: "contentLocale",
+	profile: "photonProfile",
+	branch: "photonBranch",
+	revision: "photonRevision",
+};
+
+const DEFAULT_PHOTON_ADMIN_PATH_PREFIX = "/photon-admin";
+
+const normalizePhotonAdminPathPrefix = (pathPrefix?: string) => {
+	const normalized = pathPrefix?.trim().replace(/\/+$/u, "");
+
+	return normalized?.startsWith("/") ? normalized : DEFAULT_PHOTON_ADMIN_PATH_PREFIX;
+};
+
+export const resolvePhotonNavigationConfig = (
+	config?: PhotonNavigationConfig,
+) => ({
+	adminPathPrefix: normalizePhotonAdminPathPrefix(config?.adminPathPrefix),
+	queryKeys: {
+		...DEFAULT_PHOTON_NAVIGATION_QUERY_KEYS,
+		...(config?.queryKeys ?? {}),
+	},
+});
 
 const preservePhotonSearchParams = (
 	currentSearchParams: URLSearchParams,
+	navigation?: PhotonNavigationConfig,
 ) => {
+	const { queryKeys } = resolvePhotonNavigationConfig(navigation);
+	const preservedPhotonSearchQueryParams = new Set([
+		queryKeys.profile,
+		queryKeys.branch,
+		queryKeys.revision,
+		queryKeys.mode,
+		queryKeys.contentLocale,
+	]);
 	const searchParams = new URLSearchParams();
 
 	currentSearchParams.forEach((value, key) => {
@@ -69,6 +101,7 @@ export const buildPhotonSearchResultHref = (
 		locale?: string;
 		contentLocale?: string;
 		currentSearchParams?: URLSearchParams;
+		navigation?: PhotonNavigationConfig;
 		workspaceSelection?: {
 			profileId: string;
 			branch: string;
@@ -81,13 +114,17 @@ export const buildPhotonSearchResultHref = (
 		options?.locale,
 		options?.contentLocale,
 	);
+	const navigation = resolvePhotonNavigationConfig(options?.navigation);
 	const routeUrl = new URL(normalizedRoute, "https://photon.local");
 	const targetPathname = isAdmin
-		? `/photon-admin${routeUrl.pathname === "/" ? "" : routeUrl.pathname}`
+		? `${navigation.adminPathPrefix}${
+				routeUrl.pathname === "/" ? "" : routeUrl.pathname
+			}`
 		: routeUrl.pathname;
 	const url = new URL(targetPathname, "https://photon.local");
 	const searchParams = preservePhotonSearchParams(
 		options?.currentSearchParams ?? new URLSearchParams(),
+		options?.navigation,
 	);
 
 	routeUrl.searchParams.forEach((value, key) => {
@@ -95,30 +132,42 @@ export const buildPhotonSearchResultHref = (
 	});
 
 	if (isAdmin && mode !== "preview") {
-		searchParams.set("mode", mode);
+		searchParams.set(navigation.queryKeys.mode, mode);
 	} else {
-		searchParams.delete("mode");
+		searchParams.delete(navigation.queryKeys.mode);
 	}
 
 	if (options?.contentLocale && options.contentLocale !== options.locale) {
-		searchParams.set("contentLocale", options.contentLocale);
+		searchParams.set(
+			navigation.queryKeys.contentLocale,
+			options.contentLocale,
+		);
 	} else {
-		searchParams.delete("contentLocale");
+		searchParams.delete(navigation.queryKeys.contentLocale);
 	}
 
 	if (options?.workspaceSelection?.profileId) {
-		searchParams.set("photonProfile", options.workspaceSelection.profileId);
-		searchParams.set("photonBranch", options.workspaceSelection.branch);
+		searchParams.set(
+			navigation.queryKeys.profile,
+			options.workspaceSelection.profileId,
+		);
+		searchParams.set(
+			navigation.queryKeys.branch,
+			options.workspaceSelection.branch,
+		);
 
 		if (options.workspaceSelection.revisionId) {
-			searchParams.set("photonRevision", options.workspaceSelection.revisionId);
+			searchParams.set(
+				navigation.queryKeys.revision,
+				options.workspaceSelection.revisionId,
+			);
 		} else {
-			searchParams.delete("photonRevision");
+			searchParams.delete(navigation.queryKeys.revision);
 		}
 	} else {
-		searchParams.delete("photonProfile");
-		searchParams.delete("photonBranch");
-		searchParams.delete("photonRevision");
+		searchParams.delete(navigation.queryKeys.profile);
+		searchParams.delete(navigation.queryKeys.branch);
+		searchParams.delete(navigation.queryKeys.revision);
 	}
 
 	searchParams.set(PHOTON_SEARCH_QUERY_PARAM, query);

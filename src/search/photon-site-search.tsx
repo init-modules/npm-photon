@@ -104,6 +104,7 @@ export const PhotonSiteSearch = ({
 	const searchSite = usePhotonStore((state) => state.searchSite);
 	const mode = usePhotonStore((state) => state.mode);
 	const isAdmin = usePhotonStore((state) => state.isAdmin);
+	const navigation = usePhotonStore((state) => state.navigation);
 	const workspace = usePhotonStore((state) => state.workspace);
 	const placeholder = String(
 		usePhotonFieldValue(blockId, placeholderPath) ?? "Search the website",
@@ -148,6 +149,7 @@ export const PhotonSiteSearch = ({
 						typeof window === "undefined"
 							? undefined
 							: new URLSearchParams(window.location.search),
+					navigation,
 					workspaceSelection: workspace?.ref?.profileId
 						? {
 								profileId: workspace.ref.profileId,

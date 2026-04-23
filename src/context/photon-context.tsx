@@ -29,6 +29,7 @@ import type {
 	PhotonLinkComponentProps,
 	PhotonMediaUploadHandler,
 	PhotonMode,
+	PhotonNavigationConfig,
 	PhotonPageSettings,
 	PhotonRegistry,
 	PhotonResources,
@@ -65,6 +66,7 @@ type PhotonProviderProps = {
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
 	linkComponent?: PhotonLinkComponent;
+	navigation?: PhotonNavigationConfig;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
 	accountTabs?: PhotonAccountTabExtension[];
 };
@@ -104,6 +106,7 @@ export const PhotonProvider = ({
 	searchSite,
 	requestAuth,
 	linkComponent = DefaultPhotonLinkComponent,
+	navigation = {},
 	siteFrameExtensions = [],
 	accountTabs = [],
 }: PhotonProviderProps) => {
@@ -142,6 +145,7 @@ export const PhotonProvider = ({
 			searchSite,
 			requestAuth,
 			linkComponent,
+			navigation,
 			siteFrameExtensions,
 			accountTabs,
 			i18n: i18n
@@ -197,6 +201,7 @@ export const PhotonProvider = ({
 				state.searchSite === searchSite &&
 				state.requestAuth === requestAuth &&
 				state.linkComponent === linkComponent &&
+				JSON.stringify(state.navigation) === JSON.stringify(navigation) &&
 				JSON.stringify(state.siteFrameExtensions) ===
 					JSON.stringify(siteFrameExtensions) &&
 				JSON.stringify(state.accountTabs) === JSON.stringify(accountTabs) &&
@@ -219,6 +224,7 @@ export const PhotonProvider = ({
 				searchSite,
 				requestAuth,
 				linkComponent,
+				navigation: clonePhotonValue(navigation),
 				siteFrameExtensions: clonePhotonValue(siteFrameExtensions),
 				accountTabs: clonePhotonValue(accountTabs),
 				contentLocale: i18n?.contentLocale ?? state.contentLocale,
@@ -232,6 +238,7 @@ export const PhotonProvider = ({
 		i18n?.defaultLocale,
 		isAdmin,
 		linkComponent,
+		navigation,
 		siteFrameExtensions,
 		accountTabs,
 		requestAuth,
