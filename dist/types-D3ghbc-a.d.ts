@@ -190,9 +190,26 @@ type PhotonSiteFrameLinkItem = {
     target?: string;
     rel?: string;
     order?: number;
+    placement?: "default" | "prominent";
     enabled?: boolean;
+    isVisible?: (context: PhotonSiteFrameExtensionContext) => boolean;
 };
 type PhotonSiteFrameActionKind = "link" | "auth";
+type PhotonSiteFrameExtensionContext = {
+    document: PhotonDocument;
+    resources: PhotonResources;
+    pageSettings: PhotonPageSettings;
+    site: PhotonSite;
+    mode: PhotonMode;
+    isAdmin: boolean;
+    currentRoute: string;
+};
+type PhotonSiteFrameActionComponentProps = {
+    action: PhotonSiteFrameActionItem;
+    className: string;
+    context: PhotonSiteFrameExtensionContext;
+    requestAuth?: () => void;
+};
 type PhotonSiteFrameActionItem = PhotonSiteFrameLinkItem & {
     kind?: PhotonSiteFrameActionKind;
     appearance?: "primary" | "secondary" | "ghost";
@@ -200,6 +217,7 @@ type PhotonSiteFrameActionItem = PhotonSiteFrameLinkItem & {
     authenticatedHref?: string;
     authenticatedTarget?: string;
     authenticatedRel?: string;
+    component?: ComponentType<PhotonSiteFrameActionComponentProps>;
 };
 type PhotonSiteFrameNavigationColumn = {
     id?: string;
@@ -326,6 +344,8 @@ type PhotonLinkComponentProps = {
     onClick?: MouseEventHandler<HTMLElement>;
     target?: string;
     rel?: string;
+    [ariaAttribute: `aria-${string}`]: string | number | boolean | undefined;
+    [dataAttribute: `data-${string}`]: string | number | boolean | undefined;
 };
 type PhotonLinkComponent = ComponentType<PhotonLinkComponentProps>;
 type PhotonBlockComponentProps<Props extends PhotonBlockProps = PhotonBlockProps> = {
@@ -446,6 +466,17 @@ type PhotonI18nValue = {
     showLocaleSwitcher?: boolean;
     translate: (key: string, fallback?: string) => string;
 };
+type PhotonNavigationQueryKeys = {
+    mode: string;
+    contentLocale: string;
+    profile: string;
+    branch: string;
+    revision: string;
+};
+type PhotonNavigationConfig = {
+    adminPathPrefix?: string;
+    queryKeys?: Partial<PhotonNavigationQueryKeys>;
+};
 type PhotonSelectedField = {
     blockId: string;
     path: string;
@@ -507,4 +538,4 @@ type PhotonMediaUploadInput = {
 };
 type PhotonMediaUploadHandler = (input: PhotonMediaUploadInput) => Promise<PhotonMediaValue>;
 
-export type { PhotonBindingAdapter as $, PhotonRegistry as A, PhotonRevisionDescriptor as B, PhotonBranchPolicyState as C, PhotonMergePreview as D, PhotonMode as E, PhotonMediaUploadHandler as F, PhotonSearchHandler as G, PhotonLinkComponent as H, PhotonI18nValue as I, PhotonField as J, PhotonPageSettingsPanelDefinition as K, PhotonSiteSettingsPanelDefinition as L, PhotonBlockDefinition as M, PhotonNestedField as N, PhotonBlockLocalizationSchema as O, PhotonArea as P, PhotonModule as Q, PhotonLocalizedDefaultValue as R, PhotonRegistryEntry as S, PhotonBlockProps as T, PhotonInstallableKit as U, PhotonRuntime as V, PhotonSiteDesignSettings as W, PhotonResolvedSiteDesignSettings as X, PhotonSiteComponentVariants as Y, PhotonWorkspaceRef as Z, PhotonLinkComponentProps as _, PhotonBlock as a, PhotonBlockComponentProps as a0, PhotonFieldOption as a1, PhotonPageSettingsScope as a2, PhotonSelectedField as a3, PhotonAccountTabMatch as a4, PhotonActorSummary as a5, PhotonAnyBlockDefinition as a6, PhotonBindingMode as a7, PhotonBlockComponent as a8, PhotonBlockDefaults as a9, PhotonDefaultable as aa, PhotonFieldKind as ab, PhotonFieldLocalization as ac, PhotonInterfaceLocaleOption as ad, PhotonMergeConflict as ae, PhotonMergeDiffItem as af, PhotonMergeResolutionStrategy as ag, PhotonPageSettingsPanelProps as ah, PhotonRevisionChangeSummaryItem as ai, PhotonSearchInput as aj, PhotonSiteColorSchemeDefinition as ak, PhotonSiteDesignAppearance as al, PhotonSiteDesignColorTokens as am, PhotonSiteDesignPresetDefinition as an, PhotonSiteDesignValue as ao, PhotonSiteFrameActionKind as ap, PhotonSiteSettingsPanelProps as aq, PhotonDocument as b, PhotonDocumentsMap as c, PhotonFieldBinding as d, PhotonLocaleDescriptor as e, PhotonLocaleStatus as f, PhotonMediaUploadInput as g, PhotonMediaValue as h, PhotonPageCatalogItem as i, PhotonPageRuntimeData as j, PhotonPageSettings as k, PhotonResolvedPage as l, PhotonResources as m, PhotonSearchHighlight as n, PhotonSearchResult as o, PhotonSite as p, PhotonSiteRegion as q, PhotonSiteSettings as r, PhotonWorkspaceCapabilities as s, PhotonWorkspaceDescriptor as t, PhotonSiteFrameExtension as u, PhotonSiteFrameNavigationColumn as v, PhotonSiteFrameLinkItem as w, PhotonSiteFrameActionItem as x, PhotonAccountTabExtension as y, PhotonSurfaceMode as z };
+export type { PhotonLinkComponentProps as $, PhotonSurfaceMode as A, PhotonRegistry as B, PhotonRevisionDescriptor as C, PhotonBranchPolicyState as D, PhotonMergePreview as E, PhotonMode as F, PhotonMediaUploadHandler as G, PhotonSearchHandler as H, PhotonLinkComponent as I, PhotonI18nValue as J, PhotonField as K, PhotonPageSettingsPanelDefinition as L, PhotonSiteSettingsPanelDefinition as M, PhotonBlockDefinition as N, PhotonNestedField as O, PhotonArea as P, PhotonBlockLocalizationSchema as Q, PhotonModule as R, PhotonLocalizedDefaultValue as S, PhotonRegistryEntry as T, PhotonBlockProps as U, PhotonInstallableKit as V, PhotonRuntime as W, PhotonSiteDesignSettings as X, PhotonResolvedSiteDesignSettings as Y, PhotonSiteComponentVariants as Z, PhotonWorkspaceRef as _, PhotonBlock as a, PhotonNavigationConfig as a0, PhotonBindingAdapter as a1, PhotonBlockComponentProps as a2, PhotonFieldOption as a3, PhotonPageSettingsScope as a4, PhotonSiteFrameActionComponentProps as a5, PhotonSelectedField as a6, PhotonAccountTabMatch as a7, PhotonActorSummary as a8, PhotonAnyBlockDefinition as a9, PhotonBindingMode as aa, PhotonBlockComponent as ab, PhotonBlockDefaults as ac, PhotonDefaultable as ad, PhotonFieldKind as ae, PhotonFieldLocalization as af, PhotonInterfaceLocaleOption as ag, PhotonMergeConflict as ah, PhotonMergeDiffItem as ai, PhotonMergeResolutionStrategy as aj, PhotonNavigationQueryKeys as ak, PhotonPageSettingsPanelProps as al, PhotonRevisionChangeSummaryItem as am, PhotonSearchInput as an, PhotonSiteColorSchemeDefinition as ao, PhotonSiteDesignAppearance as ap, PhotonSiteDesignColorTokens as aq, PhotonSiteDesignPresetDefinition as ar, PhotonSiteDesignValue as as, PhotonSiteFrameActionKind as at, PhotonSiteSettingsPanelProps as au, PhotonDocument as b, PhotonDocumentsMap as c, PhotonFieldBinding as d, PhotonLocaleDescriptor as e, PhotonLocaleStatus as f, PhotonMediaUploadInput as g, PhotonMediaValue as h, PhotonPageCatalogItem as i, PhotonPageRuntimeData as j, PhotonPageSettings as k, PhotonResolvedPage as l, PhotonResources as m, PhotonSearchHighlight as n, PhotonSearchResult as o, PhotonSite as p, PhotonSiteRegion as q, PhotonSiteSettings as r, PhotonWorkspaceCapabilities as s, PhotonWorkspaceDescriptor as t, PhotonSiteFrameExtension as u, PhotonSiteFrameNavigationColumn as v, PhotonSiteFrameLinkItem as w, PhotonSiteFrameExtensionContext as x, PhotonSiteFrameActionItem as y, PhotonAccountTabExtension as z };

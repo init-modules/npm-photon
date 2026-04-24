@@ -2,6 +2,7 @@ import type {
 	PhotonAccountTabExtension,
 	PhotonSiteFrameActionItem,
 	PhotonSiteFrameExtension,
+	PhotonSiteFrameExtensionContext,
 	PhotonSiteFrameLinkItem,
 	PhotonSiteFrameNavigationColumn,
 } from "../types";
@@ -21,6 +22,11 @@ const byOrderThenLabel = <
 	);
 
 const isEnabled = (value: { enabled?: boolean }) => value.enabled !== false;
+
+const isVisible = (
+	value: { isVisible?: (context: PhotonSiteFrameExtensionContext) => boolean },
+	context: PhotonSiteFrameExtensionContext,
+) => value.isVisible?.(context) !== false;
 
 const isNotDisabled = (
 	id: string | undefined,
@@ -62,6 +68,7 @@ export const resolvePhotonPublicAccountTabs = (
 export const collectPhotonPublicHeaderExtensionItems = (
 	extensions: readonly PhotonSiteFrameExtension[],
 	disabledItemIds: readonly string[] = [],
+	context: PhotonSiteFrameExtensionContext,
 ): {
 	utilityLinks: PhotonSiteFrameLinkItem[];
 	categoryLinks: PhotonSiteFrameLinkItem[];
@@ -72,15 +79,30 @@ export const collectPhotonPublicHeaderExtensionItems = (
 	return {
 		utilityLinks: extensions
 			.flatMap((extension) => extension.header?.utilityLinks ?? [])
-			.filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds))
+			.filter(
+				(item) =>
+					isEnabled(item) &&
+					isNotDisabled(item.id, disabledIds) &&
+					isVisible(item, context),
+			)
 			.sort(byOrderThenLabel),
 		categoryLinks: extensions
 			.flatMap((extension) => extension.header?.categoryLinks ?? [])
-			.filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds))
+			.filter(
+				(item) =>
+					isEnabled(item) &&
+					isNotDisabled(item.id, disabledIds) &&
+					isVisible(item, context),
+			)
 			.sort(byOrderThenLabel),
 		actions: extensions
 			.flatMap((extension) => extension.header?.actions ?? [])
-			.filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds))
+			.filter(
+				(item) =>
+					isEnabled(item) &&
+					isNotDisabled(item.id, disabledIds) &&
+					isVisible(item, context),
+			)
 			.sort(byOrderThenLabel),
 	};
 };

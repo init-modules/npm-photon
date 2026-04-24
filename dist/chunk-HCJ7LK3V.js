@@ -139,6 +139,7 @@ var createPhotonStore = ({
   searchSite,
   requestAuth,
   linkComponent,
+  navigation = {},
   siteFrameExtensions = [],
   accountTabs = [],
   i18n
@@ -175,7 +176,8 @@ var createPhotonStore = ({
     searchSite,
     requestAuth,
     linkComponent,
-    siteFrameExtensions: clonePhotonValue(siteFrameExtensions),
+    navigation: clonePhotonValue(navigation),
+    siteFrameExtensions,
     accountTabs: clonePhotonValue(accountTabs),
     contentLocale,
     defaultLocale,
@@ -305,9 +307,7 @@ var createPhotonStore = ({
         document: {
           ...insertPhotonBlockInDocument(
             currentState.document,
-            listId ?? getPhotonSurfaceRegionListId(
-              PHOTON_PAGE_SURFACE_REGION_KEY
-            ),
+            listId ?? getPhotonSurfaceRegionListId(PHOTON_PAGE_SURFACE_REGION_KEY),
             nextBlock,
             index ?? Number.MAX_SAFE_INTEGER
           ),
@@ -346,10 +346,7 @@ var createPhotonStore = ({
         return;
       }
       set((state) => {
-        const removal = removePhotonBlockFromDocument(
-          state.document,
-          blockId
-        );
+        const removal = removePhotonBlockFromDocument(state.document, blockId);
         if (!removal.removed) {
           return state;
         }
@@ -399,10 +396,7 @@ var createPhotonStore = ({
       const nextWorkspace = options?.workspace ? normalizePhotonWorkspaceDescriptor(options.workspace) : get().workspace;
       const nextCapabilities = options?.capabilities ? normalizePhotonWorkspaceCapabilities(options.capabilities) : get().capabilities;
       set((state) => {
-        const nextSelectedBlockId = state.selectedBlockId && findPhotonBlock(
-          nextSurfaceDocument.blocks,
-          state.selectedBlockId
-        ) ? state.selectedBlockId : getFirstPhotonSurfaceEditableBlockId(nextSurfaceDocument);
+        const nextSelectedBlockId = state.selectedBlockId && findPhotonBlock(nextSurfaceDocument.blocks, state.selectedBlockId) ? state.selectedBlockId : getFirstPhotonSurfaceEditableBlockId(nextSurfaceDocument);
         return {
           document: clonePhotonValue(nextSurfaceDocument),
           resources: clonePhotonValue(nextResources),
@@ -552,6 +546,7 @@ var PhotonProvider = ({
   searchSite,
   requestAuth,
   linkComponent = DefaultPhotonLinkComponent,
+  navigation = {},
   siteFrameExtensions = [],
   accountTabs = []
 }) => {
@@ -588,6 +583,7 @@ var PhotonProvider = ({
       searchSite,
       requestAuth,
       linkComponent,
+      navigation,
       siteFrameExtensions,
       accountTabs,
       i18n: i18n ? {
@@ -628,7 +624,7 @@ var PhotonProvider = ({
       const normalizedCapabilities = normalizePhotonWorkspaceCapabilities(capabilities);
       const nextMode = !isAdmin ? "preview" : state.mode;
       const nextEditable = isAdmin && canEditPhotonWorkspace(normalizedWorkspace, normalizedCapabilities);
-      if (state.isAdmin === isAdmin && state.uploadMedia === uploadMedia && state.searchSite === searchSite && state.requestAuth === requestAuth && state.linkComponent === linkComponent && JSON.stringify(state.siteFrameExtensions) === JSON.stringify(siteFrameExtensions) && JSON.stringify(state.accountTabs) === JSON.stringify(accountTabs) && state.contentLocale === (i18n?.contentLocale ?? state.contentLocale) && state.defaultLocale === (i18n?.defaultLocale ?? state.defaultLocale) && state.mode === nextMode && JSON.stringify(state.capabilities) === JSON.stringify(normalizedCapabilities) && JSON.stringify(state.workspace) === JSON.stringify(normalizedWorkspace)) {
+      if (state.isAdmin === isAdmin && state.uploadMedia === uploadMedia && state.searchSite === searchSite && state.requestAuth === requestAuth && state.linkComponent === linkComponent && JSON.stringify(state.navigation) === JSON.stringify(navigation) && state.siteFrameExtensions === siteFrameExtensions && JSON.stringify(state.accountTabs) === JSON.stringify(accountTabs) && state.contentLocale === (i18n?.contentLocale ?? state.contentLocale) && state.defaultLocale === (i18n?.defaultLocale ?? state.defaultLocale) && state.mode === nextMode && JSON.stringify(state.capabilities) === JSON.stringify(normalizedCapabilities) && JSON.stringify(state.workspace) === JSON.stringify(normalizedWorkspace)) {
         return state;
       }
       return {
@@ -640,7 +636,8 @@ var PhotonProvider = ({
         searchSite,
         requestAuth,
         linkComponent,
-        siteFrameExtensions: clonePhotonValue(siteFrameExtensions),
+        navigation: clonePhotonValue(navigation),
+        siteFrameExtensions,
         accountTabs: clonePhotonValue(accountTabs),
         contentLocale: i18n?.contentLocale ?? state.contentLocale,
         defaultLocale: i18n?.defaultLocale ?? state.defaultLocale,
@@ -653,6 +650,7 @@ var PhotonProvider = ({
     i18n?.defaultLocale,
     isAdmin,
     linkComponent,
+    navigation,
     siteFrameExtensions,
     accountTabs,
     requestAuth,

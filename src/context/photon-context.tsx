@@ -202,8 +202,7 @@ export const PhotonProvider = ({
 				state.requestAuth === requestAuth &&
 				state.linkComponent === linkComponent &&
 				JSON.stringify(state.navigation) === JSON.stringify(navigation) &&
-				JSON.stringify(state.siteFrameExtensions) ===
-					JSON.stringify(siteFrameExtensions) &&
+				state.siteFrameExtensions === siteFrameExtensions &&
 				JSON.stringify(state.accountTabs) === JSON.stringify(accountTabs) &&
 				state.contentLocale === (i18n?.contentLocale ?? state.contentLocale) &&
 				state.defaultLocale === (i18n?.defaultLocale ?? state.defaultLocale) &&
@@ -225,7 +224,7 @@ export const PhotonProvider = ({
 				requestAuth,
 				linkComponent,
 				navigation: clonePhotonValue(navigation),
-				siteFrameExtensions: clonePhotonValue(siteFrameExtensions),
+				siteFrameExtensions,
 				accountTabs: clonePhotonValue(accountTabs),
 				contentLocale: i18n?.contentLocale ?? state.contentLocale,
 				defaultLocale: i18n?.defaultLocale ?? state.defaultLocale,

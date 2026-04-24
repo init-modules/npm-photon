@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { ArrowRight, CircleUserRound, LogIn, ShoppingCart } from "lucide-react";
+import { ArrowRight, CircleUserRound, LogIn } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { EditableImage } from "../../../components/public/public-editable-image";
 import { EditableText } from "../../../components/public/public-editable-text";
@@ -24,6 +24,7 @@ import type {
 	PhotonBlockComponentProps,
 	PhotonField,
 	PhotonSiteFrameActionItem,
+	PhotonSiteFrameExtensionContext,
 } from "../../../types";
 import {
 	normalizePhotonSiteLinkItems,
@@ -33,15 +34,8 @@ import {
 	collectHeaderActionLinkKeys,
 	collectUniqueHeaderLinks,
 	getHeaderActionVisibleHref,
-	getHeaderCartLink,
-	getHeaderCartQuantity,
 	getHeaderLinkDedupeKey,
-	getHeaderLinkPathname,
 	hasAuthenticatedUser,
-	hasCommerceBlock,
-	hasCommerceRuntimeResource,
-	isCartLinkHref,
-	isCommerceExtensionId,
 	isProtectedAccountHref,
 	normalizeHeaderHref,
 } from "./site-header-links";
@@ -243,10 +237,11 @@ const SiteHeaderShell = ({
 	const isAdmin = usePhotonStore((state) => state.isAdmin);
 	const mode = usePhotonStore((state) => state.mode);
 	const currentRoute = usePhotonStore((state) => state.document.route);
-	const currentBlocks = usePhotonStore((state) => state.document.blocks);
+	const document = usePhotonStore((state) => state.document);
 	const requestAuth = usePhotonStore((state) => state.requestAuth);
 	const resources = usePhotonStore((state) => state.resources);
-	const siteRegions = usePhotonStore((state) => state.site.regions);
+	const pageSettings = usePhotonStore((state) => state.pageSettings);
+	const site = usePhotonStore((state) => state.site);
 	const siteDesign = usePhotonStore((state) => state.site.settings.design);
 	const siteFrameExtensions = usePhotonStore(
 		(state) => state.siteFrameExtensions,
@@ -260,20 +255,22 @@ const SiteHeaderShell = ({
 	const disabledExtensionItemIds = normalizePhotonSiteStringItems(
 		block.props.disabledExtensionItemIds,
 	);
+	const extensionContext: PhotonSiteFrameExtensionContext = {
+		document,
+		resources,
+		pageSettings,
+		site,
+		mode,
+		isAdmin,
+		currentRoute,
+	};
 	const headerExtensionItems = collectPhotonPublicHeaderExtensionItems(
 		resolvePhotonPublicSiteFrameExtensions(
 			siteFrameExtensions,
 			disabledExtensionIds,
-		).filter(
-			(extension) =>
-				!isCommerceExtensionId(extension.id) ||
-				hasCommerceBlock(currentBlocks) ||
-				Object.values(siteRegions).some((region) =>
-					hasCommerceBlock(region.document.blocks),
-				) ||
-				hasCommerceRuntimeResource(resources),
 		),
 		disabledExtensionItemIds,
+		extensionContext,
 	);
 	const rawUtilityLinks = [
 		...normalizePhotonSiteLinkItems(block.props.utilityLinks),
@@ -282,15 +279,12 @@ const SiteHeaderShell = ({
 	const extensionCategoryLinks = normalizePhotonSiteLinkItems(
 		headerExtensionItems.categoryLinks,
 	);
-	const commerceCatalogLink =
-		extensionCategoryLinks.find(
-			(link) =>
-				link.id === "commerce:catalog-link" ||
-				getHeaderLinkPathname(link.href) === "/catalog",
-		) ?? null;
+	const prominentCategoryLink =
+		extensionCategoryLinks.find((link) => link.placement === "prominent") ??
+		null;
 	const rawCategoryLinks = [
 		...normalizePhotonSiteLinkItems(block.props.categoryLinks),
-		...extensionCategoryLinks.filter((link) => link !== commerceCatalogLink),
+		...extensionCategoryLinks.filter((link) => link !== prominentCategoryLink),
 	];
 	const variant = block.props.variant ?? "commerce-inline";
 	const liveSurfaceMode = mode !== "builder";
@@ -300,39 +294,14 @@ const SiteHeaderShell = ({
 	const localeSwitcherVisible =
 		block.props.showLocaleSwitcher !== false && publicLocales.length > 1;
 	const authenticatedUser = hasAuthenticatedUser(resources);
-	const [cartQuantity, setCartQuantity] = useState(() =>
-		getHeaderCartQuantity(resources),
-	);
 	const rawExtensionActions = collectUniqueHeaderLinks(
 		headerExtensionItems.actions,
 	).filter((action) => {
 		const visibleHref = getHeaderActionVisibleHref(action, authenticatedUser);
 
-		return normalizeHeaderHref(visibleHref) !== "";
+		return Boolean(action.component) || normalizeHeaderHref(visibleHref) !== "";
 	});
-	const dedicatedCartLink =
-		getHeaderCartLink(
-			rawExtensionActions.map((action) => ({
-				label: action.label,
-				href: getHeaderActionVisibleHref(action, authenticatedUser),
-			})),
-		) ??
-		getHeaderCartLink([
-			{
-				label: block.props.secondaryCtaLabel,
-				href: block.props.secondaryCtaHref,
-			},
-			{
-				label: block.props.primaryCtaLabel,
-				href: block.props.primaryCtaHref,
-			},
-			...rawCategoryLinks,
-			...rawUtilityLinks,
-		]);
-	const extensionActions = rawExtensionActions.filter(
-		(action) =>
-			!isCartLinkHref(getHeaderActionVisibleHref(action, authenticatedUser)),
-	);
+	const extensionActions = rawExtensionActions;
 	const hasExtensionAuthAction = extensionActions.some(
 		(action) => (action.kind ?? "link") === "auth",
 	);
@@ -343,7 +312,6 @@ const SiteHeaderShell = ({
 	const primaryCtaLinkKey = getHeaderLinkDedupeKey(block.props.primaryCtaHref);
 	const shouldRenderSecondaryCta =
 		normalizeHeaderHref(block.props.secondaryCtaHref) !== "" &&
-		!isCartLinkHref(block.props.secondaryCtaHref) &&
 		!extensionActionLinkKeys.has(secondaryCtaLinkKey) &&
 		!(
 			(hasExtensionAuthAction || !authenticatedUser) &&
@@ -351,17 +319,12 @@ const SiteHeaderShell = ({
 		);
 	const shouldRenderPrimaryCta =
 		normalizeHeaderHref(block.props.primaryCtaHref) !== "" &&
-		!isCartLinkHref(block.props.primaryCtaHref) &&
 		(!extensionActionLinkKeys.has(primaryCtaLinkKey) ||
 			primaryCtaLinkKey === secondaryCtaLinkKey);
 	const prominentLinkKeys = new Set(extensionActionLinkKeys);
 
-	if (dedicatedCartLink) {
-		prominentLinkKeys.add(getHeaderLinkDedupeKey(dedicatedCartLink.href));
-	}
-
-	if (commerceCatalogLink) {
-		prominentLinkKeys.add(getHeaderLinkDedupeKey(commerceCatalogLink.href));
+	if (prominentCategoryLink) {
+		prominentLinkKeys.add(getHeaderLinkDedupeKey(prominentCategoryLink.href));
 	}
 
 	if (shouldRenderPrimaryCta) {
@@ -384,40 +347,11 @@ const SiteHeaderShell = ({
 		new Set([...prominentLinkKeys, ...categoryLinkKeys]),
 	);
 
-	const renderCartLink = (
-		href: string,
-		label: string,
-		className?: string,
-		key?: string,
-	) => (
-		<PhotonLink
-			key={key ?? `cart:${href}`}
-			href={href}
-			aria-label={label}
-			data-photon-header-cart-link="true"
-			className={clsx(
-				"relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--photon-site-border)] text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
-				className,
-			)}
-		>
-			<ShoppingCart className="h-5 w-5" />
-			{cartQuantity > 0 ? (
-				<span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--photon-site-accent)] px-1 text-[10px] font-bold leading-none text-white">
-					{cartQuantity > 99 ? "99+" : cartQuantity}
-				</span>
-			) : null}
-		</PhotonLink>
-	);
-
 	const renderSmartLink = (
 		link: { label: string; href: string; target?: string; rel?: string },
 		className: string,
 		key: string,
 	) => {
-		if (isCartLinkHref(link.href)) {
-			return renderCartLink(link.href, link.label, className, key);
-		}
-
 		if (!authenticatedUser && isProtectedAccountHref(link.href)) {
 			return null;
 		}
@@ -445,6 +379,20 @@ const SiteHeaderShell = ({
 					? "text-[var(--photon-site-text)] hover:text-[var(--photon-site-accent)]"
 					: "border border-[var(--photon-site-border)] text-[var(--photon-site-text)] hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
 		);
+
+		if (action.component) {
+			const ActionComponent = action.component;
+
+			return (
+				<ActionComponent
+					key={action.id ?? `${action.label}:${action.href}`}
+					action={action}
+					className={className}
+					context={extensionContext}
+					requestAuth={requestAuth}
+				/>
+			);
+		}
 
 		if ((action.kind ?? "link") === "auth") {
 			if (authenticatedUser) {
@@ -506,35 +454,6 @@ const SiteHeaderShell = ({
 
 		return () => window.removeEventListener("scroll", sync);
 	}, [block.props.compactOnScroll, liveSurfaceMode]);
-
-	useEffect(() => {
-		if (typeof window === "undefined") {
-			return;
-		}
-
-		setCartQuantity(getHeaderCartQuantity(resources));
-
-		const syncCartQuantity = (event: Event) => {
-			if (!(event instanceof CustomEvent)) {
-				return;
-			}
-
-			const cart = event.detail as
-				| { items_quantity?: unknown; item_count?: unknown }
-				| undefined;
-			const quantity = Number(cart?.items_quantity ?? cart?.item_count ?? 0);
-
-			setCartQuantity(
-				Number.isFinite(quantity) && quantity > 0 ? Math.floor(quantity) : 0,
-			);
-		};
-
-		window.addEventListener("commerce-cart-updated", syncCartQuantity);
-
-		return () => {
-			window.removeEventListener("commerce-cart-updated", syncCartQuantity);
-		};
-	}, [resources]);
 
 	useEffect(() => {
 		if (typeof window === "undefined") {
@@ -629,10 +548,7 @@ const SiteHeaderShell = ({
 								{utilityLinks.map((link) =>
 									renderSmartLink(
 										link,
-										clsx(
-											"transition hover:text-[var(--photon-site-text)]",
-											isCartLinkHref(link.href) && "h-8 w-8 border-transparent",
-										),
+										"transition hover:text-[var(--photon-site-text)]",
 										`${link.label}:${link.href}`,
 									),
 								)}
@@ -680,7 +596,7 @@ const SiteHeaderShell = ({
 						<div
 							className={clsx(
 								"grid gap-4 lg:items-center",
-								commerceCatalogLink
+								prominentCategoryLink
 									? "lg:grid-cols-[auto_auto_minmax(280px,1fr)_auto]"
 									: "lg:grid-cols-[auto_minmax(280px,1fr)_auto]",
 							)}
@@ -723,17 +639,17 @@ const SiteHeaderShell = ({
 								</div>
 							</PhotonLink>
 
-							{commerceCatalogLink ? (
+							{prominentCategoryLink ? (
 								<PhotonLink
-									href={commerceCatalogLink.href}
+									href={prominentCategoryLink.href}
+									target={prominentCategoryLink.target}
+									rel={prominentCategoryLink.rel}
 									className="inline-flex items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]"
 								>
 									<div className="h-2.5 w-2.5 rounded-full bg-[var(--photon-site-accent)]" />
-									<EditableText
-										blockId={block.id}
-										path="catalogLabel"
-										className="font-semibold"
-									/>
+									<span className="font-semibold">
+										{prominentCategoryLink.label}
+									</span>
 								</PhotonLink>
 							) : null}
 
@@ -744,25 +660,16 @@ const SiteHeaderShell = ({
 
 							<div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
 								{shouldRenderSecondaryCta ? (
-									isCartLinkHref(block.props.secondaryCtaHref) ? (
-										renderCartLink(
-											block.props.secondaryCtaHref,
-											block.props.secondaryCtaLabel,
-											undefined,
-											"secondary-cart",
-										)
-									) : (
-										<PhotonLink
-											href={block.props.secondaryCtaHref}
-											className="inline-flex items-center gap-2 rounded-full border border-[var(--photon-site-border)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]"
-										>
-											<EditableText
-												blockId={block.id}
-												path="secondaryCtaLabel"
-												className="font-semibold"
-											/>
-										</PhotonLink>
-									)
+									<PhotonLink
+										href={block.props.secondaryCtaHref}
+										className="inline-flex items-center gap-2 rounded-full border border-[var(--photon-site-border)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]"
+									>
+										<EditableText
+											blockId={block.id}
+											path="secondaryCtaLabel"
+											className="font-semibold"
+										/>
+									</PhotonLink>
 								) : null}
 								{shouldRenderPrimaryCta ? (
 									<PhotonLink
@@ -777,14 +684,6 @@ const SiteHeaderShell = ({
 										<ArrowRight className="h-4 w-4" />
 									</PhotonLink>
 								) : null}
-								{dedicatedCartLink
-									? renderCartLink(
-											dedicatedCartLink.href,
-											dedicatedCartLink.label,
-											undefined,
-											"dedicated-cart",
-										)
-									: null}
 								{extensionActions.map(renderExtensionAction)}
 								{block.props.showLoginAction &&
 								!isAdmin &&
@@ -826,7 +725,6 @@ const SiteHeaderShell = ({
 												: isShowcaseCard
 													? "bg-[var(--photon-site-background)]"
 													: "bg-white/0",
-											isCartLinkHref(link.href) && "h-10 w-10 px-0 py-0",
 										),
 										`${link.label}:${link.href}`,
 									),

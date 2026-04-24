@@ -12,7 +12,7 @@ import {
   createPhotonSiteFrameExtension,
   resolvePhotonAccountTabs,
   resolvePhotonSiteFrameExtensions
-} from "./chunk-JSXMWVKI.js";
+} from "./chunk-6SPDM5GU.js";
 export {
   collectPhotonFooterExtensionItems,
   collectPhotonHeaderExtensionItems,

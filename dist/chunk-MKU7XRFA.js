@@ -5,7 +5,7 @@ import {
 } from "./chunk-KSRBTT5H.js";
 import {
   buildPhotonSearchTargetId
-} from "./chunk-FRFYYFDJ.js";
+} from "./chunk-6LYMEWZL.js";
 import {
   createActivationProps,
   editableFrameClassName
@@ -14,7 +14,7 @@ import {
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonStore
-} from "./chunk-BIMQCHT5.js";
+} from "./chunk-HCJ7LK3V.js";
 import {
   PHOTON_EMPTY_TEXT
 } from "./chunk-KAITZE7U.js";

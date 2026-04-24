@@ -63,9 +63,7 @@ export type PhotonNestedField = {
 
 export type PhotonDefaultable<T> =
 	T extends Array<infer Item>
-		?
-				| Array<PhotonDefaultable<Item>>
-				| PhotonLocalizedDefaultValue<T>
+		? Array<PhotonDefaultable<Item>> | PhotonLocalizedDefaultValue<T>
 		: T extends Record<string, unknown>
 			?
 					| {
@@ -160,9 +158,7 @@ export type PhotonBindingAdapter = {
 
 export type PhotonBlockProps = Record<string, unknown>;
 
-export type PhotonBlock<
-	Props extends PhotonBlockProps = PhotonBlockProps,
-> = {
+export type PhotonBlock<Props extends PhotonBlockProps = PhotonBlockProps> = {
 	id: string;
 	module: string;
 	type: string;
@@ -217,19 +213,17 @@ export type PhotonSiteDesignColorTokens = Pick<
 	| "borderColor"
 >;
 
-export type PhotonSiteDesignValue =
-	Partial<PhotonSiteDesignSettings> & {
-		presetId?: string;
-		colorSchemeId?: string;
-		componentVariants?: PhotonSiteComponentVariants;
-	};
+export type PhotonSiteDesignValue = Partial<PhotonSiteDesignSettings> & {
+	presetId?: string;
+	colorSchemeId?: string;
+	componentVariants?: PhotonSiteComponentVariants;
+};
 
-export type PhotonResolvedSiteDesignSettings =
-	PhotonSiteDesignSettings & {
-		presetId?: string;
-		colorSchemeId?: string;
-		componentVariants: PhotonSiteComponentVariants;
-	};
+export type PhotonResolvedSiteDesignSettings = PhotonSiteDesignSettings & {
+	presetId?: string;
+	colorSchemeId?: string;
+	componentVariants: PhotonSiteComponentVariants;
+};
 
 export type PhotonSiteDesignPresetDefinition = {
 	id: string;
@@ -269,20 +263,39 @@ export type PhotonSiteFrameLinkItem = {
 	target?: string;
 	rel?: string;
 	order?: number;
+	placement?: "default" | "prominent";
 	enabled?: boolean;
+	isVisible?: (context: PhotonSiteFrameExtensionContext) => boolean;
 };
 
 export type PhotonSiteFrameActionKind = "link" | "auth";
 
-export type PhotonSiteFrameActionItem =
-	PhotonSiteFrameLinkItem & {
-		kind?: PhotonSiteFrameActionKind;
-		appearance?: "primary" | "secondary" | "ghost";
-		authenticatedLabel?: string;
-		authenticatedHref?: string;
-		authenticatedTarget?: string;
-		authenticatedRel?: string;
-	};
+export type PhotonSiteFrameExtensionContext = {
+	document: PhotonDocument;
+	resources: PhotonResources;
+	pageSettings: PhotonPageSettings;
+	site: PhotonSite;
+	mode: PhotonMode;
+	isAdmin: boolean;
+	currentRoute: string;
+};
+
+export type PhotonSiteFrameActionComponentProps = {
+	action: PhotonSiteFrameActionItem;
+	className: string;
+	context: PhotonSiteFrameExtensionContext;
+	requestAuth?: () => void;
+};
+
+export type PhotonSiteFrameActionItem = PhotonSiteFrameLinkItem & {
+	kind?: PhotonSiteFrameActionKind;
+	appearance?: "primary" | "secondary" | "ghost";
+	authenticatedLabel?: string;
+	authenticatedHref?: string;
+	authenticatedTarget?: string;
+	authenticatedRel?: string;
+	component?: ComponentType<PhotonSiteFrameActionComponentProps>;
+};
 
 export type PhotonSiteFrameNavigationColumn = {
 	id?: string;
@@ -435,10 +448,11 @@ export type PhotonLinkComponentProps = {
 	onClick?: MouseEventHandler<HTMLElement>;
 	target?: string;
 	rel?: string;
+	[ariaAttribute: `aria-${string}`]: string | number | boolean | undefined;
+	[dataAttribute: `data-${string}`]: string | number | boolean | undefined;
 };
 
-export type PhotonLinkComponent =
-	ComponentType<PhotonLinkComponentProps>;
+export type PhotonLinkComponent = ComponentType<PhotonLinkComponentProps>;
 
 export type PhotonBlockComponentProps<
 	Props extends PhotonBlockProps = PhotonBlockProps,
@@ -450,9 +464,7 @@ export type PhotonBlockComponentProps<
 export type PhotonBlockComponent<
 	Props extends PhotonBlockProps = PhotonBlockProps,
 > = {
-	bivarianceHack: (
-		props: PhotonBlockComponentProps<Props>,
-	) => ReactNode;
+	bivarianceHack: (props: PhotonBlockComponentProps<Props>) => ReactNode;
 }["bivarianceHack"];
 
 export type PhotonBlockDefinition<
@@ -476,8 +488,7 @@ export type PhotonBlockDefinition<
 	component: PhotonBlockComponent<Props>;
 };
 
-export type PhotonAnyBlockDefinition =
-	PhotonBlockDefinition<any>;
+export type PhotonAnyBlockDefinition = PhotonBlockDefinition<any>;
 
 export type PhotonPageSettingsPanelProps = {
 	scope: PhotonPageSettingsScope;
@@ -553,9 +564,7 @@ export type PhotonInstallableKit = {
 	accountTabs?: PhotonAccountTabExtension[];
 };
 
-export type PhotonRegistryEntry =
-	| PhotonModule
-	| PhotonInstallableKit;
+export type PhotonRegistryEntry = PhotonModule | PhotonInstallableKit;
 
 export type PhotonLocaleStatus = "active" | "draft" | "inactive";
 

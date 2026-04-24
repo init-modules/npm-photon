@@ -4,6 +4,7 @@ var byOrderThenLabel = (left, right) => normalizeOrder(left.order) - normalizeOr
   right.label ?? right.title ?? ""
 );
 var isEnabled = (value) => value.enabled !== false;
+var isVisible = (value, context) => value.isVisible?.(context) !== false;
 var isNotDisabled = (id, disabledIds) => !id || !disabledIds.has(id);
 var createPhotonSiteFrameExtension = (extension) => extension;
 var createPhotonAccountTabExtension = (tab) => tab;
@@ -17,12 +18,18 @@ var resolvePhotonAccountTabs = (tabs, disabledTabIds = []) => {
   const disabledIds = new Set(disabledTabIds);
   return [...tabs ?? []].filter((tab) => isEnabled(tab) && !disabledIds.has(tab.id)).sort(byOrderThenLabel);
 };
-var collectPhotonHeaderExtensionItems = (extensions, disabledItemIds = []) => {
+var collectPhotonHeaderExtensionItems = (extensions, disabledItemIds = [], context) => {
   const disabledIds = new Set(disabledItemIds);
   return {
-    utilityLinks: extensions.flatMap((extension) => extension.header?.utilityLinks ?? []).filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)).sort(byOrderThenLabel),
-    categoryLinks: extensions.flatMap((extension) => extension.header?.categoryLinks ?? []).filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)).sort(byOrderThenLabel),
-    actions: extensions.flatMap((extension) => extension.header?.actions ?? []).filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)).sort(byOrderThenLabel)
+    utilityLinks: extensions.flatMap((extension) => extension.header?.utilityLinks ?? []).filter(
+      (item) => isEnabled(item) && isNotDisabled(item.id, disabledIds) && isVisible(item, context)
+    ).sort(byOrderThenLabel),
+    categoryLinks: extensions.flatMap((extension) => extension.header?.categoryLinks ?? []).filter(
+      (item) => isEnabled(item) && isNotDisabled(item.id, disabledIds) && isVisible(item, context)
+    ).sort(byOrderThenLabel),
+    actions: extensions.flatMap((extension) => extension.header?.actions ?? []).filter(
+      (item) => isEnabled(item) && isNotDisabled(item.id, disabledIds) && isVisible(item, context)
+    ).sort(byOrderThenLabel)
   };
 };
 var collectPhotonFooterExtensionItems = (extensions, disabledItemIds = []) => {

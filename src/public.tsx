@@ -324,6 +324,8 @@ export type {
 	PhotonModule,
 	PhotonPageSettingsPanelDefinition,
 	PhotonPageSettingsScope,
+	PhotonSiteFrameActionComponentProps,
 	PhotonSiteFrameExtension,
+	PhotonSiteFrameExtensionContext,
 	PhotonSiteSettingsPanelDefinition,
 } from "./types";

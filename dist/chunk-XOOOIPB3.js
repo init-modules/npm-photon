@@ -13,11 +13,11 @@ import {
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonStore
-} from "./chunk-OWLYGTJF.js";
+} from "./chunk-7SWKD666.js";
 import {
   buildPhotonSearchResultHref,
   buildPhotonSearchTargetId
-} from "./chunk-FRFYYFDJ.js";
+} from "./chunk-6LYMEWZL.js";
 import {
   resolvePhotonMediaPreviewUrl
 } from "./chunk-QQDDM7OM.js";
@@ -317,6 +317,7 @@ var PhotonSiteSearch = ({
   const searchSite = usePhotonStore((state) => state.searchSite);
   const mode = usePhotonStore((state) => state.mode);
   const isAdmin = usePhotonStore((state) => state.isAdmin);
+  const navigation = usePhotonStore((state) => state.navigation);
   const workspace = usePhotonStore((state) => state.workspace);
   const placeholder = String(
     usePhotonFieldValue(blockId, placeholderPath) ?? "Search the website"
@@ -358,6 +359,7 @@ var PhotonSiteSearch = ({
           locale,
           contentLocale,
           currentSearchParams: typeof window === "undefined" ? void 0 : new URLSearchParams(window.location.search),
+          navigation,
           workspaceSelection: workspace?.ref?.profileId ? {
             profileId: workspace.ref.profileId,
             branch: workspace.ref.branch,
@@ -668,7 +670,8 @@ var normalizePhotonSiteLinkItems = (value) => Array.isArray(value) ? value.flatM
       label: normalizeString(candidate.label),
       href: normalizeString(candidate.href),
       target: typeof candidate.target === "string" ? candidate.target : void 0,
-      rel: typeof candidate.rel === "string" ? candidate.rel : void 0
+      rel: typeof candidate.rel === "string" ? candidate.rel : void 0,
+      placement: candidate.placement === "prominent" || candidate.placement === "default" ? candidate.placement : void 0
     }
   ] : []
 ) : [];
@@ -695,35 +698,15 @@ var getHeaderLinkPathname = (href) => {
   }
   return (cleanHref.split(/[?#]/u)[0] ?? "/").replace(/\/+$/u, "") || "/";
 };
-var isCartLinkHref = (href) => getHeaderLinkPathname(href) === "/cart";
 var getHeaderLinkDedupeKey = (href) => `route:${getHeaderLinkPathname(href).toLowerCase()}`;
 var isProtectedAccountHref = (href) => {
   const pathname = getHeaderLinkPathname(href);
   return pathname === "/account" || pathname.startsWith("/account/");
 };
-var getHeaderCartQuantity = (resources) => {
-  const summary = resources.commerceCartSummary;
-  const quantity = Number(summary?.items_quantity ?? summary?.item_count ?? 0);
-  return Number.isFinite(quantity) && quantity > 0 ? Math.floor(quantity) : 0;
-};
 var hasAuthenticatedUser = (resources) => {
   const auth = resources.auth;
   return Boolean(auth?.user);
 };
-var hasCommerceBlock = (blocks) => (blocks ?? []).some((item) => {
-  if (item.module === "commerce-photon") {
-    return true;
-  }
-  return (item.areas ?? []).some((area) => hasCommerceBlock(area.blocks));
-});
-var hasCommerceRuntimeResource = (resources) => [
-  "commerceCatalog",
-  "commerceCatalogItem",
-  "commerceProduct",
-  "commerceCheckout",
-  "commerceOrder"
-].some((key) => resources[key] !== void 0) || getHeaderCartQuantity(resources) > 0;
-var isCommerceExtensionId = (id) => typeof id === "string" && id.startsWith("commerce");
 var collectUniqueHeaderLinks = (links, hiddenKeys = /* @__PURE__ */ new Set()) => {
   const seenKeys = /* @__PURE__ */ new Set();
   return links.filter((link) => {
@@ -736,10 +719,6 @@ var collectUniqueHeaderLinks = (links, hiddenKeys = /* @__PURE__ */ new Set()) =
   });
 };
 var getHeaderActionVisibleHref = (action, authenticatedUser) => authenticatedUser && (action.kind ?? "link") === "auth" ? action.authenticatedHref ?? action.href : action.href;
-var getHeaderCartLink = (links) => {
-  const link = links.find((item) => isCartLinkHref(item.href));
-  return link?.href ? { label: link.label, href: link.href } : null;
-};
 var collectHeaderActionLinkKeys = (actions) => {
   const keys = /* @__PURE__ */ new Set();
   for (const action of actions) {
@@ -761,17 +740,10 @@ export {
   normalizePhotonSiteStringItems,
   PhotonSiteSearch,
   normalizeHeaderHref,
-  getHeaderLinkPathname,
-  isCartLinkHref,
   getHeaderLinkDedupeKey,
   isProtectedAccountHref,
-  getHeaderCartQuantity,
   hasAuthenticatedUser,
-  hasCommerceBlock,
-  hasCommerceRuntimeResource,
-  isCommerceExtensionId,
   collectUniqueHeaderLinks,
   getHeaderActionVisibleHref,
-  getHeaderCartLink,
   collectHeaderActionLinkKeys
 };

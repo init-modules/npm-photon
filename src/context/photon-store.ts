@@ -96,10 +96,7 @@ export type PhotonStoreState = {
 	getPageSettingValue: (path: string) => unknown;
 	updateSiteSettingValue: (path: string, value: unknown) => void;
 	getSiteSettingValue: (path: string) => unknown;
-	getFieldBinding: (
-		blockId: string,
-		path: string,
-	) => PhotonFieldBinding | null;
+	getFieldBinding: (blockId: string, path: string) => PhotonFieldBinding | null;
 	insertBlock: (input: InsertBlockInput) => void;
 	duplicateBlock: (blockId: string) => void;
 	removeBlock: (blockId: string) => void;
@@ -160,14 +157,11 @@ export type PhotonStoreInit = {
 const PAGE_SETTINGS_FIELD_SCOPE = "__page_settings__";
 const SITE_SETTINGS_FIELD_SCOPE = "__site_settings__";
 
-const normalizePhotonMode = (
-	mode: PhotonMode,
-	isAdmin: boolean,
-): PhotonMode => (isAdmin ? mode : "preview");
+const normalizePhotonMode = (mode: PhotonMode, isAdmin: boolean): PhotonMode =>
+	isAdmin ? mode : "preview";
 
 const canMutatePhotonState = (state: PhotonStoreState) =>
-	state.isAdmin &&
-	canEditPhotonWorkspace(state.workspace, state.capabilities);
+	state.isAdmin && canEditPhotonWorkspace(state.workspace, state.capabilities);
 
 const readBindingValue = (
 	registry: PhotonRegistry,
@@ -330,8 +324,7 @@ export const createPhotonStore = ({
 		initialDocument,
 		initialSite,
 	);
-	const initialWorkspace =
-		normalizePhotonWorkspaceDescriptor(workspace);
+	const initialWorkspace = normalizePhotonWorkspaceDescriptor(workspace);
 	const initialWorkspaceCapabilities =
 		normalizePhotonWorkspaceCapabilities(capabilities);
 	const defaultLocale = i18n?.defaultLocale?.trim().toLowerCase() || "en";
@@ -363,7 +356,7 @@ export const createPhotonStore = ({
 		requestAuth,
 		linkComponent,
 		navigation: clonePhotonValue(navigation),
-		siteFrameExtensions: clonePhotonValue(siteFrameExtensions),
+		siteFrameExtensions,
 		accountTabs: clonePhotonValue(accountTabs),
 		contentLocale,
 		defaultLocale,
@@ -464,8 +457,7 @@ export const createPhotonStore = ({
 				};
 			});
 		},
-		getFieldValue: (blockId, path) =>
-			getPhotonFieldValue(get(), blockId, path),
+		getFieldValue: (blockId, path) => getPhotonFieldValue(get(), blockId, path),
 		updatePageSettingValue: (path, value) => {
 			if (!canMutatePhotonState(get())) {
 				return;
@@ -476,8 +468,7 @@ export const createPhotonStore = ({
 				contentRevision: bumpContentRevision(state),
 			}));
 		},
-		getPageSettingValue: (path) =>
-			getPhotonPageSettingValue(get(), path),
+		getPageSettingValue: (path) => getPhotonPageSettingValue(get(), path),
 		updateSiteSettingValue: (path, value) => {
 			if (!canMutatePhotonState(get())) {
 				return;
@@ -491,8 +482,7 @@ export const createPhotonStore = ({
 				contentRevision: bumpContentRevision(state),
 			}));
 		},
-		getSiteSettingValue: (path) =>
-			getPhotonSiteSettingValue(get(), path),
+		getSiteSettingValue: (path) => getPhotonSiteSettingValue(get(), path),
 		getFieldBinding: (blockId, path) =>
 			getPhotonFieldBinding(get(), blockId, path),
 		insertBlock: ({ module, type, listId, index }) => {
@@ -518,9 +508,7 @@ export const createPhotonStore = ({
 					...insertPhotonBlockInDocument(
 						currentState.document,
 						listId ??
-							getPhotonSurfaceRegionListId(
-								PHOTON_PAGE_SURFACE_REGION_KEY,
-							),
+							getPhotonSurfaceRegionListId(PHOTON_PAGE_SURFACE_REGION_KEY),
 						nextBlock,
 						index ?? Number.MAX_SAFE_INTEGER,
 					),
@@ -563,10 +551,7 @@ export const createPhotonStore = ({
 			}
 
 			set((state) => {
-				const removal = removePhotonBlockFromDocument(
-					state.document,
-					blockId,
-				);
+				const removal = removePhotonBlockFromDocument(state.document, blockId);
 
 				if (!removal.removed) {
 					return state;
@@ -637,10 +622,7 @@ export const createPhotonStore = ({
 			set((state) => {
 				const nextSelectedBlockId =
 					state.selectedBlockId &&
-					findPhotonBlock(
-						nextSurfaceDocument.blocks,
-						state.selectedBlockId,
-					)
+					findPhotonBlock(nextSurfaceDocument.blocks, state.selectedBlockId)
 						? state.selectedBlockId
 						: getFirstPhotonSurfaceEditableBlockId(nextSurfaceDocument);
 
@@ -717,11 +699,10 @@ export const createPhotonStore = ({
 		},
 		resetDocument: () => {
 			set((state) => {
-				const initialResetSurfaceDocument =
-					composePhotonSurfaceDocument(
-						state.initialDocument,
-						state.initialSite,
-					);
+				const initialResetSurfaceDocument = composePhotonSurfaceDocument(
+					state.initialDocument,
+					state.initialSite,
+				);
 
 				return {
 					document: clonePhotonValue(initialResetSurfaceDocument),

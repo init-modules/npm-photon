@@ -8,7 +8,7 @@ import {
   createPhotonSiteFrameExtension,
   resolvePhotonAccountTabs,
   resolvePhotonSiteFrameExtensions
-} from "./chunk-JSXMWVKI.js";
+} from "./chunk-6SPDM5GU.js";
 import {
   PHOTON_DEFAULT_SITE_DESIGN_PRESET_ID,
   PHOTON_SITE_DESIGN_DEFAULTS,

@@ -1,10 +1,10 @@
-import { u as PhotonSiteFrameExtension, v as PhotonSiteFrameNavigationColumn, w as PhotonSiteFrameLinkItem, x as PhotonSiteFrameActionItem, y as PhotonAccountTabExtension } from './types-BAycJgQn.js';
+import { u as PhotonSiteFrameExtension, v as PhotonSiteFrameNavigationColumn, w as PhotonSiteFrameLinkItem, x as PhotonSiteFrameExtensionContext, y as PhotonSiteFrameActionItem, z as PhotonAccountTabExtension } from './types-D3ghbc-a.js';
 
 declare const createPhotonSiteFrameExtension: (extension: PhotonSiteFrameExtension) => PhotonSiteFrameExtension;
 declare const createPhotonAccountTabExtension: (tab: PhotonAccountTabExtension) => PhotonAccountTabExtension;
 declare const resolvePhotonSiteFrameExtensions: (extensions: readonly PhotonSiteFrameExtension[] | undefined, disabledExtensionIds?: readonly string[]) => PhotonSiteFrameExtension[];
 declare const resolvePhotonAccountTabs: (tabs: readonly PhotonAccountTabExtension[] | undefined, disabledTabIds?: readonly string[]) => PhotonAccountTabExtension[];
-declare const collectPhotonHeaderExtensionItems: (extensions: readonly PhotonSiteFrameExtension[], disabledItemIds?: readonly string[]) => {
+declare const collectPhotonHeaderExtensionItems: (extensions: readonly PhotonSiteFrameExtension[], disabledItemIds: readonly string[] | undefined, context: PhotonSiteFrameExtensionContext) => {
     utilityLinks: PhotonSiteFrameLinkItem[];
     categoryLinks: PhotonSiteFrameLinkItem[];
     actions: PhotonSiteFrameActionItem[];

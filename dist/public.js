@@ -6,15 +6,8 @@ import {
   collectHeaderActionLinkKeys,
   collectUniqueHeaderLinks,
   getHeaderActionVisibleHref,
-  getHeaderCartLink,
-  getHeaderCartQuantity,
   getHeaderLinkDedupeKey,
-  getHeaderLinkPathname,
   hasAuthenticatedUser,
-  hasCommerceBlock,
-  hasCommerceRuntimeResource,
-  isCartLinkHref,
-  isCommerceExtensionId,
   isPhotonPublicFramelessSiteDesign,
   isProtectedAccountHref,
   normalizeHeaderHref,
@@ -22,7 +15,7 @@ import {
   normalizePhotonSiteNavigationColumns,
   normalizePhotonSiteStringItems,
   resolvePhotonPublicSiteDesignSettings
-} from "./chunk-GVYQNPDL.js";
+} from "./chunk-XOOOIPB3.js";
 import {
   PhotonRenderDepthProvider,
   PhotonSearchHighlightEffect,
@@ -38,10 +31,10 @@ import {
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonStore
-} from "./chunk-OWLYGTJF.js";
+} from "./chunk-7SWKD666.js";
 import {
   buildPhotonSearchTargetId
-} from "./chunk-FRFYYFDJ.js";
+} from "./chunk-6LYMEWZL.js";
 import {
   createPhotonRuntime
 } from "./chunk-TSSJCQJA.js";
@@ -587,6 +580,7 @@ var byOrderThenLabel = (left, right) => normalizeOrder(left.order) - normalizeOr
   right.label ?? right.title ?? ""
 );
 var isEnabled = (value) => value.enabled !== false;
+var isVisible = (value, context) => value.isVisible?.(context) !== false;
 var isNotDisabled = (id, disabledIds) => !id || !disabledIds.has(id);
 var createPhotonPublicSiteFrameExtension = (extension) => extension;
 var createPhotonPublicAccountTabExtension = (tab) => tab;
@@ -600,12 +594,18 @@ var resolvePhotonPublicAccountTabs = (tabs, disabledTabIds = []) => {
   const disabledIds = new Set(disabledTabIds);
   return [...tabs ?? []].filter((tab) => isEnabled(tab) && !disabledIds.has(tab.id)).sort(byOrderThenLabel);
 };
-var collectPhotonPublicHeaderExtensionItems = (extensions, disabledItemIds = []) => {
+var collectPhotonPublicHeaderExtensionItems = (extensions, disabledItemIds = [], context) => {
   const disabledIds = new Set(disabledItemIds);
   return {
-    utilityLinks: extensions.flatMap((extension) => extension.header?.utilityLinks ?? []).filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)).sort(byOrderThenLabel),
-    categoryLinks: extensions.flatMap((extension) => extension.header?.categoryLinks ?? []).filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)).sort(byOrderThenLabel),
-    actions: extensions.flatMap((extension) => extension.header?.actions ?? []).filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)).sort(byOrderThenLabel)
+    utilityLinks: extensions.flatMap((extension) => extension.header?.utilityLinks ?? []).filter(
+      (item) => isEnabled(item) && isNotDisabled(item.id, disabledIds) && isVisible(item, context)
+    ).sort(byOrderThenLabel),
+    categoryLinks: extensions.flatMap((extension) => extension.header?.categoryLinks ?? []).filter(
+      (item) => isEnabled(item) && isNotDisabled(item.id, disabledIds) && isVisible(item, context)
+    ).sort(byOrderThenLabel),
+    actions: extensions.flatMap((extension) => extension.header?.actions ?? []).filter(
+      (item) => isEnabled(item) && isNotDisabled(item.id, disabledIds) && isVisible(item, context)
+    ).sort(byOrderThenLabel)
   };
 };
 var collectPhotonPublicFooterExtensionItems = (extensions, disabledItemIds = []) => {
@@ -1195,7 +1195,7 @@ var siteFooterShellDefinition = definePhotonBlockDefinition({
 
 // src/modules/system/site/site-header-shell-public-definition.tsx
 import clsx4 from "clsx";
-import { ArrowRight as ArrowRight2, CircleUserRound, LogIn, ShoppingCart } from "lucide-react";
+import { ArrowRight as ArrowRight2, CircleUserRound, LogIn } from "lucide-react";
 import { useEffect as useEffect3, useRef, useState as useState3 } from "react";
 import { jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
 var siteHeaderFields = [
@@ -1370,10 +1370,11 @@ var SiteHeaderShell = ({
   const isAdmin = usePhotonStore((state) => state.isAdmin);
   const mode = usePhotonStore((state) => state.mode);
   const currentRoute = usePhotonStore((state) => state.document.route);
-  const currentBlocks = usePhotonStore((state) => state.document.blocks);
+  const document = usePhotonStore((state) => state.document);
   const requestAuth = usePhotonStore((state) => state.requestAuth);
   const resources = usePhotonStore((state) => state.resources);
-  const siteRegions = usePhotonStore((state) => state.site.regions);
+  const pageSettings = usePhotonStore((state) => state.pageSettings);
+  const site = usePhotonStore((state) => state.site);
   const siteDesign = usePhotonStore((state) => state.site.settings.design);
   const siteFrameExtensions = usePhotonStore(
     (state) => state.siteFrameExtensions
@@ -1387,16 +1388,22 @@ var SiteHeaderShell = ({
   const disabledExtensionItemIds = normalizePhotonSiteStringItems(
     block.props.disabledExtensionItemIds
   );
+  const extensionContext = {
+    document,
+    resources,
+    pageSettings,
+    site,
+    mode,
+    isAdmin,
+    currentRoute
+  };
   const headerExtensionItems = collectPhotonPublicHeaderExtensionItems(
     resolvePhotonPublicSiteFrameExtensions(
       siteFrameExtensions,
       disabledExtensionIds
-    ).filter(
-      (extension) => !isCommerceExtensionId(extension.id) || hasCommerceBlock(currentBlocks) || Object.values(siteRegions).some(
-        (region) => hasCommerceBlock(region.document.blocks)
-      ) || hasCommerceRuntimeResource(resources)
     ),
-    disabledExtensionItemIds
+    disabledExtensionItemIds,
+    extensionContext
   );
   const rawUtilityLinks = [
     ...normalizePhotonSiteLinkItems(block.props.utilityLinks),
@@ -1405,12 +1412,10 @@ var SiteHeaderShell = ({
   const extensionCategoryLinks = normalizePhotonSiteLinkItems(
     headerExtensionItems.categoryLinks
   );
-  const commerceCatalogLink = extensionCategoryLinks.find(
-    (link) => link.id === "commerce:catalog-link" || getHeaderLinkPathname(link.href) === "/catalog"
-  ) ?? null;
+  const prominentCategoryLink = extensionCategoryLinks.find((link) => link.placement === "prominent") ?? null;
   const rawCategoryLinks = [
     ...normalizePhotonSiteLinkItems(block.props.categoryLinks),
-    ...extensionCategoryLinks.filter((link) => link !== commerceCatalogLink)
+    ...extensionCategoryLinks.filter((link) => link !== prominentCategoryLink)
   ];
   const variant = block.props.variant ?? "commerce-inline";
   const liveSurfaceMode = mode !== "builder";
@@ -1419,35 +1424,13 @@ var SiteHeaderShell = ({
   const isShowcaseCard = variant === "showcase-card" && !framelessSite;
   const localeSwitcherVisible = block.props.showLocaleSwitcher !== false && publicLocales.length > 1;
   const authenticatedUser = hasAuthenticatedUser(resources);
-  const [cartQuantity, setCartQuantity] = useState3(
-    () => getHeaderCartQuantity(resources)
-  );
   const rawExtensionActions = collectUniqueHeaderLinks(
     headerExtensionItems.actions
   ).filter((action) => {
     const visibleHref = getHeaderActionVisibleHref(action, authenticatedUser);
-    return normalizeHeaderHref(visibleHref) !== "";
+    return Boolean(action.component) || normalizeHeaderHref(visibleHref) !== "";
   });
-  const dedicatedCartLink = getHeaderCartLink(
-    rawExtensionActions.map((action) => ({
-      label: action.label,
-      href: getHeaderActionVisibleHref(action, authenticatedUser)
-    }))
-  ) ?? getHeaderCartLink([
-    {
-      label: block.props.secondaryCtaLabel,
-      href: block.props.secondaryCtaHref
-    },
-    {
-      label: block.props.primaryCtaLabel,
-      href: block.props.primaryCtaHref
-    },
-    ...rawCategoryLinks,
-    ...rawUtilityLinks
-  ]);
-  const extensionActions = rawExtensionActions.filter(
-    (action) => !isCartLinkHref(getHeaderActionVisibleHref(action, authenticatedUser))
-  );
+  const extensionActions = rawExtensionActions;
   const hasExtensionAuthAction = extensionActions.some(
     (action) => (action.kind ?? "link") === "auth"
   );
@@ -1456,14 +1439,11 @@ var SiteHeaderShell = ({
     block.props.secondaryCtaHref
   );
   const primaryCtaLinkKey = getHeaderLinkDedupeKey(block.props.primaryCtaHref);
-  const shouldRenderSecondaryCta = normalizeHeaderHref(block.props.secondaryCtaHref) !== "" && !isCartLinkHref(block.props.secondaryCtaHref) && !extensionActionLinkKeys.has(secondaryCtaLinkKey) && !((hasExtensionAuthAction || !authenticatedUser) && isProtectedAccountHref(block.props.secondaryCtaHref));
-  const shouldRenderPrimaryCta = normalizeHeaderHref(block.props.primaryCtaHref) !== "" && !isCartLinkHref(block.props.primaryCtaHref) && (!extensionActionLinkKeys.has(primaryCtaLinkKey) || primaryCtaLinkKey === secondaryCtaLinkKey);
+  const shouldRenderSecondaryCta = normalizeHeaderHref(block.props.secondaryCtaHref) !== "" && !extensionActionLinkKeys.has(secondaryCtaLinkKey) && !((hasExtensionAuthAction || !authenticatedUser) && isProtectedAccountHref(block.props.secondaryCtaHref));
+  const shouldRenderPrimaryCta = normalizeHeaderHref(block.props.primaryCtaHref) !== "" && (!extensionActionLinkKeys.has(primaryCtaLinkKey) || primaryCtaLinkKey === secondaryCtaLinkKey);
   const prominentLinkKeys = new Set(extensionActionLinkKeys);
-  if (dedicatedCartLink) {
-    prominentLinkKeys.add(getHeaderLinkDedupeKey(dedicatedCartLink.href));
-  }
-  if (commerceCatalogLink) {
-    prominentLinkKeys.add(getHeaderLinkDedupeKey(commerceCatalogLink.href));
+  if (prominentCategoryLink) {
+    prominentLinkKeys.add(getHeaderLinkDedupeKey(prominentCategoryLink.href));
   }
   if (shouldRenderPrimaryCta) {
     prominentLinkKeys.add(primaryCtaLinkKey);
@@ -1482,27 +1462,7 @@ var SiteHeaderShell = ({
     rawUtilityLinks,
     /* @__PURE__ */ new Set([...prominentLinkKeys, ...categoryLinkKeys])
   );
-  const renderCartLink = (href, label, className, key) => /* @__PURE__ */ jsxs3(
-    PhotonLink,
-    {
-      href,
-      "aria-label": label,
-      "data-photon-header-cart-link": "true",
-      className: clsx4(
-        "relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--photon-site-border)] text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
-        className
-      ),
-      children: [
-        /* @__PURE__ */ jsx5(ShoppingCart, { className: "h-5 w-5" }),
-        cartQuantity > 0 ? /* @__PURE__ */ jsx5("span", { className: "absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--photon-site-accent)] px-1 text-[10px] font-bold leading-none text-white", children: cartQuantity > 99 ? "99+" : cartQuantity }) : null
-      ]
-    },
-    key ?? `cart:${href}`
-  );
   const renderSmartLink = (link, className, key) => {
-    if (isCartLinkHref(link.href)) {
-      return renderCartLink(link.href, link.label, className, key);
-    }
     if (!authenticatedUser && isProtectedAccountHref(link.href)) {
       return null;
     }
@@ -1524,6 +1484,19 @@ var SiteHeaderShell = ({
       "inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition",
       appearance === "primary" ? "bg-[var(--photon-site-accent)] text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] hover:translate-y-[-1px]" : appearance === "ghost" ? "text-[var(--photon-site-text)] hover:text-[var(--photon-site-accent)]" : "border border-[var(--photon-site-border)] text-[var(--photon-site-text)] hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]"
     );
+    if (action.component) {
+      const ActionComponent = action.component;
+      return /* @__PURE__ */ jsx5(
+        ActionComponent,
+        {
+          action,
+          className,
+          context: extensionContext,
+          requestAuth
+        },
+        action.id ?? `${action.label}:${action.href}`
+      );
+    }
     if ((action.kind ?? "link") === "auth") {
       if (authenticatedUser) {
         const authenticatedHref = action.authenticatedHref ?? action.href;
@@ -1572,26 +1545,6 @@ var SiteHeaderShell = ({
     window.addEventListener("scroll", sync, { passive: true });
     return () => window.removeEventListener("scroll", sync);
   }, [block.props.compactOnScroll, liveSurfaceMode]);
-  useEffect3(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    setCartQuantity(getHeaderCartQuantity(resources));
-    const syncCartQuantity = (event) => {
-      if (!(event instanceof CustomEvent)) {
-        return;
-      }
-      const cart = event.detail;
-      const quantity = Number(cart?.items_quantity ?? cart?.item_count ?? 0);
-      setCartQuantity(
-        Number.isFinite(quantity) && quantity > 0 ? Math.floor(quantity) : 0
-      );
-    };
-    window.addEventListener("commerce-cart-updated", syncCartQuantity);
-    return () => {
-      window.removeEventListener("commerce-cart-updated", syncCartQuantity);
-    };
-  }, [resources]);
   useEffect3(() => {
     if (typeof window === "undefined") {
       return;
@@ -1656,10 +1609,7 @@ var SiteHeaderShell = ({
                     /* @__PURE__ */ jsx5("div", { className: "flex flex-wrap items-center gap-3 text-sm text-[var(--photon-site-muted)]", children: utilityLinks.map(
                       (link) => renderSmartLink(
                         link,
-                        clsx4(
-                          "transition hover:text-[var(--photon-site-text)]",
-                          isCartLinkHref(link.href) && "h-8 w-8 border-transparent"
-                        ),
+                        "transition hover:text-[var(--photon-site-text)]",
                         `${link.label}:${link.href}`
                       )
                     ) }),
@@ -1711,7 +1661,7 @@ var SiteHeaderShell = ({
                     {
                       className: clsx4(
                         "grid gap-4 lg:items-center",
-                        commerceCatalogLink ? "lg:grid-cols-[auto_auto_minmax(280px,1fr)_auto]" : "lg:grid-cols-[auto_minmax(280px,1fr)_auto]"
+                        prominentCategoryLink ? "lg:grid-cols-[auto_auto_minmax(280px,1fr)_auto]" : "lg:grid-cols-[auto_minmax(280px,1fr)_auto]"
                       ),
                       children: [
                         /* @__PURE__ */ jsxs3(
@@ -1752,21 +1702,16 @@ var SiteHeaderShell = ({
                             ]
                           }
                         ),
-                        commerceCatalogLink ? /* @__PURE__ */ jsxs3(
+                        prominentCategoryLink ? /* @__PURE__ */ jsxs3(
                           PhotonLink,
                           {
-                            href: commerceCatalogLink.href,
+                            href: prominentCategoryLink.href,
+                            target: prominentCategoryLink.target,
+                            rel: prominentCategoryLink.rel,
                             className: "inline-flex items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
                             children: [
                               /* @__PURE__ */ jsx5("div", { className: "h-2.5 w-2.5 rounded-full bg-[var(--photon-site-accent)]" }),
-                              /* @__PURE__ */ jsx5(
-                                EditableText,
-                                {
-                                  blockId: block.id,
-                                  path: "catalogLabel",
-                                  className: "font-semibold"
-                                }
-                              )
+                              /* @__PURE__ */ jsx5("span", { className: "font-semibold", children: prominentCategoryLink.label })
                             ]
                           }
                         ) : null,
@@ -1778,12 +1723,7 @@ var SiteHeaderShell = ({
                           }
                         ),
                         /* @__PURE__ */ jsxs3("div", { className: "flex flex-wrap items-center justify-start gap-2 lg:justify-end", children: [
-                          shouldRenderSecondaryCta ? isCartLinkHref(block.props.secondaryCtaHref) ? renderCartLink(
-                            block.props.secondaryCtaHref,
-                            block.props.secondaryCtaLabel,
-                            void 0,
-                            "secondary-cart"
-                          ) : /* @__PURE__ */ jsx5(
+                          shouldRenderSecondaryCta ? /* @__PURE__ */ jsx5(
                             PhotonLink,
                             {
                               href: block.props.secondaryCtaHref,
@@ -1815,12 +1755,6 @@ var SiteHeaderShell = ({
                                 /* @__PURE__ */ jsx5(ArrowRight2, { className: "h-4 w-4" })
                               ]
                             }
-                          ) : null,
-                          dedicatedCartLink ? renderCartLink(
-                            dedicatedCartLink.href,
-                            dedicatedCartLink.label,
-                            void 0,
-                            "dedicated-cart"
                           ) : null,
                           extensionActions.map(renderExtensionAction),
                           block.props.showLoginAction && !isAdmin && !authenticatedUser && !hasExtensionAuthAction ? /* @__PURE__ */ jsxs3(
@@ -1861,8 +1795,7 @@ var SiteHeaderShell = ({
                     link,
                     clsx4(
                       "rounded-full border border-[var(--photon-site-border)] px-4 py-2 text-sm text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
-                      framelessSite ? "bg-transparent" : isShowcaseCard ? "bg-[var(--photon-site-background)]" : "bg-white/0",
-                      isCartLinkHref(link.href) && "h-10 w-10 px-0 py-0"
+                      framelessSite ? "bg-transparent" : isShowcaseCard ? "bg-[var(--photon-site-background)]" : "bg-white/0"
                     ),
                     `${link.label}:${link.href}`
                   )
@@ -2293,7 +2226,8 @@ var PhotonPublicPage = ({
   accountTabs,
   requestAuth,
   searchSite,
-  activeSearchHighlight = null
+  activeSearchHighlight = null,
+  navigation
 }) => {
   const designSettings = resolvePhotonPublicSiteDesignSettings(
     page.site.settings.design
@@ -2333,6 +2267,7 @@ var PhotonPublicPage = ({
       requestAuth,
       searchSite,
       i18n,
+      navigation,
       children: [
         /* @__PURE__ */ jsx7(PhotonSearchHighlightEffect, { activeHighlight: activeSearchHighlight }),
         /* @__PURE__ */ jsx7(

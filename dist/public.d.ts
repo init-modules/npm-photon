@@ -1,10 +1,10 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 export { g as getPhotonAnchorRel, s as sanitizePhotonLinkHref } from './link-url-XwgBLvA0.js';
-import { _ as PhotonLinkComponentProps, b as PhotonDocument, m as PhotonResources, k as PhotonPageSettings, p as PhotonSite, A as PhotonRegistry, t as PhotonWorkspaceDescriptor, s as PhotonWorkspaceCapabilities, E as PhotonMode, I as PhotonI18nValue, G as PhotonSearchHandler, H as PhotonLinkComponent, u as PhotonSiteFrameExtension, y as PhotonAccountTabExtension, z as PhotonSurfaceMode, U as PhotonInstallableKit, Q as PhotonModule, l as PhotonResolvedPage, n as PhotonSearchHighlight } from './types-BAycJgQn.js';
-export { $ as PhotonBindingAdapter, a as PhotonBlock, a0 as PhotonBlockComponentProps, M as PhotonBlockDefinition, O as PhotonBlockLocalizationSchema, c as PhotonDocumentsMap, J as PhotonField, a1 as PhotonFieldOption, e as PhotonLocaleDescriptor, f as PhotonLocaleStatus, K as PhotonPageSettingsPanelDefinition, a2 as PhotonPageSettingsScope, L as PhotonSiteSettingsPanelDefinition } from './types-BAycJgQn.js';
+import { $ as PhotonLinkComponentProps, b as PhotonDocument, m as PhotonResources, k as PhotonPageSettings, p as PhotonSite, B as PhotonRegistry, t as PhotonWorkspaceDescriptor, s as PhotonWorkspaceCapabilities, F as PhotonMode, J as PhotonI18nValue, H as PhotonSearchHandler, I as PhotonLinkComponent, a0 as PhotonNavigationConfig, u as PhotonSiteFrameExtension, z as PhotonAccountTabExtension, A as PhotonSurfaceMode, V as PhotonInstallableKit, R as PhotonModule, l as PhotonResolvedPage, n as PhotonSearchHighlight } from './types-D3ghbc-a.js';
+export { a1 as PhotonBindingAdapter, a as PhotonBlock, a2 as PhotonBlockComponentProps, N as PhotonBlockDefinition, Q as PhotonBlockLocalizationSchema, c as PhotonDocumentsMap, K as PhotonField, a3 as PhotonFieldOption, e as PhotonLocaleDescriptor, f as PhotonLocaleStatus, L as PhotonPageSettingsPanelDefinition, a4 as PhotonPageSettingsScope, a5 as PhotonSiteFrameActionComponentProps, x as PhotonSiteFrameExtensionContext, M as PhotonSiteSettingsPanelDefinition } from './types-D3ghbc-a.js';
 import { ElementType, HTMLAttributes, ReactNode, CSSProperties } from 'react';
-export { P as PhotonSiteSearch, u as usePhotonI18n, a as usePhotonRenderDepth } from './photon-site-search-efF0Worq.js';
-export { c as createPhotonBlockLocalizationSchema, a as createPhotonKit, b as createPhotonLocalizedDefault, d as createPhotonRuntime, e as definePhotonBlockDefinition } from './runtime-bINqXqWs.js';
+export { P as PhotonSiteSearch, u as usePhotonI18n, a as usePhotonRenderDepth } from './photon-site-search-BZi1OiyT.js';
+export { c as createPhotonBlockLocalizationSchema, a as createPhotonKit, b as createPhotonLocalizedDefault, d as createPhotonRuntime, e as definePhotonBlockDefinition } from './runtime-D7HZokyb.js';
 export { P as PHOTON_SEARCH_OCCURRENCE_PARAM, a as PHOTON_SEARCH_QUERY_PARAM, b as PHOTON_SEARCH_TARGET_PARAM } from './constants-Bu7HPDAC.js';
 
 type PublicEditableGalleryProps = {
@@ -89,6 +89,7 @@ type PhotonPublicContextValue = {
     searchSite?: PhotonSearchHandler;
     requestAuth?: () => void;
     linkComponent: PhotonLinkComponent;
+    navigation: PhotonNavigationConfig;
     siteFrameExtensions: PhotonSiteFrameExtension[];
     accountTabs: PhotonAccountTabExtension[];
     contentLocale: string;
@@ -109,10 +110,11 @@ type PhotonPublicProviderProps = {
     searchSite?: PhotonSearchHandler;
     requestAuth?: () => void;
     linkComponent?: PhotonLinkComponent;
+    navigation?: PhotonNavigationConfig;
     siteFrameExtensions?: PhotonSiteFrameExtension[];
     accountTabs?: PhotonAccountTabExtension[];
 };
-declare const PhotonProvider: ({ children, initialDocument, initialResources, initialPageSettings, initialSite, registry, workspace, capabilities, initialMode, isAdmin, i18n, searchSite, requestAuth, linkComponent, siteFrameExtensions, accountTabs, }: PhotonPublicProviderProps) => react_jsx_runtime.JSX.Element;
+declare const PhotonProvider: ({ children, initialDocument, initialResources, initialPageSettings, initialSite, registry, workspace, capabilities, initialMode, isAdmin, i18n, searchSite, requestAuth, linkComponent, navigation, siteFrameExtensions, accountTabs, }: PhotonPublicProviderProps) => react_jsx_runtime.JSX.Element;
 declare const usePhoton: () => PhotonPublicContextValue;
 declare const usePhotonStore: <T>(selector: (state: PhotonPublicContextValue) => T) => T;
 declare const usePhotonFieldValue: (blockId: string, path: string) => unknown;
@@ -142,7 +144,8 @@ type PhotonPublicPageProps = {
     requestAuth?: () => void;
     searchSite?: PhotonSearchHandler;
     activeSearchHighlight?: PhotonSearchHighlight | null;
+    navigation?: PhotonNavigationConfig;
 };
-declare const PhotonPublicPage: ({ page, registry, i18n, linkComponent, siteFrameExtensions, accountTabs, requestAuth, searchSite, activeSearchHighlight, }: PhotonPublicPageProps) => react_jsx_runtime.JSX.Element;
+declare const PhotonPublicPage: ({ page, registry, i18n, linkComponent, siteFrameExtensions, accountTabs, requestAuth, searchSite, activeSearchHighlight, navigation, }: PhotonPublicPageProps) => react_jsx_runtime.JSX.Element;
 
 export { EditableGallery, EditableImage, EditableRepeaterValue, EditableRichText, EditableText, EditableTextarea, PhotonAccountTabExtension, PhotonDocument, PhotonInstallableKit, PhotonLink, PhotonLinkComponentProps, PhotonModule, PhotonProvider, PhotonPublicPage, type PhotonPublicRuntimePageValue, PhotonSiteFrameExtension, createPhotonPublicAccountTabExtension as createPhotonAccountTabExtension, createPhotonPublicSiteFrameExtension as createPhotonSiteFrameExtension, getPhotonPublicSurfaceModeStyle as getPhotonSurfaceModeStyle, photonPublicSystemKit as photonSystemKit, photonPublicSystemModule as photonSystemModule, renderPhotonRichTextHtml, resolvePhotonPublicAccountTabs as resolvePhotonAccountTabs, sanitizePhotonRichTextHtml, usePhoton, usePhotonCanEdit, usePhotonStore, usePhotonFieldValue as usePhotonValueAtPath };

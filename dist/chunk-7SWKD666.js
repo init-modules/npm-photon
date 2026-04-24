@@ -1,6 +1,6 @@
 import {
   buildPhotonSearchTargetId
-} from "./chunk-FRFYYFDJ.js";
+} from "./chunk-6LYMEWZL.js";
 import {
   PhotonI18nProvider
 } from "./chunk-NV6FZ3PQ.js";
@@ -93,6 +93,7 @@ var PhotonProvider = ({
   searchSite,
   requestAuth,
   linkComponent = DefaultPhotonLinkComponent,
+  navigation = {},
   siteFrameExtensions = [],
   accountTabs = []
 }) => {
@@ -110,6 +111,7 @@ var PhotonProvider = ({
       searchSite,
       requestAuth,
       linkComponent,
+      navigation,
       siteFrameExtensions,
       accountTabs,
       contentLocale: i18n?.contentLocale ?? "en",
@@ -127,6 +129,7 @@ var PhotonProvider = ({
       initialSite,
       isAdmin,
       linkComponent,
+      navigation,
       registry,
       requestAuth,
       searchSite,
