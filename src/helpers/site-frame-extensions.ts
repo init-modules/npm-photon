@@ -3,6 +3,8 @@ import type {
 	PhotonSiteFrameActionItem,
 	PhotonSiteFrameExtension,
 	PhotonSiteFrameExtensionContext,
+	PhotonSiteFrameFooterSlots,
+	PhotonSiteFrameHeaderSlots,
 	PhotonSiteFrameLinkItem,
 	PhotonSiteFrameNavigationColumn,
 } from "../types";
@@ -32,6 +34,21 @@ const isNotDisabled = (
 	id: string | undefined,
 	disabledIds: ReadonlySet<string>,
 ) => !id || !disabledIds.has(id);
+
+const headerSlots = ["utility", "navigation", "prominent", "actions"] as const;
+const footerSlots = ["navigation", "legal"] as const;
+
+const createHeaderSlots = (): PhotonSiteFrameHeaderSlots => ({
+	utility: { links: [], actions: [] },
+	navigation: { links: [], actions: [] },
+	prominent: { links: [], actions: [] },
+	actions: { links: [], actions: [] },
+});
+
+const createFooterSlots = (): PhotonSiteFrameFooterSlots => ({
+	navigation: { navigationColumns: [], links: [] },
+	legal: { navigationColumns: [], links: [] },
+});
 
 export const createPhotonSiteFrameExtension = (
 	extension: PhotonSiteFrameExtension,
@@ -70,68 +87,101 @@ export const collectPhotonHeaderExtensionItems = (
 	disabledItemIds: readonly string[] = [],
 	context: PhotonSiteFrameExtensionContext,
 ): {
-	utilityLinks: PhotonSiteFrameLinkItem[];
-	categoryLinks: PhotonSiteFrameLinkItem[];
-	actions: PhotonSiteFrameActionItem[];
+	slots: PhotonSiteFrameHeaderSlots;
 } => {
 	const disabledIds = new Set(disabledItemIds);
+	const slots = createHeaderSlots();
+	const isAvailable = (
+		item:
+			| PhotonSiteFrameLinkItem
+			| PhotonSiteFrameActionItem
+			| { id?: string; enabled?: boolean },
+	) => isEnabled(item) && isNotDisabled(item.id, disabledIds);
+
+	for (const extension of extensions) {
+		for (const slot of headerSlots) {
+			const slotItems = extension.header?.slots?.[slot];
+
+			for (const item of slotItems?.links ?? []) {
+				if (isAvailable(item) && isVisible(item, context)) {
+					slots[slot].links.push(item);
+				}
+			}
+
+			for (const item of slotItems?.actions ?? []) {
+				if (isAvailable(item) && isVisible(item, context)) {
+					slots[slot].actions.push(item);
+				}
+			}
+		}
+	}
+
+	for (const slot of headerSlots) {
+		slots[slot].links.sort(byOrderThenLabel);
+		slots[slot].actions.sort(byOrderThenLabel);
+	}
 
 	return {
-		utilityLinks: extensions
-			.flatMap((extension) => extension.header?.utilityLinks ?? [])
-			.filter(
-				(item) =>
-					isEnabled(item) &&
-					isNotDisabled(item.id, disabledIds) &&
-					isVisible(item, context),
-			)
-			.sort(byOrderThenLabel),
-		categoryLinks: extensions
-			.flatMap((extension) => extension.header?.categoryLinks ?? [])
-			.filter(
-				(item) =>
-					isEnabled(item) &&
-					isNotDisabled(item.id, disabledIds) &&
-					isVisible(item, context),
-			)
-			.sort(byOrderThenLabel),
-		actions: extensions
-			.flatMap((extension) => extension.header?.actions ?? [])
-			.filter(
-				(item) =>
-					isEnabled(item) &&
-					isNotDisabled(item.id, disabledIds) &&
-					isVisible(item, context),
-			)
-			.sort(byOrderThenLabel),
+		slots,
 	};
 };
 
 export const collectPhotonFooterExtensionItems = (
 	extensions: readonly PhotonSiteFrameExtension[],
 	disabledItemIds: readonly string[] = [],
+	context?: PhotonSiteFrameExtensionContext,
 ): {
-	navigationColumns: PhotonSiteFrameNavigationColumn[];
-	legalLinks: PhotonSiteFrameLinkItem[];
+	slots: PhotonSiteFrameFooterSlots;
 } => {
 	const disabledIds = new Set(disabledItemIds);
+	const slots = createFooterSlots();
+	const isAvailable = (
+		item:
+			| PhotonSiteFrameLinkItem
+			| PhotonSiteFrameNavigationColumn
+			| { id?: string; enabled?: boolean },
+	) => isEnabled(item) && isNotDisabled(item.id, disabledIds);
+	const isVisibleWhenPossible = (
+		item: {
+			isVisible?: (context: PhotonSiteFrameExtensionContext) => boolean;
+		},
+	) => !context || isVisible(item, context);
+
+	for (const extension of extensions) {
+		for (const slot of footerSlots) {
+			const slotItems = extension.footer?.slots?.[slot];
+
+			for (const column of slotItems?.navigationColumns ?? []) {
+				if (isAvailable(column) && isVisibleWhenPossible(column)) {
+					const links = column.links
+						.filter(
+							(item) => isAvailable(item) && isVisibleWhenPossible(item),
+						)
+						.sort(byOrderThenLabel);
+
+					if (links.length > 0) {
+						slots[slot].navigationColumns.push({
+							...column,
+							links,
+						});
+					}
+				}
+			}
+
+			for (const item of slotItems?.links ?? []) {
+				if (isAvailable(item) && isVisibleWhenPossible(item)) {
+					slots[slot].links.push(item);
+				}
+			}
+		}
+	}
+
+	for (const slot of footerSlots) {
+		slots[slot].navigationColumns.sort(byOrderThenLabel);
+		slots[slot].links.sort(byOrderThenLabel);
+	}
 
 	return {
-		navigationColumns: extensions
-			.flatMap((extension) => extension.footer?.navigationColumns ?? [])
-			.filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds))
-			.map((column) => ({
-				...column,
-				links: column.links
-					.filter(
-						(item) => isEnabled(item) && isNotDisabled(item.id, disabledIds),
-					)
-					.sort(byOrderThenLabel),
-			}))
-			.sort(byOrderThenLabel),
-		legalLinks: extensions
-			.flatMap((extension) => extension.footer?.legalLinks ?? [])
-			.filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds))
-			.sort(byOrderThenLabel),
+		slots,
 	};
 };

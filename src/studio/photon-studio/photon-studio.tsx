@@ -32,8 +32,11 @@ export const PhotonStudio = ({
 	onCreatePage,
 	onUploadMedia,
 	onSearch,
+	navigate,
+	prefetch,
 	activeSearchHighlight,
 	linkComponent,
+	linkFactory,
 	siteFrameExtensions,
 	accountTabs,
 	i18n,
@@ -59,7 +62,10 @@ export const PhotonStudio = ({
 			uploadMedia={onUploadMedia}
 			searchSite={onSearch}
 			requestAuth={onRequestAuth}
+			navigate={navigate}
+			prefetch={prefetch}
 			linkComponent={linkComponent}
+			linkFactory={linkFactory}
 			siteFrameExtensions={siteFrameExtensions}
 			accountTabs={accountTabs}
 			i18n={i18n}

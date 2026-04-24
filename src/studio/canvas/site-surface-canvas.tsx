@@ -10,6 +10,7 @@ import {
 	resolvePhotonSurfaceRegionDescriptors,
 	PHOTON_PAGE_SURFACE_REGION_KEY,
 } from "../../helpers/site";
+import { resolvePhotonSiteFrameMobileControls } from "../../modules/system/site/site-mobile-frame";
 import type { PhotonDocument, PhotonSite } from "../../types";
 import type { InsertTarget } from "../types";
 import { CanvasBlockList } from "./canvas-block-list";
@@ -66,14 +67,28 @@ const SiteSurfaceRegionSection = ({
 		: undefined;
 	const builderSiteFrameInset =
 		builderEnabled && (region.key === "header" || region.key === "footer");
-	const stickySiteHeaderRegion =
-		region.key === "header" &&
-		blocks.some(
-			(block) =>
-				block.module === "photon-system" &&
-				block.type === "site-header-shell" &&
-				block.props.sticky === true,
-		);
+	const stickySiteHeaderBlock =
+		region.key === "header"
+			? blocks.find(
+					(block) =>
+						block.module === "photon-system" &&
+						block.type === "site-header-shell" &&
+						block.props.sticky === true,
+				)
+			: undefined;
+	const stickySiteHeaderRegion = Boolean(stickySiteHeaderBlock);
+	const mobileStickySiteHeaderRegion =
+		resolvePhotonSiteFrameMobileControls(
+			(
+				stickySiteHeaderBlock?.props as
+					| {
+							mobile?: Parameters<
+								typeof resolvePhotonSiteFrameMobileControls
+							>[0];
+					  }
+					| undefined
+			)?.mobile,
+		).sticky;
 
 	useEffect(() => {
 		const element = sectionRef.current;
@@ -103,15 +118,13 @@ const SiteSurfaceRegionSection = ({
 				data-photon-surface-region={region.key}
 				className={clsx(
 					"relative [container-type:inline-size]",
-					previewEnabled && stickySiteHeaderRegion && "sticky z-40",
+					isPageRegion && "flex-1",
+					previewEnabled &&
+						stickySiteHeaderRegion &&
+						(mobileStickySiteHeaderRegion
+							? "sticky top-[calc(var(--photon-dock-offset,0px)+var(--photon-site-header-offset,0px))] z-40"
+							: "md:sticky md:top-[calc(var(--photon-dock-offset,0px)+var(--photon-site-header-offset,0px))] md:z-40"),
 				)}
-				style={
-					previewEnabled && stickySiteHeaderRegion
-						? ({
-								top: "calc(var(--photon-dock-offset, 0px) + var(--photon-site-header-offset, 0px))",
-							} as CSSProperties)
-						: undefined
-				}
 			>
 				{builderEnabled ? (
 					<div
@@ -195,7 +208,7 @@ const SiteSurfaceCanvasComponent = ({
 	const previewEnabled = mode !== "builder";
 
 	return (
-		<div className="space-y-[var(--photon-section-gap,2rem)]">
+		<div className="flex min-h-[var(--photon-site-surface-min-height,100dvh)] flex-col gap-[var(--photon-section-gap,2rem)]">
 			{regions.map((region) => (
 				<SiteSurfaceRegionSection
 					key={region.key}

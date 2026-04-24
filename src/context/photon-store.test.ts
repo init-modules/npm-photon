@@ -61,7 +61,7 @@ test("syncExternalState replaces the active workspace and resets dirty state", (
 		initialSite: {
 			settings: {
 				design: {
-					presetId: "paper-flow",
+					presetId: "init-landing",
 				},
 			},
 			regions: {},
@@ -127,7 +127,7 @@ test("readonly revision workspaces reject editor mutations", () => {
 	});
 
 	store.getState().updatePageSettingValue("seo.title", "Should not persist");
-	store.getState().updateSiteSettingValue("design.presetId", "paper-flow");
+	store.getState().updateSiteSettingValue("design.presetId", "init-landing");
 
 	const state = store.getState();
 

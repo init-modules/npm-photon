@@ -15,13 +15,15 @@ import {
   normalizePhotonSiteNavigationColumns,
   normalizePhotonSiteStringItems,
   resolvePhotonPublicSiteDesignSettings
-} from "./chunk-XOOOIPB3.js";
+} from "./chunk-S4YEB54M.js";
 import {
   PhotonRenderDepthProvider,
   PhotonSearchHighlightEffect,
   PhotonSurfaceLayoutProvider,
-  usePhotonRenderDepth
-} from "./chunk-3BZZZBLC.js";
+  resolvePhotonSiteFrameMobileControls,
+  usePhotonRenderDepth,
+  usePhotonSiteFrameScrollLock
+} from "./chunk-CPLCBNKA.js";
 import {
   EditableText,
   PhotonLink,
@@ -31,13 +33,21 @@ import {
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonStore
-} from "./chunk-7SWKD666.js";
+} from "./chunk-BY77VUPQ.js";
 import {
   buildPhotonSearchTargetId
 } from "./chunk-6LYMEWZL.js";
 import {
   createPhotonRuntime
 } from "./chunk-TSSJCQJA.js";
+import {
+  collectPhotonFooterExtensionItems,
+  collectPhotonHeaderExtensionItems,
+  createPhotonAccountTabExtension,
+  createPhotonSiteFrameExtension,
+  resolvePhotonAccountTabs,
+  resolvePhotonSiteFrameExtensions
+} from "./chunk-HMZA6DQS.js";
 import "./chunk-IOB5G6YT.js";
 import {
   PHOTON_SEARCH_OCCURRENCE_PARAM,
@@ -574,53 +584,6 @@ var EditableRichText = ({
   ) });
 };
 
-// src/helpers/public-site-frame-extensions.ts
-var normalizeOrder = (value) => typeof value === "number" && Number.isFinite(value) ? value : 0;
-var byOrderThenLabel = (left, right) => normalizeOrder(left.order) - normalizeOrder(right.order) || (left.label ?? left.title ?? "").localeCompare(
-  right.label ?? right.title ?? ""
-);
-var isEnabled = (value) => value.enabled !== false;
-var isVisible = (value, context) => value.isVisible?.(context) !== false;
-var isNotDisabled = (id, disabledIds) => !id || !disabledIds.has(id);
-var createPhotonPublicSiteFrameExtension = (extension) => extension;
-var createPhotonPublicAccountTabExtension = (tab) => tab;
-var resolvePhotonPublicSiteFrameExtensions = (extensions, disabledExtensionIds = []) => {
-  const disabledIds = new Set(disabledExtensionIds);
-  return [...extensions ?? []].filter(
-    (extension) => isEnabled(extension) && !disabledIds.has(extension.id)
-  ).sort(byOrderThenLabel);
-};
-var resolvePhotonPublicAccountTabs = (tabs, disabledTabIds = []) => {
-  const disabledIds = new Set(disabledTabIds);
-  return [...tabs ?? []].filter((tab) => isEnabled(tab) && !disabledIds.has(tab.id)).sort(byOrderThenLabel);
-};
-var collectPhotonPublicHeaderExtensionItems = (extensions, disabledItemIds = [], context) => {
-  const disabledIds = new Set(disabledItemIds);
-  return {
-    utilityLinks: extensions.flatMap((extension) => extension.header?.utilityLinks ?? []).filter(
-      (item) => isEnabled(item) && isNotDisabled(item.id, disabledIds) && isVisible(item, context)
-    ).sort(byOrderThenLabel),
-    categoryLinks: extensions.flatMap((extension) => extension.header?.categoryLinks ?? []).filter(
-      (item) => isEnabled(item) && isNotDisabled(item.id, disabledIds) && isVisible(item, context)
-    ).sort(byOrderThenLabel),
-    actions: extensions.flatMap((extension) => extension.header?.actions ?? []).filter(
-      (item) => isEnabled(item) && isNotDisabled(item.id, disabledIds) && isVisible(item, context)
-    ).sort(byOrderThenLabel)
-  };
-};
-var collectPhotonPublicFooterExtensionItems = (extensions, disabledItemIds = []) => {
-  const disabledIds = new Set(disabledItemIds);
-  return {
-    navigationColumns: extensions.flatMap((extension) => extension.footer?.navigationColumns ?? []).filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)).map((column) => ({
-      ...column,
-      links: column.links.filter(
-        (item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)
-      ).sort(byOrderThenLabel)
-    })).sort(byOrderThenLabel),
-    legalLinks: extensions.flatMap((extension) => extension.footer?.legalLinks ?? []).filter((item) => isEnabled(item) && isNotDisabled(item.id, disabledIds)).sort(byOrderThenLabel)
-  };
-};
-
 // src/helpers/public-surface-layout.ts
 var getPhotonPublicSurfaceModeStyle = (mode) => {
   switch (mode) {
@@ -813,10 +776,26 @@ var footerVariantStyles = {
 var SiteFooterShell = ({
   block
 }) => {
+  const isAdmin = usePhotonStore((state) => state.isAdmin);
+  const mode = usePhotonStore((state) => state.mode);
+  const currentRoute = usePhotonStore((state) => state.document.route);
+  const document = usePhotonStore((state) => state.document);
+  const resources = usePhotonStore((state) => state.resources);
+  const pageSettings = usePhotonStore((state) => state.pageSettings);
+  const site = usePhotonStore((state) => state.site);
   const siteDesign = usePhotonStore((state) => state.site.settings.design);
   const siteFrameExtensions = usePhotonStore(
     (state) => state.siteFrameExtensions
   );
+  const extensionContext = {
+    document,
+    resources,
+    pageSettings,
+    site,
+    mode,
+    isAdmin,
+    currentRoute
+  };
   const framelessSite = isPhotonPublicFramelessSiteDesign(siteDesign);
   const footerVariant = framelessSite ? "minimal-air" : block.props.variant;
   const variant = footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"];
@@ -827,21 +806,22 @@ var SiteFooterShell = ({
   const disabledExtensionItemIds = normalizePhotonSiteStringItems(
     block.props.disabledExtensionItemIds
   );
-  const footerExtensionItems = collectPhotonPublicFooterExtensionItems(
-    resolvePhotonPublicSiteFrameExtensions(
+  const footerExtensionItems = collectPhotonFooterExtensionItems(
+    resolvePhotonSiteFrameExtensions(
       siteFrameExtensions,
       disabledExtensionIds
     ),
-    disabledExtensionItemIds
+    disabledExtensionItemIds,
+    extensionContext
   );
   const navigationColumns = [
     ...normalizePhotonSiteNavigationColumns(block.props.navigationColumns),
     ...normalizePhotonSiteNavigationColumns(
-      footerExtensionItems.navigationColumns
+      footerExtensionItems.slots.navigation.navigationColumns
     )
   ];
   const legalLinks = normalizePhotonSiteLinkItems(
-    footerExtensionItems.legalLinks
+    footerExtensionItems.slots.legal.links
   );
   const contactItems = normalizePhotonSiteStringItems(block.props.contactItems);
   return /* @__PURE__ */ jsx4(
@@ -1195,7 +1175,7 @@ var siteFooterShellDefinition = definePhotonBlockDefinition({
 
 // src/modules/system/site/site-header-shell-public-definition.tsx
 import clsx4 from "clsx";
-import { ArrowRight as ArrowRight2, CircleUserRound, LogIn } from "lucide-react";
+import { ArrowRight as ArrowRight2, CircleUserRound, LogIn, Menu, X } from "lucide-react";
 import { useEffect as useEffect3, useRef, useState as useState3 } from "react";
 import { jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
 var siteHeaderFields = [
@@ -1322,6 +1302,81 @@ var siteHeaderFields = [
     localization: "shared"
   },
   {
+    path: "mobile.sticky",
+    label: "Sticky on mobile",
+    kind: "toggle",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "mobile.menu.type",
+    label: "Mobile menu type",
+    kind: "select",
+    group: "layout",
+    localization: "shared",
+    options: [
+      { label: "Inline", value: "inline" },
+      { label: "Drawer", value: "drawer" },
+      { label: "Fullscreen", value: "fullscreen" }
+    ]
+  },
+  {
+    path: "mobile.menu.fixedTrigger",
+    label: "Fixed mobile burger button",
+    kind: "toggle",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "mobile.menu.scrollLock",
+    label: "Lock scroll when mobile menu is open",
+    kind: "toggle",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "mobile.menu.floating",
+    label: "Floating mobile burger",
+    kind: "toggle",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "mobile.menu.disableFloatingOnSmallScreens",
+    label: "Disable floating burger on small screens",
+    kind: "toggle",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "mobile.bottomMenu.enabled",
+    label: "Show mobile bottom menu",
+    kind: "toggle",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "mobile.bottomMenu.showBurger",
+    label: "Show burger in bottom menu",
+    kind: "toggle",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "mobile.bottomMenu.floating",
+    label: "Floating mobile bottom menu",
+    kind: "toggle",
+    group: "layout",
+    localization: "shared"
+  },
+  {
+    path: "mobile.bottomMenu.disableFloatingOnSmallScreens",
+    label: "Disable floating bottom menu on small screens",
+    kind: "toggle",
+    group: "layout",
+    localization: "shared"
+  },
+  {
     path: "compactOnScroll",
     label: "Compact on scroll",
     kind: "toggle",
@@ -1381,6 +1436,8 @@ var SiteHeaderShell = ({
   );
   const { locale, publicLocales, translate } = usePhotonI18n();
   const [isCompact, setIsCompact] = useState3(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState3(false);
+  const [adminRouteSurface, setAdminRouteSurface] = useState3(false);
   const headerRef = useRef(null);
   const disabledExtensionIds = normalizePhotonSiteStringItems(
     block.props.disabledExtensionIds
@@ -1397,8 +1454,8 @@ var SiteHeaderShell = ({
     isAdmin,
     currentRoute
   };
-  const headerExtensionItems = collectPhotonPublicHeaderExtensionItems(
-    resolvePhotonPublicSiteFrameExtensions(
+  const headerExtensionItems = collectPhotonHeaderExtensionItems(
+    resolvePhotonSiteFrameExtensions(
       siteFrameExtensions,
       disabledExtensionIds
     ),
@@ -1407,25 +1464,28 @@ var SiteHeaderShell = ({
   );
   const rawUtilityLinks = [
     ...normalizePhotonSiteLinkItems(block.props.utilityLinks),
-    ...normalizePhotonSiteLinkItems(headerExtensionItems.utilityLinks)
+    ...normalizePhotonSiteLinkItems(headerExtensionItems.slots.utility.links)
   ];
-  const extensionCategoryLinks = normalizePhotonSiteLinkItems(
-    headerExtensionItems.categoryLinks
-  );
-  const prominentCategoryLink = extensionCategoryLinks.find((link) => link.placement === "prominent") ?? null;
+  const prominentCategoryLink = normalizePhotonSiteLinkItems(headerExtensionItems.slots.prominent.links)[0] ?? null;
   const rawCategoryLinks = [
     ...normalizePhotonSiteLinkItems(block.props.categoryLinks),
-    ...extensionCategoryLinks.filter((link) => link !== prominentCategoryLink)
+    ...normalizePhotonSiteLinkItems(headerExtensionItems.slots.navigation.links)
   ];
   const variant = block.props.variant ?? "commerce-inline";
+  const mobileControls = resolvePhotonSiteFrameMobileControls(block.props.mobile);
+  const mobileMenuType = mobileControls.menu.type;
   const liveSurfaceMode = mode !== "builder";
   const compact = liveSurfaceMode && block.props.compactOnScroll && isCompact;
+  const visualAdminSurface = isAdmin || adminRouteSurface;
   const framelessSite = isPhotonPublicFramelessSiteDesign(siteDesign);
   const isShowcaseCard = variant === "showcase-card" && !framelessSite;
   const localeSwitcherVisible = block.props.showLocaleSwitcher !== false && publicLocales.length > 1;
   const authenticatedUser = hasAuthenticatedUser(resources);
   const rawExtensionActions = collectUniqueHeaderLinks(
-    headerExtensionItems.actions
+    [
+      ...headerExtensionItems.slots.actions.links,
+      ...headerExtensionItems.slots.actions.actions
+    ]
   ).filter((action) => {
     const visibleHref = getHeaderActionVisibleHref(action, authenticatedUser);
     return Boolean(action.component) || normalizeHeaderHref(visibleHref) !== "";
@@ -1462,7 +1522,7 @@ var SiteHeaderShell = ({
     rawUtilityLinks,
     /* @__PURE__ */ new Set([...prominentLinkKeys, ...categoryLinkKeys])
   );
-  const renderSmartLink = (link, className, key) => {
+  const renderSmartLink = (link, className, key, onClick) => {
     if (!authenticatedUser && isProtectedAccountHref(link.href)) {
       return null;
     }
@@ -1473,16 +1533,17 @@ var SiteHeaderShell = ({
         target: link.target,
         rel: link.rel,
         className,
+        onClick,
         children: link.label
       },
       key
     );
   };
-  const renderExtensionAction = (action) => {
+  const renderExtensionAction = (action, keySuffix = "", classNameOverride, onAction) => {
     const appearance = action.appearance ?? "secondary";
     const className = clsx4(
-      "inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition",
-      appearance === "primary" ? "bg-[var(--photon-site-accent)] text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] hover:translate-y-[-1px]" : appearance === "ghost" ? "text-[var(--photon-site-text)] hover:text-[var(--photon-site-accent)]" : "border border-[var(--photon-site-border)] text-[var(--photon-site-text)] hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]"
+      classNameOverride ?? "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-3 text-sm font-semibold leading-none transition",
+      !classNameOverride && (appearance === "primary" ? "bg-[var(--photon-site-accent)] text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] hover:translate-y-[-1px]" : appearance === "ghost" ? "text-[var(--photon-site-text)] hover:text-[var(--photon-site-accent)]" : "border border-[var(--photon-site-border)] text-[var(--photon-site-text)] hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]")
     );
     if (action.component) {
       const ActionComponent = action.component;
@@ -1494,7 +1555,7 @@ var SiteHeaderShell = ({
           context: extensionContext,
           requestAuth
         },
-        action.id ?? `${action.label}:${action.href}`
+        `${action.id ?? `${action.label}:${action.href}`}${keySuffix}`
       );
     }
     if ((action.kind ?? "link") === "auth") {
@@ -1510,31 +1571,230 @@ var SiteHeaderShell = ({
             target: action.authenticatedTarget,
             rel: action.authenticatedRel,
             className,
+            onClick: onAction,
             children: [
-              /* @__PURE__ */ jsx5(CircleUserRound, { className: "h-4 w-4" }),
+              /* @__PURE__ */ jsx5(CircleUserRound, { className: "h-4 w-4 shrink-0" }),
               /* @__PURE__ */ jsx5("span", { children: action.authenticatedLabel ?? action.label })
             ]
           },
-          action.id ?? `${action.authenticatedLabel ?? action.label}:${authenticatedHref}`
+          `${action.id ?? `${action.authenticatedLabel ?? action.label}:${authenticatedHref}`}${keySuffix}`
         );
       }
-      return /* @__PURE__ */ jsx5(
+      return /* @__PURE__ */ jsxs3(
         "button",
         {
           type: "button",
-          onClick: requestAuth,
+          onClick: () => {
+            onAction?.();
+            requestAuth?.();
+          },
           className: clsx4(className, "cursor-pointer"),
-          children: action.label
+          children: [
+            /* @__PURE__ */ jsx5(LogIn, { className: "h-4 w-4 shrink-0" }),
+            /* @__PURE__ */ jsx5("span", { children: action.label })
+          ]
         },
-        action.id ?? `${action.label}:${action.href}`
+        `${action.id ?? `${action.label}:${action.href}`}${keySuffix}`
       );
     }
     return renderSmartLink(
       action,
       className,
-      action.id ?? `${action.label}:${action.href}`
+      `${action.id ?? `${action.label}:${action.href}`}${keySuffix}`,
+      onAction
     );
   };
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+  const mobileLinkClassName = "flex min-h-11 items-center rounded-2xl px-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:bg-[var(--photon-site-background)] hover:text-[var(--photon-site-accent)]";
+  const mobileActionClassName = "inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-[var(--photon-site-border)] bg-[var(--photon-site-surface)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]";
+  const mobileBottomLinks = collectUniqueHeaderLinks([
+    ...prominentCategoryLink ? [prominentCategoryLink] : [],
+    ...categoryLinks,
+    ...utilityLinks
+  ]).slice(0, 4);
+  const mobileBottomMenuVisible = mobileControls.bottomMenu.enabled && (mobileBottomLinks.length > 0 || mobileControls.bottomMenu.showBurger);
+  const mobileFixedTriggerVisible = mobileControls.menu.fixedTrigger;
+  const mobileInlineTriggerVisible = !mobileControls.menu.fixedTrigger && !mobileControls.bottomMenu.showBurger;
+  const mobileMenuFloating = mobileControls.menu.floating;
+  const mobileBottomMenuFloating = mobileControls.bottomMenu.floating;
+  const mobileMenuPanelClassName = clsx4(
+    "fixed overflow-y-auto border border-[var(--photon-site-border)] bg-[var(--photon-site-surface)] p-5 text-[var(--photon-site-text)] opacity-0 shadow-[0_26px_80px_rgba(15,23,42,0.22)] transition-[opacity,transform] duration-300 ease-in-out",
+    mobileMenuOpen ? "pointer-events-auto translate-x-0 translate-y-0 opacity-100" : "pointer-events-none opacity-0",
+    mobileMenuType === "fullscreen" ? clsx4(
+      "bottom-0 left-0 top-[var(--photon-dock-offset,0px)] w-[100dvw] max-w-[100dvw] rounded-none border-0",
+      !mobileMenuOpen && "translate-y-4 scale-[0.98]"
+    ) : mobileMenuType === "drawer" ? clsx4(
+      "bottom-0 left-0 top-[var(--photon-dock-offset,0px)] w-[100dvw] max-w-[100dvw] rounded-none border-0",
+      !mobileMenuOpen && "translate-x-full"
+    ) : clsx4(
+      "left-3 right-3 top-[calc(var(--photon-dock-offset,0px)+4.75rem)] max-h-[calc(100dvh-var(--photon-dock-offset,0px)-6rem)] rounded-[28px]",
+      !mobileMenuOpen && "-translate-y-3 scale-[0.98]"
+    )
+  );
+  const mobileFixedTriggerClassName = clsx4(
+    "fixed",
+    mobileMenuFloating ? "left-[calc(100dvw-3.75rem)] right-auto rounded-2xl" : "left-[calc(100dvw-3rem)] right-auto rounded-l-2xl",
+    mobileControls.menu.floating && mobileControls.menu.disableFloatingOnSmallScreens && "max-[420px]:left-[calc(100dvw-3rem)] max-[420px]:right-auto max-[420px]:rounded-l-2xl max-[420px]:rounded-r-none max-[420px]:border-r-0",
+    "z-[60] inline-flex h-12 w-12 cursor-pointer items-center justify-center border border-[var(--photon-site-border)] bg-[color-mix(in_srgb,var(--photon-site-surface)_94%,white)] text-[var(--photon-site-text)] opacity-100 shadow-[0_18px_44px_rgba(15,23,42,0.16)] backdrop-blur-xl transition-[background-color,border-color,color,transform] duration-300 ease-in-out hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)] md:hidden",
+    !mobileMenuFloating && "rounded-r-none border-r-0"
+  );
+  const mobileBottomMenuClassName = clsx4(
+    "fixed z-[50] border border-[var(--photon-site-border)] bg-[color-mix(in_srgb,var(--photon-site-surface)_94%,white)] px-2 text-[var(--photon-site-text)] opacity-100 shadow-[0_22px_60px_rgba(15,23,42,0.18)] backdrop-blur-xl transition-transform duration-300 ease-in-out md:hidden",
+    mobileBottomMenuFloating ? "bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] left-3 right-auto w-[calc(100dvw-1.5rem)] rounded-[26px] py-2" : "bottom-0 left-0 right-auto w-[100dvw] rounded-none border-x-0 border-b-0 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2",
+    mobileControls.bottomMenu.floating && mobileControls.bottomMenu.disableFloatingOnSmallScreens && "max-[420px]:bottom-0 max-[420px]:left-0 max-[420px]:right-auto max-[420px]:w-[100dvw] max-[420px]:rounded-none max-[420px]:border-x-0 max-[420px]:border-b-0 max-[420px]:pb-[calc(env(safe-area-inset-bottom)+0.5rem)] max-[420px]:pt-2"
+  );
+  const renderMobileMenuContent = (keySuffix = "") => /* @__PURE__ */ jsxs3("div", { className: "flex flex-col gap-4", children: [
+    /* @__PURE__ */ jsx5(
+      PhotonSiteSearch,
+      {
+        blockId: block.id,
+        placeholderPath: "searchPlaceholder"
+      }
+    ),
+    /* @__PURE__ */ jsxs3("div", { className: "grid gap-1", children: [
+      prominentCategoryLink ? renderSmartLink(
+        prominentCategoryLink,
+        mobileLinkClassName,
+        `${prominentCategoryLink.label}:${prominentCategoryLink.href}:mobile-prominent${keySuffix}`,
+        closeMobileMenu
+      ) : null,
+      categoryLinks.map(
+        (link) => renderSmartLink(
+          link,
+          mobileLinkClassName,
+          `${link.label}:${link.href}:mobile-category${keySuffix}`,
+          closeMobileMenu
+        )
+      ),
+      utilityLinks.map(
+        (link) => renderSmartLink(
+          link,
+          mobileLinkClassName,
+          `${link.label}:${link.href}:mobile-utility${keySuffix}`,
+          closeMobileMenu
+        )
+      )
+    ] }),
+    localeSwitcherVisible ? /* @__PURE__ */ jsxs3(
+      "div",
+      {
+        "data-photon-locale-switcher": "true",
+        className: "flex flex-wrap items-center gap-2 rounded-2xl border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-2 py-2",
+        children: [
+          /* @__PURE__ */ jsx5("div", { className: "px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--photon-site-muted)]", children: translate("photon.localeSwitcher.label", "Language") }),
+          publicLocales.map((item) => /* @__PURE__ */ jsx5(
+            PhotonLink,
+            {
+              href: currentRoute,
+              locale: item.code,
+              "data-photon-locale-option": item.code,
+              onClick: closeMobileMenu,
+              className: clsx4(
+                "rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] transition",
+                item.code === locale ? "bg-[var(--photon-site-accent)] text-white" : "text-[var(--photon-site-muted)] hover:text-[var(--photon-site-text)]"
+              ),
+              children: item.label
+            },
+            `${item.code}:mobile${keySuffix}`
+          ))
+        ]
+      }
+    ) : null,
+    /* @__PURE__ */ jsxs3("div", { className: "grid gap-2", children: [
+      shouldRenderSecondaryCta ? /* @__PURE__ */ jsx5(
+        PhotonLink,
+        {
+          href: block.props.secondaryCtaHref,
+          onClick: closeMobileMenu,
+          className: mobileActionClassName,
+          children: /* @__PURE__ */ jsx5(
+            EditableText,
+            {
+              blockId: block.id,
+              path: "secondaryCtaLabel",
+              className: "font-semibold"
+            }
+          )
+        }
+      ) : null,
+      shouldRenderPrimaryCta ? /* @__PURE__ */ jsxs3(
+        PhotonLink,
+        {
+          href: block.props.primaryCtaHref,
+          onClick: closeMobileMenu,
+          className: "inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--photon-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.24)] transition hover:translate-y-[-1px]",
+          children: [
+            /* @__PURE__ */ jsx5(
+              EditableText,
+              {
+                blockId: block.id,
+                path: "primaryCtaLabel",
+                className: "font-semibold text-white"
+              }
+            ),
+            /* @__PURE__ */ jsx5(ArrowRight2, { className: "h-4 w-4" })
+          ]
+        }
+      ) : null,
+      extensionActions.map(
+        (action) => renderExtensionAction(
+          action,
+          `:mobile${keySuffix}`,
+          mobileActionClassName,
+          closeMobileMenu
+        )
+      ),
+      block.props.showLoginAction && !visualAdminSurface && !authenticatedUser && !hasExtensionAuthAction ? /* @__PURE__ */ jsxs3(
+        "button",
+        {
+          type: "button",
+          onClick: () => {
+            closeMobileMenu();
+            requestAuth?.();
+          },
+          className: clsx4(mobileActionClassName, "cursor-pointer"),
+          children: [
+            /* @__PURE__ */ jsx5(LogIn, { className: "h-4 w-4" }),
+            /* @__PURE__ */ jsx5(
+              EditableText,
+              {
+                blockId: block.id,
+                path: "loginLabel",
+                className: "font-semibold"
+              }
+            )
+          ]
+        }
+      ) : null
+    ] }),
+    /* @__PURE__ */ jsxs3("div", { className: "grid gap-1 text-sm", children: [
+      /* @__PURE__ */ jsx5(
+        EditableText,
+        {
+          blockId: block.id,
+          path: "contactCaption",
+          className: "text-[var(--photon-site-muted)]"
+        }
+      ),
+      /* @__PURE__ */ jsx5(
+        EditableText,
+        {
+          blockId: block.id,
+          path: "contactValue",
+          className: "font-semibold text-[var(--photon-site-text)]"
+        }
+      )
+    ] })
+  ] });
+  usePhotonSiteFrameScrollLock(
+    mobileMenuOpen && mobileControls.menu.scrollLock
+  );
+  useEffect3(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    setAdminRouteSurface(window.location.pathname.includes("/photon-admin"));
+  }, []);
   useEffect3(() => {
     if (typeof window === "undefined" || !block.props.compactOnScroll || !liveSurfaceMode) {
       setIsCompact(false);
@@ -1574,7 +1834,7 @@ var SiteHeaderShell = ({
       root.style.setProperty("--photon-site-header-height", "0px");
     };
   }, [block.props.sticky, liveSurfaceMode, compact, localeSwitcherVisible]);
-  return /* @__PURE__ */ jsx5(
+  return /* @__PURE__ */ jsxs3(
     "header",
     {
       ref: headerRef,
@@ -1583,228 +1843,381 @@ var SiteHeaderShell = ({
         liveSurfaceMode && "z-40",
         isShowcaseCard ? "pt-[var(--photon-site-gutter,24px)]" : "pt-0"
       ),
-      children: /* @__PURE__ */ jsxs3(
-        "div",
-        {
-          className: clsx4(
-            "border-b border-[var(--photon-site-border)] text-[var(--photon-site-text)] transition-[box-shadow,background-color,border-radius] duration-300",
-            framelessSite ? clsx4(
-              "rounded-none border-x-0 border-t-0 bg-[color-mix(in_srgb,var(--photon-site-surface)_92%,white)] shadow-none",
-              block.props.sticky && compact && "bg-[color-mix(in_srgb,var(--photon-site-surface)_96%,white)] shadow-[0_18px_40px_rgba(15,23,42,0.08)]"
-            ) : isShowcaseCard ? "mx-auto max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] rounded-[calc(var(--photon-site-radius,24px)+10px)] border shadow-[0_28px_70px_rgba(15,23,42,0.08)]" : clsx4(
-              "rounded-none border-x-0 border-t-0 bg-[var(--photon-site-surface)] shadow-[0_18px_40px_rgba(15,23,42,0.06)]",
-              block.props.sticky && compact && "shadow-[0_20px_54px_rgba(15,23,42,0.12)]"
-            )
-          ),
-          children: [
-            /* @__PURE__ */ jsx5(
-              "div",
-              {
-                className: clsx4(
-                  "mx-auto w-full max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] transition-[padding,gap] duration-300",
-                  framelessSite ? compact ? "px-[var(--photon-site-gutter,24px)] py-3" : "px-[var(--photon-site-gutter,24px)] py-4" : isShowcaseCard ? compact ? "px-4 py-3" : "px-5 py-4 sm:px-6" : compact ? "px-[var(--photon-site-gutter,24px)] py-3" : "px-[var(--photon-site-gutter,24px)] py-4"
-                ),
-                children: /* @__PURE__ */ jsxs3("div", { className: "flex flex-col gap-4", children: [
-                  /* @__PURE__ */ jsxs3("div", { className: "flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between", children: [
-                    /* @__PURE__ */ jsx5("div", { className: "flex flex-wrap items-center gap-3 text-sm text-[var(--photon-site-muted)]", children: utilityLinks.map(
-                      (link) => renderSmartLink(
-                        link,
-                        "transition hover:text-[var(--photon-site-text)]",
-                        `${link.label}:${link.href}`
-                      )
-                    ) }),
-                    /* @__PURE__ */ jsxs3("div", { className: "flex flex-wrap items-center gap-3 text-sm", children: [
-                      localeSwitcherVisible ? /* @__PURE__ */ jsxs3(
-                        "div",
-                        {
-                          "data-photon-locale-switcher": "true",
-                          className: "flex flex-wrap items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-2 py-2",
-                          children: [
-                            /* @__PURE__ */ jsx5("div", { className: "px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--photon-site-muted)]", children: translate("photon.localeSwitcher.label", "Language") }),
-                            publicLocales.map((item) => /* @__PURE__ */ jsx5(
-                              PhotonLink,
-                              {
-                                href: currentRoute,
-                                locale: item.code,
-                                "data-photon-locale-option": item.code,
-                                className: clsx4(
-                                  "rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] transition",
-                                  item.code === locale ? "bg-[var(--photon-site-accent)] text-white" : "text-[var(--photon-site-muted)] hover:text-[var(--photon-site-text)]"
-                                ),
-                                children: item.label
-                              },
-                              item.code
-                            ))
-                          ]
-                        }
-                      ) : null,
-                      /* @__PURE__ */ jsx5(
-                        EditableText,
-                        {
-                          blockId: block.id,
-                          path: "contactCaption",
-                          className: "text-[var(--photon-site-muted)]"
-                        }
-                      ),
-                      /* @__PURE__ */ jsx5(
-                        EditableText,
-                        {
-                          blockId: block.id,
-                          path: "contactValue",
-                          className: "font-semibold text-[var(--photon-site-text)]"
-                        }
-                      )
-                    ] })
-                  ] }),
-                  /* @__PURE__ */ jsxs3(
-                    "div",
-                    {
-                      className: clsx4(
-                        "grid gap-4 lg:items-center",
-                        prominentCategoryLink ? "lg:grid-cols-[auto_auto_minmax(280px,1fr)_auto]" : "lg:grid-cols-[auto_minmax(280px,1fr)_auto]"
-                      ),
-                      children: [
-                        /* @__PURE__ */ jsxs3(
-                          PhotonLink,
-                          {
-                            href: block.props.brandHref,
-                            className: "flex min-w-0 items-center gap-3",
-                            children: [
-                              /* @__PURE__ */ jsx5("div", { className: "relative h-16 w-16 overflow-hidden rounded-[22px] border border-[var(--photon-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]", children: block.props.logoImage ? /* @__PURE__ */ jsx5(
-                                EditableImage,
-                                {
-                                  blockId: block.id,
-                                  path: "logoImage",
-                                  className: "h-full w-full rounded-[22px]",
-                                  imageClassName: "h-full w-full object-contain p-2",
-                                  fallbackAlt: block.props.brandLabel
-                                }
-                              ) : /* @__PURE__ */ jsx5("div", { className: "flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--photon-site-accent)]", children: /* @__PURE__ */ jsx5(
-                                EditableText,
-                                {
-                                  blockId: block.id,
-                                  path: "brandLabel",
-                                  className: "text-[var(--photon-site-accent)]"
-                                }
-                              ) }) }),
-                              /* @__PURE__ */ jsxs3("div", { className: "min-w-0", children: [
+      children: [
+        mobileFixedTriggerVisible && !mobileMenuOpen ? /* @__PURE__ */ jsx5(
+          "button",
+          {
+            type: "button",
+            "aria-label": "Open menu",
+            "aria-expanded": mobileMenuOpen,
+            onClick: () => setMobileMenuOpen((value) => !value),
+            className: mobileFixedTriggerClassName,
+            style: {
+              top: "calc(var(--photon-dock-offset, 0px) + env(safe-area-inset-top) + 0.75rem)"
+            },
+            children: /* @__PURE__ */ jsx5(Menu, { className: "h-5 w-5 transition-transform duration-300 ease-in-out" })
+          }
+        ) : null,
+        /* @__PURE__ */ jsxs3(
+          "div",
+          {
+            className: clsx4(
+              "border-b border-[var(--photon-site-border)] text-[var(--photon-site-text)] transition-[box-shadow,background-color,border-radius] duration-300",
+              framelessSite ? clsx4(
+                "rounded-none border-x-0 border-t-0 bg-[color-mix(in_srgb,var(--photon-site-surface)_92%,white)] shadow-none",
+                block.props.sticky && compact && "bg-[color-mix(in_srgb,var(--photon-site-surface)_96%,white)] shadow-[0_18px_40px_rgba(15,23,42,0.08)]"
+              ) : isShowcaseCard ? "mx-auto max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] rounded-[calc(var(--photon-site-radius,24px)+10px)] border shadow-[0_28px_70px_rgba(15,23,42,0.08)]" : clsx4(
+                "rounded-none border-x-0 border-t-0 bg-[var(--photon-site-surface)] shadow-[0_18px_40px_rgba(15,23,42,0.06)]",
+                block.props.sticky && compact && "shadow-[0_20px_54px_rgba(15,23,42,0.12)]"
+              )
+            ),
+            children: [
+              /* @__PURE__ */ jsxs3(
+                "div",
+                {
+                  className: clsx4(
+                    "mx-auto w-full max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] transition-[padding,gap] duration-300",
+                    framelessSite ? compact ? "px-[var(--photon-site-gutter,24px)] py-3" : "px-[var(--photon-site-gutter,24px)] py-4" : isShowcaseCard ? compact ? "px-4 py-3" : "px-5 py-4 sm:px-6" : compact ? "px-[var(--photon-site-gutter,24px)] py-3" : "px-[var(--photon-site-gutter,24px)] py-4"
+                  ),
+                  children: [
+                    /* @__PURE__ */ jsxs3(
+                      "div",
+                      {
+                        className: clsx4(
+                          "flex items-center justify-between gap-3 md:hidden",
+                          mobileFixedTriggerVisible && "pr-14"
+                        ),
+                        children: [
+                          /* @__PURE__ */ jsxs3(
+                            PhotonLink,
+                            {
+                              href: block.props.brandHref,
+                              className: "flex min-w-0 items-center gap-3",
+                              onClick: closeMobileMenu,
+                              children: [
+                                /* @__PURE__ */ jsx5("div", { className: "relative h-11 w-11 shrink-0 overflow-hidden rounded-2xl border border-[var(--photon-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]", children: block.props.logoImage ? /* @__PURE__ */ jsx5(
+                                  EditableImage,
+                                  {
+                                    blockId: block.id,
+                                    path: "logoImage",
+                                    className: "h-full w-full rounded-2xl",
+                                    imageClassName: "h-full w-full object-contain p-1.5",
+                                    fallbackAlt: block.props.brandLabel
+                                  }
+                                ) : /* @__PURE__ */ jsx5("div", { className: "flex h-full items-center justify-center px-2 text-center text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--photon-site-accent)]", children: /* @__PURE__ */ jsx5(
+                                  EditableText,
+                                  {
+                                    blockId: block.id,
+                                    path: "brandLabel",
+                                    className: "text-[var(--photon-site-accent)]"
+                                  }
+                                ) }) }),
                                 /* @__PURE__ */ jsx5(
                                   EditableText,
                                   {
                                     blockId: block.id,
                                     path: "brandLabel",
                                     as: "div",
-                                    className: "[font-family:var(--photon-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
-                                  }
-                                ),
-                                isShowcaseCard ? /* @__PURE__ */ jsx5("div", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--photon-site-muted)]", children: "Live site frame" }) : null
-                              ] })
-                            ]
-                          }
-                        ),
-                        prominentCategoryLink ? /* @__PURE__ */ jsxs3(
-                          PhotonLink,
-                          {
-                            href: prominentCategoryLink.href,
-                            target: prominentCategoryLink.target,
-                            rel: prominentCategoryLink.rel,
-                            className: "inline-flex items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
-                            children: [
-                              /* @__PURE__ */ jsx5("div", { className: "h-2.5 w-2.5 rounded-full bg-[var(--photon-site-accent)]" }),
-                              /* @__PURE__ */ jsx5("span", { className: "font-semibold", children: prominentCategoryLink.label })
-                            ]
-                          }
-                        ) : null,
-                        /* @__PURE__ */ jsx5(
-                          PhotonSiteSearch,
-                          {
-                            blockId: block.id,
-                            placeholderPath: "searchPlaceholder"
-                          }
-                        ),
-                        /* @__PURE__ */ jsxs3("div", { className: "flex flex-wrap items-center justify-start gap-2 lg:justify-end", children: [
-                          shouldRenderSecondaryCta ? /* @__PURE__ */ jsx5(
-                            PhotonLink,
-                            {
-                              href: block.props.secondaryCtaHref,
-                              className: "inline-flex items-center gap-2 rounded-full border border-[var(--photon-site-border)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
-                              children: /* @__PURE__ */ jsx5(
-                                EditableText,
-                                {
-                                  blockId: block.id,
-                                  path: "secondaryCtaLabel",
-                                  className: "font-semibold"
-                                }
-                              )
-                            }
-                          ) : null,
-                          shouldRenderPrimaryCta ? /* @__PURE__ */ jsxs3(
-                            PhotonLink,
-                            {
-                              href: block.props.primaryCtaHref,
-                              className: "inline-flex items-center gap-2 rounded-full bg-[var(--photon-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] transition hover:translate-y-[-1px]",
-                              children: [
-                                /* @__PURE__ */ jsx5(
-                                  EditableText,
-                                  {
-                                    blockId: block.id,
-                                    path: "primaryCtaLabel",
-                                    className: "font-semibold text-white"
-                                  }
-                                ),
-                                /* @__PURE__ */ jsx5(ArrowRight2, { className: "h-4 w-4" })
-                              ]
-                            }
-                          ) : null,
-                          extensionActions.map(renderExtensionAction),
-                          block.props.showLoginAction && !isAdmin && !authenticatedUser && !hasExtensionAuthAction ? /* @__PURE__ */ jsxs3(
-                            "button",
-                            {
-                              type: "button",
-                              onClick: requestAuth,
-                              className: "inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-surface)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
-                              children: [
-                                /* @__PURE__ */ jsx5(LogIn, { className: "h-4 w-4" }),
-                                /* @__PURE__ */ jsx5(
-                                  EditableText,
-                                  {
-                                    blockId: block.id,
-                                    path: "loginLabel",
-                                    className: "font-semibold"
+                                    className: "min-w-0 truncate [font-family:var(--photon-site-heading-font)] text-xl font-semibold tracking-[-0.02em]"
                                   }
                                 )
                               ]
                             }
+                          ),
+                          mobileInlineTriggerVisible ? /* @__PURE__ */ jsx5(
+                            "button",
+                            {
+                              type: "button",
+                              "aria-label": mobileMenuOpen ? "Close menu" : "Open menu",
+                              "aria-expanded": mobileMenuOpen,
+                              onClick: () => setMobileMenuOpen((value) => !value),
+                              className: "inline-flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-2xl border border-[var(--photon-site-border)] bg-[var(--photon-site-surface)] text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
+                              children: mobileMenuOpen ? /* @__PURE__ */ jsx5(X, { className: "h-5 w-5" }) : /* @__PURE__ */ jsx5(Menu, { className: "h-5 w-5" })
+                            }
                           ) : null
+                        ]
+                      }
+                    ),
+                    /* @__PURE__ */ jsxs3("div", { className: "hidden flex-col gap-4 md:flex", children: [
+                      /* @__PURE__ */ jsxs3("div", { className: "flex flex-col gap-3 md:flex-row md:items-center md:justify-between", children: [
+                        /* @__PURE__ */ jsx5("div", { className: "flex flex-wrap items-center gap-3 text-sm text-[var(--photon-site-muted)]", children: utilityLinks.map(
+                          (link) => renderSmartLink(
+                            link,
+                            "transition hover:text-[var(--photon-site-text)]",
+                            `${link.label}:${link.href}`
+                          )
+                        ) }),
+                        /* @__PURE__ */ jsxs3("div", { className: "flex flex-wrap items-center gap-3 text-sm", children: [
+                          localeSwitcherVisible ? /* @__PURE__ */ jsxs3(
+                            "div",
+                            {
+                              "data-photon-locale-switcher": "true",
+                              className: "flex flex-wrap items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-2 py-2",
+                              children: [
+                                /* @__PURE__ */ jsx5("div", { className: "px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--photon-site-muted)]", children: translate("photon.localeSwitcher.label", "Language") }),
+                                publicLocales.map((item) => /* @__PURE__ */ jsx5(
+                                  PhotonLink,
+                                  {
+                                    href: currentRoute,
+                                    locale: item.code,
+                                    "data-photon-locale-option": item.code,
+                                    className: clsx4(
+                                      "rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] transition",
+                                      item.code === locale ? "bg-[var(--photon-site-accent)] text-white" : "text-[var(--photon-site-muted)] hover:text-[var(--photon-site-text)]"
+                                    ),
+                                    children: item.label
+                                  },
+                                  item.code
+                                ))
+                              ]
+                            }
+                          ) : null,
+                          /* @__PURE__ */ jsx5(
+                            EditableText,
+                            {
+                              blockId: block.id,
+                              path: "contactCaption",
+                              className: "text-[var(--photon-site-muted)]"
+                            }
+                          ),
+                          /* @__PURE__ */ jsx5(
+                            EditableText,
+                            {
+                              blockId: block.id,
+                              path: "contactValue",
+                              className: "font-semibold text-[var(--photon-site-text)]"
+                            }
+                          )
                         ] })
-                      ]
+                      ] }),
+                      /* @__PURE__ */ jsxs3(
+                        "div",
+                        {
+                          className: clsx4(
+                            "grid gap-4 md:items-center",
+                            prominentCategoryLink ? "md:grid-cols-[auto_auto_minmax(280px,1fr)_auto]" : "md:grid-cols-[auto_minmax(280px,1fr)_auto]"
+                          ),
+                          children: [
+                            /* @__PURE__ */ jsxs3(
+                              PhotonLink,
+                              {
+                                href: block.props.brandHref,
+                                className: "flex min-w-0 items-center gap-3",
+                                children: [
+                                  /* @__PURE__ */ jsx5("div", { className: "relative h-16 w-16 overflow-hidden rounded-[22px] border border-[var(--photon-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]", children: block.props.logoImage ? /* @__PURE__ */ jsx5(
+                                    EditableImage,
+                                    {
+                                      blockId: block.id,
+                                      path: "logoImage",
+                                      className: "h-full w-full rounded-[22px]",
+                                      imageClassName: "h-full w-full object-contain p-2",
+                                      fallbackAlt: block.props.brandLabel
+                                    }
+                                  ) : /* @__PURE__ */ jsx5("div", { className: "flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--photon-site-accent)]", children: /* @__PURE__ */ jsx5(
+                                    EditableText,
+                                    {
+                                      blockId: block.id,
+                                      path: "brandLabel",
+                                      className: "text-[var(--photon-site-accent)]"
+                                    }
+                                  ) }) }),
+                                  /* @__PURE__ */ jsxs3("div", { className: "min-w-0", children: [
+                                    /* @__PURE__ */ jsx5(
+                                      EditableText,
+                                      {
+                                        blockId: block.id,
+                                        path: "brandLabel",
+                                        as: "div",
+                                        className: "[font-family:var(--photon-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
+                                      }
+                                    ),
+                                    isShowcaseCard ? /* @__PURE__ */ jsx5("div", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--photon-site-muted)]", children: "Live site frame" }) : null
+                                  ] })
+                                ]
+                              }
+                            ),
+                            prominentCategoryLink ? /* @__PURE__ */ jsxs3(
+                              PhotonLink,
+                              {
+                                href: prominentCategoryLink.href,
+                                target: prominentCategoryLink.target,
+                                rel: prominentCategoryLink.rel,
+                                className: "inline-flex items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
+                                children: [
+                                  /* @__PURE__ */ jsx5("div", { className: "h-2.5 w-2.5 rounded-full bg-[var(--photon-site-accent)]" }),
+                                  /* @__PURE__ */ jsx5("span", { className: "font-semibold", children: prominentCategoryLink.label })
+                                ]
+                              }
+                            ) : null,
+                            /* @__PURE__ */ jsx5(
+                              PhotonSiteSearch,
+                              {
+                                blockId: block.id,
+                                placeholderPath: "searchPlaceholder"
+                              }
+                            ),
+                            /* @__PURE__ */ jsxs3("div", { className: "flex flex-wrap items-center justify-start gap-2 md:justify-end", children: [
+                              shouldRenderSecondaryCta ? /* @__PURE__ */ jsx5(
+                                PhotonLink,
+                                {
+                                  href: block.props.secondaryCtaHref,
+                                  className: "inline-flex items-center gap-2 rounded-full border border-[var(--photon-site-border)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
+                                  children: /* @__PURE__ */ jsx5(
+                                    EditableText,
+                                    {
+                                      blockId: block.id,
+                                      path: "secondaryCtaLabel",
+                                      className: "font-semibold"
+                                    }
+                                  )
+                                }
+                              ) : null,
+                              shouldRenderPrimaryCta ? /* @__PURE__ */ jsxs3(
+                                PhotonLink,
+                                {
+                                  href: block.props.primaryCtaHref,
+                                  className: "inline-flex items-center gap-2 rounded-full bg-[var(--photon-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] transition hover:translate-y-[-1px]",
+                                  children: [
+                                    /* @__PURE__ */ jsx5(
+                                      EditableText,
+                                      {
+                                        blockId: block.id,
+                                        path: "primaryCtaLabel",
+                                        className: "font-semibold text-white"
+                                      }
+                                    ),
+                                    /* @__PURE__ */ jsx5(ArrowRight2, { className: "h-4 w-4" })
+                                  ]
+                                }
+                              ) : null,
+                              extensionActions.map(
+                                (action) => renderExtensionAction(action)
+                              ),
+                              block.props.showLoginAction && !visualAdminSurface && !authenticatedUser && !hasExtensionAuthAction ? /* @__PURE__ */ jsxs3(
+                                "button",
+                                {
+                                  type: "button",
+                                  onClick: requestAuth,
+                                  className: "inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-surface)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
+                                  children: [
+                                    /* @__PURE__ */ jsx5(LogIn, { className: "h-4 w-4" }),
+                                    /* @__PURE__ */ jsx5(
+                                      EditableText,
+                                      {
+                                        blockId: block.id,
+                                        path: "loginLabel",
+                                        className: "font-semibold"
+                                      }
+                                    )
+                                  ]
+                                }
+                              ) : null
+                            ] })
+                          ]
+                        }
+                      )
+                    ] })
+                  ]
+                }
+              ),
+              categoryLinks.length > 0 ? /* @__PURE__ */ jsx5(
+                "div",
+                {
+                  className: clsx4(
+                    "hidden border-t border-[var(--photon-site-border)] md:block",
+                    framelessSite && "bg-transparent"
+                  ),
+                  children: /* @__PURE__ */ jsx5("div", { className: "mx-auto w-full max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] px-[var(--photon-site-gutter,24px)] py-4", children: /* @__PURE__ */ jsx5("div", { className: "flex flex-wrap gap-2", children: categoryLinks.map(
+                    (link) => renderSmartLink(
+                      link,
+                      clsx4(
+                        "rounded-full border border-[var(--photon-site-border)] px-4 py-2 text-sm text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
+                        framelessSite ? "bg-transparent" : isShowcaseCard ? "bg-[var(--photon-site-background)]" : "bg-white/0"
+                      ),
+                      `${link.label}:${link.href}`
+                    )
+                  ) }) })
+                }
+              ) : null
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxs3(
+          "div",
+          {
+            className: clsx4(
+              "fixed left-0 top-[var(--photon-dock-offset,0px)] z-[55] h-[calc(100dvh-var(--photon-dock-offset,0px))] w-[100dvw] overflow-hidden transition-[visibility] duration-300 ease-in-out md:hidden",
+              mobileMenuOpen ? "visible" : "invisible"
+            ),
+            children: [
+              mobileMenuType === "inline" ? null : /* @__PURE__ */ jsx5(
+                "button",
+                {
+                  type: "button",
+                  "aria-label": "Close menu",
+                  className: clsx4(
+                    "absolute inset-0 cursor-default bg-slate-950/35 backdrop-blur-[2px] transition-opacity duration-300 ease-in-out",
+                    mobileMenuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+                  ),
+                  onClick: closeMobileMenu
+                }
+              ),
+              /* @__PURE__ */ jsxs3("div", { className: mobileMenuPanelClassName, children: [
+                /* @__PURE__ */ jsxs3("div", { className: "mb-4 flex items-center justify-between gap-3", children: [
+                  /* @__PURE__ */ jsx5(
+                    EditableText,
+                    {
+                      blockId: block.id,
+                      path: "brandLabel",
+                      as: "div",
+                      className: "[font-family:var(--photon-site-heading-font)] text-xl font-semibold tracking-[-0.02em]"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx5(
+                    "button",
+                    {
+                      type: "button",
+                      "aria-label": "Close menu",
+                      onClick: closeMobileMenu,
+                      className: "inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-2xl border border-[var(--photon-site-border)] text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
+                      children: /* @__PURE__ */ jsx5(X, { className: "h-5 w-5" })
                     }
                   )
-                ] })
-              }
-            ),
-            categoryLinks.length > 0 ? /* @__PURE__ */ jsx5(
-              "div",
-              {
-                className: clsx4(
-                  "border-t border-[var(--photon-site-border)]",
-                  framelessSite && "bg-transparent"
-                ),
-                children: /* @__PURE__ */ jsx5("div", { className: "mx-auto w-full max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] px-[var(--photon-site-gutter,24px)] py-4", children: /* @__PURE__ */ jsx5("div", { className: "flex flex-wrap gap-2", children: categoryLinks.map(
-                  (link) => renderSmartLink(
-                    link,
-                    clsx4(
-                      "rounded-full border border-[var(--photon-site-border)] px-4 py-2 text-sm text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
-                      framelessSite ? "bg-transparent" : isShowcaseCard ? "bg-[var(--photon-site-background)]" : "bg-white/0"
-                    ),
-                    `${link.label}:${link.href}`
-                  )
-                ) }) })
-              }
-            ) : null
-          ]
-        }
-      )
+                ] }),
+                renderMobileMenuContent(":panel")
+              ] })
+            ]
+          }
+        ),
+        mobileBottomMenuVisible && !mobileMenuOpen ? /* @__PURE__ */ jsx5(
+          "nav",
+          {
+            "aria-label": "Mobile bottom navigation",
+            className: mobileBottomMenuClassName,
+            children: /* @__PURE__ */ jsxs3("div", { className: "flex items-center justify-around gap-1", children: [
+              mobileBottomLinks.map(
+                (link) => renderSmartLink(
+                  link,
+                  "flex min-w-0 flex-1 items-center justify-center rounded-2xl px-2 py-2 text-center text-[11px] font-semibold leading-tight text-[var(--photon-site-muted)] transition hover:bg-[var(--photon-site-background)] hover:text-[var(--photon-site-accent)]",
+                  `${link.label}:${link.href}:mobile-bottom`,
+                  closeMobileMenu
+                )
+              ),
+              mobileControls.bottomMenu.showBurger ? /* @__PURE__ */ jsx5(
+                "button",
+                {
+                  type: "button",
+                  "aria-label": mobileMenuOpen ? "Close menu" : "Open menu",
+                  "aria-expanded": mobileMenuOpen,
+                  onClick: () => setMobileMenuOpen((value) => !value),
+                  className: "inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-2xl bg-[var(--photon-site-accent)] text-white shadow-[0_14px_30px_rgba(15,118,110,0.24)]",
+                  children: mobileMenuOpen ? /* @__PURE__ */ jsx5(X, { className: "h-5 w-5" }) : /* @__PURE__ */ jsx5(Menu, { className: "h-5 w-5" })
+                }
+              ) : null
+            ] })
+          }
+        ) : null
+      ]
     }
   );
 };
@@ -1865,6 +2278,22 @@ var siteHeaderShellDefinition = definePhotonBlockDefinition({
       ru: "\u0412\u0445\u043E\u0434 \u0434\u043B\u044F \u0430\u0434\u043C\u0438\u043D\u0430"
     }),
     sticky: true,
+    mobile: {
+      sticky: true,
+      menu: {
+        type: "inline",
+        fixedTrigger: true,
+        scrollLock: true,
+        floating: false,
+        disableFloatingOnSmallScreens: true
+      },
+      bottomMenu: {
+        enabled: false,
+        showBurger: false,
+        floating: false,
+        disableFloatingOnSmallScreens: true
+      }
+    },
     compactOnScroll: true,
     showLocaleSwitcher: true,
     disabledExtensionIds: [],
@@ -2154,9 +2583,13 @@ var PhotonPublicSurfaceRegion = ({
   const [surfaceWidth, setSurfaceWidth] = useState4(0);
   const blocks = getPhotonSurfaceRegionBlocks(page.document, region.key);
   const isPageRegion = region.key === PHOTON_PAGE_SURFACE_REGION_KEY;
-  const stickySiteHeaderRegion = region.key === "header" && (blocks ?? []).some(
+  const stickySiteHeaderBlock = region.key === "header" ? (blocks ?? []).find(
     (block) => block.module === "photon-system" && block.type === "site-header-shell" && block.props.sticky === true
-  );
+  ) : void 0;
+  const stickySiteHeaderRegion = Boolean(stickySiteHeaderBlock);
+  const mobileStickySiteHeaderRegion = resolvePhotonSiteFrameMobileControls(
+    stickySiteHeaderBlock?.props?.mobile
+  ).sticky;
   useEffect4(() => {
     const element = sectionRef.current;
     if (!element || typeof ResizeObserver === "undefined") {
@@ -2184,7 +2617,8 @@ var PhotonPublicSurfaceRegion = ({
           "data-photon-surface-region": region.key,
           className: clsx6(
             "relative [container-type:inline-size]",
-            stickySiteHeaderRegion && "sticky z-40"
+            isPageRegion && "flex-1",
+            stickySiteHeaderRegion && (mobileStickySiteHeaderRegion ? "sticky z-40" : "lg:sticky lg:z-40")
           ),
           style: stickySiteHeaderRegion ? {
             top: "var(--photon-site-header-offset, 0px)"
@@ -2208,7 +2642,7 @@ var PhotonPublicSurface = memo(function PhotonPublicSurface2({
   page
 }) {
   const regions = resolvePhotonSurfaceRegionDescriptors(page.site);
-  return /* @__PURE__ */ jsx7("div", { className: "space-y-[var(--photon-section-gap,2rem)]", children: regions.map((region) => /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx7("div", { className: "flex min-h-[var(--photon-site-surface-min-height,100dvh)] flex-col gap-[var(--photon-section-gap,2rem)]", children: regions.map((region) => /* @__PURE__ */ jsx7(
     PhotonPublicSurfaceRegion,
     {
       region,
@@ -2225,6 +2659,10 @@ var PhotonPublicPage = ({
   siteFrameExtensions,
   accountTabs,
   requestAuth,
+  navigate,
+  prefetch,
+  renderAuthPage,
+  linkFactory,
   searchSite,
   activeSearchHighlight = null,
   navigation
@@ -2245,6 +2683,7 @@ var PhotonPublicPage = ({
     "--photon-site-max-width": designSettings.siteMaxWidth,
     "--photon-site-gutter": designSettings.pageGutter,
     "--photon-section-gap": designSettings.sectionGap,
+    "--photon-site-surface-min-height": "100dvh",
     "--photon-site-radius": designSettings.radius,
     "--photon-site-header-offset": designSettings.headerOffset,
     backgroundColor: designSettings.backgroundColor,
@@ -2265,6 +2704,10 @@ var PhotonPublicPage = ({
       siteFrameExtensions,
       accountTabs,
       requestAuth,
+      navigate,
+      prefetch,
+      renderAuthPage,
+      linkFactory,
       searchSite,
       i18n,
       navigation,
@@ -2297,25 +2740,30 @@ export {
   PhotonProvider,
   PhotonPublicPage,
   PhotonSiteSearch,
-  createPhotonPublicAccountTabExtension as createPhotonAccountTabExtension,
+  collectPhotonFooterExtensionItems,
+  collectPhotonHeaderExtensionItems,
+  createPhotonAccountTabExtension,
   createPhotonBlockLocalizationSchema,
   createPhotonKit,
   createPhotonLocalizedDefault,
   createPhotonRuntime,
-  createPhotonPublicSiteFrameExtension as createPhotonSiteFrameExtension,
+  createPhotonSiteFrameExtension,
   definePhotonBlockDefinition,
   getPhotonAnchorRel,
   getPhotonPublicSurfaceModeStyle as getPhotonSurfaceModeStyle,
   photonPublicSystemKit as photonSystemKit,
   photonPublicSystemModule as photonSystemModule,
   renderPhotonRichTextHtml,
-  resolvePhotonPublicAccountTabs as resolvePhotonAccountTabs,
+  resolvePhotonAccountTabs,
+  resolvePhotonSiteFrameExtensions,
+  resolvePhotonSiteFrameMobileControls,
   sanitizePhotonLinkHref,
   sanitizePhotonRichTextHtml,
   usePhoton,
   usePhotonCanEdit,
   usePhotonI18n,
   usePhotonRenderDepth,
+  usePhotonSiteFrameScrollLock,
   usePhotonStore,
   usePhotonFieldValue as usePhotonValueAtPath
 };

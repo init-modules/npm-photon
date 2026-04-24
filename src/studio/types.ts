@@ -6,12 +6,15 @@ import type {
 	PhotonField,
 	PhotonI18nValue,
 	PhotonLinkComponent,
+	PhotonLinkFactory,
 	PhotonMediaUploadHandler,
 	PhotonMergePreview,
 	PhotonMode,
+	PhotonNavigateHandler,
 	PhotonPageCatalogItem,
 	PhotonPageSettings,
 	PhotonPageSettingsPanelDefinition,
+	PhotonPrefetchHandler,
 	PhotonRegistry,
 	PhotonResources,
 	PhotonRevisionDescriptor,
@@ -105,8 +108,11 @@ export type PhotonStudioProps = {
 	) => void | Promise<void>;
 	onUploadMedia?: PhotonMediaUploadHandler;
 	onSearch?: PhotonSearchHandler;
+	navigate?: PhotonNavigateHandler;
+	prefetch?: PhotonPrefetchHandler;
 	activeSearchHighlight?: PhotonSearchHighlight | null;
 	linkComponent?: PhotonLinkComponent;
+	linkFactory?: PhotonLinkFactory;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
 	accountTabs?: PhotonAccountTabExtension[];
 	i18n?: PhotonI18nValue | null;

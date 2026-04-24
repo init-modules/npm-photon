@@ -16,7 +16,7 @@ test("site setting changes can replace the full studio state via the callback co
 
 	applyStudioSiteSettingChange({
 		path: "design.presetId",
-		value: "paper-flow",
+		value: "init-landing",
 		workspace: {
 			ref: {
 				profileId: "profile-a",
@@ -75,8 +75,8 @@ test("site setting changes can replace the full studio state via the callback co
 	});
 
 	assert.deepEqual(calls, [
-		"update:design.presetId:paper-flow",
-		"replace:paper-flow",
+		"update:design.presetId:init-landing",
+		"replace:init-landing",
 	]);
 	assert.ok(replacementState);
 	assert.equal(
@@ -86,6 +86,6 @@ test("site setting changes can replace the full studio state via the callback co
 	assert.equal(
 		(replacementState?.[3] as { settings: { design: { presetId: string } } })
 			.settings.design.presetId,
-		"paper-flow",
+		"init-landing",
 	);
 });

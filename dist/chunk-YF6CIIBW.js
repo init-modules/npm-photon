@@ -138,7 +138,10 @@ var createPhotonStore = ({
   uploadMedia,
   searchSite,
   requestAuth,
+  navigate,
+  prefetch,
   linkComponent,
+  linkFactory = (href) => href,
   navigation = {},
   siteFrameExtensions = [],
   accountTabs = [],
@@ -175,7 +178,10 @@ var createPhotonStore = ({
     uploadMedia,
     searchSite,
     requestAuth,
+    navigate,
+    prefetch,
     linkComponent,
+    linkFactory,
     navigation: clonePhotonValue(navigation),
     siteFrameExtensions,
     accountTabs: clonePhotonValue(accountTabs),
@@ -527,6 +533,7 @@ var DefaultPhotonLinkComponent = ({
   },
   children
 );
+var defaultPhotonLinkFactory = (href) => sanitizePhotonLinkHref(href);
 var PhotonProvider = ({
   children,
   initialDocument,
@@ -545,7 +552,10 @@ var PhotonProvider = ({
   uploadMedia,
   searchSite,
   requestAuth,
+  navigate,
+  prefetch,
   linkComponent = DefaultPhotonLinkComponent,
+  linkFactory = defaultPhotonLinkFactory,
   navigation = {},
   siteFrameExtensions = [],
   accountTabs = []
@@ -582,7 +592,10 @@ var PhotonProvider = ({
       uploadMedia,
       searchSite,
       requestAuth,
+      navigate,
+      prefetch,
       linkComponent,
+      linkFactory,
       navigation,
       siteFrameExtensions,
       accountTabs,
@@ -624,7 +637,7 @@ var PhotonProvider = ({
       const normalizedCapabilities = normalizePhotonWorkspaceCapabilities(capabilities);
       const nextMode = !isAdmin ? "preview" : state.mode;
       const nextEditable = isAdmin && canEditPhotonWorkspace(normalizedWorkspace, normalizedCapabilities);
-      if (state.isAdmin === isAdmin && state.uploadMedia === uploadMedia && state.searchSite === searchSite && state.requestAuth === requestAuth && state.linkComponent === linkComponent && JSON.stringify(state.navigation) === JSON.stringify(navigation) && state.siteFrameExtensions === siteFrameExtensions && JSON.stringify(state.accountTabs) === JSON.stringify(accountTabs) && state.contentLocale === (i18n?.contentLocale ?? state.contentLocale) && state.defaultLocale === (i18n?.defaultLocale ?? state.defaultLocale) && state.mode === nextMode && JSON.stringify(state.capabilities) === JSON.stringify(normalizedCapabilities) && JSON.stringify(state.workspace) === JSON.stringify(normalizedWorkspace)) {
+      if (state.isAdmin === isAdmin && state.uploadMedia === uploadMedia && state.searchSite === searchSite && state.requestAuth === requestAuth && state.navigate === navigate && state.prefetch === prefetch && state.linkComponent === linkComponent && state.linkFactory === linkFactory && JSON.stringify(state.navigation) === JSON.stringify(navigation) && state.siteFrameExtensions === siteFrameExtensions && JSON.stringify(state.accountTabs) === JSON.stringify(accountTabs) && state.contentLocale === (i18n?.contentLocale ?? state.contentLocale) && state.defaultLocale === (i18n?.defaultLocale ?? state.defaultLocale) && state.mode === nextMode && JSON.stringify(state.capabilities) === JSON.stringify(normalizedCapabilities) && JSON.stringify(state.workspace) === JSON.stringify(normalizedWorkspace)) {
         return state;
       }
       return {
@@ -635,7 +648,10 @@ var PhotonProvider = ({
         uploadMedia,
         searchSite,
         requestAuth,
+        navigate,
+        prefetch,
         linkComponent,
+        linkFactory,
         navigation: clonePhotonValue(navigation),
         siteFrameExtensions,
         accountTabs: clonePhotonValue(accountTabs),
@@ -649,7 +665,10 @@ var PhotonProvider = ({
     i18n?.contentLocale,
     i18n?.defaultLocale,
     isAdmin,
+    linkFactory,
     linkComponent,
+    navigate,
+    prefetch,
     navigation,
     siteFrameExtensions,
     accountTabs,

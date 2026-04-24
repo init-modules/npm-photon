@@ -1,7 +1,7 @@
 import * as react from 'react';
 import { ReactNode } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import { J as PhotonI18nValue } from './types-D3ghbc-a.js';
+import { L as PhotonI18nValue } from './types-_Y3LUXJR.js';
 
 declare const PhotonRenderDepthProvider: react.Provider<number>;
 declare const usePhotonRenderDepth: () => number;

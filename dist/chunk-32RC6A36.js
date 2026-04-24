@@ -43,20 +43,6 @@ var photonSiteColorSchemes = [
     }
   },
   {
-    id: "paper-sky",
-    label: "Paper Sky",
-    appearance: "light",
-    description: "A clean editorial light scheme with cool grays and blue-green emphasis.",
-    colorTokens: {
-      backgroundColor: "#f5f8fc",
-      surfaceColor: "#ffffff",
-      textColor: "#0f172a",
-      mutedTextColor: "#64748b",
-      accentColor: "#0284c7",
-      borderColor: "#d8e3ef"
-    }
-  },
-  {
     id: "citrus-punch",
     label: "Citrus Punch",
     appearance: "light",
@@ -136,30 +122,6 @@ var photonSiteDesignPresets = [
     }
   },
   {
-    id: "paper-flow",
-    label: "Paper Flow",
-    appearance: "light",
-    description: "A frameless editorial landing page with airy spacing, restrained typography, and sections that read as one continuous canvas.",
-    recommendedColorSchemeId: "paper-sky",
-    designTokens: {
-      bodyFontFamily: "var(--font-body, 'Avenir Next', ui-sans-serif), system-ui, sans-serif",
-      headingFontFamily: "'Iowan Old Style', 'Palatino Linotype', serif",
-      siteMaxWidth: "1120px",
-      pageGutter: "40px",
-      sectionGap: "0px",
-      radius: "0px",
-      headerOffset: "0px"
-    },
-    componentVariants: {
-      siteShell: "editorial",
-      hero: "editorial",
-      featureGrid: "stacked",
-      testimonials: "quotes",
-      cta: "ribbon",
-      ...createMarketingDemoComponentVariants("air")
-    }
-  },
-  {
     id: "init-landing",
     label: "Init Landing",
     appearance: "light",
@@ -218,10 +180,7 @@ var PHOTON_SITE_DESIGN_COLOR_TOKEN_KEYS = [
   "accentColor",
   "borderColor"
 ];
-var PHOTON_FRAMELESS_PRESET_IDS = /* @__PURE__ */ new Set([
-  "paper-flow",
-  "init-landing"
-]);
+var PHOTON_FRAMELESS_PRESET_IDS = /* @__PURE__ */ new Set(["init-landing"]);
 var PHOTON_SITE_DESIGN_DEFAULTS = {
   bodyFontFamily: "var(--font-display, ui-sans-serif), system-ui, sans-serif",
   headingFontFamily: "var(--font-display, ui-sans-serif), system-ui, sans-serif",

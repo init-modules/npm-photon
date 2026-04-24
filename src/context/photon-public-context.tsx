@@ -23,12 +23,16 @@ import type {
 	PhotonAccountTabExtension,
 	PhotonBlock,
 	PhotonDocument,
+	PhotonAuthPageRenderer,
 	PhotonI18nValue,
 	PhotonLinkComponent,
 	PhotonLinkComponentProps,
+	PhotonLinkFactory,
 	PhotonMode,
+	PhotonNavigateHandler,
 	PhotonNavigationConfig,
 	PhotonPageSettings,
+	PhotonPrefetchHandler,
 	PhotonRegistry,
 	PhotonResources,
 	PhotonSearchHandler,
@@ -50,7 +54,11 @@ type PhotonPublicContextValue = {
 	isAdmin: boolean;
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
+	navigate?: PhotonNavigateHandler;
+	prefetch?: PhotonPrefetchHandler;
+	renderAuthPage?: PhotonAuthPageRenderer;
 	linkComponent: PhotonLinkComponent;
+	linkFactory: PhotonLinkFactory;
 	navigation: PhotonNavigationConfig;
 	siteFrameExtensions: PhotonSiteFrameExtension[];
 	accountTabs: PhotonAccountTabExtension[];
@@ -72,7 +80,11 @@ type PhotonPublicProviderProps = {
 	i18n?: PhotonI18nValue | null;
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
+	navigate?: PhotonNavigateHandler;
+	prefetch?: PhotonPrefetchHandler;
+	renderAuthPage?: PhotonAuthPageRenderer;
 	linkComponent?: PhotonLinkComponent;
+	linkFactory?: PhotonLinkFactory;
 	navigation?: PhotonNavigationConfig;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
 	accountTabs?: PhotonAccountTabExtension[];
@@ -97,6 +109,9 @@ const DefaultPhotonLinkComponent: PhotonLinkComponent = ({
 		},
 		children,
 	);
+
+const defaultPhotonLinkFactory: PhotonLinkFactory = (href) =>
+	sanitizePhotonLinkHref(href);
 
 const findPhotonPublicBlock = (
 	blocks: PhotonBlock[],
@@ -165,7 +180,11 @@ export const PhotonProvider = ({
 	i18n,
 	searchSite,
 	requestAuth,
+	navigate,
+	prefetch,
+	renderAuthPage,
 	linkComponent = DefaultPhotonLinkComponent,
+	linkFactory = defaultPhotonLinkFactory,
 	navigation = {},
 	siteFrameExtensions = [],
 	accountTabs = [],
@@ -183,7 +202,11 @@ export const PhotonProvider = ({
 			isAdmin,
 			searchSite,
 			requestAuth,
+			navigate,
+			prefetch,
+			renderAuthPage,
 			linkComponent,
+			linkFactory,
 			navigation,
 			siteFrameExtensions,
 			accountTabs,
@@ -201,9 +224,13 @@ export const PhotonProvider = ({
 			initialResources,
 			initialSite,
 			isAdmin,
+			linkFactory,
 			linkComponent,
 			navigation,
 			registry,
+			navigate,
+			prefetch,
+			renderAuthPage,
 			requestAuth,
 			searchSite,
 			siteFrameExtensions,

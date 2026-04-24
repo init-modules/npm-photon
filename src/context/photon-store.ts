@@ -34,10 +34,13 @@ import type {
 	PhotonDocument,
 	PhotonFieldBinding,
 	PhotonLinkComponent,
+	PhotonLinkFactory,
 	PhotonMediaUploadHandler,
 	PhotonMode,
+	PhotonNavigateHandler,
 	PhotonNavigationConfig,
 	PhotonPageSettings,
+	PhotonPrefetchHandler,
 	PhotonRegistry,
 	PhotonResources,
 	PhotonSearchHandler,
@@ -76,7 +79,10 @@ export type PhotonStoreState = {
 	uploadMedia?: PhotonMediaUploadHandler;
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
+	navigate?: PhotonNavigateHandler;
+	prefetch?: PhotonPrefetchHandler;
 	linkComponent: PhotonLinkComponent;
+	linkFactory: PhotonLinkFactory;
 	navigation: PhotonNavigationConfig;
 	siteFrameExtensions: PhotonSiteFrameExtension[];
 	accountTabs: PhotonAccountTabExtension[];
@@ -144,7 +150,10 @@ export type PhotonStoreInit = {
 	uploadMedia?: PhotonMediaUploadHandler;
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
+	navigate?: PhotonNavigateHandler;
+	prefetch?: PhotonPrefetchHandler;
 	linkComponent: PhotonLinkComponent;
+	linkFactory?: PhotonLinkFactory;
 	navigation?: PhotonNavigationConfig;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
 	accountTabs?: PhotonAccountTabExtension[];
@@ -314,7 +323,10 @@ export const createPhotonStore = ({
 	uploadMedia,
 	searchSite,
 	requestAuth,
+	navigate,
+	prefetch,
 	linkComponent,
+	linkFactory = (href) => href,
 	navigation = {},
 	siteFrameExtensions = [],
 	accountTabs = [],
@@ -354,7 +366,10 @@ export const createPhotonStore = ({
 		uploadMedia,
 		searchSite,
 		requestAuth,
+		navigate,
+		prefetch,
 		linkComponent,
+		linkFactory,
 		navigation: clonePhotonValue(navigation),
 		siteFrameExtensions,
 		accountTabs: clonePhotonValue(accountTabs),

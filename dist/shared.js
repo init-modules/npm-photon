@@ -12,7 +12,7 @@ import {
   isPhotonFramelessSiteDesign,
   isPhotonSiteDesignPresetApplied,
   resolvePhotonSiteDesignSettings
-} from "./chunk-UVEN3EYU.js";
+} from "./chunk-32RC6A36.js";
 import {
   PHOTON_SEARCH_OCCURRENCE_PARAM,
   PHOTON_SEARCH_QUERY_PARAM,

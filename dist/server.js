@@ -8,7 +8,7 @@ import {
   createPhotonSiteFrameExtension,
   resolvePhotonAccountTabs,
   resolvePhotonSiteFrameExtensions
-} from "./chunk-6SPDM5GU.js";
+} from "./chunk-HMZA6DQS.js";
 import {
   PHOTON_DEFAULT_SITE_DESIGN_PRESET_ID,
   PHOTON_SITE_DESIGN_DEFAULTS,
@@ -25,7 +25,7 @@ import {
   photonSiteColorSchemes,
   photonSiteDesignPresets,
   resolvePhotonSiteDesignSettings
-} from "./chunk-UVEN3EYU.js";
+} from "./chunk-32RC6A36.js";
 import {
   PHOTON_SEARCH_OCCURRENCE_PARAM,
   PHOTON_SEARCH_QUERY_PARAM,

@@ -124,7 +124,7 @@ export const EditorDock = ({
 	return (
 		<header
 			ref={headerRef}
-			className="fixed inset-x-0 top-0 z-[60] border-b backdrop-blur-xl"
+			className="fixed left-0 right-auto top-0 z-[60] w-[100dvw] max-w-[100dvw] overflow-hidden border-b backdrop-blur-xl"
 			data-testid="photon-editor-dock"
 			style={{
 				minHeight: PHOTON_EDITOR_DOCK_FALLBACK_HEIGHT,

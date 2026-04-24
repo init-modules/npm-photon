@@ -15,7 +15,11 @@ import {
 	collectPhotonFooterExtensionItems,
 	resolvePhotonSiteFrameExtensions,
 } from "../../../helpers/site-frame-extensions";
-import type { PhotonBlockComponentProps, PhotonField } from "../../../types";
+import type {
+	PhotonBlockComponentProps,
+	PhotonField,
+	PhotonSiteFrameExtensionContext,
+} from "../../../types";
 import {
 	normalizePhotonSiteLinkItems,
 	normalizePhotonSiteNavigationColumns,
@@ -226,10 +230,26 @@ const footerVariantStyles: Record<
 const SiteFooterShell = ({
 	block,
 }: PhotonBlockComponentProps<SiteFooterProps>) => {
+	const isAdmin = usePhotonStore((state) => state.isAdmin);
+	const mode = usePhotonStore((state) => state.mode);
+	const currentRoute = usePhotonStore((state) => state.document.route);
+	const document = usePhotonStore((state) => state.document);
+	const resources = usePhotonStore((state) => state.resources);
+	const pageSettings = usePhotonStore((state) => state.pageSettings);
+	const site = usePhotonStore((state) => state.site);
 	const siteDesign = usePhotonStore((state) => state.site.settings.design);
 	const siteFrameExtensions = usePhotonStore(
 		(state) => state.siteFrameExtensions,
 	);
+	const extensionContext: PhotonSiteFrameExtensionContext = {
+		document,
+		resources,
+		pageSettings,
+		site,
+		mode,
+		isAdmin,
+		currentRoute,
+	};
 	const framelessSite = isPhotonPublicFramelessSiteDesign(siteDesign);
 	const footerVariant = framelessSite ? "minimal-air" : block.props.variant;
 	const variant =
@@ -244,15 +264,16 @@ const SiteFooterShell = ({
 	const footerExtensionItems = collectPhotonFooterExtensionItems(
 		resolvePhotonSiteFrameExtensions(siteFrameExtensions, disabledExtensionIds),
 		disabledExtensionItemIds,
+		extensionContext,
 	);
 	const navigationColumns = [
 		...normalizePhotonSiteNavigationColumns(block.props.navigationColumns),
 		...normalizePhotonSiteNavigationColumns(
-			footerExtensionItems.navigationColumns,
+			footerExtensionItems.slots.navigation.navigationColumns,
 		),
 	];
 	const legalLinks = normalizePhotonSiteLinkItems(
-		footerExtensionItems.legalLinks,
+		footerExtensionItems.slots.legal.links,
 	);
 	const contactItems = normalizePhotonSiteStringItems(block.props.contactItems);
 

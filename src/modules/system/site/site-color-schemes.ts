@@ -48,21 +48,6 @@ export const photonSiteColorSchemes: PhotonSiteColorSchemeDefinition[] =
 			},
 		},
 		{
-			id: "paper-sky",
-			label: "Paper Sky",
-			appearance: "light",
-			description:
-				"A clean editorial light scheme with cool grays and blue-green emphasis.",
-			colorTokens: {
-				backgroundColor: "#f5f8fc",
-				surfaceColor: "#ffffff",
-				textColor: "#0f172a",
-				mutedTextColor: "#64748b",
-				accentColor: "#0284c7",
-				borderColor: "#d8e3ef",
-			},
-		},
-		{
 			id: "citrus-punch",
 			label: "Citrus Punch",
 			appearance: "light",

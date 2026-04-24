@@ -5,7 +5,7 @@ import {
   KeyboardMenuList,
   Root,
   useKeyboardMenuController
-} from "./chunk-3BZZZBLC.js";
+} from "./chunk-CPLCBNKA.js";
 import {
   EditableText,
   PhotonLink,
@@ -13,7 +13,7 @@ import {
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonStore
-} from "./chunk-7SWKD666.js";
+} from "./chunk-BY77VUPQ.js";
 import {
   buildPhotonSearchResultHref,
   buildPhotonSearchTargetId
@@ -670,8 +670,7 @@ var normalizePhotonSiteLinkItems = (value) => Array.isArray(value) ? value.flatM
       label: normalizeString(candidate.label),
       href: normalizeString(candidate.href),
       target: typeof candidate.target === "string" ? candidate.target : void 0,
-      rel: typeof candidate.rel === "string" ? candidate.rel : void 0,
-      placement: candidate.placement === "prominent" || candidate.placement === "default" ? candidate.placement : void 0
+      rel: typeof candidate.rel === "string" ? candidate.rel : void 0
     }
   ] : []
 ) : [];

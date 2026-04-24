@@ -41,6 +41,7 @@ var DefaultPhotonLinkComponent = ({
   },
   children
 );
+var defaultPhotonLinkFactory = (href) => sanitizePhotonLinkHref(href);
 var findPhotonPublicBlock = (blocks, blockId) => {
   for (const block of blocks) {
     if (block.id === blockId) {
@@ -92,7 +93,11 @@ var PhotonProvider = ({
   i18n,
   searchSite,
   requestAuth,
+  navigate,
+  prefetch,
+  renderAuthPage,
   linkComponent = DefaultPhotonLinkComponent,
+  linkFactory = defaultPhotonLinkFactory,
   navigation = {},
   siteFrameExtensions = [],
   accountTabs = []
@@ -110,7 +115,11 @@ var PhotonProvider = ({
       isAdmin,
       searchSite,
       requestAuth,
+      navigate,
+      prefetch,
+      renderAuthPage,
       linkComponent,
+      linkFactory,
       navigation,
       siteFrameExtensions,
       accountTabs,
@@ -128,9 +137,13 @@ var PhotonProvider = ({
       initialResources,
       initialSite,
       isAdmin,
+      linkFactory,
       linkComponent,
       navigation,
       registry,
+      navigate,
+      prefetch,
+      renderAuthPage,
       requestAuth,
       searchSite,
       siteFrameExtensions,

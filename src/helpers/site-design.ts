@@ -32,10 +32,7 @@ const PHOTON_SITE_DESIGN_COLOR_TOKEN_KEYS = [
 	"borderColor",
 ] as const satisfies ReadonlyArray<keyof PhotonSiteDesignColorTokens>;
 
-const PHOTON_FRAMELESS_PRESET_IDS = new Set([
-	"paper-flow",
-	"init-landing",
-]);
+const PHOTON_FRAMELESS_PRESET_IDS = new Set(["init-landing"]);
 
 export const PHOTON_SITE_DESIGN_DEFAULTS: PhotonSiteDesignSettings =
 	{

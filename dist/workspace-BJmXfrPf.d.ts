@@ -1,4 +1,4 @@
-import { X as PhotonSiteDesignSettings, Y as PhotonResolvedSiteDesignSettings, Z as PhotonSiteComponentVariants, a as PhotonBlock, b as PhotonDocument, s as PhotonWorkspaceCapabilities, _ as PhotonWorkspaceRef, t as PhotonWorkspaceDescriptor } from './types-D3ghbc-a.js';
+import { Z as PhotonSiteDesignSettings, _ as PhotonResolvedSiteDesignSettings, $ as PhotonSiteComponentVariants, a as PhotonBlock, b as PhotonDocument, s as PhotonWorkspaceCapabilities, a0 as PhotonWorkspaceRef, t as PhotonWorkspaceDescriptor } from './types-_Y3LUXJR.js';
 
 declare const PHOTON_EMPTY_TEXT = "Untitled";
 declare const clonePhotonValue: <T>(value: T) => T;

@@ -13,17 +13,18 @@ import {
   PhotonSurfaceLayoutProvider,
   Root,
   cn,
+  resolvePhotonSiteFrameMobileControls,
   useKeyboardMenuController,
   usePhotonRenderDepth
-} from "./chunk-3BZZZBLC.js";
+} from "./chunk-CPLCBNKA.js";
 import {
   resolvePhotonSiteDesignSettings
-} from "./chunk-UVEN3EYU.js";
+} from "./chunk-32RC6A36.js";
 import {
   PhotonProvider,
   usePhotonPersistedState,
   usePhotonStore
-} from "./chunk-HCJ7LK3V.js";
+} from "./chunk-YF6CIIBW.js";
 import {
   isPhotonMediaValue,
   resolvePhotonMediaPreviewUrl,
@@ -2315,9 +2316,13 @@ var SiteSurfaceRegionSection = ({
   const isPageRegion = region.key === PHOTON_PAGE_SURFACE_REGION_KEY;
   const builderRegionInsetClassName = builderEnabled ? "px-4 sm:px-5" : void 0;
   const builderSiteFrameInset = builderEnabled && (region.key === "header" || region.key === "footer");
-  const stickySiteHeaderRegion = region.key === "header" && blocks.some(
+  const stickySiteHeaderBlock = region.key === "header" ? blocks.find(
     (block) => block.module === "photon-system" && block.type === "site-header-shell" && block.props.sticky === true
-  );
+  ) : void 0;
+  const stickySiteHeaderRegion = Boolean(stickySiteHeaderBlock);
+  const mobileStickySiteHeaderRegion = resolvePhotonSiteFrameMobileControls(
+    stickySiteHeaderBlock?.props?.mobile
+  ).sticky;
   useEffect4(() => {
     const element = sectionRef.current;
     if (!element || typeof ResizeObserver === "undefined") {
@@ -2345,11 +2350,9 @@ var SiteSurfaceRegionSection = ({
           "data-photon-surface-region": region.key,
           className: clsx7(
             "relative [container-type:inline-size]",
-            previewEnabled && stickySiteHeaderRegion && "sticky z-40"
+            isPageRegion && "flex-1",
+            previewEnabled && stickySiteHeaderRegion && (mobileStickySiteHeaderRegion ? "sticky top-[calc(var(--photon-dock-offset,0px)+var(--photon-site-header-offset,0px))] z-40" : "md:sticky md:top-[calc(var(--photon-dock-offset,0px)+var(--photon-site-header-offset,0px))] md:z-40")
           ),
-          style: previewEnabled && stickySiteHeaderRegion ? {
-            top: "calc(var(--photon-dock-offset, 0px) + var(--photon-site-header-offset, 0px))"
-          } : void 0,
           children: [
             builderEnabled ? /* @__PURE__ */ jsxs14(
               "div",
@@ -2432,7 +2435,7 @@ var SiteSurfaceCanvasComponent = ({
   const mode = usePhotonStore((state) => state.mode);
   const regions = resolvePhotonSurfaceRegionDescriptors(site);
   const previewEnabled = mode !== "builder";
-  return /* @__PURE__ */ jsx19("div", { className: "space-y-[var(--photon-section-gap,2rem)]", children: regions.map((region) => /* @__PURE__ */ jsx19(
+  return /* @__PURE__ */ jsx19("div", { className: "flex min-h-[var(--photon-site-surface-min-height,100dvh)] flex-col gap-[var(--photon-section-gap,2rem)]", children: regions.map((region) => /* @__PURE__ */ jsx19(
     SiteSurfaceRegionSection,
     {
       region,
@@ -3392,7 +3395,7 @@ var EditorDock = ({
     "header",
     {
       ref: headerRef,
-      className: "fixed inset-x-0 top-0 z-[60] border-b backdrop-blur-xl",
+      className: "fixed left-0 right-auto top-0 z-[60] w-[100dvw] max-w-[100dvw] overflow-hidden border-b backdrop-blur-xl",
       "data-testid": "photon-editor-dock",
       style: {
         minHeight: PHOTON_EDITOR_DOCK_FALLBACK_HEIGHT,
@@ -7587,6 +7590,7 @@ var PhotonStage = ({
   const mainStyle = {
     paddingTop: canManage ? canvasMainPaddingTop + builderSurfaceInset : mainPaddingTop,
     "--photon-dock-offset": `${canManage ? canvasMainPaddingTop : 0}px`,
+    "--photon-site-surface-min-height": `max(0px, calc(100dvh - ${canManage ? canvasMainPaddingTop + builderSurfaceInset : mainPaddingTop}px))`,
     ...canManage ? {
       backgroundColor: "var(--photon-builder-shell)",
       color: "var(--photon-builder-text)"
@@ -8290,8 +8294,11 @@ var PhotonStudio = ({
   onCreatePage,
   onUploadMedia,
   onSearch,
+  navigate,
+  prefetch,
   activeSearchHighlight,
   linkComponent,
+  linkFactory,
   siteFrameExtensions,
   accountTabs,
   i18n,
@@ -8318,7 +8325,10 @@ var PhotonStudio = ({
       uploadMedia: onUploadMedia,
       searchSite: onSearch,
       requestAuth: onRequestAuth,
+      navigate,
+      prefetch,
       linkComponent,
+      linkFactory,
       siteFrameExtensions,
       accountTabs,
       i18n,

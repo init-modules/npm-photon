@@ -1,4 +1,4 @@
-import { N as PhotonBlockDefinition, a as PhotonBlock, O as PhotonNestedField, Q as PhotonBlockLocalizationSchema, R as PhotonModule, S as PhotonLocalizedDefaultValue, T as PhotonRegistryEntry, B as PhotonRegistry, U as PhotonBlockProps, b as PhotonDocument, z as PhotonAccountTabExtension, c as PhotonDocumentsMap, u as PhotonSiteFrameExtension, V as PhotonInstallableKit, W as PhotonRuntime } from './types-D3ghbc-a.js';
+import { Q as PhotonBlockDefinition, a as PhotonBlock, R as PhotonNestedField, S as PhotonBlockLocalizationSchema, T as PhotonModule, U as PhotonLocalizedDefaultValue, V as PhotonRegistryEntry, A as PhotonRegistry, W as PhotonBlockProps, b as PhotonDocument, y as PhotonAccountTabExtension, c as PhotonDocumentsMap, u as PhotonSiteFrameExtension, X as PhotonInstallableKit, Y as PhotonRuntime } from './types-_Y3LUXJR.js';
 
 declare const getPhotonDefinitionKey: (moduleName: string, blockType: string) => string;
 declare const createPhotonRegistry: (entries: PhotonRegistryEntry[]) => PhotonRegistry;

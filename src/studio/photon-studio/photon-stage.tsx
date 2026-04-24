@@ -463,6 +463,11 @@ export const PhotonStage = ({
 			? canvasMainPaddingTop + builderSurfaceInset
 			: mainPaddingTop,
 		"--photon-dock-offset": `${canManage ? canvasMainPaddingTop : 0}px`,
+		"--photon-site-surface-min-height": `max(0px, calc(100dvh - ${
+			canManage
+				? canvasMainPaddingTop + builderSurfaceInset
+				: mainPaddingTop
+		}px))`,
 		...(canManage
 			? {
 					backgroundColor: "var(--photon-builder-shell)",

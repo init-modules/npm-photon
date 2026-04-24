@@ -263,12 +263,73 @@ export type PhotonSiteFrameLinkItem = {
 	target?: string;
 	rel?: string;
 	order?: number;
-	placement?: "default" | "prominent";
 	enabled?: boolean;
 	isVisible?: (context: PhotonSiteFrameExtensionContext) => boolean;
 };
 
 export type PhotonSiteFrameActionKind = "link" | "auth";
+
+export type PhotonSiteFrameHeaderSlot =
+	| "utility"
+	| "navigation"
+	| "prominent"
+	| "actions";
+
+export type PhotonSiteFrameHeaderSlotItems = {
+	links: PhotonSiteFrameLinkItem[];
+	actions: PhotonSiteFrameActionItem[];
+};
+
+export type PhotonSiteFrameHeaderSlots = Record<
+	PhotonSiteFrameHeaderSlot,
+	PhotonSiteFrameHeaderSlotItems
+>;
+
+export type PhotonSiteFrameFooterSlot = "navigation" | "legal";
+
+export type PhotonSiteFrameFooterSlotItems = {
+	navigationColumns: PhotonSiteFrameNavigationColumn[];
+	links: PhotonSiteFrameLinkItem[];
+};
+
+export type PhotonSiteFrameFooterSlots = Record<
+	PhotonSiteFrameFooterSlot,
+	PhotonSiteFrameFooterSlotItems
+>;
+
+export type PhotonSiteFrameMobileMenuType =
+	| "inline"
+	| "drawer"
+	| "fullscreen";
+
+export type PhotonSiteFrameMobileMenuTriggerPlacement =
+	| "fixed"
+	| "header"
+	| "hidden";
+
+export type PhotonSiteFrameFloatingControls = {
+	floating?: boolean;
+	disableFloatingOnSmallScreens?: boolean;
+};
+
+export type PhotonSiteFrameMobileMenuControls =
+	PhotonSiteFrameFloatingControls & {
+		type?: PhotonSiteFrameMobileMenuType;
+		triggerPlacement?: PhotonSiteFrameMobileMenuTriggerPlacement;
+		scrollLock?: boolean;
+	};
+
+export type PhotonSiteFrameMobileBottomMenuControls =
+	PhotonSiteFrameFloatingControls & {
+		enabled?: boolean;
+		showBurger?: boolean;
+	};
+
+export type PhotonSiteFrameMobileControls = {
+	sticky?: boolean;
+	menu?: PhotonSiteFrameMobileMenuControls;
+	bottomMenu?: PhotonSiteFrameMobileBottomMenuControls;
+};
 
 export type PhotonSiteFrameExtensionContext = {
 	document: PhotonDocument;
@@ -303,6 +364,7 @@ export type PhotonSiteFrameNavigationColumn = {
 	links: PhotonSiteFrameLinkItem[];
 	order?: number;
 	enabled?: boolean;
+	isVisible?: (context: PhotonSiteFrameExtensionContext) => boolean;
 };
 
 export type PhotonSiteFrameExtension = {
@@ -311,13 +373,26 @@ export type PhotonSiteFrameExtension = {
 	enabled?: boolean;
 	order?: number;
 	header?: {
-		utilityLinks?: PhotonSiteFrameLinkItem[];
-		categoryLinks?: PhotonSiteFrameLinkItem[];
-		actions?: PhotonSiteFrameActionItem[];
+		slots?: Partial<
+			Record<
+				PhotonSiteFrameHeaderSlot,
+				{
+					links?: PhotonSiteFrameLinkItem[];
+					actions?: PhotonSiteFrameActionItem[];
+				}
+			>
+		>;
 	};
 	footer?: {
-		navigationColumns?: PhotonSiteFrameNavigationColumn[];
-		legalLinks?: PhotonSiteFrameLinkItem[];
+		slots?: Partial<
+			Record<
+				PhotonSiteFrameFooterSlot,
+				{
+					navigationColumns?: PhotonSiteFrameNavigationColumn[];
+					links?: PhotonSiteFrameLinkItem[];
+				}
+			>
+		>;
 	};
 };
 
@@ -453,6 +528,15 @@ export type PhotonLinkComponentProps = {
 };
 
 export type PhotonLinkComponent = ComponentType<PhotonLinkComponentProps>;
+
+export type PhotonLinkFactoryOptions = {
+	locale?: string | null;
+};
+
+export type PhotonLinkFactory = (
+	href: string,
+	options?: PhotonLinkFactoryOptions,
+) => string;
 
 export type PhotonBlockComponentProps<
 	Props extends PhotonBlockProps = PhotonBlockProps,
@@ -606,6 +690,25 @@ export type PhotonNavigationConfig = {
 	adminPathPrefix?: string;
 	queryKeys?: Partial<PhotonNavigationQueryKeys>;
 };
+
+export type PhotonNavigateOptions = {
+	replace?: boolean;
+};
+
+export type PhotonNavigateHandler = (
+	href: string,
+	options?: PhotonNavigateOptions,
+) => void | Promise<void>;
+
+export type PhotonPrefetchHandler = (href: string) => void | Promise<void>;
+
+export type PhotonAuthPageRenderInput = {
+	route: string;
+};
+
+export type PhotonAuthPageRenderer = (
+	input: PhotonAuthPageRenderInput,
+) => ReactNode;
 
 export type PhotonSelectedField = {
 	blockId: string;

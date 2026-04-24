@@ -39,40 +39,31 @@ test("fallback flat defaults resolve without forcing the new preset metadata", (
 test("applying a preset replaces preset-owned variants while preserving unrelated custom keys", () => {
 	const applied = applyPhotonSiteDesignPreset(
 		{
-			...createPhotonSiteDesignSettings({
-				presetId: "aurora-current",
-				colorSchemeId: "midnight-aqua",
-			}),
 			componentVariants: {
 				hero: "legacy-hero",
 				cta: "legacy-cta",
 				customBlock: "keep-me",
 			},
 		},
-		"paper-flow",
+		"init-landing",
 	);
-	const preset = getPhotonSiteDesignPreset("paper-flow");
+	const preset = getPhotonSiteDesignPreset("init-landing");
 	const recommendedScheme = getPhotonSiteColorScheme(
 		preset?.recommendedColorSchemeId ?? "",
 	);
 
-	assert.equal(applied.presetId, "paper-flow");
-	assert.equal(applied.colorSchemeId, "paper-sky");
+	assert.equal(applied.presetId, "init-landing");
+	assert.equal(applied.colorSchemeId, undefined);
 	assert.equal(applied.bodyFontFamily, preset?.designTokens.bodyFontFamily);
 	assert.equal(
 		applied.headingFontFamily,
 		preset?.designTokens.headingFontFamily,
 	);
 	assert.equal(applied.siteMaxWidth, preset?.designTokens.siteMaxWidth);
-	assert.equal(
-		applied.backgroundColor,
-		recommendedScheme?.colorTokens.backgroundColor,
-	);
-	assert.equal(
-		applied.surfaceColor,
-		recommendedScheme?.colorTokens.surfaceColor,
-	);
-	assert.equal(applied.textColor, recommendedScheme?.colorTokens.textColor);
+	assert.equal(recommendedScheme, undefined);
+	assert.equal(applied.backgroundColor, preset?.designTokens.backgroundColor);
+	assert.equal(applied.surfaceColor, preset?.designTokens.surfaceColor);
+	assert.equal(applied.textColor, preset?.designTokens.textColor);
 	assert.equal(applied.componentVariants.hero, "editorial");
 	assert.equal(applied.componentVariants.cta, "ribbon");
 	assert.equal(applied.componentVariants.customBlock, "keep-me");
@@ -82,16 +73,9 @@ test("applying a preset replaces preset-owned variants while preserving unrelate
 	);
 });
 
-test("remaining flow presets publish their linked scheme and full marketing-demo variant family", () => {
-	const paperFlow = getPhotonSiteDesignPreset("paper-flow");
+test("frameless presets publish their marketing-demo variant family", () => {
 	const initLanding = getPhotonSiteDesignPreset("init-landing");
 
-	assert.equal(paperFlow?.appearance, "light");
-	assert.equal(paperFlow?.recommendedColorSchemeId, "paper-sky");
-	assert.equal(
-		paperFlow?.componentVariants["marketing-demo/hero-spotlight"],
-		"air",
-	);
 	assert.equal(initLanding?.appearance, "light");
 	assert.equal(initLanding?.recommendedColorSchemeId, undefined);
 	assert.equal(
@@ -101,19 +85,10 @@ test("remaining flow presets publish their linked scheme and full marketing-demo
 });
 
 test("creating preset-backed settings without an explicit scheme uses the preset recommendation", () => {
-	const paperFlow = createPhotonSiteDesignSettings({
-		presetId: "paper-flow",
-	});
 	const initLanding = createPhotonSiteDesignSettings({
 		presetId: "init-landing",
 	});
 
-	assert.equal(paperFlow.presetId, "paper-flow");
-	assert.equal(paperFlow.colorSchemeId, "paper-sky");
-	assert.equal(
-		paperFlow.componentVariants["marketing-demo/feature-grid"],
-		"air",
-	);
 	assert.equal(initLanding.presetId, "init-landing");
 	assert.equal(initLanding.colorSchemeId, undefined);
 	assert.equal(
@@ -142,26 +117,26 @@ test("applying a color scheme changes only color tokens and keeps the active pre
 });
 
 test("switching only the color scheme keeps the preset selected but marks it customized", () => {
-	const appliedPreset = applyPhotonSiteDesignPreset({}, "paper-flow");
+	const appliedPreset = applyPhotonSiteDesignPreset({}, "init-landing");
 	const customizedPalette = applyPhotonSiteColorScheme(
 		appliedPreset,
 		"mint-ledger",
 	);
 
-	assert.equal(customizedPalette.presetId, "paper-flow");
+	assert.equal(customizedPalette.presetId, "init-landing");
 	assert.equal(customizedPalette.colorSchemeId, "mint-ledger");
 	assert.equal(
 		customizedPalette.componentVariants["marketing-demo/hero-spotlight"],
 		"air",
 	);
 	assert.equal(
-		isPhotonSiteDesignPresetApplied(customizedPalette, "paper-flow"),
+		isPhotonSiteDesignPresetApplied(customizedPalette, "init-landing"),
 		false,
 	);
 	assert.equal(
 		hasPhotonSiteDesignPresetCustomization(
 			customizedPalette,
-			"paper-flow",
+			"init-landing",
 		),
 		true,
 	);

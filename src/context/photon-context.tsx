@@ -27,10 +27,13 @@ import type {
 	PhotonI18nValue,
 	PhotonLinkComponent,
 	PhotonLinkComponentProps,
+	PhotonLinkFactory,
 	PhotonMediaUploadHandler,
 	PhotonMode,
+	PhotonNavigateHandler,
 	PhotonNavigationConfig,
 	PhotonPageSettings,
+	PhotonPrefetchHandler,
 	PhotonRegistry,
 	PhotonResources,
 	PhotonSearchHandler,
@@ -65,7 +68,10 @@ type PhotonProviderProps = {
 	uploadMedia?: PhotonMediaUploadHandler;
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
+	navigate?: PhotonNavigateHandler;
+	prefetch?: PhotonPrefetchHandler;
 	linkComponent?: PhotonLinkComponent;
+	linkFactory?: PhotonLinkFactory;
 	navigation?: PhotonNavigationConfig;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
 	accountTabs?: PhotonAccountTabExtension[];
@@ -87,6 +93,9 @@ const DefaultPhotonLinkComponent: PhotonLinkComponent = ({
 		children,
 	);
 
+const defaultPhotonLinkFactory: PhotonLinkFactory = (href) =>
+	sanitizePhotonLinkHref(href);
+
 export const PhotonProvider = ({
 	children,
 	initialDocument,
@@ -105,7 +114,10 @@ export const PhotonProvider = ({
 	uploadMedia,
 	searchSite,
 	requestAuth,
+	navigate,
+	prefetch,
 	linkComponent = DefaultPhotonLinkComponent,
+	linkFactory = defaultPhotonLinkFactory,
 	navigation = {},
 	siteFrameExtensions = [],
 	accountTabs = [],
@@ -144,7 +156,10 @@ export const PhotonProvider = ({
 			uploadMedia,
 			searchSite,
 			requestAuth,
+			navigate,
+			prefetch,
 			linkComponent,
+			linkFactory,
 			navigation,
 			siteFrameExtensions,
 			accountTabs,
@@ -200,7 +215,10 @@ export const PhotonProvider = ({
 				state.uploadMedia === uploadMedia &&
 				state.searchSite === searchSite &&
 				state.requestAuth === requestAuth &&
+				state.navigate === navigate &&
+				state.prefetch === prefetch &&
 				state.linkComponent === linkComponent &&
+				state.linkFactory === linkFactory &&
 				JSON.stringify(state.navigation) === JSON.stringify(navigation) &&
 				state.siteFrameExtensions === siteFrameExtensions &&
 				JSON.stringify(state.accountTabs) === JSON.stringify(accountTabs) &&
@@ -222,7 +240,10 @@ export const PhotonProvider = ({
 				uploadMedia,
 				searchSite,
 				requestAuth,
+				navigate,
+				prefetch,
 				linkComponent,
+				linkFactory,
 				navigation: clonePhotonValue(navigation),
 				siteFrameExtensions,
 				accountTabs: clonePhotonValue(accountTabs),
@@ -236,7 +257,10 @@ export const PhotonProvider = ({
 		i18n?.contentLocale,
 		i18n?.defaultLocale,
 		isAdmin,
+		linkFactory,
 		linkComponent,
+		navigate,
+		prefetch,
 		navigation,
 		siteFrameExtensions,
 		accountTabs,

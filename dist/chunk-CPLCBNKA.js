@@ -246,11 +246,56 @@ var PhotonRenderDepthContext = createContext2(0);
 var PhotonRenderDepthProvider = PhotonRenderDepthContext.Provider;
 var usePhotonRenderDepth = () => useContext2(PhotonRenderDepthContext);
 
+// src/modules/system/site/site-mobile-frame.ts
+import { useEffect as useEffect2 } from "react";
+var resolvePhotonSiteFrameMobileControls = (controls) => ({
+  sticky: controls?.sticky ?? true,
+  menu: {
+    type: controls?.menu?.type ?? "inline",
+    fixedTrigger: controls?.menu?.fixedTrigger ?? true,
+    scrollLock: controls?.menu?.scrollLock ?? true,
+    floating: controls?.menu?.floating ?? false,
+    disableFloatingOnSmallScreens: controls?.menu?.disableFloatingOnSmallScreens ?? true
+  },
+  bottomMenu: {
+    enabled: controls?.bottomMenu?.enabled ?? false,
+    showBurger: controls?.bottomMenu?.showBurger ?? false,
+    floating: controls?.bottomMenu?.floating ?? false,
+    disableFloatingOnSmallScreens: controls?.bottomMenu?.disableFloatingOnSmallScreens ?? true
+  }
+});
+var usePhotonSiteFrameScrollLock = (locked) => {
+  useEffect2(() => {
+    if (!locked || typeof window === "undefined") {
+      return;
+    }
+    const root = window.document.documentElement;
+    const body = window.document.body;
+    const scrollbarWidth = Math.max(0, window.innerWidth - root.clientWidth);
+    const previousRootOverflow = root.style.overflow;
+    const previousBodyOverflow = body.style.overflow;
+    const previousBodyPaddingRight = body.style.paddingRight;
+    const previousBodyTouchAction = body.style.touchAction;
+    root.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    body.style.touchAction = "none";
+    if (scrollbarWidth > 0) {
+      body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+    return () => {
+      root.style.overflow = previousRootOverflow;
+      body.style.overflow = previousBodyOverflow;
+      body.style.paddingRight = previousBodyPaddingRight;
+      body.style.touchAction = previousBodyTouchAction;
+    };
+  }, [locked]);
+};
+
 // src/components/ui/keyboard-menu/keyboard-menu.tsx
 import clsx from "clsx";
 import {
   useCallback,
-  useEffect as useEffect2,
+  useEffect as useEffect3,
   useId,
   useMemo,
   useRef,
@@ -291,7 +336,7 @@ var useKeyboardMenuController = ({
     () => items.find((item) => getItemId(item) === activeItemId) ?? null,
     [activeItemId, getItemId, items]
   );
-  useEffect2(() => {
+  useEffect3(() => {
     if (!isOpen) {
       setActiveItemId(null);
       return;
@@ -306,7 +351,7 @@ var useKeyboardMenuController = ({
       return enabledItemIds[0] ?? null;
     });
   }, [enabledItemIds, isOpen, preferredItemId]);
-  useEffect2(() => {
+  useEffect3(() => {
     if (!activeItemId) {
       return;
     }
@@ -641,6 +686,8 @@ export {
   PhotonSearchHighlightEffect,
   PhotonRenderDepthProvider,
   usePhotonRenderDepth,
+  resolvePhotonSiteFrameMobileControls,
+  usePhotonSiteFrameScrollLock,
   cn,
   DialogContent,
   DialogDescription,

@@ -1,6 +1,6 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
-import { b as PhotonDocument, m as PhotonResources, k as PhotonPageSettings, p as PhotonSite, B as PhotonRegistry, t as PhotonWorkspaceDescriptor, s as PhotonWorkspaceCapabilities, C as PhotonRevisionDescriptor, D as PhotonBranchPolicyState, E as PhotonMergePreview, F as PhotonMode, i as PhotonPageCatalogItem, G as PhotonMediaUploadHandler, H as PhotonSearchHandler, n as PhotonSearchHighlight, I as PhotonLinkComponent, u as PhotonSiteFrameExtension, z as PhotonAccountTabExtension, J as PhotonI18nValue, K as PhotonField, L as PhotonPageSettingsPanelDefinition, M as PhotonSiteSettingsPanelDefinition } from './types-D3ghbc-a.js';
+import { b as PhotonDocument, m as PhotonResources, k as PhotonPageSettings, p as PhotonSite, A as PhotonRegistry, t as PhotonWorkspaceDescriptor, s as PhotonWorkspaceCapabilities, B as PhotonRevisionDescriptor, C as PhotonBranchPolicyState, D as PhotonMergePreview, E as PhotonMode, i as PhotonPageCatalogItem, F as PhotonMediaUploadHandler, G as PhotonSearchHandler, H as PhotonNavigateHandler, I as PhotonPrefetchHandler, n as PhotonSearchHighlight, J as PhotonLinkComponent, K as PhotonLinkFactory, u as PhotonSiteFrameExtension, y as PhotonAccountTabExtension, L as PhotonI18nValue, M as PhotonField, N as PhotonPageSettingsPanelDefinition, O as PhotonSiteSettingsPanelDefinition } from './types-_Y3LUXJR.js';
 
 type InsertTarget = {
     listId: string;
@@ -67,8 +67,11 @@ type PhotonStudioProps = {
     }) => void | Promise<void>;
     onUploadMedia?: PhotonMediaUploadHandler;
     onSearch?: PhotonSearchHandler;
+    navigate?: PhotonNavigateHandler;
+    prefetch?: PhotonPrefetchHandler;
     activeSearchHighlight?: PhotonSearchHighlight | null;
     linkComponent?: PhotonLinkComponent;
+    linkFactory?: PhotonLinkFactory;
     siteFrameExtensions?: PhotonSiteFrameExtension[];
     accountTabs?: PhotonAccountTabExtension[];
     i18n?: PhotonI18nValue | null;
@@ -116,6 +119,6 @@ type SiteSettingsSubtabDefinition = {
     component: () => ReactNode;
 };
 
-declare const PhotonStudio: ({ initialDocument, initialResources, initialPageSettings, initialSite, registry, workspace, capabilities, history, branchPolicy, mergePreview, canManage, initialMode, draftStorageKey, autosaveStorageKey, currentPage, pages, onRequestAuth, onLogout, onContentLocaleChange, onInterfaceLocaleChange, onModeChange, onSiteSettingChange, onSaveDocument, onOpenPage, onCreatePage, onUploadMedia, onSearch, activeSearchHighlight, linkComponent, siteFrameExtensions, accountTabs, i18n, hydrateModePreference, showInterfaceLocaleControl, workspaceControl, title, description, renderContentNotice, siteSettingsSubtabs, }: PhotonStudioProps) => react_jsx_runtime.JSX.Element;
+declare const PhotonStudio: ({ initialDocument, initialResources, initialPageSettings, initialSite, registry, workspace, capabilities, history, branchPolicy, mergePreview, canManage, initialMode, draftStorageKey, autosaveStorageKey, currentPage, pages, onRequestAuth, onLogout, onContentLocaleChange, onInterfaceLocaleChange, onModeChange, onSiteSettingChange, onSaveDocument, onOpenPage, onCreatePage, onUploadMedia, onSearch, navigate, prefetch, activeSearchHighlight, linkComponent, linkFactory, siteFrameExtensions, accountTabs, i18n, hydrateModePreference, showInterfaceLocaleControl, workspaceControl, title, description, renderContentNotice, siteSettingsSubtabs, }: PhotonStudioProps) => react_jsx_runtime.JSX.Element;
 
 export { type InsertTarget as I, PhotonStudio as P, type SiteSettingsPanelDefinition as S, type InspectorDefinitionMeta as a, type InspectorGroups as b, type PageSettingsPanelDefinition as c, type PaletteDefinition as d, type PaletteFamilyGroup as e, type PhotonStudioProps as f, type PhotonStudioSavePayload as g, type PhotonStudioSaveReason as h, type PhotonStudioSiteSettingChangeContext as i, type SiteSettingsSubtabDefinition as j };

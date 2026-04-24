@@ -6,7 +6,6 @@ export type PhotonSiteLinkItem = {
 	href: string;
 	target?: string;
 	rel?: string;
-	placement?: "default" | "prominent";
 };
 
 export type PhotonSiteNavigationColumn = {
@@ -41,13 +40,6 @@ export const normalizePhotonSiteLinkItems = (
 								rel:
 									typeof (candidate as { rel?: unknown }).rel === "string"
 										? (candidate as { rel: string }).rel
-										: undefined,
-								placement:
-									(candidate as { placement?: unknown }).placement ===
-										"prominent" ||
-									(candidate as { placement?: unknown }).placement === "default"
-										? (candidate as { placement: "default" | "prominent" })
-												.placement
 										: undefined,
 							},
 						]

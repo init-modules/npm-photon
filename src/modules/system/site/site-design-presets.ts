@@ -51,32 +51,6 @@ export const photonSiteDesignPresets: PhotonSiteDesignPresetDefinition[] =
 			},
 		},
 		{
-			id: "paper-flow",
-			label: "Paper Flow",
-			appearance: "light",
-			description:
-				"A frameless editorial landing page with airy spacing, restrained typography, and sections that read as one continuous canvas.",
-			recommendedColorSchemeId: "paper-sky",
-			designTokens: {
-				bodyFontFamily:
-					"var(--font-body, 'Avenir Next', ui-sans-serif), system-ui, sans-serif",
-				headingFontFamily: "'Iowan Old Style', 'Palatino Linotype', serif",
-				siteMaxWidth: "1120px",
-				pageGutter: "40px",
-				sectionGap: "0px",
-				radius: "0px",
-				headerOffset: "0px",
-			},
-			componentVariants: {
-				siteShell: "editorial",
-				hero: "editorial",
-				featureGrid: "stacked",
-				testimonials: "quotes",
-				cta: "ribbon",
-				...createMarketingDemoComponentVariants("air"),
-			},
-		},
-		{
 			id: "init-landing",
 			label: "Init Landing",
 			appearance: "light",

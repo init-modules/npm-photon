@@ -2,27 +2,26 @@ import {
   buildPhotonSearchTargetId
 } from "./chunk-6LYMEWZL.js";
 import {
+  createActivationProps,
   editableFrameClassName
 } from "./chunk-K6EYZM4G.js";
 import {
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonStore
-} from "./chunk-HCJ7LK3V.js";
+} from "./chunk-YF6CIIBW.js";
 import {
   PHOTON_EMPTY_TEXT
 } from "./chunk-KAITZE7U.js";
 
-// src/components/editable/editable-text.tsx
+// src/components/editable/editable-textarea.tsx
 import { useEffect, useRef, useState } from "react";
 import { jsx } from "react/jsx-runtime";
-var EditableText = ({
+var EditableTextarea = ({
   blockId,
   path,
-  as: Tag = "span",
   className,
-  placeholder = PHOTON_EMPTY_TEXT,
-  ...rest
+  placeholder = PHOTON_EMPTY_TEXT
 }) => {
   const selectedField = usePhotonStore((state) => state.selectedField);
   const selectField = usePhotonStore((state) => state.selectField);
@@ -32,7 +31,7 @@ var EditableText = ({
   const updateFieldValue = usePhotonStore(
     (state) => state.updateFieldValue
   );
-  const inputRef = useRef(null);
+  const textareaRef = useRef(null);
   const value = String(usePhotonFieldValue(blockId, path) ?? "");
   const fallbackValue = value || (placeholder !== PHOTON_EMPTY_TEXT ? String(placeholder) : "");
   const [draftValue, setDraftValue] = useState(fallbackValue);
@@ -62,28 +61,27 @@ var EditableText = ({
   };
   useEffect(() => {
     if (isEditable && isActive) {
-      const input = inputRef.current;
-      if (!input) {
+      const textarea = textareaRef.current;
+      if (!textarea) {
         return;
       }
       setDraftValue(fallbackValue);
-      input.focus();
+      textarea.focus();
       const caretPosition = fallbackValue.length;
-      input.setSelectionRange(caretPosition, caretPosition);
+      textarea.setSelectionRange(caretPosition, caretPosition);
     }
   }, [fallbackValue, isActive, isEditable]);
   if (isEditable && isActive) {
     return /* @__PURE__ */ jsx(
-      Tag,
+      "div",
       {
-        ...rest,
         "data-photon-search-target": searchTargetId,
-        onClick: (event) => event.stopPropagation(),
         className: editableFrameClassName({ isActive, isEditable, className }),
         children: /* @__PURE__ */ jsx(
-          "input",
+          "textarea",
           {
-            ref: inputRef,
+            ref: textareaRef,
+            rows: 5,
             value: draftValue,
             placeholder,
             onChange: handleChange,
@@ -92,21 +90,17 @@ var EditableText = ({
             onKeyUp: (event) => event.stopPropagation(),
             onKeyPress: (event) => event.stopPropagation(),
             onClick: (event) => event.stopPropagation(),
-            className: "m-0 block w-full min-w-0 appearance-none border-0 bg-transparent p-0 font-inherit leading-inherit tracking-inherit text-inherit outline-none ring-0 shadow-none placeholder:text-white/28 focus:outline-none"
+            className: "block w-full resize-y border-0 bg-transparent p-0 font-inherit leading-inherit tracking-inherit text-inherit outline-none ring-0 shadow-none placeholder:text-white/28 focus:outline-none"
           }
         )
       }
     );
   }
   return /* @__PURE__ */ jsx(
-    Tag,
+    "div",
     {
-      ...rest,
+      ...createActivationProps(isEditable, () => selectField(blockId, path)),
       "data-photon-search-target": searchTargetId,
-      onClick: isEditable ? (event) => {
-        event.stopPropagation();
-        selectField(blockId, path);
-      } : rest.onClick,
       className: editableFrameClassName({ isActive, isEditable, className }),
       children: value || placeholder
     }
@@ -114,5 +108,5 @@ var EditableText = ({
 };
 
 export {
-  EditableText
+  EditableTextarea
 };

@@ -25,13 +25,18 @@ export {
 } from "./helpers/link-url";
 
 import { PhotonSearchHighlightEffect } from "./search/photon-search-highlight-effect";
+import { resolvePhotonSiteFrameMobileControls } from "./modules/system/site/site-mobile-frame";
 import type {
 	PhotonAccountTabExtension,
+	PhotonAuthPageRenderer,
 	PhotonArea,
 	PhotonBlock,
 	PhotonI18nValue,
 	PhotonLinkComponent,
+	PhotonLinkFactory,
+	PhotonNavigateHandler,
 	PhotonNavigationConfig,
+	PhotonPrefetchHandler,
 	PhotonRegistry,
 	PhotonResolvedPage,
 	PhotonSearchHandler,
@@ -96,14 +101,28 @@ const PhotonPublicSurfaceRegion = ({
 	const [surfaceWidth, setSurfaceWidth] = useState(0);
 	const blocks = getPhotonSurfaceRegionBlocks(page.document, region.key);
 	const isPageRegion = region.key === PHOTON_PAGE_SURFACE_REGION_KEY;
-	const stickySiteHeaderRegion =
-		region.key === "header" &&
-		(blocks ?? []).some(
-			(block) =>
-				block.module === "photon-system" &&
-				block.type === "site-header-shell" &&
-				block.props.sticky === true,
-		);
+	const stickySiteHeaderBlock =
+		region.key === "header"
+			? (blocks ?? []).find(
+					(block) =>
+						block.module === "photon-system" &&
+						block.type === "site-header-shell" &&
+						block.props.sticky === true,
+				)
+			: undefined;
+	const stickySiteHeaderRegion = Boolean(stickySiteHeaderBlock);
+	const mobileStickySiteHeaderRegion =
+		resolvePhotonSiteFrameMobileControls(
+			(
+				stickySiteHeaderBlock?.props as
+					| {
+							mobile?: Parameters<
+								typeof resolvePhotonSiteFrameMobileControls
+							>[0];
+					  }
+					| undefined
+			)?.mobile,
+		).sticky;
 
 	useEffect(() => {
 		const element = sectionRef.current;
@@ -135,7 +154,11 @@ const PhotonPublicSurfaceRegion = ({
 				data-photon-surface-region={region.key}
 				className={clsx(
 					"relative [container-type:inline-size]",
-					stickySiteHeaderRegion && "sticky z-40",
+					isPageRegion && "flex-1",
+					stickySiteHeaderRegion &&
+						(mobileStickySiteHeaderRegion
+							? "sticky z-40"
+							: "lg:sticky lg:z-40"),
 				)}
 				style={
 					stickySiteHeaderRegion
@@ -174,7 +197,7 @@ const PhotonPublicSurface = memo(function PhotonPublicSurface({
 	const regions = resolvePhotonSurfaceRegionDescriptors(page.site);
 
 	return (
-		<div className="space-y-[var(--photon-section-gap,2rem)]">
+		<div className="flex min-h-[var(--photon-site-surface-min-height,100dvh)] flex-col gap-[var(--photon-section-gap,2rem)]">
 			{regions.map((region) => (
 				<PhotonPublicSurfaceRegion
 					key={region.key}
@@ -194,6 +217,10 @@ type PhotonPublicPageProps = {
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
 	accountTabs?: PhotonAccountTabExtension[];
 	requestAuth?: () => void;
+	navigate?: PhotonNavigateHandler;
+	prefetch?: PhotonPrefetchHandler;
+	renderAuthPage?: PhotonAuthPageRenderer;
+	linkFactory?: PhotonLinkFactory;
 	searchSite?: PhotonSearchHandler;
 	activeSearchHighlight?: PhotonSearchHighlight | null;
 	navigation?: PhotonNavigationConfig;
@@ -207,6 +234,10 @@ export const PhotonPublicPage = ({
 	siteFrameExtensions,
 	accountTabs,
 	requestAuth,
+	navigate,
+	prefetch,
+	renderAuthPage,
+	linkFactory,
 	searchSite,
 	activeSearchHighlight = null,
 	navigation,
@@ -227,6 +258,7 @@ export const PhotonPublicPage = ({
 		"--photon-site-max-width": designSettings.siteMaxWidth,
 		"--photon-site-gutter": designSettings.pageGutter,
 		"--photon-section-gap": designSettings.sectionGap,
+		"--photon-site-surface-min-height": "100dvh",
 		"--photon-site-radius": designSettings.radius,
 		"--photon-site-header-offset": designSettings.headerOffset,
 		backgroundColor: designSettings.backgroundColor,
@@ -247,6 +279,10 @@ export const PhotonPublicPage = ({
 			siteFrameExtensions={siteFrameExtensions}
 			accountTabs={accountTabs}
 			requestAuth={requestAuth}
+			navigate={navigate}
+			prefetch={prefetch}
+			renderAuthPage={renderAuthPage}
+			linkFactory={linkFactory}
 			searchSite={searchSite}
 			i18n={i18n}
 			navigation={navigation}
@@ -290,9 +326,12 @@ export {
 export { createPhotonKit } from "./helpers/installable";
 export { createPhotonRuntime } from "./helpers/runtime";
 export {
+	collectPhotonPublicFooterExtensionItems as collectPhotonFooterExtensionItems,
+	collectPhotonPublicHeaderExtensionItems as collectPhotonHeaderExtensionItems,
 	createPhotonPublicAccountTabExtension as createPhotonAccountTabExtension,
 	createPhotonPublicSiteFrameExtension as createPhotonSiteFrameExtension,
 	resolvePhotonPublicAccountTabs as resolvePhotonAccountTabs,
+	resolvePhotonPublicSiteFrameExtensions as resolvePhotonSiteFrameExtensions,
 } from "./helpers/public-site-frame-extensions";
 export { getPhotonPublicSurfaceModeStyle as getPhotonSurfaceModeStyle } from "./helpers/public-surface-layout";
 export { usePhotonI18n } from "./i18n/photon-i18n-context";
@@ -301,6 +340,10 @@ export {
 	photonPublicSystemModule as photonSystemModule,
 } from "./modules/system-public";
 export {
+	resolvePhotonSiteFrameMobileControls,
+	usePhotonSiteFrameScrollLock,
+} from "./modules/system/site/site-mobile-frame";
+export {
 	PHOTON_SEARCH_OCCURRENCE_PARAM,
 	PHOTON_SEARCH_QUERY_PARAM,
 	PHOTON_SEARCH_TARGET_PARAM,
@@ -308,6 +351,8 @@ export {
 export { PhotonSiteSearch } from "./search/photon-site-search";
 export type {
 	PhotonAccountTabExtension,
+	PhotonAuthPageRenderInput,
+	PhotonAuthPageRenderer,
 	PhotonBindingAdapter,
 	PhotonBlock,
 	PhotonBlockComponentProps,
@@ -318,14 +363,33 @@ export type {
 	PhotonField,
 	PhotonFieldOption,
 	PhotonInstallableKit,
+	PhotonLinkFactory,
+	PhotonLinkFactoryOptions,
 	PhotonLinkComponentProps,
+	PhotonNavigateHandler,
+	PhotonNavigateOptions,
+	PhotonPrefetchHandler,
 	PhotonLocaleDescriptor,
 	PhotonLocaleStatus,
 	PhotonModule,
+	PhotonPageSettings,
 	PhotonPageSettingsPanelDefinition,
 	PhotonPageSettingsScope,
+	PhotonSiteFrameFooterSlot,
+	PhotonSiteFrameFooterSlotItems,
+	PhotonSiteFrameFooterSlots,
+	PhotonSiteFrameActionItem,
 	PhotonSiteFrameActionComponentProps,
 	PhotonSiteFrameExtension,
 	PhotonSiteFrameExtensionContext,
+	PhotonSiteFrameHeaderSlot,
+	PhotonSiteFrameHeaderSlotItems,
+	PhotonSiteFrameHeaderSlots,
+	PhotonSiteFrameLinkItem,
+	PhotonSiteFrameFloatingControls,
+	PhotonSiteFrameMobileBottomMenuControls,
+	PhotonSiteFrameMobileControls,
+	PhotonSiteFrameMobileMenuControls,
+	PhotonSiteFrameMobileMenuType,
 	PhotonSiteSettingsPanelDefinition,
 } from "./types";
