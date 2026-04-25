@@ -4,25 +4,51 @@ import {
 	ChevronDown,
 	ChevronLeft,
 	ChevronRight,
+	Copy,
+	Library,
 	Search,
 	SlidersHorizontal,
+	Trash2,
 } from "lucide-react";
-import { memo } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "../../components/ui/dialog";
 import { usePhotonI18n } from "../../i18n/photon-i18n-context";
+import { usePhotonStore } from "../../context/photon-context";
+import { getPhotonSelectedBlock } from "../../context/photon-store";
+import {
+	collectPhotonComponentLibraryUsages,
+	getPhotonComponentLibraryItems,
+	isPhotonComponentReferenceBlock,
+} from "../../helpers/component-library";
 import { translatePhotonPaletteCategory } from "../../i18n/photon-labels";
 import type {
 	InsertTarget,
 	PaletteDefinition,
 	PaletteFamilyGroup,
 } from "../types";
+import type {
+	PhotonComponentLibraryUsage,
+	PhotonComponentLibraryUsageProvider,
+} from "../../types";
 import { PaletteCard } from "./palette-card";
 
 type PalettePanelProps = {
+	paletteTab: "blocks" | "library";
+	onPaletteTabChange: (value: "blocks" | "library") => void;
+	selectedLibraryItemId: string | null;
+	onLibraryItemSelect: (value: string | null) => void;
 	search: string;
 	onSearchChange: (value: string) => void;
 	allPaletteBlocks: PaletteDefinition[];
@@ -38,11 +64,33 @@ type PalettePanelProps = {
 	selectedDefinitionKey: string | null;
 	onSelectDefinition: (definition: PaletteDefinition) => void;
 	onInsert: (definition: PaletteDefinition) => void;
+	componentLibraryUsageProvider?: PhotonComponentLibraryUsageProvider;
 	manualInsertTarget: InsertTarget | null;
 	onCollapse?: () => void;
 };
 
+const normalizeLibraryUsageSource = (
+	source: PhotonComponentLibraryUsage["source"],
+): NonNullable<PhotonComponentLibraryUsage["source"]> => {
+	if (source === "current") {
+		return "currentDocument";
+	}
+
+	if (source === "workspace") {
+		return "workspacePage";
+	}
+
+	return source ?? "workspacePage";
+};
+
+const isWorkspaceLibraryUsage = (usage: PhotonComponentLibraryUsage) =>
+	normalizeLibraryUsageSource(usage.source) === "workspacePage";
+
 const PalettePanelComponent = ({
+	paletteTab,
+	onPaletteTabChange,
+	selectedLibraryItemId,
+	onLibraryItemSelect,
 	search,
 	onSearchChange,
 	allPaletteBlocks,
@@ -58,10 +106,106 @@ const PalettePanelComponent = ({
 	selectedDefinitionKey,
 	onSelectDefinition,
 	onInsert,
-	manualInsertTarget: _manualInsertTarget,
+	componentLibraryUsageProvider,
+	manualInsertTarget,
 	onCollapse,
 }: PalettePanelProps) => {
 	const { translate } = usePhotonI18n();
+	const site = usePhotonStore((state) => state.site);
+	const document = usePhotonStore((state) => state.document);
+	const pageSettings = usePhotonStore((state) => state.pageSettings);
+	const workspace = usePhotonStore((state) => state.workspace);
+	const selectedBlock = usePhotonStore((state) =>
+		getPhotonSelectedBlock(state),
+	);
+	const createLibraryItemFromBlock = usePhotonStore(
+		(state) => state.createComponentLibraryItemFromBlock,
+	);
+	const insertComponentReference = usePhotonStore(
+		(state) => state.insertComponentLibraryReference,
+	);
+	const insertComponentCopy = usePhotonStore(
+		(state) => state.insertComponentLibraryCopy,
+	);
+	const detachComponentReference = usePhotonStore(
+		(state) => state.detachComponentReference,
+	);
+	const selectComponentLibrarySource = usePhotonStore(
+		(state) => state.selectComponentLibrarySource,
+	);
+	const duplicateComponentLibraryItem = usePhotonStore(
+		(state) => state.duplicateComponentLibraryItem,
+	);
+	const deleteComponentLibraryItem = usePhotonStore(
+		(state) => state.deleteComponentLibraryItem,
+	);
+	const updateComponentLibraryItem = usePhotonStore(
+		(state) => state.updateComponentLibraryItem,
+	);
+	const libraryItems = useMemo(
+		() =>
+			Object.values(getPhotonComponentLibraryItems(site.settings)).filter(
+				(item) => item.enabled !== false,
+			),
+		[site.settings],
+	);
+	const currentLibraryUsages = useMemo(
+		() =>
+			collectPhotonComponentLibraryUsages(document, "currentDocument").map((usage) => ({
+				...usage,
+				source: normalizeLibraryUsageSource(usage.source),
+			})),
+		[document],
+	);
+	const [workspaceLibraryUsages, setWorkspaceLibraryUsages] = useState<
+		PhotonComponentLibraryUsage[]
+	>([]);
+	const [pendingDeleteItemId, setPendingDeleteItemId] = useState<string | null>(
+		null,
+	);
+	useEffect(() => {
+		let cancelled = false;
+
+		if (!componentLibraryUsageProvider) {
+			setWorkspaceLibraryUsages([]);
+			return;
+		}
+
+		Promise.resolve(
+			componentLibraryUsageProvider({
+				site,
+				document,
+				pageSettings,
+				workspace,
+				itemIds: libraryItems.map((item) => item.id),
+			}),
+		).then((usages) => {
+			if (!cancelled) {
+				setWorkspaceLibraryUsages(
+					usages.map((usage) => ({
+						...usage,
+						source: normalizeLibraryUsageSource(usage.source),
+					})),
+				);
+			}
+		});
+
+		return () => {
+			cancelled = true;
+		};
+	}, [
+		componentLibraryUsageProvider,
+		document,
+		libraryItems,
+		pageSettings,
+		site,
+		workspace,
+	]);
+	const libraryUsages = [...currentLibraryUsages, ...workspaceLibraryUsages];
+	const selectedReferenceBlock =
+		selectedBlock && isPhotonComponentReferenceBlock(selectedBlock)
+			? selectedBlock
+			: null;
 	const normalizedSearch = search.trim().toLowerCase();
 	const matchesSearch = (definition: PaletteDefinition) =>
 		!normalizedSearch ||
@@ -116,7 +260,27 @@ const PalettePanelComponent = ({
 			return left.value.localeCompare(right.value);
 		});
 
+	const libraryMatchesSearch = (label: string) =>
+		!normalizedSearch || label.toLowerCase().includes(normalizedSearch);
+	const visibleLibraryItems = libraryItems.filter((item) =>
+		libraryMatchesSearch(`${item.label} ${item.description ?? ""} ${item.id}`),
+	);
+	const insertTarget = manualInsertTarget ?? undefined;
+	const pendingDeleteItem = pendingDeleteItemId
+		? libraryItems.find((item) => item.id === pendingDeleteItemId) ?? null
+		: null;
+	const pendingDeleteUsages = pendingDeleteItem
+		? libraryUsages.filter((usage) => usage.itemId === pendingDeleteItem.id)
+		: [];
+	const pendingDeleteCurrentUsageCount = pendingDeleteUsages.filter(
+		(usage) => !isWorkspaceLibraryUsage(usage),
+	).length;
+	const pendingDeleteWorkspaceUsageCount = pendingDeleteUsages.filter(
+		(usage) => isWorkspaceLibraryUsage(usage),
+	).length;
+
 	return (
+		<>
 		<div className="flex h-full flex-col">
 			<div
 				className="border-b px-5 py-5"
@@ -304,9 +468,271 @@ const PalettePanelComponent = ({
 						</DropdownMenu>
 					</div>
 				</div>
+				<div
+					className="mt-4 inline-flex rounded-[14px] border p-1"
+					style={{
+						borderColor: "var(--photon-builder-border)",
+						background: "var(--photon-builder-panel-muted)",
+					}}
+				>
+					{[
+						{ key: "blocks" as const, label: "Blocks" },
+						{ key: "library" as const, label: "Library" },
+					].map((tab) => (
+						<button
+							key={tab.key}
+							type="button"
+							onClick={() => onPaletteTabChange(tab.key)}
+							className="cursor-pointer rounded-[10px] px-3 py-1.5 text-xs font-semibold transition"
+							style={
+								paletteTab === tab.key
+									? {
+											background: "var(--photon-builder-accent-soft)",
+											color: "var(--photon-builder-accent-text)",
+										}
+									: { color: "var(--photon-builder-text-muted)" }
+							}
+						>
+							{tab.label}
+						</button>
+					))}
+				</div>
 			</div>
 
 			<div className="flex-1 overflow-y-auto px-4 py-4">
+				{paletteTab === "library" ? (
+					<div className="space-y-4">
+						<section
+							className="rounded-[22px] border p-4"
+							style={{
+								borderColor: "var(--photon-builder-border)",
+								background: "var(--photon-builder-panel-muted)",
+							}}
+						>
+							<div
+								className="text-[11px] uppercase tracking-[0.28em]"
+								style={{ color: "var(--photon-builder-text-soft)" }}
+							>
+								Reusable components
+							</div>
+							<button
+								type="button"
+								disabled={!selectedBlock}
+								onClick={() =>
+									selectedBlock
+										? createLibraryItemFromBlock(selectedBlock.id)
+										: undefined
+								}
+								className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold disabled:pointer-events-none disabled:opacity-45"
+								style={{
+									borderColor: "var(--photon-builder-border-strong)",
+									background: "var(--photon-builder-accent-soft)",
+									color: "var(--photon-builder-accent-text)",
+								}}
+							>
+								<Library className="h-3.5 w-3.5" />
+								Create from selection
+							</button>
+						</section>
+
+						{visibleLibraryItems.map((item) => {
+							const selected = selectedLibraryItemId === item.id;
+							const itemUsages = libraryUsages.filter(
+								(usage) => usage.itemId === item.id,
+							);
+							const currentUsageCount = itemUsages.filter(
+								(usage) => !isWorkspaceLibraryUsage(usage),
+							).length;
+							const workspaceUsageCount = itemUsages.filter(
+								(usage) => isWorkspaceLibraryUsage(usage),
+							).length;
+							const usageCount = itemUsages.length;
+
+							return (
+								<section
+									key={item.id}
+									className="rounded-[22px] border p-4"
+									style={{
+										borderColor: selected
+											? "var(--photon-builder-border-strong)"
+											: "var(--photon-builder-border)",
+										background: selected
+											? "var(--photon-builder-card-selected)"
+											: "var(--photon-builder-field)",
+									}}
+								>
+									<button
+										type="button"
+										onClick={() => onLibraryItemSelect(item.id)}
+										className="w-full cursor-pointer text-left"
+									>
+										<div
+											className="text-sm font-semibold"
+											style={{ color: "var(--photon-builder-text)" }}
+										>
+											{item.label}
+										</div>
+										<div
+											className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em]"
+											style={{ color: "var(--photon-builder-text-ghost)" }}
+										>
+											{item.blocks.length} block
+											{item.blocks.length === 1 ? "" : "s"} · {usageCount} usage
+											{usageCount === 1 ? "" : "s"}
+										</div>
+									</button>
+									{selected ? (
+										<div className="mt-4 space-y-3">
+											<label className="grid gap-2 text-xs font-semibold">
+												Label
+												<input
+													value={item.label}
+													onChange={(event) =>
+														updateComponentLibraryItem(item.id, (current) => ({
+															...current,
+															label: event.currentTarget.value,
+														}))
+													}
+													className="h-10 rounded-[14px] border px-3 text-sm outline-none"
+													style={{
+														borderColor: "var(--photon-builder-border)",
+														background: "var(--photon-builder-panel-solid)",
+														color: "var(--photon-builder-text)",
+													}}
+												/>
+											</label>
+											<div className="flex flex-wrap gap-2">
+												<button
+													type="button"
+													onClick={() => selectComponentLibrarySource(item.id)}
+													className="inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold"
+													style={{
+														borderColor: "var(--photon-builder-border)",
+														background: "var(--photon-builder-panel-solid)",
+														color: "var(--photon-builder-text)",
+													}}
+												>
+													<SlidersHorizontal className="h-3.5 w-3.5" />
+													Edit source
+												</button>
+												<button
+													type="button"
+													onClick={() =>
+														insertComponentReference(
+															item.id,
+															insertTarget?.listId,
+															insertTarget?.index,
+														)
+													}
+													className="inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold"
+													style={{
+														borderColor: "var(--photon-builder-border)",
+														background: "var(--photon-builder-panel-solid)",
+														color: "var(--photon-builder-text)",
+													}}
+												>
+													<Library className="h-3.5 w-3.5" />
+													Reference
+												</button>
+												<button
+													type="button"
+													onClick={() =>
+														insertComponentCopy(
+															item.id,
+															insertTarget?.listId,
+															insertTarget?.index,
+														)
+													}
+													className="inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold"
+													style={{
+														borderColor: "var(--photon-builder-border)",
+														background: "var(--photon-builder-panel-solid)",
+														color: "var(--photon-builder-text)",
+													}}
+												>
+													<Copy className="h-3.5 w-3.5" />
+													Copy
+												</button>
+												<button
+													type="button"
+													onClick={() => duplicateComponentLibraryItem(item.id)}
+													className="inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold"
+													style={{
+														borderColor: "var(--photon-builder-border)",
+														background: "var(--photon-builder-panel-solid)",
+														color: "var(--photon-builder-text)",
+													}}
+												>
+													<Copy className="h-3.5 w-3.5" />
+													Duplicate source
+												</button>
+												<button
+													type="button"
+													onClick={() => {
+														if (usageCount === 0) {
+															deleteComponentLibraryItem(item.id);
+															return;
+														}
+
+														setPendingDeleteItemId(item.id);
+													}}
+													className="inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold"
+													style={{
+														borderColor: "var(--photon-builder-border)",
+														background: "var(--photon-builder-panel-solid)",
+														color: "var(--photon-builder-text)",
+													}}
+												>
+													<Trash2 className="h-3.5 w-3.5" />
+													Delete source
+												</button>
+												{selectedReferenceBlock?.props.itemId === item.id ? (
+													<button
+														type="button"
+														onClick={() =>
+															detachComponentReference(selectedReferenceBlock.id)
+														}
+														className="inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold"
+														style={{
+															borderColor: "var(--photon-builder-border)",
+															background: "var(--photon-builder-accent-soft)",
+															color: "var(--photon-builder-accent-text)",
+														}}
+													>
+														<Copy className="h-3.5 w-3.5" />
+														Detach selected
+													</button>
+												) : null}
+											</div>
+											<div
+												className="rounded-2xl border px-3 py-2 text-xs leading-5"
+												style={{
+													borderColor: "var(--photon-builder-border)",
+													color: "var(--photon-builder-text-muted)",
+												}}
+											>
+												{usageCount
+													? `${currentUsageCount} current placement${currentUsageCount === 1 ? "" : "s"} · ${workspaceUsageCount} workspace placement${workspaceUsageCount === 1 ? "" : "s"}.`
+													: "No placements in the current surface or workspace index."}
+											</div>
+										</div>
+									) : null}
+								</section>
+							);
+						})}
+						{visibleLibraryItems.length === 0 ? (
+							<section
+								className="rounded-[22px] border border-dashed p-4 text-sm leading-6"
+								style={{
+									borderColor: "var(--photon-builder-border)",
+									color: "var(--photon-builder-text-muted)",
+								}}
+							>
+								No reusable components yet.
+							</section>
+						) : null}
+					</div>
+				) : (
 				<div className="space-y-4">
 					{paletteGroups.map((familyGroup) => (
 						<section key={familyGroup.family} className="space-y-3">
@@ -405,8 +831,68 @@ const PalettePanelComponent = ({
 						</section>
 					))}
 				</div>
+				)}
 			</div>
 		</div>
+		<Dialog
+			open={Boolean(pendingDeleteItem)}
+			onOpenChange={(open) => {
+				if (!open) {
+					setPendingDeleteItemId(null);
+				}
+			}}
+		>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Delete reusable component?</DialogTitle>
+					<DialogDescription>
+						{pendingDeleteItem
+							? pendingDeleteWorkspaceUsageCount > 0
+								? `"${pendingDeleteItem.label}" is used outside the current canvas. Delete is blocked until workspace usages are removed.`
+								: pendingDeleteCurrentUsageCount > 0
+									? `"${pendingDeleteItem.label}" has ${pendingDeleteCurrentUsageCount} current placement${pendingDeleteCurrentUsageCount === 1 ? "" : "s"}. Detach them to copies before deleting the source.`
+									: `"${pendingDeleteItem.label}" has no placements and can be deleted.`
+							: ""}
+					</DialogDescription>
+				</DialogHeader>
+				<DialogFooter>
+					<button
+						type="button"
+						onClick={() => setPendingDeleteItemId(null)}
+						className="inline-flex h-11 items-center justify-center rounded-full border px-4 text-sm font-semibold transition border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] text-[color:var(--photon-builder-text-muted)] hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)]"
+					>
+						Cancel
+					</button>
+					<button
+						type="button"
+						disabled={!pendingDeleteItem || pendingDeleteWorkspaceUsageCount > 0}
+						onClick={() => {
+							if (!pendingDeleteItem) {
+								return;
+							}
+
+							const deleted = deleteComponentLibraryItem(
+								pendingDeleteItem.id,
+								{
+									detachUsages: pendingDeleteCurrentUsageCount > 0,
+								},
+							);
+
+							if (deleted) {
+								setPendingDeleteItemId(null);
+								onLibraryItemSelect(null);
+							}
+						}}
+						className="inline-flex h-11 items-center justify-center rounded-full border border-rose-400/18 bg-rose-400/10 px-4 text-sm font-semibold text-rose-100 transition hover:border-rose-300/28 hover:bg-rose-400/16 hover:text-white disabled:pointer-events-none disabled:opacity-45"
+					>
+						{pendingDeleteCurrentUsageCount > 0
+							? "Detach usages and delete"
+							: "Delete source"}
+					</button>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+		</>
 	);
 };
 

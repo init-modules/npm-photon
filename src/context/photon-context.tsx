@@ -9,6 +9,7 @@ import {
 	useMemo,
 	useRef,
 } from "react";
+import { toast } from "sonner";
 import { useStore } from "zustand";
 import {
 	getPhotonAnchorRel,
@@ -25,6 +26,13 @@ import { PhotonI18nProvider } from "../i18n/photon-i18n-context";
 import type {
 	PhotonAccountTabExtension,
 	PhotonI18nValue,
+	PhotonInteractionActionDefinition,
+	PhotonInteractionActionPresentation,
+	PhotonInteractionGuardDefinition,
+	PhotonInteractionGuardEvaluatorMap,
+	PhotonInteractionSurfaceDefinition,
+	PhotonInteractionSurfaceRendererMap,
+	PhotonInteractionToastTemplate,
 	PhotonLinkComponent,
 	PhotonLinkComponentProps,
 	PhotonLinkFactory,
@@ -43,6 +51,7 @@ import type {
 	PhotonWorkspaceDescriptor,
 } from "../types";
 import { getPhotonExternalStateFingerprint } from "./external-state";
+import { PhotonInteractionSurfaceHost } from "../interaction-surfaces/photon-interaction-surface-host";
 import {
 	createPhotonStore,
 	getPhotonFieldValue,
@@ -68,6 +77,12 @@ type PhotonProviderProps = {
 	uploadMedia?: PhotonMediaUploadHandler;
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
+	requestAuthAction?: PhotonInteractionActionPresentation;
+		interactionSurfaces?: PhotonInteractionSurfaceDefinition[];
+		interactionActions?: PhotonInteractionActionDefinition[];
+		interactionGuards?: PhotonInteractionGuardDefinition[];
+		interactionGuardEvaluators?: PhotonInteractionGuardEvaluatorMap;
+		interactionSurfaceRenderers?: PhotonInteractionSurfaceRendererMap;
 	navigate?: PhotonNavigateHandler;
 	prefetch?: PhotonPrefetchHandler;
 	linkComponent?: PhotonLinkComponent;
@@ -114,6 +129,12 @@ export const PhotonProvider = ({
 	uploadMedia,
 	searchSite,
 	requestAuth,
+	requestAuthAction,
+		interactionSurfaces = [],
+		interactionActions = [],
+		interactionGuards = [],
+		interactionGuardEvaluators = {},
+		interactionSurfaceRenderers = {},
 	navigate,
 	prefetch,
 	linkComponent = DefaultPhotonLinkComponent,
@@ -140,7 +161,30 @@ export const PhotonProvider = ({
 			workspace,
 		],
 	);
-	const lastExternalStateFingerprintRef = useRef<string | null>(null);
+	const lastExternalStateFingerprintRef = useRef<string | null>(
+		externalStateFingerprint,
+	);
+	const dispatchInteractionToast = (template: PhotonInteractionToastTemplate) => {
+		const description = template.description;
+
+		switch (template.status ?? "message") {
+			case "success":
+				toast.success(template.title, { description });
+				break;
+			case "error":
+				toast.error(template.title, { description });
+				break;
+			case "info":
+				toast.info(template.title, { description });
+				break;
+			case "warning":
+				toast.warning(template.title, { description });
+				break;
+			default:
+				toast(template.title, { description });
+				break;
+		}
+	};
 
 	if (!storeRef.current) {
 		storeRef.current = createPhotonStore({
@@ -153,9 +197,16 @@ export const PhotonProvider = ({
 			capabilities,
 			initialMode,
 			isAdmin,
-			uploadMedia,
-			searchSite,
-			requestAuth,
+				uploadMedia,
+				searchSite,
+				requestAuth,
+				requestAuthAction,
+					interactionSurfaces,
+				interactionActions,
+				interactionGuards,
+				interactionGuardEvaluators,
+				interactionSurfaceRenderers,
+			dispatchInteractionToast,
 			navigate,
 			prefetch,
 			linkComponent,
@@ -178,6 +229,10 @@ export const PhotonProvider = ({
 		}
 
 		lastExternalStateFingerprintRef.current = externalStateFingerprint;
+		if ((storeRef.current?.getState().contentRevision ?? 0) !== 0) {
+			return;
+		}
+
 		storeRef.current?.getState().syncExternalState({
 			initialDocument: clonePhotonValue(initialDocument),
 			initialResources: clonePhotonValue(initialResources),
@@ -210,11 +265,17 @@ export const PhotonProvider = ({
 				isAdmin &&
 				canEditPhotonWorkspace(normalizedWorkspace, normalizedCapabilities);
 
-			if (
-				state.isAdmin === isAdmin &&
-				state.uploadMedia === uploadMedia &&
-				state.searchSite === searchSite &&
-				state.requestAuth === requestAuth &&
+				if (
+					state.isAdmin === isAdmin &&
+					state.uploadMedia === uploadMedia &&
+					state.searchSite === searchSite &&
+					state.requestAuthAction === requestAuthAction &&
+					state.requestAuthFallback === requestAuth &&
+						state.interactionSurfaces === interactionSurfaces &&
+						state.interactionActions === interactionActions &&
+						state.interactionGuards === interactionGuards &&
+						state.interactionGuardEvaluators === interactionGuardEvaluators &&
+					state.interactionSurfaceRenderers === interactionSurfaceRenderers &&
 				state.navigate === navigate &&
 				state.prefetch === prefetch &&
 				state.linkComponent === linkComponent &&
@@ -232,14 +293,20 @@ export const PhotonProvider = ({
 				return state;
 			}
 
-			return {
-				...state,
-				isAdmin,
-				workspace: normalizedWorkspace,
-				capabilities: normalizedCapabilities,
-				uploadMedia,
-				searchSite,
-				requestAuth,
+				return {
+					...state,
+					isAdmin,
+					workspace: normalizedWorkspace,
+					capabilities: normalizedCapabilities,
+					uploadMedia,
+					searchSite,
+					requestAuthAction,
+					requestAuthFallback: requestAuth,
+					interactionSurfaces,
+					interactionActions,
+					interactionGuards,
+					interactionGuardEvaluators,
+					interactionSurfaceRenderers,
 				navigate,
 				prefetch,
 				linkComponent,
@@ -264,8 +331,14 @@ export const PhotonProvider = ({
 		navigation,
 		siteFrameExtensions,
 		accountTabs,
-		requestAuth,
-		searchSite,
+		interactionSurfaces,
+		interactionActions,
+		interactionGuards,
+		interactionGuardEvaluators,
+			interactionSurfaceRenderers,
+			requestAuth,
+			requestAuthAction,
+			searchSite,
 		uploadMedia,
 		workspace,
 	]);
@@ -274,8 +347,31 @@ export const PhotonProvider = ({
 		<PhotonI18nProvider value={i18n}>
 			<PhotonContext.Provider value={storeRef.current}>
 				{children}
+				<PhotonStoreInteractionSurfaceHost />
 			</PhotonContext.Provider>
 		</PhotonI18nProvider>
+	);
+};
+
+const PhotonStoreInteractionSurfaceHost = () => {
+	const request = usePhotonStore((state) => state.activeInteractionSurface);
+	const renderers = usePhotonStore(
+		(state) => state.interactionSurfaceRenderers,
+	);
+	const closeInteractionSurface = usePhotonStore(
+		(state) => state.closeInteractionSurface,
+	);
+
+	return (
+		<PhotonInteractionSurfaceHost
+			request={request}
+			renderers={renderers}
+			onOpenChange={(open) => {
+				if (!open) {
+					closeInteractionSurface();
+				}
+			}}
+		/>
 	);
 };
 

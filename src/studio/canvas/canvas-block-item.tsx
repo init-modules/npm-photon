@@ -13,6 +13,7 @@ import type { PhotonBlock } from "../../types";
 import { matchesTarget } from "../shared";
 import type { InsertTarget } from "../types";
 import { CanvasBlockList } from "./canvas-block-list";
+import { CanvasBlockInteractions } from "./canvas-block-interactions";
 import { CanvasBlockShell } from "./canvas-block-shell";
 import { CanvasInsertZone } from "./canvas-insert-zone";
 import { CollapsedBlockPreview } from "./collapsed-block-preview";
@@ -104,6 +105,9 @@ const CanvasBlockItemComponent = ({
 						)}
 					/>
 				)}
+				{builderEnabled && isSelected ? (
+					<CanvasBlockInteractions block={block} />
+				) : null}
 			</CanvasBlockShell>
 			<CanvasInsertZone
 				listId={listId}

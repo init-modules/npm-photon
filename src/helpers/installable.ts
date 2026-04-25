@@ -2,6 +2,10 @@ import type {
 	PhotonAccountTabExtension,
 	PhotonDocumentsMap,
 	PhotonInstallableKit,
+	PhotonInteractionActionDefinition,
+	PhotonInteractionGuardDefinition,
+	PhotonInteractionGuardEvaluatorMap,
+	PhotonInteractionSurfaceDefinition,
 	PhotonModule,
 	PhotonRegistryEntry,
 	PhotonSiteFrameExtension,
@@ -52,4 +56,37 @@ export const collectPhotonAccountTabs = (
 ): PhotonAccountTabExtension[] =>
 	entries.flatMap((entry) =>
 		isPhotonInstallableKit(entry) ? (entry.accountTabs ?? []) : [],
+	);
+
+export const collectPhotonInteractionSurfaces = (
+	entries: PhotonRegistryEntry[],
+): PhotonInteractionSurfaceDefinition[] =>
+	entries.flatMap((entry) =>
+		isPhotonInstallableKit(entry) ? (entry.interactionSurfaces ?? []) : [],
+	);
+
+export const collectPhotonInteractionActions = (
+	entries: PhotonRegistryEntry[],
+): PhotonInteractionActionDefinition[] =>
+	entries.flatMap((entry) =>
+		isPhotonInstallableKit(entry) ? (entry.interactionActions ?? []) : [],
+	);
+
+export const collectPhotonInteractionGuards = (
+	entries: PhotonRegistryEntry[],
+): PhotonInteractionGuardDefinition[] =>
+	entries.flatMap((entry) =>
+		isPhotonInstallableKit(entry) ? (entry.interactionGuards ?? []) : [],
+	);
+
+export const collectPhotonInteractionGuardEvaluators = (
+	entries: PhotonRegistryEntry[],
+): PhotonInteractionGuardEvaluatorMap =>
+	Object.assign(
+		{},
+		...entries.map((entry) =>
+			isPhotonInstallableKit(entry)
+				? (entry.interactionGuardEvaluators ?? {})
+				: {},
+		),
 	);

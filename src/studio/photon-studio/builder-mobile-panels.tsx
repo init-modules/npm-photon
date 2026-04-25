@@ -1,6 +1,7 @@
 "use client";
 
 import type {
+	PhotonComponentLibraryUsageProvider,
 	PhotonPageCatalogItem,
 	PhotonPageSettings,
 } from "../../types";
@@ -14,6 +15,10 @@ import type {
 } from "../types";
 
 type BuilderMobilePanelsProps = {
+	paletteTab: "blocks" | "library";
+	onPaletteTabChange: (value: "blocks" | "library") => void;
+	selectedLibraryItemId: string | null;
+	onLibraryItemSelect: (value: string | null) => void;
 	search: string;
 	onSearchChange: (value: string) => void;
 	allPaletteBlocks: PaletteDefinition[];
@@ -29,6 +34,7 @@ type BuilderMobilePanelsProps = {
 	selectedDefinitionKey: string | null;
 	onSelectDefinition: (definition: PaletteDefinition) => void;
 	onInsert: (definition: PaletteDefinition) => void;
+	componentLibraryUsageProvider?: PhotonComponentLibraryUsageProvider;
 	manualInsertTarget: { listId: string; index: number } | null;
 	definitionFields: PaletteDefinition["fields"];
 	inspectorGroups: InspectorGroups;
@@ -40,6 +46,10 @@ type BuilderMobilePanelsProps = {
 };
 
 export const BuilderMobilePanels = ({
+	paletteTab,
+	onPaletteTabChange,
+	selectedLibraryItemId,
+	onLibraryItemSelect,
 	search,
 	onSearchChange,
 	allPaletteBlocks,
@@ -55,6 +65,7 @@ export const BuilderMobilePanels = ({
 	selectedDefinitionKey,
 	onSelectDefinition,
 	onInsert,
+	componentLibraryUsageProvider,
 	manualInsertTarget,
 	definitionFields,
 	inspectorGroups,
@@ -67,6 +78,10 @@ export const BuilderMobilePanels = ({
 	return (
 		<div className="mt-6 grid gap-4 lg:hidden">
 			<PalettePanel
+				paletteTab={paletteTab}
+				onPaletteTabChange={onPaletteTabChange}
+				selectedLibraryItemId={selectedLibraryItemId}
+				onLibraryItemSelect={onLibraryItemSelect}
 				search={search}
 				onSearchChange={onSearchChange}
 				allPaletteBlocks={allPaletteBlocks}
@@ -79,10 +94,11 @@ export const BuilderMobilePanels = ({
 				onToggleFamily={onToggleFamily}
 				collapsedGroups={collapsedGroups}
 				onToggleGroup={onToggleGroup}
-				selectedDefinitionKey={selectedDefinitionKey}
-				onSelectDefinition={onSelectDefinition}
-				onInsert={onInsert}
-				manualInsertTarget={manualInsertTarget}
+					selectedDefinitionKey={selectedDefinitionKey}
+					onSelectDefinition={onSelectDefinition}
+					onInsert={onInsert}
+					componentLibraryUsageProvider={componentLibraryUsageProvider}
+					manualInsertTarget={manualInsertTarget}
 			/>
 			<InspectorPanel
 				definitionFields={definitionFields}

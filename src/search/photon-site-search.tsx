@@ -29,13 +29,28 @@ import {
 	usePhotonStore,
 } from "../context/photon-public-context";
 import { usePhotonI18n } from "../i18n/photon-i18n-context";
-import type { PhotonSearchResult } from "../types";
+import { photonInteractionExecutionSucceeded } from "../helpers/interactions";
+import { createPhotonSiteSearchTriggerSlot } from "../modules/system/site/site-interaction-surfaces";
+import type {
+	PhotonInteractionSurfaceRendererProps,
+	PhotonSearchResult,
+} from "../types";
 import { buildPhotonSearchResultHref } from "./helpers";
 
 type PhotonSiteSearchProps = {
 	blockId: string;
 	placeholderPath: string;
 	className?: string;
+	surfaceOpen?: boolean;
+	onSurfaceOpenChange?: (open: boolean) => void;
+	surfacePlaceholder?: string;
+	surfaceTitle?: string;
+	surfaceDescription?: string;
+	surfaceHint?: string;
+	surfaceLoading?: string;
+	surfaceEmpty?: string;
+	hideTrigger?: boolean;
+	previewMode?: "runtime" | "builder-inline";
 };
 
 const searchDialogStyle = {
@@ -97,19 +112,55 @@ export const PhotonSiteSearch = ({
 	blockId,
 	placeholderPath,
 	className,
+	surfaceOpen,
+	onSurfaceOpenChange,
+	surfacePlaceholder,
+	surfaceTitle,
+	surfaceDescription,
+	surfaceHint,
+	surfaceLoading,
+	surfaceEmpty,
+	hideTrigger = false,
+	previewMode = "runtime",
 }: PhotonSiteSearchProps) => {
 	const { translate } = usePhotonI18n();
 	const { locale, contentLocale } = usePhotonI18n();
 	const canEdit = usePhotonCanEdit();
 	const searchSite = usePhotonStore((state) => state.searchSite);
+	const executeInteractionTriggerSlot = usePhotonStore(
+		(state) => state.executeInteractionTriggerSlot,
+	);
 	const mode = usePhotonStore((state) => state.mode);
 	const isAdmin = usePhotonStore((state) => state.isAdmin);
 	const navigation = usePhotonStore((state) => state.navigation);
 	const workspace = usePhotonStore((state) => state.workspace);
+	const blockPlaceholder = usePhotonFieldValue(blockId, placeholderPath);
 	const placeholder = String(
-		usePhotonFieldValue(blockId, placeholderPath) ?? "Search the website",
+		surfacePlaceholder ?? blockPlaceholder ?? "Search the website",
 	);
-	const [open, setOpen] = useState(false);
+	const dialogTitle = surfaceTitle ?? translate(
+		"photon.search.dialogTitle",
+		"Search the website",
+	);
+	const dialogDescription = surfaceDescription ?? translate(
+		"photon.search.dialogDescription",
+		"Find exact matches across static pages and publication pages.",
+	);
+	const hintCopy = surfaceHint ?? translate(
+		"photon.search.hint",
+		"Type at least 2 characters to search across static pages and publications.",
+	);
+	const loadingCopy = surfaceLoading ?? translate(
+		"photon.search.loading",
+		"Searching the live site surface...",
+	);
+	const emptyCopy = surfaceEmpty ?? translate(
+		"photon.search.empty",
+		"No matches found for this query.",
+	);
+	const [localOpen, setLocalOpen] = useState(false);
+	const open = surfaceOpen ?? localOpen;
+	const setOpen = onSurfaceOpenChange ?? setLocalOpen;
 	const [query, setQuery] = useState("");
 	const [results, setResults] = useState<PhotonSearchResult[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -123,6 +174,23 @@ export const PhotonSiteSearch = ({
 	const deferredQuery = useDeferredValue(query.trim());
 	const canSearch = typeof searchSite === "function";
 	const hasQuery = deferredQuery.length >= 2;
+	const openSearch = () => {
+		const triggerSlot = createPhotonSiteSearchTriggerSlot(`${blockId}.search`);
+		const openedSurface = executeInteractionTriggerSlot({
+			...triggerSlot,
+			action: {
+				...triggerSlot.action,
+				type: "surface",
+				overrides: {
+					placeholder,
+				},
+			},
+		});
+
+		if (!photonInteractionExecutionSucceeded(openedSurface)) {
+			setOpen(true);
+		}
+	};
 	const searchSections = useMemo(
 		() => [
 			{
@@ -176,17 +244,11 @@ export const PhotonSiteSearch = ({
 	});
 	const summaryText = useMemo(() => {
 		if (!hasQuery) {
-			return translate(
-				"photon.search.hint",
-				"Type at least 2 characters to search across static pages and publications.",
-			);
+			return hintCopy;
 		}
 
 		if (loading) {
-			return translate(
-				"photon.search.loading",
-				"Searching the live site surface…",
-			);
+			return loadingCopy;
 		}
 
 		if (error) {
@@ -194,13 +256,13 @@ export const PhotonSiteSearch = ({
 		}
 
 		if (results.length === 0) {
-			return "No matches found for this query.";
+			return emptyCopy;
 		}
 
 		return `${results.length} match${
 			results.length === 1 ? "" : "es"
 		} across the live site.`;
-	}, [error, hasQuery, loading, results.length, translate]);
+	}, [emptyCopy, error, hasQuery, hintCopy, loading, loadingCopy, results.length]);
 
 	useEffect(() => {
 		if (!open) {
@@ -256,9 +318,36 @@ export const PhotonSiteSearch = ({
 					setError("Search is temporarily unavailable.");
 				});
 			});
-	}, [canSearch, deferredQuery, hasQuery, open, searchSite]);
+		}, [canSearch, deferredQuery, hasQuery, open, searchSite]);
 
-	if (!canSearch) {
+	if (previewMode === "builder-inline") {
+		return (
+			<div
+				className="rounded-[22px] border p-4"
+				style={searchPanelStyle}
+				data-testid="photon-site-search-inline-preview"
+			>
+				<div className="text-base font-semibold text-[var(--photon-site-text)]">
+					{dialogTitle}
+				</div>
+				<div className="mt-2 text-sm leading-6 text-[var(--photon-site-muted-text)]">
+					{dialogDescription}
+				</div>
+				<div
+					className="mt-4 flex min-h-12 items-center gap-3 rounded-[18px] border px-3 text-sm text-[var(--photon-site-muted-text)]"
+					style={searchPanelStyle}
+				>
+					<Search className="h-4 w-4" />
+					{placeholder}
+				</div>
+				<div className="mt-3 text-xs leading-5 text-[var(--photon-site-muted-text)]">
+					{hintCopy}
+				</div>
+			</div>
+		);
+	}
+
+	if (!canSearch && !hideTrigger) {
 		return (
 			<div
 				className={clsx(
@@ -276,70 +365,65 @@ export const PhotonSiteSearch = ({
 		);
 	}
 
-	return (
-		<>
-			<div
-				className={clsx(
-					"flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-4",
-					className,
-				)}
-			>
-				<button
-					type="button"
-					onClick={() => setOpen(true)}
-					className="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-[var(--photon-site-muted)] transition hover:bg-black/5 hover:text-[var(--photon-site-text)]"
-					aria-label={translate("photon.search.open", "Search the website")}
-				>
-					<Search className="h-4 w-4" />
-				</button>
-				{canEdit ? (
-					<EditableText
-						blockId={blockId}
-						path={placeholderPath}
-						className="flex-1 text-sm text-[var(--photon-site-muted)]"
-					/>
-				) : (
-					<button
-						type="button"
-						onClick={() => setOpen(true)}
-						className="flex-1 cursor-pointer text-left text-sm text-[var(--photon-site-muted)]"
-					>
-						{placeholder}
-					</button>
-				)}
-			</div>
-
-			<Dialog open={open} onOpenChange={setOpen}>
-				<DialogContent
-					onOpenAutoFocus={handleDialogOpenAutoFocus}
-					className="w-[min(44rem,calc(100%-1.5rem))] gap-0 overflow-hidden rounded-[24px] border p-0 text-[var(--photon-site-text)] backdrop-blur-xl"
-					style={searchDialogStyle}
-				>
-					<div className="sr-only">
-						<DialogTitle>
-							{translate("photon.search.dialogTitle", "Search the website")}
-						</DialogTitle>
-						<DialogDescription>
-							{translate(
-								"photon.search.dialogDescription",
-								"Find exact matches across static pages and publication pages.",
-							)}
-						</DialogDescription>
-					</div>
-
+		return (
+			<>
+				{hideTrigger ? null : (
 					<div
-						className="flex items-center gap-3 border-b px-5 py-4"
-						style={searchDividerStyle}
+						className={clsx(
+							"flex min-h-14 items-center gap-3 rounded-[24px] border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-4",
+							className,
+						)}
 					>
-						<Search className="h-5 w-5 shrink-0 text-[var(--photon-site-muted-text)]" />
-						<input
-							ref={searchInputRef}
-							value={query}
-							onChange={(event) => setQuery(event.currentTarget.value)}
-							onKeyDown={searchMenu.handleKeyDown}
-							placeholder={placeholder}
-							role="combobox"
-							aria-autocomplete="list"
+						<button
+							type="button"
+							onClick={openSearch}
+							className="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-[var(--photon-site-muted)] transition hover:bg-black/5 hover:text-[var(--photon-site-text)]"
+							aria-label={translate("photon.search.open", "Search the website")}
+						>
+							<Search className="h-4 w-4" />
+						</button>
+						{canEdit ? (
+							<EditableText
+								blockId={blockId}
+								path={placeholderPath}
+								className="flex-1 text-sm text-[var(--photon-site-muted)]"
+							/>
+						) : (
+							<button
+								type="button"
+								onClick={openSearch}
+								className="flex-1 cursor-pointer text-left text-sm text-[var(--photon-site-muted)]"
+							>
+								{placeholder}
+							</button>
+						)}
+					</div>
+				)}
+
+				<Dialog open={open} onOpenChange={setOpen}>
+					<DialogContent
+						onOpenAutoFocus={handleDialogOpenAutoFocus}
+						className="w-[min(44rem,calc(100%-1.5rem))] gap-0 overflow-hidden rounded-[24px] border p-0 text-[var(--photon-site-text)] backdrop-blur-xl"
+						style={searchDialogStyle}
+					>
+						<div className="sr-only">
+							<DialogTitle>{dialogTitle}</DialogTitle>
+							<DialogDescription>{dialogDescription}</DialogDescription>
+						</div>
+
+						<div
+							className="flex items-center gap-3 border-b px-5 py-4"
+							style={searchDividerStyle}
+						>
+							<Search className="h-5 w-5 shrink-0 text-[var(--photon-site-muted-text)]" />
+							<input
+								ref={searchInputRef}
+								value={query}
+								onChange={(event) => setQuery(event.currentTarget.value)}
+								onKeyDown={searchMenu.handleKeyDown}
+								placeholder={placeholder}
+								role="combobox"
+								aria-autocomplete="list"
 							aria-controls={searchMenu.listId}
 							aria-expanded={open}
 							aria-activedescendant={searchMenu.activeOptionId}
@@ -367,10 +451,10 @@ export const PhotonSiteSearch = ({
 							<div
 								className="flex items-center gap-3 rounded-[20px] border px-4 py-4 text-sm text-[var(--photon-site-muted-text)]"
 								style={searchPanelStyle}
-							>
-								<Loader2 className="h-4 w-4 animate-spin text-[var(--photon-site-accent)]" />
-								<span>Searching the live site surface…</span>
-							</div>
+								>
+									<Loader2 className="h-4 w-4 animate-spin text-[var(--photon-site-accent)]" />
+									<span>{loadingCopy}</span>
+								</div>
 						) : (
 							<KeyboardMenuList
 								controller={searchMenu}
@@ -382,11 +466,11 @@ export const PhotonSiteSearch = ({
 									<div
 										className="rounded-[20px] border border-dashed px-4 py-8 text-center text-sm leading-7 text-[var(--photon-site-muted-text)]"
 										style={searchPanelStyle}
-									>
-										{hasQuery
-											? "No blocks matched this query yet."
-											: "Search static page copy and publication content from the live site shell."}
-									</div>
+										>
+											{hasQuery
+												? emptyCopy
+												: hintCopy}
+										</div>
 								}
 								renderItem={(result, { isActive }) => {
 									const snippetParts = renderSnippetParts(
@@ -469,3 +553,43 @@ export const PhotonSiteSearch = ({
 		</>
 	);
 };
+
+export const PhotonSiteSearchSurfaceRenderer = ({
+	open,
+	onOpenChange,
+	request,
+	previewMode,
+}: PhotonInteractionSurfaceRendererProps) => (
+	<PhotonSiteSearch
+		blockId=""
+		placeholderPath=""
+		surfaceOpen={open}
+		onSurfaceOpenChange={onOpenChange}
+		surfacePlaceholder={
+			typeof request.props.placeholder === "string"
+				? request.props.placeholder
+				: undefined
+		}
+		surfaceTitle={
+			typeof request.props.title === "string" ? request.props.title : undefined
+		}
+		surfaceDescription={
+			typeof request.props.description === "string"
+				? request.props.description
+				: undefined
+		}
+		surfaceHint={
+			typeof request.props.hint === "string" ? request.props.hint : undefined
+		}
+		surfaceLoading={
+			typeof request.props.loading === "string"
+				? request.props.loading
+				: undefined
+		}
+		surfaceEmpty={
+			typeof request.props.empty === "string" ? request.props.empty : undefined
+			}
+			hideTrigger
+			previewMode={previewMode}
+	/>
+);

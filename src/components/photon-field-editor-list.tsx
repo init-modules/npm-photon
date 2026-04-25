@@ -11,6 +11,12 @@ type PhotonFieldEditorListProps = {
 	onFocus: (path: string) => void;
 };
 
+const fieldEditorTestId = (subjectId: string, path: string) =>
+	`photon-field-editor-${subjectId}-${path}`
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/^-+|-+$/g, "");
+
 export const PhotonFieldEditorList = ({
 	fields,
 	subjectId,
@@ -21,14 +27,18 @@ export const PhotonFieldEditorList = ({
 	return (
 		<div className="space-y-4">
 			{fields.map((field) => (
-				<FieldEditor
+				<div
 					key={field.path}
-					field={field}
-					blockId={subjectId}
-					value={getValue(field.path)}
-					onFocus={() => onFocus(field.path)}
-					onChange={(value) => onChange(field.path, value)}
-				/>
+					data-testid={fieldEditorTestId(subjectId, field.path)}
+				>
+					<FieldEditor
+						field={field}
+						blockId={subjectId}
+						value={getValue(field.path)}
+						onFocus={() => onFocus(field.path)}
+						onChange={(value) => onChange(field.path, value)}
+					/>
+				</div>
 			))}
 		</div>
 	);

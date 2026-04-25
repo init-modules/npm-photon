@@ -141,6 +141,401 @@ export type PhotonSearchHandler = (
 	input: PhotonSearchInput,
 ) => Promise<PhotonSearchResult[]>;
 
+export type PhotonInteractionSurfaceKind = "dialog" | "panel" | "toast";
+
+export type PhotonInteractionSurfaceVariant = {
+	id: string;
+	label: string;
+	labelKey?: string;
+	description?: string;
+	descriptionKey?: string;
+};
+
+export type PhotonInteractionSurfaceInstance = {
+	id: string;
+	definitionId: string;
+	label: string;
+	labelKey?: string;
+	variant?: string;
+	enabled?: boolean;
+	props?: Record<string, unknown>;
+};
+
+export type PhotonInteractionSurfaceIntentBinding = {
+	intent: string;
+	surfaceInstanceId: string;
+	enabled?: boolean;
+	overrides?: Record<string, unknown>;
+	payload?: Record<string, unknown>;
+};
+
+export type PhotonInteractionToastStatus =
+	| "message"
+	| "success"
+	| "error"
+	| "info"
+	| "warning";
+
+export type PhotonInteractionToastTemplate = {
+	id: string;
+	label: string;
+	labelKey?: string;
+	status?: PhotonInteractionToastStatus;
+	title: string;
+	titleKey?: string;
+	description?: string;
+	descriptionKey?: string;
+	enabled?: boolean;
+	props?: Record<string, unknown>;
+};
+
+export type PhotonInteractionSurfaceDefinition = {
+	id: string;
+	label: string;
+	labelKey?: string;
+	description?: string;
+	descriptionKey?: string;
+	kind: PhotonInteractionSurfaceKind;
+	rendererKey: string;
+	order?: number;
+	variants?: PhotonInteractionSurfaceVariant[];
+	fields?: PhotonField[];
+	defaultInstances?: PhotonInteractionSurfaceInstance[];
+	defaultIntentBindings?: PhotonInteractionSurfaceIntentBinding[];
+	defaultToastTemplates?: PhotonInteractionToastTemplate[];
+};
+
+export type PhotonInteractionSurfaceSettings = {
+	instances?: Record<string, PhotonInteractionSurfaceInstance>;
+	intents?: Record<string, PhotonInteractionSurfaceIntentBinding>;
+	toastTemplates?: Record<string, PhotonInteractionToastTemplate>;
+};
+
+export type PhotonInteractionSurfaceTrigger = {
+	intent?: string;
+	surfaceInstanceId?: string;
+	overrides?: Record<string, unknown>;
+	payload?: Record<string, unknown>;
+	fallbackHref?: string;
+};
+
+export type PhotonActionValue =
+	| {
+			type: "link";
+			href: string;
+			target?: string;
+			rel?: string;
+	  }
+	| ({
+			type: "interaction";
+	  } & PhotonInteractionSurfaceTrigger);
+
+export type PhotonResolvedInteractionSurfaceCatalog = {
+	definitions: PhotonInteractionSurfaceDefinition[];
+	definitionsById: Map<string, PhotonInteractionSurfaceDefinition>;
+	instances: Record<string, PhotonInteractionSurfaceInstance>;
+	intents: Record<string, PhotonInteractionSurfaceIntentBinding>;
+	toastTemplates: Record<string, PhotonInteractionToastTemplate>;
+};
+
+export type PhotonResolvedInteractionSurfaceRequest = {
+	definition: PhotonInteractionSurfaceDefinition;
+	instance: PhotonInteractionSurfaceInstance;
+	trigger: PhotonInteractionSurfaceTrigger;
+	props: Record<string, unknown>;
+	payload: Record<string, unknown>;
+	fallbackHref?: string;
+};
+
+export type PhotonInteractionSurfaceRendererProps = {
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+	request: PhotonResolvedInteractionSurfaceRequest;
+	previewMode?: "runtime" | "builder-inline";
+	previewScenarioId?: string;
+};
+
+export type PhotonInteractionSurfaceRenderer =
+	ComponentType<PhotonInteractionSurfaceRendererProps>;
+
+export type PhotonInteractionSurfaceRendererMap = Record<
+	string,
+	PhotonInteractionSurfaceRenderer
+>;
+
+export type PhotonInteractionSurfaceOpenHandler = (
+	trigger: PhotonInteractionSurfaceTrigger,
+) => boolean;
+
+export type PhotonInteractionToastInput = {
+	templateId: string;
+	overrides?: Partial<
+		Pick<
+			PhotonInteractionToastTemplate,
+			"status" | "title" | "description" | "props"
+		>
+	>;
+};
+
+export type PhotonInteractionToastHandler = (
+	input: PhotonInteractionToastInput,
+) => boolean;
+
+export type PhotonInteractionPreviewScenario = {
+	id: string;
+	label: string;
+	labelKey?: string;
+	description?: string;
+	descriptionKey?: string;
+	resources?: Record<string, unknown>;
+	props?: Record<string, unknown>;
+};
+
+export type PhotonInteractionGuardEvaluationResult =
+	| {
+			status: "allowed";
+			reason?: string;
+	  }
+	| {
+			status: "blocked";
+			reason?: string;
+			action?: PhotonInteractionActionPresentation;
+	  };
+
+export type PhotonInteractionGuardMissingEvaluatorPolicy = "block" | "allow";
+
+export type PhotonInteractionExecutionStatus =
+	| "executed"
+	| "blocked"
+	| "missing-action"
+	| "missing-evaluator"
+	| "missing-renderer"
+	| "fallback";
+
+export type PhotonInteractionExecutionResult = {
+	status: PhotonInteractionExecutionStatus;
+	executed: boolean;
+	reason?: string;
+	action?: PhotonInteractionActionPresentation | null;
+	guard?: PhotonInteractionGuardInstance;
+	fallbackHref?: string;
+};
+
+export type PhotonInteractionGuardEvaluationContext = {
+	guard: PhotonInteractionGuardInstance;
+	definition?: PhotonInteractionGuardDefinition;
+	slot?: PhotonInteractionTriggerSlot;
+	action?: PhotonInteractionActionPresentation | null;
+	document: PhotonDocument;
+	resources: PhotonResources;
+	pageSettings: PhotonPageSettings;
+	site: PhotonSite;
+	mode: PhotonMode;
+	isAdmin: boolean;
+	scenarioId?: string | null;
+};
+
+export type PhotonInteractionGuardEvaluator = (
+	context: PhotonInteractionGuardEvaluationContext,
+) => PhotonInteractionGuardEvaluationResult | boolean | null | undefined;
+
+export type PhotonInteractionGuardEvaluatorMap = Record<
+	string,
+	PhotonInteractionGuardEvaluator
+>;
+
+export type PhotonInteractionActionExecutionHandlers = {
+	openInteractionSurface: PhotonInteractionSurfaceOpenHandler;
+	showInteractionToast: PhotonInteractionToastHandler;
+	navigate?: PhotonNavigateHandler;
+};
+
+export type PhotonInteractionActionPresentation =
+	| ({
+			type: "surface";
+	  } & PhotonInteractionSurfaceTrigger)
+	| {
+			type: "toast";
+			templateId: string;
+			overrides?: PhotonInteractionToastInput["overrides"];
+	  }
+	| {
+			type: "link";
+			href: string;
+			target?: string;
+			rel?: string;
+	  };
+
+export type PhotonInteractionActionInstance = {
+	id: string;
+	definitionId: string;
+	label: string;
+	labelKey?: string;
+	enabled?: boolean;
+	presentation: PhotonInteractionActionPresentation;
+	props?: Record<string, unknown>;
+};
+
+export type PhotonInteractionActionDefinition = {
+	id: string;
+	label: string;
+	labelKey?: string;
+	description?: string;
+	descriptionKey?: string;
+	order?: number;
+	fields?: PhotonField[];
+	defaultInstances?: PhotonInteractionActionInstance[];
+	previewScenarios?: PhotonInteractionPreviewScenario[];
+};
+
+export type PhotonInteractionGuardInstance = {
+	id: string;
+	definitionId: string;
+	label: string;
+	labelKey?: string;
+	enabled?: boolean;
+	action?: PhotonInteractionActionPresentation;
+	props?: Record<string, unknown>;
+};
+
+export type PhotonInteractionGuardDefinition = {
+	id: string;
+	label: string;
+	labelKey?: string;
+	description?: string;
+	descriptionKey?: string;
+	order?: number;
+	missingEvaluatorPolicy?: PhotonInteractionGuardMissingEvaluatorPolicy;
+	fields?: PhotonField[];
+	defaultInstances?: PhotonInteractionGuardInstance[];
+	previewScenarios?: PhotonInteractionPreviewScenario[];
+};
+
+export type PhotonInteractionTriggerSlot = {
+	id: string;
+	label: string;
+	labelKey?: string;
+	description?: string;
+	descriptionKey?: string;
+	action?: PhotonInteractionActionPresentation;
+	actionInstanceId?: string;
+	guardInstanceIds?: string[];
+	allowedActionDefinitionIds?: string[];
+	allowedGuardDefinitionIds?: string[];
+	previewScenarios?: PhotonInteractionPreviewScenario[];
+};
+
+export type PhotonInteractionTriggerBinding = {
+	slotId: string;
+	actionInstanceId?: string;
+	guardInstanceIds?: string[];
+	overrides?: Record<string, unknown>;
+	enabled?: boolean;
+};
+
+export type PhotonInteractionSettings = {
+	actionInstances?: Record<string, PhotonInteractionActionInstance>;
+	triggerBindings?: Record<string, PhotonInteractionTriggerBinding>;
+	guardInstances?: Record<string, PhotonInteractionGuardInstance>;
+};
+
+export type PhotonResolvedInteractionActionCatalog = {
+	actions: PhotonInteractionActionDefinition[];
+	actionsById: Map<string, PhotonInteractionActionDefinition>;
+	actionInstances: Record<string, PhotonInteractionActionInstance>;
+	guards: PhotonInteractionGuardDefinition[];
+	guardsById: Map<string, PhotonInteractionGuardDefinition>;
+	guardInstances: Record<string, PhotonInteractionGuardInstance>;
+	triggerBindings: Record<string, PhotonInteractionTriggerBinding>;
+};
+
+export type PhotonComponentLibraryItem = {
+	id: string;
+	label: string;
+	labelKey?: string;
+	description?: string;
+	descriptionKey?: string;
+	enabled?: boolean;
+	blocks: PhotonBlock[];
+	createdAt?: string;
+	updatedAt?: string;
+};
+
+export type PhotonComponentLibrarySettings = {
+	items?: Record<string, PhotonComponentLibraryItem>;
+};
+
+export type PhotonComponentLibraryUsage = {
+	itemId: string;
+	referenceBlockId: string;
+	regionKey?: string | null;
+	path: string;
+	source?:
+		| "currentDocument"
+		| "siteFrame"
+		| "workspacePage"
+		| "current"
+		| "workspace";
+	documentId?: string;
+	documentLabel?: string;
+	route?: string;
+};
+
+export type PhotonComponentLibrarySourceSelection = {
+	kind: "component-library-source";
+	itemId: string;
+	sourceBlockId: string;
+};
+
+export type PhotonComponentLibraryEditorSelection =
+	| {
+			kind: "document-block";
+			blockId: string;
+	  }
+	| PhotonComponentLibrarySourceSelection;
+
+export type PhotonComponentLibraryUsageProvider = (input: {
+	site: PhotonSite;
+	document: PhotonDocument;
+	pageSettings: PhotonPageSettings;
+	workspace?: PhotonWorkspaceDescriptor;
+	itemIds?: string[];
+}) => PhotonComponentLibraryUsage[] | Promise<PhotonComponentLibraryUsage[]>;
+
+export type PhotonComponentReferenceProps = {
+	itemId: string;
+	label?: string;
+};
+
+export type PhotonStudioSurfaceMode = "canvas" | "settings" | "interactions";
+
+export type PhotonStudioPaletteTab = "blocks" | "library";
+
+export type PhotonStudioInteractionTab =
+	| "actions"
+	| "guards"
+	| "surfaces"
+	| "toasts";
+
+export type PhotonStudioUrlState = {
+	mode?: PhotonMode;
+	builderSurface?: PhotonStudioSurfaceMode;
+	surface?: string;
+	toast?: string;
+	interactionTab?: PhotonStudioInteractionTab;
+	action?: string;
+	guard?: string;
+	scenario?: string;
+	block?: string;
+	trigger?: string;
+	paletteTab?: PhotonStudioPaletteTab;
+	library?: string;
+};
+
+export type PhotonStudioUrlStatePatch = {
+	[Key in keyof PhotonStudioUrlState]?: PhotonStudioUrlState[Key] | null;
+};
+
 export type PhotonBindingMode = "read" | "write";
 
 export type PhotonFieldBinding = {
@@ -264,6 +659,7 @@ export type PhotonSiteFrameLinkItem = {
 	rel?: string;
 	order?: number;
 	enabled?: boolean;
+	dedupeKey?: string;
 	isVisible?: (context: PhotonSiteFrameExtensionContext) => boolean;
 };
 
@@ -346,6 +742,18 @@ export type PhotonSiteFrameActionComponentProps = {
 	className: string;
 	context: PhotonSiteFrameExtensionContext;
 	requestAuth?: () => void;
+	openInteractionSurface?: PhotonInteractionSurfaceOpenHandler;
+	showInteractionToast?: PhotonInteractionToastHandler;
+	executeInteractionAction?: (
+		action: PhotonInteractionActionPresentation | undefined,
+	) => PhotonInteractionExecutionResult;
+	executeInteractionTriggerSlot?: (
+		slot: PhotonInteractionTriggerSlot,
+		options?: {
+			scenarioId?: string | null;
+			scenario?: PhotonInteractionPreviewScenario | null;
+		},
+	) => PhotonInteractionExecutionResult;
 };
 
 export type PhotonSiteFrameActionItem = PhotonSiteFrameLinkItem & {
@@ -355,6 +763,9 @@ export type PhotonSiteFrameActionItem = PhotonSiteFrameLinkItem & {
 	authenticatedHref?: string;
 	authenticatedTarget?: string;
 	authenticatedRel?: string;
+	interaction?: PhotonInteractionSurfaceTrigger;
+	action?: PhotonInteractionActionPresentation;
+	triggerSlot?: PhotonInteractionTriggerSlot;
 	component?: ComponentType<PhotonSiteFrameActionComponentProps>;
 };
 
@@ -551,6 +962,18 @@ export type PhotonBlockComponent<
 	bivarianceHack: (props: PhotonBlockComponentProps<Props>) => ReactNode;
 }["bivarianceHack"];
 
+export type PhotonBlockInteractionSlotContext = {
+	block: PhotonBlock;
+	document: PhotonDocument;
+	resources: PhotonResources;
+	pageSettings: PhotonPageSettings;
+	site: PhotonSite;
+	mode: PhotonMode;
+	isAdmin: boolean;
+	registry: PhotonRegistry;
+	siteFrameExtensions: PhotonSiteFrameExtension[];
+};
+
 export type PhotonBlockDefinition<
 	Props extends PhotonBlockProps = PhotonBlockProps,
 > = {
@@ -569,6 +992,9 @@ export type PhotonBlockDefinition<
 	areas?: PhotonArea[];
 	fields: PhotonField[];
 	localizationSchema?: PhotonBlockLocalizationSchema;
+	interactionSlots?:
+		| PhotonInteractionTriggerSlot[]
+		| ((context: PhotonBlockInteractionSlotContext) => PhotonInteractionTriggerSlot[]);
 	component: PhotonBlockComponent<Props>;
 };
 
@@ -646,6 +1072,10 @@ export type PhotonInstallableKit = {
 	documents?: PhotonDocumentsMap;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
 	accountTabs?: PhotonAccountTabExtension[];
+	interactionSurfaces?: PhotonInteractionSurfaceDefinition[];
+	interactionActions?: PhotonInteractionActionDefinition[];
+	interactionGuards?: PhotonInteractionGuardDefinition[];
+	interactionGuardEvaluators?: PhotonInteractionGuardEvaluatorMap;
 };
 
 export type PhotonRegistryEntry = PhotonModule | PhotonInstallableKit;
@@ -742,6 +1172,10 @@ export type PhotonRuntime = {
 	documents: PhotonDocumentsMap;
 	siteFrameExtensions: PhotonSiteFrameExtension[];
 	accountTabs: PhotonAccountTabExtension[];
+	interactionSurfaces: PhotonInteractionSurfaceDefinition[];
+	interactionActions: PhotonInteractionActionDefinition[];
+	interactionGuards: PhotonInteractionGuardDefinition[];
+	interactionGuardEvaluators: PhotonInteractionGuardEvaluatorMap;
 };
 
 export type PhotonPageCatalogItem = {

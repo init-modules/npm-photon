@@ -4,11 +4,19 @@ import clsx from "clsx";
 import type { CSSProperties, ReactNode } from "react";
 import { EditableText } from "../components/public/public-editable-text";
 import { EditableTextarea } from "../components/public/public-editable-textarea";
+import {
+	PhotonComponentLibraryStackContext,
+	usePhotonComponentLibraryStack,
+} from "../context/photon-component-library-context";
 import { usePhotonStore } from "../context/photon-public-context";
 import {
 	createPhotonLocalizedDefault,
 	definePhotonBlockDefinition,
 } from "../helpers/document";
+import {
+	PHOTON_COMPONENT_REFERENCE_AREA_ID,
+	resolvePhotonComponentReferenceBlocks,
+} from "../helpers/component-library";
 import { createPhotonKit } from "../helpers/installable";
 import { isPhotonPublicFramelessSiteDesign } from "../helpers/public-site-design";
 import { getPhotonPublicSurfaceModeStyle } from "../helpers/public-surface-layout";
@@ -18,9 +26,15 @@ import type {
 	PhotonField,
 	PhotonInstallableKit,
 	PhotonModule,
+	PhotonBlockComponentProps,
+	PhotonComponentReferenceProps,
 } from "../types";
 import { siteFooterShellDefinition } from "./system/site/site-footer-shell-public-definition";
 import { siteHeaderShellDefinition } from "./system/site/site-header-shell-public-definition";
+import {
+	photonSystemInteractionActions,
+	photonSystemInteractionSurfaces,
+} from "./system/site/site-interaction-surfaces";
 
 type SplitLayoutColumn = {
 	areaId: string;
@@ -241,6 +255,54 @@ const splitLayoutFields: PhotonField[] = [
 	},
 ];
 
+const ComponentReferenceBlock = ({
+	block,
+	renderArea,
+}: PhotonBlockComponentProps<PhotonComponentReferenceProps>) => {
+	const siteSettings = usePhotonStore((state) => state.site.settings);
+	const componentLibraryStack = usePhotonComponentLibraryStack();
+	const blocks = resolvePhotonComponentReferenceBlocks({
+		block,
+		siteSettings,
+		stack: componentLibraryStack,
+	});
+
+	if (!blocks.length) {
+		return null;
+	}
+
+	return (
+		<section data-photon-component-reference={block.props.itemId}>
+			<PhotonComponentLibraryStackContext.Provider
+				value={[...componentLibraryStack, block.props.itemId]}
+			>
+				{renderArea?.({
+					id: PHOTON_COMPONENT_REFERENCE_AREA_ID,
+					label: block.props.label ?? "Reusable component",
+					blocks,
+				}, 0)}
+			</PhotonComponentLibraryStackContext.Provider>
+		</section>
+	);
+};
+
+const componentReferenceFields: PhotonField[] = [
+	{
+		path: "itemId",
+		label: "Library item",
+		kind: "text",
+		group: "data",
+		localization: "shared",
+	},
+	{
+		path: "label",
+		label: "Label",
+		kind: "text",
+		group: "content",
+		localization: "localized",
+	},
+];
+
 export const photonPublicSystemModule: PhotonModule = {
 	module: "photon-system",
 	label: "Photon System",
@@ -295,6 +357,22 @@ export const photonPublicSystemModule: PhotonModule = {
 			fields: splitLayoutFields,
 			component: SplitLayout,
 		}),
+		definePhotonBlockDefinition({
+			type: "component-reference",
+			label: "Reusable Component",
+			labelKey: "photon.system.componentReference.label",
+			description:
+				"Reference to a site-owned reusable component library item.",
+			descriptionKey: "photon.system.componentReference.description",
+			category: "Library",
+			icon: "component",
+			defaults: {
+				itemId: "",
+				label: "",
+			},
+			fields: componentReferenceFields,
+			component: ComponentReferenceBlock,
+		}),
 	],
 };
 
@@ -302,4 +380,6 @@ export const photonPublicSystemKit: PhotonInstallableKit = createPhotonKit({
 	key: "photon-system",
 	label: "Photon System",
 	modules: [photonPublicSystemModule],
+	interactionSurfaces: photonSystemInteractionSurfaces,
+	interactionActions: photonSystemInteractionActions,
 });

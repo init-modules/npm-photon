@@ -18,21 +18,59 @@ import {
 	collectBlockIds,
 	duplicatePhotonBlockInDocument,
 	findPhotonBlock,
+	insertPhotonBlocksInDocument,
 	insertPhotonBlockInDocument,
 	movePhotonBlockInDocument,
 	removePhotonBlockFromDocument,
+	replacePhotonBlockWithBlocksInDocument,
 	updatePhotonBlockInDocument,
 } from "../helpers/tree";
+import {
+	PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY,
+	clonePhotonComponentLibraryBlocksForCopy,
+	collectPhotonComponentLibraryUsages,
+	createPhotonComponentLibraryItemFromBlock,
+	createPhotonComponentLibraryBlockId,
+	createPhotonComponentReferenceBlock,
+	duplicatePhotonComponentLibraryItem,
+	getPhotonComponentLibraryItems,
+	isPhotonComponentReferenceBlock,
+	parsePhotonComponentLibraryBlockId,
+	readPhotonComponentLibrarySettings,
+} from "../helpers/component-library";
+import {
+	executePhotonInteractionActionPresentation,
+	executePhotonInteractionTriggerSlot,
+	photonInteractionExecutionSucceeded,
+	resolvePhotonInteractionActionCatalog,
+} from "../helpers/interactions";
 import {
 	canEditPhotonWorkspace,
 	normalizePhotonWorkspaceCapabilities,
 	normalizePhotonWorkspaceDescriptor,
 } from "../helpers/workspace";
+import {
+	resolvePhotonInteractionSurfaceCatalog,
+	resolvePhotonInteractionSurfaceRequest,
+	resolvePhotonInteractionToastTemplate,
+} from "../helpers/interaction-surfaces";
 import type {
 	PhotonAccountTabExtension,
 	PhotonBlock,
 	PhotonDocument,
 	PhotonFieldBinding,
+	PhotonInteractionActionDefinition,
+	PhotonInteractionActionPresentation,
+	PhotonInteractionExecutionResult,
+	PhotonInteractionGuardDefinition,
+	PhotonInteractionGuardEvaluatorMap,
+	PhotonInteractionPreviewScenario,
+	PhotonInteractionSurfaceDefinition,
+	PhotonInteractionSurfaceOpenHandler,
+	PhotonInteractionSurfaceRendererMap,
+	PhotonInteractionToastHandler,
+	PhotonInteractionToastTemplate,
+	PhotonInteractionTriggerSlot,
 	PhotonLinkComponent,
 	PhotonLinkFactory,
 	PhotonMediaUploadHandler,
@@ -47,6 +85,8 @@ import type {
 	PhotonSelectedField,
 	PhotonSite,
 	PhotonSiteFrameExtension,
+	PhotonComponentLibraryItem,
+	PhotonComponentLibrarySourceSelection,
 	PhotonWorkspaceCapabilities,
 	PhotonWorkspaceDescriptor,
 } from "../types";
@@ -75,10 +115,26 @@ export type PhotonStoreState = {
 	mode: PhotonMode;
 	isAdmin: boolean;
 	selectedBlockId: string | null;
+	selectedComponentLibrarySource: PhotonComponentLibrarySourceSelection | null;
 	selectedField: PhotonSelectedField;
 	uploadMedia?: PhotonMediaUploadHandler;
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
+	requestAuthAction?: PhotonInteractionActionPresentation;
+	requestAuthFallback?: () => void;
+	openInteractionSurface: PhotonInteractionSurfaceOpenHandler;
+	showInteractionToast: PhotonInteractionToastHandler;
+	executeInteractionAction: (
+		action: PhotonInteractionActionPresentation | undefined | null,
+	) => PhotonInteractionExecutionResult;
+	executeInteractionTriggerSlot: (
+		slot: PhotonInteractionTriggerSlot,
+		options?: {
+			scenarioId?: string | null;
+			scenario?: PhotonInteractionPreviewScenario | null;
+		},
+	) => PhotonInteractionExecutionResult;
+	closeInteractionSurface: () => void;
 	navigate?: PhotonNavigateHandler;
 	prefetch?: PhotonPrefetchHandler;
 	linkComponent: PhotonLinkComponent;
@@ -86,6 +142,14 @@ export type PhotonStoreState = {
 	navigation: PhotonNavigationConfig;
 	siteFrameExtensions: PhotonSiteFrameExtension[];
 	accountTabs: PhotonAccountTabExtension[];
+	interactionSurfaces: PhotonInteractionSurfaceDefinition[];
+	interactionActions: PhotonInteractionActionDefinition[];
+	interactionGuards: PhotonInteractionGuardDefinition[];
+	interactionGuardEvaluators: PhotonInteractionGuardEvaluatorMap;
+	interactionSurfaceRenderers: PhotonInteractionSurfaceRendererMap;
+	activeInteractionSurface: ReturnType<
+		typeof resolvePhotonInteractionSurfaceRequest
+	>;
 	contentLocale: string;
 	defaultLocale: string;
 	contentRevision: number;
@@ -110,6 +174,28 @@ export type PhotonStoreState = {
 		activeBlockId: string,
 		targetListId: string,
 		targetIndex: number,
+	) => void;
+	createComponentLibraryItemFromBlock: (blockId: string) => void;
+	insertComponentLibraryReference: (
+		itemId: string,
+		listId?: string,
+		index?: number,
+	) => void;
+	insertComponentLibraryCopy: (
+		itemId: string,
+		listId?: string,
+		index?: number,
+	) => void;
+	detachComponentReference: (blockId: string) => void;
+	selectComponentLibrarySource: (itemId: string) => void;
+	duplicateComponentLibraryItem: (itemId: string) => void;
+	deleteComponentLibraryItem: (
+		itemId: string,
+		options?: { detachUsages?: boolean; force?: boolean },
+	) => boolean;
+	updateComponentLibraryItem: (
+		itemId: string,
+		updater: (item: PhotonComponentLibraryItem) => PhotonComponentLibraryItem,
 	) => void;
 	replaceState: (
 		nextDocument: PhotonDocument,
@@ -150,6 +236,13 @@ export type PhotonStoreInit = {
 	uploadMedia?: PhotonMediaUploadHandler;
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
+	requestAuthAction?: PhotonInteractionActionPresentation;
+	interactionSurfaces?: PhotonInteractionSurfaceDefinition[];
+	interactionActions?: PhotonInteractionActionDefinition[];
+	interactionGuards?: PhotonInteractionGuardDefinition[];
+	interactionGuardEvaluators?: PhotonInteractionGuardEvaluatorMap;
+	interactionSurfaceRenderers?: PhotonInteractionSurfaceRendererMap;
+	dispatchInteractionToast?: (template: PhotonInteractionToastTemplate) => void;
 	navigate?: PhotonNavigateHandler;
 	prefetch?: PhotonPrefetchHandler;
 	linkComponent: PhotonLinkComponent;
@@ -208,19 +301,78 @@ const arePhotonValuesEqual = (left: unknown, right: unknown) => {
 	}
 };
 
+const followInteractionSurfaceFallback = (
+	fallbackHref: string | undefined,
+	navigate: PhotonNavigateHandler | undefined,
+) => {
+	if (!fallbackHref) {
+		return;
+	}
+
+	if (navigate) {
+		void navigate(fallbackHref);
+	} else if (typeof window !== "undefined") {
+		window.location.assign(fallbackHref);
+	}
+};
+
 export const getPhotonSelectedBlock = (
 	state: PhotonStoreState,
 ): PhotonBlock | null =>
 	state.selectedBlockId
-		? findPhotonBlock(state.document.blocks, state.selectedBlockId)
+		? findPhotonBlock(state.document.blocks, state.selectedBlockId) ??
+			getPhotonComponentLibrarySourceBlock(state, state.selectedBlockId)?.block ??
+			null
 		: null;
+
+const getPhotonComponentLibrarySourceBlock = (
+	state: PhotonStoreState,
+	blockId: string,
+): { item: PhotonComponentLibraryItem; block: PhotonBlock } | null => {
+	const parsed = parsePhotonComponentLibraryBlockId(blockId);
+
+	if (!parsed) {
+		return null;
+	}
+
+	const item = getPhotonComponentLibraryItems(state.site.settings)[parsed.itemId];
+	const block = item
+		? findPhotonBlock(item.blocks, parsed.sourceBlockId)
+		: null;
+
+	return item && block ? { item, block } : null;
+};
+
+const persistPhotonComponentLibraryItem = (
+	state: PhotonStoreState,
+	item: PhotonComponentLibraryItem,
+) => {
+	const settings = readPhotonComponentLibrarySettings(state.site.settings);
+
+	return {
+		...state.site,
+		settings: setValueAtPath(
+			state.site.settings,
+			`${PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY}.items`,
+			{
+				...(settings.items ?? {}),
+				[item.id]: {
+					...item,
+					updatedAt: new Date().toISOString(),
+				},
+			},
+		),
+	};
+};
 
 export const getPhotonFieldBinding = (
 	state: PhotonStoreState,
 	blockId: string,
 	path: string,
 ): PhotonFieldBinding | null => {
-	const block = findPhotonBlock(state.document.blocks, blockId);
+	const block =
+		findPhotonBlock(state.document.blocks, blockId) ??
+		getPhotonComponentLibrarySourceBlock(state, blockId)?.block;
 
 	if (!block?.bindings) {
 		return null;
@@ -255,7 +407,9 @@ export const getPhotonFieldValue = (
 	blockId: string,
 	path: string,
 ): unknown => {
-	const block = findPhotonBlock(state.document.blocks, blockId);
+	const block =
+		findPhotonBlock(state.document.blocks, blockId) ??
+		getPhotonComponentLibrarySourceBlock(state, blockId)?.block;
 
 	if (!block) {
 		return null;
@@ -323,6 +477,13 @@ export const createPhotonStore = ({
 	uploadMedia,
 	searchSite,
 	requestAuth,
+	requestAuthAction,
+		interactionSurfaces = [],
+		interactionActions = [],
+		interactionGuards = [],
+		interactionGuardEvaluators = {},
+		interactionSurfaceRenderers = {},
+	dispatchInteractionToast,
 	navigate,
 	prefetch,
 	linkComponent,
@@ -362,10 +523,32 @@ export const createPhotonStore = ({
 		selectedBlockId: getFirstPhotonSurfaceEditableBlockId(
 			initialSurfaceDocument,
 		),
+		selectedComponentLibrarySource: null,
 		selectedField: null,
 		uploadMedia,
 		searchSite,
-		requestAuth,
+		requestAuthAction,
+		requestAuthFallback: requestAuth,
+		requestAuth: () => {
+			const state = get();
+			const executedAction = state.executeInteractionAction(
+				state.requestAuthAction,
+			);
+
+			if (photonInteractionExecutionSucceeded(executedAction)) {
+				return;
+			}
+
+			if (state.requestAuthFallback) {
+				state.requestAuthFallback();
+			}
+		},
+		activeInteractionSurface: null,
+		interactionSurfaces,
+		interactionActions,
+		interactionGuards,
+		interactionGuardEvaluators,
+			interactionSurfaceRenderers,
 		navigate,
 		prefetch,
 		linkComponent,
@@ -382,15 +565,120 @@ export const createPhotonStore = ({
 				mode: normalizePhotonMode(nextMode, state.isAdmin),
 			}));
 		},
+			showInteractionToast: (input) => {
+				const state = get();
+			const catalog = resolvePhotonInteractionSurfaceCatalog({
+				definitions: state.interactionSurfaces,
+				siteSettings: state.site.settings,
+			});
+			const template = resolvePhotonInteractionToastTemplate(input, catalog);
+
+			if (!template) {
+				return false;
+			}
+
+				dispatchInteractionToast?.(template);
+				return true;
+			},
+			executeInteractionAction: (action) => {
+				const state = get();
+
+				return executePhotonInteractionActionPresentation(action, {
+					openInteractionSurface: state.openInteractionSurface,
+					showInteractionToast: state.showInteractionToast,
+					navigate: state.navigate,
+				});
+			},
+			executeInteractionTriggerSlot: (slot, options) => {
+				const state = get();
+				const catalog = resolvePhotonInteractionActionCatalog({
+					actions: state.interactionActions,
+					guards: state.interactionGuards,
+					surfaces: state.interactionSurfaces,
+					siteSettings: state.site.settings,
+				});
+				const scenarioResources = options?.scenario?.resources;
+				const resources = scenarioResources
+					? {
+							...state.resources,
+							...clonePhotonValue(scenarioResources),
+						}
+					: state.resources;
+
+				return executePhotonInteractionTriggerSlot({
+					slot,
+					catalog,
+					evaluators: state.interactionGuardEvaluators,
+					context: {
+						document: state.document,
+						resources,
+						pageSettings: state.pageSettings,
+						site: state.site,
+						mode: state.mode,
+						isAdmin: state.isAdmin,
+						scenarioId: options?.scenario?.id ?? options?.scenarioId,
+					},
+					handlers: {
+						openInteractionSurface: state.openInteractionSurface,
+						showInteractionToast: state.showInteractionToast,
+						navigate: state.navigate,
+					},
+				});
+			},
+			openInteractionSurface: (trigger) => {
+			const state = get();
+			const catalog = resolvePhotonInteractionSurfaceCatalog({
+				definitions: state.interactionSurfaces,
+				siteSettings: state.site.settings,
+			});
+				const request = resolvePhotonInteractionSurfaceRequest(trigger, catalog);
+
+				if (!request) {
+					return false;
+				}
+
+			if (request.definition.kind === "toast") {
+				return state.showInteractionToast({
+					templateId: request.instance.id,
+					overrides: {
+						title:
+							typeof request.props.title === "string"
+								? request.props.title
+								: undefined,
+						description:
+							typeof request.props.description === "string"
+								? request.props.description
+								: undefined,
+						status:
+							typeof request.props.status === "string"
+								? (request.props.status as never)
+								: undefined,
+						props: request.props,
+					},
+					});
+				}
+
+				if (!state.interactionSurfaceRenderers[request.definition.rendererKey]) {
+					return false;
+				}
+
+				set({ activeInteractionSurface: request });
+				return true;
+			},
+		closeInteractionSurface: () => {
+			set({ activeInteractionSurface: null });
+		},
 		selectBlock: (blockId) => {
 			set((state) => ({
 				selectedBlockId: blockId,
+				selectedComponentLibrarySource: null,
 				selectedField: blockId ? state.selectedField : null,
 			}));
 		},
 		selectField: (blockId, path) => {
 			set({
 				selectedBlockId: blockId,
+				selectedComponentLibrarySource: null,
 				selectedField: { blockId, path },
 			});
 		},
@@ -402,6 +690,7 @@ export const createPhotonStore = ({
 		selectPageSettingField: (path) => {
 			set({
 				selectedBlockId: null,
+				selectedComponentLibrarySource: null,
 				selectedField: {
 					blockId: PAGE_SETTINGS_FIELD_SCOPE,
 					path,
@@ -411,6 +700,7 @@ export const createPhotonStore = ({
 		selectSiteSettingField: (path) => {
 			set({
 				selectedBlockId: null,
+				selectedComponentLibrarySource: null,
 				selectedField: {
 					blockId: SITE_SETTINGS_FIELD_SCOPE,
 					path,
@@ -445,6 +735,50 @@ export const createPhotonStore = ({
 					},
 					contentRevision: bumpContentRevision(currentState),
 				}));
+
+				return;
+			}
+
+			const componentSource = getPhotonComponentLibrarySourceBlock(
+				state,
+				blockId,
+			);
+
+			if (componentSource) {
+				set((currentState) => {
+					const currentSource = getPhotonComponentLibrarySourceBlock(
+						currentState,
+						blockId,
+					);
+
+					if (!currentSource) {
+						return currentState;
+					}
+
+					const nextBlocks = updatePhotonBlockInDocument(
+						{
+							id: currentSource.item.id,
+							name: currentSource.item.label,
+							route: `/_component/${currentSource.item.id}`,
+							updatedAt:
+								currentSource.item.updatedAt ?? new Date().toISOString(),
+							blocks: currentSource.item.blocks,
+						},
+						currentSource.block.id,
+						(block) => ({
+							...block,
+							props: setValueAtPath(block.props, path, value),
+						}),
+					).blocks;
+
+					return {
+						site: persistPhotonComponentLibraryItem(currentState, {
+							...currentSource.item,
+							blocks: nextBlocks,
+						}),
+						contentRevision: bumpContentRevision(currentState),
+					};
+				});
 
 				return;
 			}
@@ -530,6 +864,7 @@ export const createPhotonStore = ({
 					updatedAt: new Date().toISOString(),
 				},
 				selectedBlockId: nextBlock.id,
+				selectedComponentLibrarySource: null,
 				selectedField: null,
 				contentRevision: bumpContentRevision(currentState),
 			}));
@@ -555,6 +890,7 @@ export const createPhotonStore = ({
 						updatedAt: new Date().toISOString(),
 					},
 					selectedBlockId: duplication.duplicatedBlockId,
+					selectedComponentLibrarySource: null,
 					selectedField: null,
 					contentRevision: bumpContentRevision(state),
 				};
@@ -583,6 +919,7 @@ export const createPhotonStore = ({
 					},
 					selectedBlockId:
 						state.selectedBlockId === blockId ? null : state.selectedBlockId,
+					selectedComponentLibrarySource: null,
 					selectedField:
 						state.selectedBlockId === blockId ? null : state.selectedField,
 					collapsedBlockIds: nextCollapsedBlockIds,
@@ -615,6 +952,300 @@ export const createPhotonStore = ({
 					contentRevision: bumpContentRevision(state),
 				};
 			});
+		},
+		createComponentLibraryItemFromBlock: (blockId) => {
+			const state = get();
+
+			if (!canMutatePhotonState(state)) {
+				return;
+			}
+
+			const block = findPhotonBlock(state.document.blocks, blockId);
+
+			if (!block) {
+				return;
+			}
+
+			const definition = state.registry.getDefinition(block.module, block.type);
+			const item = createPhotonComponentLibraryItemFromBlock(
+				block,
+				definition?.label ?? block.type,
+			);
+
+			set((currentState) => ({
+				site: persistPhotonComponentLibraryItem(currentState, item),
+				contentRevision: bumpContentRevision(currentState),
+			}));
+		},
+		insertComponentLibraryReference: (itemId, listId, index) => {
+			const state = get();
+
+			if (!canMutatePhotonState(state)) {
+				return;
+			}
+
+			const item = getPhotonComponentLibraryItems(state.site.settings)[itemId];
+
+			if (!item || item.enabled === false) {
+				return;
+			}
+
+			const nextBlock = createPhotonComponentReferenceBlock(item);
+
+			set((currentState) => ({
+				document: {
+					...insertPhotonBlockInDocument(
+						currentState.document,
+						listId ??
+							getPhotonSurfaceRegionListId(PHOTON_PAGE_SURFACE_REGION_KEY),
+						nextBlock,
+						index ?? Number.MAX_SAFE_INTEGER,
+					),
+					updatedAt: new Date().toISOString(),
+				},
+				selectedBlockId: nextBlock.id,
+				selectedComponentLibrarySource: null,
+				selectedField: null,
+				contentRevision: bumpContentRevision(currentState),
+			}));
+		},
+		insertComponentLibraryCopy: (itemId, listId, index) => {
+			const state = get();
+
+			if (!canMutatePhotonState(state)) {
+				return;
+			}
+
+			const item = getPhotonComponentLibraryItems(state.site.settings)[itemId];
+
+			if (!item || item.enabled === false) {
+				return;
+			}
+
+			const blocks = clonePhotonComponentLibraryBlocksForCopy(item);
+
+			set((currentState) => ({
+				document: {
+					...insertPhotonBlocksInDocument(
+						currentState.document,
+						listId ??
+							getPhotonSurfaceRegionListId(PHOTON_PAGE_SURFACE_REGION_KEY),
+						blocks,
+						index ?? Number.MAX_SAFE_INTEGER,
+					),
+					updatedAt: new Date().toISOString(),
+				},
+				selectedBlockId: blocks[0]?.id ?? currentState.selectedBlockId,
+				selectedComponentLibrarySource: null,
+				selectedField: null,
+				contentRevision: bumpContentRevision(currentState),
+			}));
+		},
+		detachComponentReference: (blockId) => {
+			const state = get();
+
+			if (!canMutatePhotonState(state)) {
+				return;
+			}
+
+			const block = findPhotonBlock(state.document.blocks, blockId);
+
+			if (!block || !isPhotonComponentReferenceBlock(block)) {
+				return;
+			}
+
+			const item = getPhotonComponentLibraryItems(state.site.settings)[
+				block.props.itemId
+			];
+
+			if (!item) {
+				return;
+			}
+
+			const replacementBlocks = clonePhotonComponentLibraryBlocksForCopy(item);
+
+			set((currentState) => ({
+				document: {
+					...replacePhotonBlockWithBlocksInDocument(
+						currentState.document,
+						blockId,
+						replacementBlocks,
+					),
+					updatedAt: new Date().toISOString(),
+				},
+				selectedBlockId: replacementBlocks[0]?.id ?? null,
+				selectedComponentLibrarySource: null,
+				selectedField: null,
+				contentRevision: bumpContentRevision(currentState),
+			}));
+		},
+		selectComponentLibrarySource: (itemId) => {
+			const state = get();
+			const item = getPhotonComponentLibraryItems(state.site.settings)[itemId];
+			const firstBlock = item?.blocks[0];
+
+			if (!item || !firstBlock) {
+				return;
+			}
+
+			set({
+				selectedBlockId: createPhotonComponentLibraryBlockId({
+					itemId: item.id,
+					referenceBlockId: "__source",
+					sourceBlockId: firstBlock.id,
+				}),
+				selectedComponentLibrarySource: {
+					kind: "component-library-source",
+					itemId: item.id,
+					sourceBlockId: firstBlock.id,
+				},
+				selectedField: null,
+			});
+		},
+		duplicateComponentLibraryItem: (itemId) => {
+			const state = get();
+
+			if (!canMutatePhotonState(state)) {
+				return;
+			}
+
+			const item = getPhotonComponentLibraryItems(state.site.settings)[itemId];
+
+			if (!item) {
+				return;
+			}
+
+			const duplicate = duplicatePhotonComponentLibraryItem(item);
+
+			set((currentState) => ({
+				site: persistPhotonComponentLibraryItem(currentState, duplicate),
+				selectedBlockId: createPhotonComponentLibraryBlockId({
+					itemId: duplicate.id,
+					referenceBlockId: "__source",
+					sourceBlockId: duplicate.blocks[0]?.id ?? "",
+				}),
+				selectedComponentLibrarySource: duplicate.blocks[0]
+					? {
+							kind: "component-library-source",
+							itemId: duplicate.id,
+							sourceBlockId: duplicate.blocks[0].id,
+						}
+					: null,
+				selectedField: null,
+				contentRevision: bumpContentRevision(currentState),
+			}));
+		},
+		deleteComponentLibraryItem: (itemId, options) => {
+			const state = get();
+
+			if (!canMutatePhotonState(state)) {
+				return false;
+			}
+
+			const settings = readPhotonComponentLibrarySettings(state.site.settings);
+			const items = settings.items ?? {};
+
+			const item = items[itemId];
+
+			if (!item) {
+				return false;
+			}
+
+			const usages = collectPhotonComponentLibraryUsages(state.document).filter(
+				(usage) => usage.itemId === itemId,
+			);
+
+			if (usages.length > 0 && !options?.detachUsages) {
+				return false;
+			}
+
+			const nextItems = { ...items };
+			delete nextItems[itemId];
+
+			set((currentState) => {
+				const currentUsages = collectPhotonComponentLibraryUsages(
+					currentState.document,
+				).filter((usage) => usage.itemId === itemId);
+				let nextDocument = currentState.document;
+				let selectedBlockId = currentState.selectedBlockId;
+				const selectedSource =
+					currentState.selectedBlockId &&
+					parsePhotonComponentLibraryBlockId(currentState.selectedBlockId)
+						?.itemId === itemId;
+				const selectedUsage = currentUsages.some(
+					(usage) => usage.referenceBlockId === currentState.selectedBlockId,
+				);
+
+				if (options?.detachUsages) {
+					for (const usage of currentUsages) {
+						const replacementBlocks =
+							clonePhotonComponentLibraryBlocksForCopy(item);
+
+						nextDocument = replacePhotonBlockWithBlocksInDocument(
+							nextDocument,
+							usage.referenceBlockId,
+							replacementBlocks,
+						);
+
+						if (selectedBlockId === usage.referenceBlockId) {
+							selectedBlockId = replacementBlocks[0]?.id ?? null;
+						}
+					}
+				}
+
+				return {
+					document:
+						options?.detachUsages && currentUsages.length > 0
+							? {
+									...nextDocument,
+									updatedAt: new Date().toISOString(),
+								}
+							: currentState.document,
+					site: {
+						...currentState.site,
+						settings: setValueAtPath(
+							currentState.site.settings,
+							`${PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY}.items`,
+							nextItems,
+						),
+					},
+					selectedBlockId: selectedSource
+						? null
+						: selectedUsage
+							? selectedBlockId
+							: currentState.selectedBlockId,
+					selectedComponentLibrarySource:
+						currentState.selectedComponentLibrarySource?.itemId === itemId
+							? null
+							: currentState.selectedComponentLibrarySource,
+					selectedField:
+						selectedSource || selectedUsage ? null : currentState.selectedField,
+					contentRevision: bumpContentRevision(currentState),
+				};
+			});
+
+			return true;
+		},
+		updateComponentLibraryItem: (itemId, updater) => {
+			const state = get();
+
+			if (!canMutatePhotonState(state)) {
+				return;
+			}
+
+			const item = getPhotonComponentLibraryItems(state.site.settings)[itemId];
+
+			if (!item) {
+				return;
+			}
+
+			set((currentState) => ({
+				site: persistPhotonComponentLibraryItem(
+					currentState,
+					updater(item),
+				),
+				contentRevision: bumpContentRevision(currentState),
+			}));
 		},
 		replaceState: (
 			nextDocument,
@@ -649,6 +1280,7 @@ export const createPhotonStore = ({
 					workspace: clonePhotonValue(nextWorkspace),
 					capabilities: clonePhotonValue(nextCapabilities),
 					selectedBlockId: nextSelectedBlockId,
+					selectedComponentLibrarySource: null,
 					selectedField: (() => {
 						if (!state.selectedField) {
 							return null;
@@ -706,6 +1338,7 @@ export const createPhotonStore = ({
 				initialCapabilities: clonePhotonValue(normalizedCapabilities),
 				selectedBlockId:
 					getFirstPhotonSurfaceEditableBlockId(nextSurfaceDocument),
+				selectedComponentLibrarySource: null,
 				selectedField: null,
 				collapsedBlockIds: {},
 				mode: normalizePhotonMode(state.mode, state.isAdmin),
@@ -729,6 +1362,7 @@ export const createPhotonStore = ({
 					selectedBlockId: getFirstPhotonSurfaceEditableBlockId(
 						initialResetSurfaceDocument,
 					),
+					selectedComponentLibrarySource: null,
 					selectedField: null,
 					contentRevision: bumpContentRevision(state),
 				};

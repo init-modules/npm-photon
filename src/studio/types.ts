@@ -5,6 +5,13 @@ import type {
 	PhotonDocument,
 	PhotonField,
 	PhotonI18nValue,
+	PhotonInteractionActionDefinition,
+	PhotonInteractionActionPresentation,
+	PhotonInteractionGuardDefinition,
+	PhotonInteractionGuardEvaluatorMap,
+	PhotonInteractionSurfaceDefinition,
+	PhotonInteractionSurfaceRendererMap,
+	PhotonComponentLibraryUsageProvider,
 	PhotonLinkComponent,
 	PhotonLinkFactory,
 	PhotonMediaUploadHandler,
@@ -70,6 +77,7 @@ export type PhotonStudioProps = {
 	currentPage?: PhotonPageCatalogItem | null;
 	pages?: PhotonPageCatalogItem[];
 	onRequestAuth?: () => void;
+	requestAuthAction?: PhotonInteractionActionPresentation;
 	onLogout?: () => void | Promise<void>;
 	onContentLocaleChange?: (locale: string) => void | Promise<void>;
 	onInterfaceLocaleChange?: (locale: string) => void | Promise<void>;
@@ -115,6 +123,12 @@ export type PhotonStudioProps = {
 	linkFactory?: PhotonLinkFactory;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
 	accountTabs?: PhotonAccountTabExtension[];
+	interactionSurfaces?: PhotonInteractionSurfaceDefinition[];
+	interactionActions?: PhotonInteractionActionDefinition[];
+	interactionGuards?: PhotonInteractionGuardDefinition[];
+	interactionGuardEvaluators?: PhotonInteractionGuardEvaluatorMap;
+	interactionSurfaceRenderers?: PhotonInteractionSurfaceRendererMap;
+	componentLibraryUsageProvider?: PhotonComponentLibraryUsageProvider;
 	i18n?: PhotonI18nValue | null;
 	hydrateModePreference?: boolean;
 	showInterfaceLocaleControl?: boolean;

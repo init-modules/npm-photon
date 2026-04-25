@@ -22,6 +22,7 @@ export const PhotonStudio = ({
 	currentPage,
 	pages,
 	onRequestAuth,
+	requestAuthAction,
 	onLogout,
 	onContentLocaleChange,
 	onInterfaceLocaleChange,
@@ -39,6 +40,12 @@ export const PhotonStudio = ({
 	linkFactory,
 	siteFrameExtensions,
 	accountTabs,
+		interactionSurfaces,
+		interactionActions,
+		interactionGuards,
+		interactionGuardEvaluators,
+		interactionSurfaceRenderers,
+		componentLibraryUsageProvider,
 	i18n,
 	hydrateModePreference = true,
 	showInterfaceLocaleControl = true,
@@ -62,12 +69,18 @@ export const PhotonStudio = ({
 			uploadMedia={onUploadMedia}
 			searchSite={onSearch}
 			requestAuth={onRequestAuth}
+			requestAuthAction={requestAuthAction}
 			navigate={navigate}
 			prefetch={prefetch}
 			linkComponent={linkComponent}
 			linkFactory={linkFactory}
 			siteFrameExtensions={siteFrameExtensions}
 			accountTabs={accountTabs}
+				interactionSurfaces={interactionSurfaces}
+				interactionActions={interactionActions}
+				interactionGuards={interactionGuards}
+				interactionGuardEvaluators={interactionGuardEvaluators}
+				interactionSurfaceRenderers={interactionSurfaceRenderers}
 			i18n={i18n}
 		>
 			<PhotonStudioInner
@@ -104,9 +117,10 @@ export const PhotonStudio = ({
 					description ??
 					"Package-level studio shell with inline content editing, builder chrome and installable kit support."
 				}
-				renderContentNotice={renderContentNotice}
-				siteSettingsSubtabs={siteSettingsSubtabs}
-			/>
+					renderContentNotice={renderContentNotice}
+					siteSettingsSubtabs={siteSettingsSubtabs}
+					componentLibraryUsageProvider={componentLibraryUsageProvider}
+				/>
 		</PhotonProvider>
 	);
 };

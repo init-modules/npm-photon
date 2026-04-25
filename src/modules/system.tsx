@@ -4,11 +4,19 @@ import clsx from "clsx";
 import type { CSSProperties, ReactNode } from "react";
 import { EditableText } from "../components/editable/editable-text";
 import { EditableTextarea } from "../components/editable/editable-textarea";
+import {
+	PhotonComponentLibraryStackContext,
+	usePhotonComponentLibraryStack,
+} from "../context/photon-component-library-context";
 import { usePhotonStore } from "../context/photon-context";
 import {
 	createPhotonLocalizedDefault,
 	definePhotonBlockDefinition,
 } from "../helpers/document";
+import {
+	PHOTON_COMPONENT_REFERENCE_AREA_ID,
+	resolvePhotonComponentReferenceBlocks,
+} from "../helpers/component-library";
 import { createPhotonKit } from "../helpers/installable";
 import { isPhotonFramelessSiteDesign } from "../helpers/site-design";
 import { getPhotonSurfaceModeStyle } from "../helpers/surface-layout";
@@ -18,6 +26,8 @@ import type {
 	PhotonField,
 	PhotonInstallableKit,
 	PhotonModule,
+	PhotonComponentReferenceProps,
+	PhotonBlockComponentProps,
 } from "../types";
 
 export * from "./system/site/site-color-schemes";
@@ -26,6 +36,10 @@ export * from "./system/site/site-design-presets";
 import { siteDesignSettingsPanel } from "./system/site/site-design-settings-panel";
 import { siteFooterShellDefinition } from "./system/site/site-footer-shell-definition";
 import { siteHeaderShellDefinition } from "./system/site/site-header-shell-definition";
+import {
+	photonSystemInteractionActions,
+	photonSystemInteractionSurfaces,
+} from "./system/site/site-interaction-surfaces";
 
 type SplitLayoutColumn = {
 	areaId: string;
@@ -304,6 +318,58 @@ const splitLayoutFields: PhotonField[] = [
 	},
 ];
 
+const ComponentReferenceBlock = ({
+	block,
+	renderArea,
+}: PhotonBlockComponentProps<PhotonComponentReferenceProps>) => {
+	const siteSettings = usePhotonStore((state) => state.site.settings);
+	const componentLibraryStack = usePhotonComponentLibraryStack();
+	const blocks = resolvePhotonComponentReferenceBlocks({
+		block,
+		siteSettings,
+		stack: componentLibraryStack,
+	});
+
+	if (!blocks.length) {
+		return (
+			<section className="rounded-[28px] border border-dashed border-[var(--photon-site-border)] px-6 py-8 text-sm text-[var(--photon-site-muted)]">
+				Reusable component is unavailable.
+			</section>
+		);
+	}
+
+	return (
+		<section data-photon-component-reference={block.props.itemId}>
+			<PhotonComponentLibraryStackContext.Provider
+				value={[...componentLibraryStack, block.props.itemId]}
+			>
+				{renderArea?.({
+					id: PHOTON_COMPONENT_REFERENCE_AREA_ID,
+					label: block.props.label ?? "Reusable component",
+					blocks,
+				}, 0)}
+			</PhotonComponentLibraryStackContext.Provider>
+		</section>
+	);
+};
+
+const componentReferenceFields: PhotonField[] = [
+	{
+		path: "itemId",
+		label: "Library item",
+		kind: "text",
+		group: "data",
+		localization: "shared",
+	},
+	{
+		path: "label",
+		label: "Label",
+		kind: "text",
+		group: "content",
+		localization: "localized",
+	},
+];
+
 export const photonSystemModule: PhotonModule = {
 	module: "photon-system",
 	label: "Photon System",
@@ -366,6 +432,22 @@ export const photonSystemModule: PhotonModule = {
 			fields: splitLayoutFields,
 			component: SplitLayout,
 		}),
+		definePhotonBlockDefinition({
+			type: "component-reference",
+			label: "Reusable Component",
+			labelKey: "photon.system.componentReference.label",
+			description:
+				"Reference to a site-owned reusable component library item.",
+			descriptionKey: "photon.system.componentReference.description",
+			category: "Library",
+			icon: "component",
+			defaults: {
+				itemId: "",
+				label: "",
+			},
+			fields: componentReferenceFields,
+			component: ComponentReferenceBlock,
+		}),
 	],
 	siteSettingsPanels: [siteDesignSettingsPanel],
 };
@@ -374,5 +456,7 @@ export const photonSystemKit: PhotonInstallableKit =
 	createPhotonKit({
 		key: "photon-system",
 		label: "Photon System",
-		modules: [photonSystemModule],
-	});
+	modules: [photonSystemModule],
+	interactionSurfaces: photonSystemInteractionSurfaces,
+	interactionActions: photonSystemInteractionActions,
+});

@@ -1,7 +1,4 @@
-import type {
-	PhotonResources,
-	PhotonSiteFrameActionItem,
-} from "../../../types";
+import type { PhotonSiteFrameActionItem } from "../../../types";
 
 export type SiteHeaderLinkItem = {
 	id?: string;
@@ -9,6 +6,7 @@ export type SiteHeaderLinkItem = {
 	href?: string;
 	target?: string;
 	rel?: string;
+	dedupeKey?: string;
 };
 
 export const normalizeHeaderHref = (href: unknown) =>
@@ -27,19 +25,13 @@ export const getHeaderLinkPathname = (href: unknown) => {
 export const getHeaderLinkDedupeKey = (href: unknown) =>
 	`route:${getHeaderLinkPathname(href).toLowerCase()}`;
 
-export const isProtectedAccountHref = (href: unknown) => {
-	const pathname = getHeaderLinkPathname(href);
-
-	return pathname === "/account" || pathname.startsWith("/account/");
-};
-
-export const hasAuthenticatedUser = (resources: PhotonResources) => {
-	const auth = resources.auth as
-		| { user?: null | Record<string, unknown> }
-		| undefined;
-
-	return Boolean(auth?.user);
-};
+export const getHeaderItemDedupeKey = (item: {
+	href?: unknown;
+	dedupeKey?: string;
+}) =>
+	item.dedupeKey
+		? `semantic:${item.dedupeKey}`
+		: getHeaderLinkDedupeKey(item.href);
 
 export const collectUniqueHeaderLinks = <TLink extends SiteHeaderLinkItem>(
 	links: TLink[],
@@ -48,7 +40,7 @@ export const collectUniqueHeaderLinks = <TLink extends SiteHeaderLinkItem>(
 	const seenKeys = new Set<string>();
 
 	return links.filter((link) => {
-		const key = getHeaderLinkDedupeKey(link.href);
+		const key = getHeaderItemDedupeKey(link);
 
 		if (key === "route:" || hiddenKeys.has(key) || seenKeys.has(key)) {
 			return false;
@@ -62,11 +54,7 @@ export const collectUniqueHeaderLinks = <TLink extends SiteHeaderLinkItem>(
 
 export const getHeaderActionVisibleHref = (
 	action: PhotonSiteFrameActionItem,
-	authenticatedUser: boolean,
-) =>
-	authenticatedUser && (action.kind ?? "link") === "auth"
-		? (action.authenticatedHref ?? action.href)
-		: action.href;
+) => action.href;
 
 export const collectHeaderActionLinkKeys = (
 	actions: PhotonSiteFrameActionItem[],
@@ -74,7 +62,7 @@ export const collectHeaderActionLinkKeys = (
 	const keys = new Set<string>();
 
 	for (const action of actions) {
-		keys.add(getHeaderLinkDedupeKey(action.href));
+		keys.add(getHeaderItemDedupeKey(action));
 
 		if (action.authenticatedHref) {
 			keys.add(getHeaderLinkDedupeKey(action.authenticatedHref));

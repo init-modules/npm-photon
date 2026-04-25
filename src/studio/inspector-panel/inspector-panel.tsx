@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { memo, useEffect, useMemo, useState } from "react";
 import { usePhotonStore } from "../../context/photon-context";
-import { findPhotonBlock } from "../../helpers/tree";
+import { getPhotonSelectedBlock } from "../../context/photon-store";
 import { usePhotonI18n } from "../../i18n/photon-i18n-context";
 import {
 	translatePhotonFieldGroup,
@@ -87,9 +87,7 @@ const InspectorPanelComponent = ({
 	const document = usePhotonStore((state) => state.document);
 	const { contentLocale, editableLocales, translate } = usePhotonI18n();
 	const selectedBlock = usePhotonStore((state) =>
-		state.selectedBlockId
-			? findPhotonBlock(state.document.blocks, state.selectedBlockId)
-			: null,
+		getPhotonSelectedBlock(state),
 	);
 	const getFieldValue = usePhotonStore((state) => state.getFieldValue);
 	const updateFieldValue = usePhotonStore(

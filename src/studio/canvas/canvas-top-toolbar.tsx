@@ -4,16 +4,17 @@ import clsx from "clsx";
 import { ChevronDown, ChevronUp, History } from "lucide-react";
 import type { ReactNode } from "react";
 import { usePhotonI18n } from "../../i18n/photon-i18n-context";
+import type { PhotonStudioSurfaceMode } from "../../types";
 import { CanvasSurfaceModeToggle } from "./canvas-surface-mode-toggle";
 
 type CanvasTopToolbarProps = {
 	visible: boolean;
-	surfaceMode: "canvas" | "settings";
+	surfaceMode: PhotonStudioSurfaceMode;
 	canReset: boolean;
 	topOffset: number;
 	leftOffset: number;
 	rightOffset: number;
-	onSurfaceModeChange: (value: "canvas" | "settings") => void;
+	onSurfaceModeChange: (value: PhotonStudioSurfaceMode) => void;
 	onReset: () => void;
 	onCollapseAll: () => void;
 	onExpandAll: () => void;

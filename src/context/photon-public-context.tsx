@@ -4,9 +4,12 @@ import {
 	createContext,
 	createElement,
 	type ReactNode,
+	useCallback,
 	useContext,
 	useMemo,
+	useState,
 } from "react";
+import { toast } from "sonner";
 import {
 	getPhotonAnchorRel,
 	sanitizePhotonLinkHref,
@@ -18,13 +21,40 @@ import {
 	normalizePhotonWorkspaceCapabilities,
 	normalizePhotonWorkspaceDescriptor,
 } from "../helpers/workspace";
+import {
+	resolvePhotonInteractionSurfaceCatalog,
+	resolvePhotonInteractionSurfaceRequest,
+	resolvePhotonInteractionToastTemplate,
+} from "../helpers/interaction-surfaces";
+import {
+	executePhotonInteractionActionPresentation,
+	executePhotonInteractionTriggerSlot,
+	photonInteractionExecutionSucceeded,
+	resolvePhotonInteractionActionCatalog,
+} from "../helpers/interactions";
+import {
+	getPhotonComponentLibraryItems,
+	parsePhotonComponentLibraryBlockId,
+} from "../helpers/component-library";
 import { PhotonI18nProvider } from "../i18n/photon-i18n-context";
+import { PhotonInteractionSurfaceHost } from "../interaction-surfaces/photon-interaction-surface-host";
 import type {
 	PhotonAccountTabExtension,
 	PhotonBlock,
 	PhotonDocument,
 	PhotonAuthPageRenderer,
 	PhotonI18nValue,
+	PhotonInteractionActionDefinition,
+	PhotonInteractionActionPresentation,
+	PhotonInteractionExecutionResult,
+	PhotonInteractionGuardDefinition,
+	PhotonInteractionGuardEvaluatorMap,
+	PhotonInteractionPreviewScenario,
+	PhotonInteractionSurfaceDefinition,
+	PhotonInteractionSurfaceOpenHandler,
+	PhotonInteractionSurfaceRendererMap,
+	PhotonInteractionToastHandler,
+	PhotonInteractionTriggerSlot,
 	PhotonLinkComponent,
 	PhotonLinkComponentProps,
 	PhotonLinkFactory,
@@ -54,6 +84,18 @@ type PhotonPublicContextValue = {
 	isAdmin: boolean;
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
+	openInteractionSurface: PhotonInteractionSurfaceOpenHandler;
+	showInteractionToast: PhotonInteractionToastHandler;
+	executeInteractionAction: (
+		action: PhotonInteractionActionPresentation | undefined | null,
+	) => PhotonInteractionExecutionResult;
+	executeInteractionTriggerSlot: (
+		slot: PhotonInteractionTriggerSlot,
+		options?: {
+			scenarioId?: string | null;
+			scenario?: PhotonInteractionPreviewScenario | null;
+		},
+	) => PhotonInteractionExecutionResult;
 	navigate?: PhotonNavigateHandler;
 	prefetch?: PhotonPrefetchHandler;
 	renderAuthPage?: PhotonAuthPageRenderer;
@@ -62,6 +104,11 @@ type PhotonPublicContextValue = {
 	navigation: PhotonNavigationConfig;
 	siteFrameExtensions: PhotonSiteFrameExtension[];
 	accountTabs: PhotonAccountTabExtension[];
+	interactionSurfaces: PhotonInteractionSurfaceDefinition[];
+	interactionActions: PhotonInteractionActionDefinition[];
+	interactionGuards: PhotonInteractionGuardDefinition[];
+	interactionGuardEvaluators: PhotonInteractionGuardEvaluatorMap;
+	interactionSurfaceRenderers: PhotonInteractionSurfaceRendererMap;
 	contentLocale: string;
 	defaultLocale: string;
 };
@@ -80,6 +127,12 @@ type PhotonPublicProviderProps = {
 	i18n?: PhotonI18nValue | null;
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
+	requestAuthAction?: PhotonInteractionActionPresentation;
+	interactionSurfaces?: PhotonInteractionSurfaceDefinition[];
+	interactionActions?: PhotonInteractionActionDefinition[];
+	interactionGuards?: PhotonInteractionGuardDefinition[];
+	interactionGuardEvaluators?: PhotonInteractionGuardEvaluatorMap;
+	interactionSurfaceRenderers?: PhotonInteractionSurfaceRendererMap;
 	navigate?: PhotonNavigateHandler;
 	prefetch?: PhotonPrefetchHandler;
 	renderAuthPage?: PhotonAuthPageRenderer;
@@ -113,6 +166,21 @@ const DefaultPhotonLinkComponent: PhotonLinkComponent = ({
 const defaultPhotonLinkFactory: PhotonLinkFactory = (href) =>
 	sanitizePhotonLinkHref(href);
 
+const followInteractionSurfaceFallback = (
+	fallbackHref: string | undefined,
+	navigate: PhotonNavigateHandler | undefined,
+) => {
+	if (!fallbackHref) {
+		return;
+	}
+
+	if (navigate) {
+		void navigate(fallbackHref);
+	} else if (typeof window !== "undefined") {
+		window.location.assign(fallbackHref);
+	}
+};
+
 const findPhotonPublicBlock = (
 	blocks: PhotonBlock[],
 	blockId: string,
@@ -132,6 +200,21 @@ const findPhotonPublicBlock = (
 	}
 
 	return null;
+};
+
+const findPhotonPublicComponentSourceBlock = (
+	site: PhotonSite,
+	blockId: string,
+): PhotonBlock | null => {
+	const parsed = parsePhotonComponentLibraryBlockId(blockId);
+
+	if (!parsed) {
+		return null;
+	}
+
+	const item = getPhotonComponentLibraryItems(site.settings)[parsed.itemId];
+
+	return item ? findPhotonPublicBlock(item.blocks, parsed.sourceBlockId) : null;
 };
 
 const getPhotonPublicFieldBinding = (block: PhotonBlock, path: string) => {
@@ -180,6 +263,12 @@ export const PhotonProvider = ({
 	i18n,
 	searchSite,
 	requestAuth,
+	requestAuthAction,
+	interactionSurfaces = [],
+	interactionActions = [],
+	interactionGuards = [],
+	interactionGuardEvaluators = {},
+	interactionSurfaceRenderers = {},
 	navigate,
 	prefetch,
 	renderAuthPage,
@@ -189,6 +278,185 @@ export const PhotonProvider = ({
 	siteFrameExtensions = [],
 	accountTabs = [],
 }: PhotonPublicProviderProps) => {
+	const [activeInteractionSurface, setActiveInteractionSurface] =
+		useState<ReturnType<typeof resolvePhotonInteractionSurfaceRequest>>(null);
+		const interactionSurfaceCatalog = useMemo(
+			() =>
+				resolvePhotonInteractionSurfaceCatalog({
+					definitions: interactionSurfaces,
+					siteSettings: initialSite.settings,
+				}),
+			[initialSite.settings, interactionSurfaces],
+		);
+		const interactionActionCatalog = useMemo(
+			() =>
+				resolvePhotonInteractionActionCatalog({
+					actions: interactionActions,
+					guards: interactionGuards,
+					surfaces: interactionSurfaces,
+					siteSettings: initialSite.settings,
+				}),
+			[
+				initialSite.settings,
+				interactionActions,
+				interactionGuards,
+				interactionSurfaces,
+			],
+		);
+	const showInteractionToast = useCallback<PhotonInteractionToastHandler>(
+		(input) => {
+			const template = resolvePhotonInteractionToastTemplate(
+				input,
+				interactionSurfaceCatalog,
+			);
+
+			if (!template) {
+				return false;
+			}
+
+			const description = template.description;
+
+			switch (template.status ?? "message") {
+				case "success":
+					toast.success(template.title, { description });
+					break;
+				case "error":
+					toast.error(template.title, { description });
+					break;
+				case "info":
+					toast.info(template.title, { description });
+					break;
+				case "warning":
+					toast.warning(template.title, { description });
+					break;
+				default:
+					toast(template.title, { description });
+					break;
+			}
+
+			return true;
+		},
+		[interactionSurfaceCatalog],
+	);
+	const openInteractionSurface =
+		useCallback<PhotonInteractionSurfaceOpenHandler>(
+			(trigger) => {
+				const request = resolvePhotonInteractionSurfaceRequest(
+					trigger,
+					interactionSurfaceCatalog,
+					);
+
+					if (!request) {
+						return false;
+					}
+
+				if (request.definition.kind === "toast") {
+					return showInteractionToast({
+						templateId: request.instance.id,
+						overrides: {
+							title:
+								typeof request.props.title === "string"
+									? request.props.title
+									: undefined,
+							description:
+								typeof request.props.description === "string"
+									? request.props.description
+									: undefined,
+							status:
+								typeof request.props.status === "string"
+									? (request.props.status as never)
+									: undefined,
+							props: request.props,
+						},
+						});
+					}
+
+					if (!interactionSurfaceRenderers[request.definition.rendererKey]) {
+						return false;
+					}
+
+					setActiveInteractionSurface(request);
+					return true;
+				},
+				[
+					interactionSurfaceCatalog,
+					interactionSurfaceRenderers,
+					navigate,
+					showInteractionToast,
+				],
+			);
+		const executeInteractionAction = useCallback(
+			(action: PhotonInteractionActionPresentation | undefined | null) =>
+				executePhotonInteractionActionPresentation(action, {
+					openInteractionSurface,
+					showInteractionToast,
+					navigate,
+				}),
+			[navigate, openInteractionSurface, showInteractionToast],
+		);
+	const executeInteractionTriggerSlot = useCallback(
+		(
+			slot: PhotonInteractionTriggerSlot,
+			options?: {
+				scenarioId?: string | null;
+				scenario?: PhotonInteractionPreviewScenario | null;
+			},
+		) => {
+			const scenarioResources = options?.scenario?.resources;
+			const resources = scenarioResources
+				? {
+						...initialResources,
+						...scenarioResources,
+					}
+				: initialResources;
+
+			return executePhotonInteractionTriggerSlot({
+				slot,
+				catalog: interactionActionCatalog,
+				evaluators: interactionGuardEvaluators,
+				context: {
+					document: initialDocument,
+					resources,
+					pageSettings: initialPageSettings,
+					site: initialSite,
+					mode: isAdmin ? initialMode : "preview",
+					isAdmin,
+					scenarioId: options?.scenario?.id ?? options?.scenarioId,
+				},
+				handlers: {
+					openInteractionSurface,
+					showInteractionToast,
+					navigate,
+				},
+			});
+		},
+			[
+				initialDocument,
+				initialMode,
+				initialPageSettings,
+				initialResources,
+				initialSite,
+				interactionActionCatalog,
+				interactionGuardEvaluators,
+				isAdmin,
+				navigate,
+				openInteractionSurface,
+				showInteractionToast,
+			],
+		);
+		const resolvedRequestAuth = useCallback(() => {
+				const executedAction = executeInteractionAction(requestAuthAction);
+
+			if (photonInteractionExecutionSucceeded(executedAction)) {
+				return;
+			}
+
+			requestAuth?.();
+			}, [
+				executeInteractionAction,
+				requestAuth,
+				requestAuthAction,
+			]);
 	const value = useMemo<PhotonPublicContextValue>(
 		() => ({
 			document: initialDocument,
@@ -201,22 +469,33 @@ export const PhotonProvider = ({
 			mode: isAdmin ? initialMode : "preview",
 			isAdmin,
 			searchSite,
-			requestAuth,
-			navigate,
+				requestAuth: resolvedRequestAuth,
+				openInteractionSurface,
+				showInteractionToast,
+				executeInteractionAction,
+				executeInteractionTriggerSlot,
+				navigate,
 			prefetch,
 			renderAuthPage,
 			linkComponent,
 			linkFactory,
 			navigation,
 			siteFrameExtensions,
-			accountTabs,
+				accountTabs,
+				interactionSurfaces,
+				interactionActions,
+				interactionGuards,
+				interactionGuardEvaluators,
+				interactionSurfaceRenderers,
 			contentLocale: i18n?.contentLocale ?? "en",
 			defaultLocale: i18n?.defaultLocale ?? "en",
 		}),
 		[
 			accountTabs,
-			capabilities,
-			i18n?.contentLocale,
+				capabilities,
+				executeInteractionAction,
+				executeInteractionTriggerSlot,
+				i18n?.contentLocale,
 			i18n?.defaultLocale,
 			initialDocument,
 			initialMode,
@@ -229,11 +508,18 @@ export const PhotonProvider = ({
 			navigation,
 			registry,
 			navigate,
+			openInteractionSurface,
 			prefetch,
 			renderAuthPage,
-			requestAuth,
+			resolvedRequestAuth,
 			searchSite,
-			siteFrameExtensions,
+				showInteractionToast,
+				siteFrameExtensions,
+				interactionSurfaces,
+				interactionActions,
+				interactionGuards,
+				interactionGuardEvaluators,
+				interactionSurfaceRenderers,
 			workspace,
 		],
 	);
@@ -242,6 +528,15 @@ export const PhotonProvider = ({
 		<PhotonI18nProvider value={i18n}>
 			<PhotonPublicContext.Provider value={value}>
 				{children}
+				<PhotonInteractionSurfaceHost
+					request={activeInteractionSurface}
+					renderers={interactionSurfaceRenderers}
+					onOpenChange={(open) => {
+						if (!open) {
+							setActiveInteractionSurface(null);
+						}
+					}}
+				/>
 			</PhotonPublicContext.Provider>
 		</PhotonI18nProvider>
 	);
@@ -262,8 +557,10 @@ export const usePhotonStore = <T,>(
 ) => selector(usePhoton());
 
 export const usePhotonFieldValue = (blockId: string, path: string): unknown => {
-	const { document, resources, registry } = usePhoton();
-	const block = findPhotonPublicBlock(document.blocks, blockId);
+	const { document, resources, registry, site } = usePhoton();
+	const block =
+		findPhotonPublicBlock(document.blocks, blockId) ??
+		findPhotonPublicComponentSourceBlock(site, blockId);
 
 	if (!block) {
 		return null;

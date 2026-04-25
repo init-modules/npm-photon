@@ -2,20 +2,24 @@
 import {
   EditableImage,
   EditableTextarea,
+  PhotonComponentLibraryStackContext,
   PhotonSiteSearch,
+  PhotonSiteSearchSurfaceRenderer,
   collectHeaderActionLinkKeys,
   collectUniqueHeaderLinks,
+  createPhotonSiteSearchTriggerSlot,
   getHeaderActionVisibleHref,
   getHeaderLinkDedupeKey,
-  hasAuthenticatedUser,
   isPhotonPublicFramelessSiteDesign,
-  isProtectedAccountHref,
   normalizeHeaderHref,
   normalizePhotonSiteLinkItems,
   normalizePhotonSiteNavigationColumns,
   normalizePhotonSiteStringItems,
-  resolvePhotonPublicSiteDesignSettings
-} from "./chunk-S4YEB54M.js";
+  photonSystemInteractionActions,
+  photonSystemInteractionSurfaces,
+  resolvePhotonPublicSiteDesignSettings,
+  usePhotonComponentLibraryStack
+} from "./chunk-TISXOFAT.js";
 import {
   PhotonRenderDepthProvider,
   PhotonSearchHighlightEffect,
@@ -23,7 +27,7 @@ import {
   resolvePhotonSiteFrameMobileControls,
   usePhotonRenderDepth,
   usePhotonSiteFrameScrollLock
-} from "./chunk-CPLCBNKA.js";
+} from "./chunk-ND6K56IL.js";
 import {
   EditableText,
   PhotonLink,
@@ -33,13 +37,13 @@ import {
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonStore
-} from "./chunk-BY77VUPQ.js";
+} from "./chunk-AUXN32PD.js";
 import {
   buildPhotonSearchTargetId
 } from "./chunk-6LYMEWZL.js";
 import {
   createPhotonRuntime
-} from "./chunk-TSSJCQJA.js";
+} from "./chunk-C2E4T4EA.js";
 import {
   collectPhotonFooterExtensionItems,
   collectPhotonHeaderExtensionItems,
@@ -50,6 +54,12 @@ import {
 } from "./chunk-HMZA6DQS.js";
 import "./chunk-IOB5G6YT.js";
 import {
+  mergePhotonStudioUrlState,
+  normalizePhotonStudioSurfaceMode,
+  parsePhotonStudioUrlState,
+  writePhotonStudioUrlState
+} from "./chunk-ANYY7ADN.js";
+import {
   PHOTON_SEARCH_OCCURRENCE_PARAM,
   PHOTON_SEARCH_QUERY_PARAM,
   PHOTON_SEARCH_TARGET_PARAM
@@ -59,7 +69,7 @@ import {
 } from "./chunk-QQDDM7OM.js";
 import {
   usePhotonI18n
-} from "./chunk-NV6FZ3PQ.js";
+} from "./chunk-O6DIDPAQ.js";
 import {
   PHOTON_PAGE_SURFACE_REGION_KEY,
   createPhotonBlockLocalizationSchema,
@@ -68,15 +78,50 @@ import {
   definePhotonBlockDefinition,
   getPhotonSurfaceRegionBlocks,
   resolvePhotonSurfaceRegionDescriptors
-} from "./chunk-YNXZBS6V.js";
+} from "./chunk-PWNAHWNN.js";
 import {
   getPhotonAnchorRel,
   sanitizePhotonLinkHref
 } from "./chunk-V7CN23YR.js";
-import "./chunk-U2HNHTED.js";
+import "./chunk-LC3FJEJ5.js";
 import {
-  PHOTON_EMPTY_TEXT
-} from "./chunk-KAITZE7U.js";
+  PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY,
+  PHOTON_COMPONENT_REFERENCE_AREA_ID,
+  PHOTON_COMPONENT_REFERENCE_MODULE,
+  PHOTON_COMPONENT_REFERENCE_TYPE,
+  PHOTON_EMPTY_TEXT,
+  PHOTON_INTERACTIONS_SITE_SETTING_KEY,
+  PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY,
+  clonePhotonComponentLibraryBlocksForCopy,
+  clonePhotonComponentSourceBlockWithNewIds,
+  collectPhotonComponentLibraryUsages,
+  createPhotonActionValue,
+  createPhotonComponentLibraryBlockId,
+  createPhotonComponentLibraryItemFromBlock,
+  createPhotonComponentReferenceBlock,
+  createPhotonInteractionActionDefinition,
+  createPhotonInteractionExecutionResult,
+  createPhotonInteractionGuardDefinition,
+  createPhotonInteractionSurfaceDefinition,
+  createPhotonInteractionTriggerSlot,
+  evaluatePhotonInteractionGuards,
+  executePhotonInteractionActionPresentation,
+  executePhotonInteractionTriggerSlot,
+  getPhotonComponentLibraryItems,
+  isPhotonComponentReferenceBlock,
+  parsePhotonComponentLibraryBlockId,
+  photonInteractionExecutionSucceeded,
+  readPhotonComponentLibrarySettings,
+  readPhotonInteractionSettings,
+  readPhotonInteractionSurfaceSettings,
+  resolvePhotonComponentReferenceBlocks,
+  resolvePhotonInteractionActionCatalog,
+  resolvePhotonInteractionSlotAction,
+  resolvePhotonInteractionSlotGuards,
+  resolvePhotonInteractionSurfaceCatalog,
+  resolvePhotonInteractionSurfaceRequest,
+  resolvePhotonInteractionToastTemplate
+} from "./chunk-ZJB32M2N.js";
 
 // src/public.tsx
 import clsx6 from "clsx";
@@ -1175,9 +1220,68 @@ var siteFooterShellDefinition = definePhotonBlockDefinition({
 
 // src/modules/system/site/site-header-shell-public-definition.tsx
 import clsx4 from "clsx";
-import { ArrowRight as ArrowRight2, CircleUserRound, LogIn, Menu, X } from "lucide-react";
+import { ArrowRight as ArrowRight2, Menu, X } from "lucide-react";
 import { useEffect as useEffect3, useRef, useState as useState3 } from "react";
 import { jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
+var resolveSiteHeaderInteractionSlots = ({
+  block,
+  document,
+  resources,
+  pageSettings,
+  site,
+  mode,
+  isAdmin,
+  siteFrameExtensions
+}) => {
+  const props = block.props;
+  const disabledExtensionIds = normalizePhotonSiteStringItems(
+    props.disabledExtensionIds
+  );
+  const disabledExtensionItemIds = normalizePhotonSiteStringItems(
+    props.disabledExtensionItemIds
+  );
+  const extensionContext = {
+    document,
+    resources,
+    pageSettings,
+    site,
+    mode,
+    isAdmin,
+    currentRoute: document.route
+  };
+  const headerExtensionItems = collectPhotonHeaderExtensionItems(
+    resolvePhotonSiteFrameExtensions(
+      siteFrameExtensions,
+      disabledExtensionIds
+    ),
+    disabledExtensionItemIds,
+    extensionContext
+  );
+  return [
+    createPhotonSiteSearchTriggerSlot(`${block.id}.search`),
+    ...headerExtensionItems.slots.actions.actions.flatMap(
+      (action) => action.triggerSlot ? [
+        {
+          ...action.triggerSlot,
+          id: `${block.id}.${action.triggerSlot.id}`,
+          action: action.triggerSlot.action ?? action.action ?? (action.interaction ? {
+            type: "surface",
+            ...action.interaction
+          } : void 0)
+        }
+      ] : action.action || action.interaction ? [
+        {
+          id: `${block.id}.${action.id ?? action.label}`,
+          label: action.label,
+          action: action.action ?? {
+            type: "surface",
+            ...action.interaction
+          }
+        }
+      ] : []
+    )
+  ];
+};
 var siteHeaderFields = [
   {
     path: "variant",
@@ -1321,11 +1425,16 @@ var siteHeaderFields = [
     ]
   },
   {
-    path: "mobile.menu.fixedTrigger",
-    label: "Fixed mobile burger button",
-    kind: "toggle",
+    path: "mobile.menu.triggerPlacement",
+    label: "Mobile burger placement",
+    kind: "select",
     group: "layout",
-    localization: "shared"
+    localization: "shared",
+    options: [
+      { label: "Fixed", value: "fixed" },
+      { label: "Header", value: "header" },
+      { label: "Hidden", value: "hidden" }
+    ]
   },
   {
     path: "mobile.menu.scrollLock",
@@ -1427,6 +1536,18 @@ var SiteHeaderShell = ({
   const currentRoute = usePhotonStore((state) => state.document.route);
   const document = usePhotonStore((state) => state.document);
   const requestAuth = usePhotonStore((state) => state.requestAuth);
+  const openInteractionSurface = usePhotonStore(
+    (state) => state.openInteractionSurface
+  );
+  const showInteractionToast = usePhotonStore(
+    (state) => state.showInteractionToast
+  );
+  const executeInteractionAction = usePhotonStore(
+    (state) => state.executeInteractionAction
+  );
+  const executeInteractionTriggerSlot = usePhotonStore(
+    (state) => state.executeInteractionTriggerSlot
+  );
   const resources = usePhotonStore((state) => state.resources);
   const pageSettings = usePhotonStore((state) => state.pageSettings);
   const site = usePhotonStore((state) => state.site);
@@ -1437,7 +1558,6 @@ var SiteHeaderShell = ({
   const { locale, publicLocales, translate } = usePhotonI18n();
   const [isCompact, setIsCompact] = useState3(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState3(false);
-  const [adminRouteSurface, setAdminRouteSurface] = useState3(false);
   const headerRef = useRef(null);
   const disabledExtensionIds = normalizePhotonSiteStringItems(
     block.props.disabledExtensionIds
@@ -1476,30 +1596,25 @@ var SiteHeaderShell = ({
   const mobileMenuType = mobileControls.menu.type;
   const liveSurfaceMode = mode !== "builder";
   const compact = liveSurfaceMode && block.props.compactOnScroll && isCompact;
-  const visualAdminSurface = isAdmin || adminRouteSurface;
   const framelessSite = isPhotonPublicFramelessSiteDesign(siteDesign);
   const isShowcaseCard = variant === "showcase-card" && !framelessSite;
   const localeSwitcherVisible = block.props.showLocaleSwitcher !== false && publicLocales.length > 1;
-  const authenticatedUser = hasAuthenticatedUser(resources);
   const rawExtensionActions = collectUniqueHeaderLinks(
     [
       ...headerExtensionItems.slots.actions.links,
       ...headerExtensionItems.slots.actions.actions
     ]
   ).filter((action) => {
-    const visibleHref = getHeaderActionVisibleHref(action, authenticatedUser);
-    return Boolean(action.component) || normalizeHeaderHref(visibleHref) !== "";
+    const visibleHref = getHeaderActionVisibleHref(action);
+    return Boolean(action.component) || Boolean(action.interaction) || normalizeHeaderHref(visibleHref) !== "";
   });
   const extensionActions = rawExtensionActions;
-  const hasExtensionAuthAction = extensionActions.some(
-    (action) => (action.kind ?? "link") === "auth"
-  );
   const extensionActionLinkKeys = collectHeaderActionLinkKeys(extensionActions);
   const secondaryCtaLinkKey = getHeaderLinkDedupeKey(
     block.props.secondaryCtaHref
   );
   const primaryCtaLinkKey = getHeaderLinkDedupeKey(block.props.primaryCtaHref);
-  const shouldRenderSecondaryCta = normalizeHeaderHref(block.props.secondaryCtaHref) !== "" && !extensionActionLinkKeys.has(secondaryCtaLinkKey) && !((hasExtensionAuthAction || !authenticatedUser) && isProtectedAccountHref(block.props.secondaryCtaHref));
+  const shouldRenderSecondaryCta = normalizeHeaderHref(block.props.secondaryCtaHref) !== "" && !extensionActionLinkKeys.has(secondaryCtaLinkKey);
   const shouldRenderPrimaryCta = normalizeHeaderHref(block.props.primaryCtaHref) !== "" && (!extensionActionLinkKeys.has(primaryCtaLinkKey) || primaryCtaLinkKey === secondaryCtaLinkKey);
   const prominentLinkKeys = new Set(extensionActionLinkKeys);
   if (prominentCategoryLink) {
@@ -1523,9 +1638,6 @@ var SiteHeaderShell = ({
     /* @__PURE__ */ new Set([...prominentLinkKeys, ...categoryLinkKeys])
   );
   const renderSmartLink = (link, className, key, onClick) => {
-    if (!authenticatedUser && isProtectedAccountHref(link.href)) {
-      return null;
-    }
     return /* @__PURE__ */ jsx5(
       PhotonLink,
       {
@@ -1547,54 +1659,87 @@ var SiteHeaderShell = ({
     );
     if (action.component) {
       const ActionComponent = action.component;
+      const componentAction = action.triggerSlot ? {
+        ...action,
+        triggerSlot: {
+          ...action.triggerSlot,
+          id: `${block.id}.${action.triggerSlot.id}`,
+          action: action.triggerSlot.action ?? action.action
+        }
+      } : action;
       return /* @__PURE__ */ jsx5(
         ActionComponent,
         {
-          action,
+          action: componentAction,
           className,
           context: extensionContext,
-          requestAuth
+          requestAuth,
+          openInteractionSurface,
+          showInteractionToast,
+          executeInteractionAction,
+          executeInteractionTriggerSlot
         },
         `${action.id ?? `${action.label}:${action.href}`}${keySuffix}`
       );
     }
-    if ((action.kind ?? "link") === "auth") {
-      if (authenticatedUser) {
-        const authenticatedHref = action.authenticatedHref ?? action.href;
-        if (!authenticatedHref) {
-          return null;
-        }
-        return /* @__PURE__ */ jsxs3(
-          PhotonLink,
-          {
-            href: authenticatedHref,
-            target: action.authenticatedTarget,
-            rel: action.authenticatedRel,
-            className,
-            onClick: onAction,
-            children: [
-              /* @__PURE__ */ jsx5(CircleUserRound, { className: "h-4 w-4 shrink-0" }),
-              /* @__PURE__ */ jsx5("span", { children: action.authenticatedLabel ?? action.label })
-            ]
-          },
-          `${action.id ?? `${action.authenticatedLabel ?? action.label}:${authenticatedHref}`}${keySuffix}`
-        );
-      }
-      return /* @__PURE__ */ jsxs3(
+    const actionPresentation = action.action ?? (action.interaction ? {
+      type: "surface",
+      ...action.interaction
+    } : void 0);
+    if (actionPresentation?.type === "surface") {
+      const interaction = actionPresentation;
+      const triggerSlot = action.triggerSlot ? {
+        ...action.triggerSlot,
+        id: `${block.id}.${action.triggerSlot.id}`,
+        action: interaction
+      } : null;
+      return /* @__PURE__ */ jsx5(
         "button",
         {
           type: "button",
           onClick: () => {
             onAction?.();
-            requestAuth?.();
+            if (triggerSlot) {
+              executeInteractionTriggerSlot(triggerSlot);
+            } else {
+              executeInteractionAction({
+                ...interaction,
+                fallbackHref: interaction.fallbackHref ?? action.href
+              });
+            }
           },
           className: clsx4(className, "cursor-pointer"),
-          children: [
-            /* @__PURE__ */ jsx5(LogIn, { className: "h-4 w-4 shrink-0" }),
-            /* @__PURE__ */ jsx5("span", { children: action.label })
-          ]
+          children: /* @__PURE__ */ jsx5("span", { children: action.label })
         },
         `${action.id ?? `${action.label}:${action.href}`}${keySuffix}`
+      );
+    }
+    if (actionPresentation?.type === "toast") {
+      return /* @__PURE__ */ jsx5(
+        "button",
+        {
+          type: "button",
+          onClick: () => {
+            onAction?.();
+            executeInteractionAction(actionPresentation);
+          },
+          className: clsx4(className, "cursor-pointer"),
+          children: /* @__PURE__ */ jsx5("span", { children: action.label })
+        },
+        `${action.id ?? `${action.label}:${action.href}`}${keySuffix}`
+      );
+    }
+    if (actionPresentation?.type === "link") {
+      return renderSmartLink(
+        {
+          label: action.label,
+          href: actionPresentation.href,
+          target: actionPresentation.target,
+          rel: actionPresentation.rel
+        },
+        className,
+        `${action.id ?? `${action.label}:${action.href}`}${keySuffix}`,
+        onAction
       );
     }
     return renderSmartLink(
@@ -1613,8 +1758,8 @@ var SiteHeaderShell = ({
     ...utilityLinks
   ]).slice(0, 4);
   const mobileBottomMenuVisible = mobileControls.bottomMenu.enabled && (mobileBottomLinks.length > 0 || mobileControls.bottomMenu.showBurger);
-  const mobileFixedTriggerVisible = mobileControls.menu.fixedTrigger;
-  const mobileInlineTriggerVisible = !mobileControls.menu.fixedTrigger && !mobileControls.bottomMenu.showBurger;
+  const mobileFixedTriggerVisible = mobileControls.menu.triggerPlacement === "fixed";
+  const mobileInlineTriggerVisible = mobileControls.menu.triggerPlacement === "header";
   const mobileMenuFloating = mobileControls.menu.floating;
   const mobileBottomMenuFloating = mobileControls.bottomMenu.floating;
   const mobileMenuPanelClassName = clsx4(
@@ -1743,29 +1888,7 @@ var SiteHeaderShell = ({
           mobileActionClassName,
           closeMobileMenu
         )
-      ),
-      block.props.showLoginAction && !visualAdminSurface && !authenticatedUser && !hasExtensionAuthAction ? /* @__PURE__ */ jsxs3(
-        "button",
-        {
-          type: "button",
-          onClick: () => {
-            closeMobileMenu();
-            requestAuth?.();
-          },
-          className: clsx4(mobileActionClassName, "cursor-pointer"),
-          children: [
-            /* @__PURE__ */ jsx5(LogIn, { className: "h-4 w-4" }),
-            /* @__PURE__ */ jsx5(
-              EditableText,
-              {
-                blockId: block.id,
-                path: "loginLabel",
-                className: "font-semibold"
-              }
-            )
-          ]
-        }
-      ) : null
+      )
     ] }),
     /* @__PURE__ */ jsxs3("div", { className: "grid gap-1 text-sm", children: [
       /* @__PURE__ */ jsx5(
@@ -1789,12 +1912,6 @@ var SiteHeaderShell = ({
   usePhotonSiteFrameScrollLock(
     mobileMenuOpen && mobileControls.menu.scrollLock
   );
-  useEffect3(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    setAdminRouteSurface(window.location.pathname.includes("/photon-admin"));
-  }, []);
   useEffect3(() => {
     if (typeof window === "undefined" || !block.props.compactOnScroll || !liveSurfaceMode) {
       setIsCompact(false);
@@ -2092,26 +2209,7 @@ var SiteHeaderShell = ({
                               ) : null,
                               extensionActions.map(
                                 (action) => renderExtensionAction(action)
-                              ),
-                              block.props.showLoginAction && !visualAdminSurface && !authenticatedUser && !hasExtensionAuthAction ? /* @__PURE__ */ jsxs3(
-                                "button",
-                                {
-                                  type: "button",
-                                  onClick: requestAuth,
-                                  className: "inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-surface)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
-                                  children: [
-                                    /* @__PURE__ */ jsx5(LogIn, { className: "h-4 w-4" }),
-                                    /* @__PURE__ */ jsx5(
-                                      EditableText,
-                                      {
-                                        blockId: block.id,
-                                        path: "loginLabel",
-                                        className: "font-semibold"
-                                      }
-                                    )
-                                  ]
-                                }
-                              ) : null
+                              )
                             ] })
                           ]
                         }
@@ -2282,7 +2380,7 @@ var siteHeaderShellDefinition = definePhotonBlockDefinition({
       sticky: true,
       menu: {
         type: "inline",
-        fixedTrigger: true,
+        triggerPlacement: "fixed",
         scrollLock: true,
         floating: false,
         disableFloatingOnSmallScreens: true
@@ -2312,6 +2410,7 @@ var siteHeaderShellDefinition = definePhotonBlockDefinition({
     })
   },
   fields: siteHeaderFields,
+  interactionSlots: resolveSiteHeaderInteractionSlots,
   component: SiteHeaderShell
 });
 
@@ -2490,6 +2589,48 @@ var splitLayoutFields = [
     localization: "shared"
   }
 ];
+var ComponentReferenceBlock = ({
+  block,
+  renderArea
+}) => {
+  const siteSettings = usePhotonStore((state) => state.site.settings);
+  const componentLibraryStack = usePhotonComponentLibraryStack();
+  const blocks = resolvePhotonComponentReferenceBlocks({
+    block,
+    siteSettings,
+    stack: componentLibraryStack
+  });
+  if (!blocks.length) {
+    return null;
+  }
+  return /* @__PURE__ */ jsx6("section", { "data-photon-component-reference": block.props.itemId, children: /* @__PURE__ */ jsx6(
+    PhotonComponentLibraryStackContext.Provider,
+    {
+      value: [...componentLibraryStack, block.props.itemId],
+      children: renderArea?.({
+        id: PHOTON_COMPONENT_REFERENCE_AREA_ID,
+        label: block.props.label ?? "Reusable component",
+        blocks
+      }, 0)
+    }
+  ) });
+};
+var componentReferenceFields = [
+  {
+    path: "itemId",
+    label: "Library item",
+    kind: "text",
+    group: "data",
+    localization: "shared"
+  },
+  {
+    path: "label",
+    label: "Label",
+    kind: "text",
+    group: "content",
+    localization: "localized"
+  }
+];
 var photonPublicSystemModule = {
   module: "photon-system",
   label: "Photon System",
@@ -2542,17 +2683,37 @@ var photonPublicSystemModule = {
       ],
       fields: splitLayoutFields,
       component: SplitLayout
+    }),
+    definePhotonBlockDefinition({
+      type: "component-reference",
+      label: "Reusable Component",
+      labelKey: "photon.system.componentReference.label",
+      description: "Reference to a site-owned reusable component library item.",
+      descriptionKey: "photon.system.componentReference.description",
+      category: "Library",
+      icon: "component",
+      defaults: {
+        itemId: "",
+        label: ""
+      },
+      fields: componentReferenceFields,
+      component: ComponentReferenceBlock
     })
   ]
 };
 var photonPublicSystemKit = createPhotonKit({
   key: "photon-system",
   label: "Photon System",
-  modules: [photonPublicSystemModule]
+  modules: [photonPublicSystemModule],
+  interactionSurfaces: photonSystemInteractionSurfaces,
+  interactionActions: photonSystemInteractionActions
 });
 
 // src/public.tsx
 import { jsx as jsx7, jsxs as jsxs5 } from "react/jsx-runtime";
+var defaultPhotonInteractionSurfaceRenderers = {
+  "photon.site-search": PhotonSiteSearchSurfaceRenderer
+};
 var PhotonPublicBlockItem = ({ block }) => {
   const renderDepth = usePhotonRenderDepth();
   const registry = usePhotonStore((state) => state.registry);
@@ -2658,7 +2819,13 @@ var PhotonPublicPage = ({
   linkComponent,
   siteFrameExtensions,
   accountTabs,
+  interactionSurfaces,
+  interactionActions,
+  interactionGuards,
+  interactionGuardEvaluators,
+  interactionSurfaceRenderers,
   requestAuth,
+  requestAuthAction,
   navigate,
   prefetch,
   renderAuthPage,
@@ -2690,6 +2857,10 @@ var PhotonPublicPage = ({
     color: designSettings.textColor,
     fontFamily: designSettings.bodyFontFamily
   };
+  const resolvedInteractionSurfaceRenderers = {
+    ...defaultPhotonInteractionSurfaceRenderers,
+    ...interactionSurfaceRenderers ?? {}
+  };
   return /* @__PURE__ */ jsxs5(
     PhotonProvider,
     {
@@ -2703,7 +2874,13 @@ var PhotonPublicPage = ({
       linkComponent,
       siteFrameExtensions,
       accountTabs,
+      interactionSurfaces,
+      interactionActions,
+      interactionGuards,
+      interactionGuardEvaluators,
+      interactionSurfaceRenderers: resolvedInteractionSurfaceRenderers,
       requestAuth,
+      requestAuthAction,
       navigate,
       prefetch,
       renderAuthPage,
@@ -2733,6 +2910,11 @@ export {
   EditableRichText,
   EditableText,
   EditableTextarea,
+  PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY,
+  PHOTON_COMPONENT_REFERENCE_MODULE,
+  PHOTON_COMPONENT_REFERENCE_TYPE,
+  PHOTON_INTERACTIONS_SITE_SETTING_KEY,
+  PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY,
   PHOTON_SEARCH_OCCURRENCE_PARAM,
   PHOTON_SEARCH_QUERY_PARAM,
   PHOTON_SEARCH_TARGET_PARAM,
@@ -2740,21 +2922,54 @@ export {
   PhotonProvider,
   PhotonPublicPage,
   PhotonSiteSearch,
+  PhotonSiteSearchSurfaceRenderer,
+  clonePhotonComponentLibraryBlocksForCopy,
+  clonePhotonComponentSourceBlockWithNewIds,
+  collectPhotonComponentLibraryUsages,
   collectPhotonFooterExtensionItems,
   collectPhotonHeaderExtensionItems,
   createPhotonAccountTabExtension,
+  createPhotonActionValue,
   createPhotonBlockLocalizationSchema,
+  createPhotonComponentLibraryBlockId,
+  createPhotonComponentLibraryItemFromBlock,
+  createPhotonComponentReferenceBlock,
+  createPhotonInteractionActionDefinition,
+  createPhotonInteractionExecutionResult,
+  createPhotonInteractionGuardDefinition,
+  createPhotonInteractionSurfaceDefinition,
+  createPhotonInteractionTriggerSlot,
   createPhotonKit,
   createPhotonLocalizedDefault,
   createPhotonRuntime,
   createPhotonSiteFrameExtension,
   definePhotonBlockDefinition,
+  evaluatePhotonInteractionGuards,
+  executePhotonInteractionActionPresentation,
+  executePhotonInteractionTriggerSlot,
   getPhotonAnchorRel,
+  getPhotonComponentLibraryItems,
   getPhotonPublicSurfaceModeStyle as getPhotonSurfaceModeStyle,
+  isPhotonComponentReferenceBlock,
+  mergePhotonStudioUrlState,
+  normalizePhotonStudioSurfaceMode,
+  parsePhotonComponentLibraryBlockId,
+  parsePhotonStudioUrlState,
+  photonInteractionExecutionSucceeded,
   photonPublicSystemKit as photonSystemKit,
   photonPublicSystemModule as photonSystemModule,
+  readPhotonComponentLibrarySettings,
+  readPhotonInteractionSettings,
+  readPhotonInteractionSurfaceSettings,
   renderPhotonRichTextHtml,
   resolvePhotonAccountTabs,
+  resolvePhotonComponentReferenceBlocks,
+  resolvePhotonInteractionActionCatalog,
+  resolvePhotonInteractionSlotAction,
+  resolvePhotonInteractionSlotGuards,
+  resolvePhotonInteractionSurfaceCatalog,
+  resolvePhotonInteractionSurfaceRequest,
+  resolvePhotonInteractionToastTemplate,
   resolvePhotonSiteFrameExtensions,
   resolvePhotonSiteFrameMobileControls,
   sanitizePhotonLinkHref,
@@ -2765,5 +2980,6 @@ export {
   usePhotonRenderDepth,
   usePhotonSiteFrameScrollLock,
   usePhotonStore,
-  usePhotonFieldValue as usePhotonValueAtPath
+  usePhotonFieldValue as usePhotonValueAtPath,
+  writePhotonStudioUrlState
 };

@@ -10,6 +10,9 @@ It provides:
 - inline content editing primitives
 - form schema/runtime primitives through [`@init/photon/forms`](./src/forms/README.md)
 - live site search primitives with stable `blockId::path` targets and exact-hit highlighting
+- interaction surface primitives for package-owned dialogs, panels and toast templates
+- interaction action, trigger slot and guard primitives for builder-facing non-inline UX
+- component library primitives for reusable block tree references and copies
 - runtime block renderer
 - reusable `PhotonStudio` shell that apps can wrap with their own auth/backend adapters
 
@@ -26,6 +29,23 @@ The foundation store is initialized from server-provided document data through t
 That keeps SSR output stable while avoiding broad rerenders across the live canvas, palette and inspector.
 
 When an app provides an `onSearch` handler, the default site header search can query public routes, navigate to the resolved page and highlight the exact matched occurrence on the live surface.
+
+Interaction actions let packages register builder-facing non-inline behavior without making the host infer feature semantics. A kit can contribute `interactionActions`, `interactionGuards`, `interactionGuardEvaluators` and compatibility `interactionSurfaces`; the runtime merges package defaults with `site.settings.interactions` and `site.settings.interactionSurfaces`. Blocks or shell components expose trigger slots, and those slots resolve through the generic execution pipeline: trigger binding, guard chain, blocked guard action, then the main surface/toast/link action. Execution returns `PhotonInteractionExecutionResult` so builder/runtime callers can distinguish `executed`, `blocked`, `missing-action`, `missing-evaluator`, `missing-renderer` and `fallback`. Explicit guards fail closed when their evaluator is missing unless the owning package sets `missingEvaluatorPolicy: "allow"`.
+
+Reusable component library items live in `site.settings.componentLibrary.items`. Documents place shared sources through the generic `photon.component-reference` block, while copies and detached references clone the source tree with new ids and become independent. Studio hosts may provide a `componentLibraryUsageProvider` for workspace-wide usage counts; public runtime resolution stays local, remaps ids per placement, and guards against cycles/max-depth recursion. Delete flows must not leave unresolved public references: workspace-page usages block delete, while current document or site-frame usages can be detached to copies before the source is removed.
+
+To register a package-owned action, expose one module entry point from the kit:
+
+```ts
+export const packagePhotonKit = createPhotonInstallableKit({
+	interactionSurfaces: packageSurfaces,
+	interactionActions: packageActions,
+	interactionGuards: packageGuards,
+	interactionGuardEvaluators: packageGuardEvaluators,
+});
+```
+
+The host should compose the kit and renderer adapters declaratively. It should not branch on feature ids such as auth, search or cart inside generic shell/header code.
 
 <!-- BEGIN RX PACKAGE REFERENCE -->
 # @init/photon

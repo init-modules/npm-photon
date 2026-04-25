@@ -17,16 +17,19 @@ import {
 	useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { toast } from "sonner";
 import {
 	usePhotonPersistedState,
 	usePhotonStore,
 } from "../../context/photon-context";
+import { getPhotonSelectedBlock } from "../../context/photon-store";
 import {
 	getPhotonSurfaceRegionListId,
 	PHOTON_PAGE_SURFACE_REGION_KEY,
 } from "../../helpers/site";
-import { findPhotonBlock } from "../../helpers/tree";
+import {
+	mergePhotonStudioUrlState,
+	parsePhotonStudioUrlState,
+} from "../../helpers/studio-url-state";
 import { PhotonSearchHighlightEffect } from "../../search/photon-search-highlight-effect";
 import type { PhotonMode } from "../../types";
 import { BlockOverlayCard } from "../canvas";
@@ -73,9 +76,10 @@ type PhotonStudioInnerProps = {
 	workspaceControl?: PhotonStudioProps["workspaceControl"];
 	title: string;
 	description: string;
-	renderContentNotice?: PhotonStudioProps["renderContentNotice"];
-	siteSettingsSubtabs?: PhotonStudioProps["siteSettingsSubtabs"];
-};
+		renderContentNotice?: PhotonStudioProps["renderContentNotice"];
+		siteSettingsSubtabs?: PhotonStudioProps["siteSettingsSubtabs"];
+		componentLibraryUsageProvider?: PhotonStudioProps["componentLibraryUsageProvider"];
+	};
 
 export const PhotonStudioInner = ({
 	initialDocument,
@@ -111,9 +115,10 @@ export const PhotonStudioInner = ({
 	workspaceControl,
 	title,
 	description,
-	renderContentNotice,
-	siteSettingsSubtabs,
-}: PhotonStudioInnerProps) => {
+		renderContentNotice,
+		siteSettingsSubtabs,
+		componentLibraryUsageProvider,
+	}: PhotonStudioInnerProps) => {
 	const document = usePhotonStore((state) => state.document);
 	const contentRevision = usePhotonStore(
 		(state) => state.contentRevision,
@@ -132,9 +137,7 @@ export const PhotonStudioInner = ({
 		(state) => state.selectedBlockId,
 	);
 	const selectedBlock = usePhotonStore((state) =>
-		state.selectedBlockId
-			? findPhotonBlock(state.document.blocks, state.selectedBlockId)
-			: null,
+		getPhotonSelectedBlock(state),
 	);
 	const selectedField = usePhotonStore((state) => state.selectedField);
 	const selectBlock = usePhotonStore((state) => state.selectBlock);
@@ -155,6 +158,20 @@ export const PhotonStudioInner = ({
 	);
 	const getSiteSettingValue = usePhotonStore(
 		(state) => state.getSiteSettingValue,
+	);
+	const interactionSurfaces = usePhotonStore(
+		(state) => state.interactionSurfaces,
+	);
+	const interactionActions = usePhotonStore((state) => state.interactionActions);
+	const interactionGuards = usePhotonStore((state) => state.interactionGuards);
+	const openInteractionSurface = usePhotonStore(
+		(state) => state.openInteractionSurface,
+	);
+	const showInteractionToast = usePhotonStore(
+		(state) => state.showInteractionToast,
+	);
+	const executeInteractionAction = usePhotonStore(
+		(state) => state.executeInteractionAction,
 	);
 	const insertBlock = usePhotonStore((state) => state.insertBlock);
 	const moveBlock = usePhotonStore((state) => state.moveBlock);
@@ -288,6 +305,125 @@ export const PhotonStudioInner = ({
 			hydrateModePreference,
 			onManualSave: () => void saveDocumentManually(),
 		});
+	const initialStudioUrlState =
+		typeof window === "undefined"
+			? {}
+			: parsePhotonStudioUrlState(window.location.search);
+	const [paletteTab, setPaletteTab] = useState<"blocks" | "library">(
+		initialStudioUrlState.paletteTab ?? "blocks",
+	);
+	const [selectedLibraryItemId, setSelectedLibraryItemId] = useState<
+		string | null
+	>(initialStudioUrlState.library ?? null);
+	const [interactionTab, setInteractionTab] = useState(
+		initialStudioUrlState.interactionTab ?? "actions",
+	);
+	const [selectedInteractionActionId, setSelectedInteractionActionId] =
+		useState<string | null>(initialStudioUrlState.action ?? null);
+	const [selectedInteractionGuardId, setSelectedInteractionGuardId] =
+		useState<string | null>(initialStudioUrlState.guard ?? null);
+	const [selectedInteractionScenarioId, setSelectedInteractionScenarioId] =
+		useState<string | null>(initialStudioUrlState.scenario ?? null);
+	const [selectedInteractionSurfaceId, setSelectedInteractionSurfaceId] =
+		useState<string | null>(initialStudioUrlState.surface ?? null);
+	const [selectedInteractionToastId, setSelectedInteractionToastId] = useState<
+		string | null
+	>(initialStudioUrlState.toast ?? null);
+
+	useEffect(() => {
+		if (typeof window === "undefined" || !isAdmin) {
+			return;
+		}
+
+		const syncFromUrl = () => {
+			const state = parsePhotonStudioUrlState(window.location.search);
+
+			if (state.mode) {
+				setMode(state.mode);
+			}
+
+			if (state.builderSurface) {
+				setBuilderSurfaceMode(state.builderSurface);
+			}
+
+			if (state.paletteTab) {
+				setPaletteTab(state.paletteTab);
+			}
+
+			if (state.interactionTab) {
+				setInteractionTab(state.interactionTab);
+			}
+
+			setSelectedLibraryItemId(state.library ?? null);
+			setSelectedInteractionActionId(state.action ?? null);
+			setSelectedInteractionGuardId(state.guard ?? null);
+			setSelectedInteractionScenarioId(state.scenario ?? null);
+			setSelectedInteractionSurfaceId(state.surface ?? null);
+			setSelectedInteractionToastId(state.toast ?? null);
+
+			selectBlock(state.block ?? null);
+		};
+
+		window.addEventListener("popstate", syncFromUrl);
+
+		return () => window.removeEventListener("popstate", syncFromUrl);
+	}, [isAdmin, selectBlock, setBuilderSurfaceMode, setMode]);
+
+	useEffect(() => {
+		if (typeof window === "undefined" || !isAdmin) {
+			return;
+		}
+
+		const current = parsePhotonStudioUrlState(window.location.search);
+
+		if (current.mode === mode && current.builderSurface === builderSurfaceMode) {
+			return;
+		}
+
+		const nextSearch = mergePhotonStudioUrlState(window.location.search, {
+			mode,
+			builderSurface: builderSurfaceMode,
+		});
+		const nextUrl = `${window.location.pathname}?${nextSearch.toString()}${window.location.hash}`;
+
+		window.history.pushState(null, "", nextUrl);
+	}, [builderSurfaceMode, isAdmin, mode]);
+
+	useEffect(() => {
+		if (typeof window === "undefined" || !isAdmin) {
+			return;
+		}
+
+			const timeoutId = window.setTimeout(() => {
+				const nextSearch = mergePhotonStudioUrlState(window.location.search, {
+					block: selectedBlockId ?? null,
+					paletteTab,
+					library: selectedLibraryItemId ?? null,
+					interactionTab,
+					action: selectedInteractionActionId ?? null,
+					guard: selectedInteractionGuardId ?? null,
+					scenario: selectedInteractionScenarioId ?? null,
+					surface: selectedInteractionSurfaceId ?? null,
+					toast: selectedInteractionToastId ?? null,
+				});
+			const nextUrl = `${window.location.pathname}?${nextSearch.toString()}${window.location.hash}`;
+
+			window.history.replaceState(null, "", nextUrl);
+		}, 120);
+
+		return () => window.clearTimeout(timeoutId);
+	}, [
+		isAdmin,
+		paletteTab,
+		interactionTab,
+		selectedBlockId,
+		selectedInteractionActionId,
+		selectedInteractionGuardId,
+		selectedInteractionScenarioId,
+		selectedInteractionSurfaceId,
+		selectedInteractionToastId,
+		selectedLibraryItemId,
+	]);
 	const {
 		allPaletteBlocks,
 		paletteGroups,
@@ -452,9 +588,8 @@ export const PhotonStudioInner = ({
 					}
 					onReset={() => {
 						restoreLastSavedState();
-						toast.info("Local draft reverted", {
-							description:
-								"Local changes were reset to the last saved version.",
+						showInteractionToast({
+							templateId: "photon:local-draft-reverted",
 						});
 					}}
 					onSave={() => void saveDocumentManually()}
@@ -473,6 +608,10 @@ export const PhotonStudioInner = ({
 					}
 					builderEnabled={builderEnabled}
 					builderSurfaceMode={builderSurfaceMode}
+					paletteTab={paletteTab}
+					selectedLibraryItemId={selectedLibraryItemId}
+					selectedInteractionSurfaceId={selectedInteractionSurfaceId}
+					selectedInteractionToastId={selectedInteractionToastId}
 					contentEnabled={contentEnabled}
 					dockHeight={dockHeight}
 					isResizing={isResizing}
@@ -511,6 +650,17 @@ export const PhotonStudioInner = ({
 					pageSettings={pageSettings}
 					pageSettingsPanels={visiblePageSettingsPanels}
 					site={site}
+					interactionSurfaces={interactionSurfaces}
+					interactionActions={interactionActions}
+					interactionGuards={interactionGuards}
+					interactionTab={interactionTab}
+					selectedInteractionActionId={selectedInteractionActionId}
+					selectedInteractionGuardId={selectedInteractionGuardId}
+					selectedInteractionScenarioId={selectedInteractionScenarioId}
+					openInteractionSurface={openInteractionSurface}
+					showInteractionToast={showInteractionToast}
+					executeInteractionAction={executeInteractionAction}
+					componentLibraryUsageProvider={componentLibraryUsageProvider}
 					siteSettingsPanels={visibleSiteSettingsPanels}
 					siteSettingsSubtabs={siteSettingsSubtabs ?? []}
 					onPageSettingFocus={selectPageSettingField}
@@ -520,6 +670,14 @@ export const PhotonStudioInner = ({
 					onSiteSettingChange={handleSiteSettingChange}
 					getSiteSettingValue={getSiteSettingValue}
 					onBuilderSurfaceModeChange={setBuilderSurfaceMode}
+					onPaletteTabChange={setPaletteTab}
+					onLibraryItemSelect={setSelectedLibraryItemId}
+					onInteractionTabChange={setInteractionTab}
+					onInteractionActionSelect={setSelectedInteractionActionId}
+					onInteractionGuardSelect={setSelectedInteractionGuardId}
+					onInteractionScenarioSelect={setSelectedInteractionScenarioId}
+					onInteractionSurfaceSelect={setSelectedInteractionSurfaceId}
+					onInteractionToastSelect={setSelectedInteractionToastId}
 					onToggleLeftCollapsed={toggleLeftCollapsed}
 					onToggleRightCollapsed={toggleRightCollapsed}
 					onExpandLeft={expandLeft}

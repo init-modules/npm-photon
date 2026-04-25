@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { PhotonMode } from "../../types";
+import type { PhotonMode, PhotonStudioSurfaceMode } from "../../types";
+import {
+	normalizePhotonStudioSurfaceMode,
+	parsePhotonStudioUrlState,
+} from "../../helpers/studio-url-state";
 import {
 	getStudioStorageItem,
 	setStudioStorageItem,
 } from "./studio-browser-storage";
 
-export type StudioSurfaceMode = "canvas" | "settings";
+export type StudioSurfaceMode = PhotonStudioSurfaceMode;
 
 type UseStudioBrowserPreferencesInput = {
 	isAdmin: boolean;
@@ -23,7 +27,8 @@ const isPersistedMode = (value: string | null): value is PhotonMode =>
 
 const isPersistedBuilderSurfaceMode = (
 	value: string | null,
-): value is StudioSurfaceMode => value === "canvas" || value === "settings";
+): value is StudioSurfaceMode =>
+	Boolean(normalizePhotonStudioSurfaceMode(value));
 
 export const resolveStudioBrowserPreferenceStorageKeys = (
 	draftStorageKey: string,
@@ -93,26 +98,31 @@ export const persistStudioModePreference = async ({
 export const loadStudioBuilderSurfacePreference = async ({
 	isAdmin,
 	builderSurfaceMode,
+	search = "",
 	storageKey,
 	readStorage = getStudioStorageItem,
 }: {
 	isAdmin: boolean;
 	builderSurfaceMode: StudioSurfaceMode;
+	search?: string;
 	storageKey: string;
 	readStorage?: typeof getStudioStorageItem;
 }) => {
-	const storedSurfaceMode = await readStorage<StudioSurfaceMode>(storageKey, {
-		parseLegacy: (rawValue) =>
-			isPersistedBuilderSurfaceMode(rawValue) ? rawValue : null,
-		serializeLegacy: (persistedMode) => persistedMode,
-	});
+	const querySurfaceMode = parsePhotonStudioUrlState(search).builderSurface;
+	const storedSurfaceMode = normalizePhotonStudioSurfaceMode(
+		await readStorage<StudioSurfaceMode | "surfaces">(storageKey, {
+			parseLegacy: (rawValue) =>
+				normalizePhotonStudioSurfaceMode(rawValue) ?? null,
+			serializeLegacy: (persistedMode) => persistedMode,
+		}),
+	);
+	const preferredSurfaceMode =
+		querySurfaceMode ?? storedSurfaceMode ?? builderSurfaceMode;
 
 	return {
 		builderSurfaceMode:
-			isAdmin &&
-			isPersistedBuilderSurfaceMode(storedSurfaceMode) &&
-			storedSurfaceMode !== builderSurfaceMode
-				? storedSurfaceMode
+			isAdmin && preferredSurfaceMode !== builderSurfaceMode
+				? preferredSurfaceMode
 				: builderSurfaceMode,
 	};
 };
@@ -270,6 +280,7 @@ export const useStudioBrowserPreferences = ({
 				await loadStudioBuilderSurfacePreference({
 					isAdmin,
 					builderSurfaceMode,
+					search: window.location.search,
 					storageKey: builderSurfaceStorageKey,
 				});
 

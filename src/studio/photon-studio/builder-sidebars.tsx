@@ -9,6 +9,7 @@ import {
 	useState,
 } from "react";
 import type {
+	PhotonComponentLibraryUsageProvider,
 	PhotonPageCatalogItem,
 	PhotonPageSettings,
 } from "../../types";
@@ -32,6 +33,10 @@ type BuilderSidebarsProps = {
 	leftCollapsed: boolean;
 	rightCollapsed: boolean;
 	children: ReactNode;
+	paletteTab: "blocks" | "library";
+	onPaletteTabChange: (value: "blocks" | "library") => void;
+	selectedLibraryItemId: string | null;
+	onLibraryItemSelect: (value: string | null) => void;
 	search: string;
 	onSearchChange: (value: string) => void;
 	allPaletteBlocks: PaletteDefinition[];
@@ -47,6 +52,7 @@ type BuilderSidebarsProps = {
 	selectedDefinitionKey: string | null;
 	onSelectDefinition: (definition: PaletteDefinition) => void;
 	onInsert: (definition: PaletteDefinition) => void;
+	componentLibraryUsageProvider?: PhotonComponentLibraryUsageProvider;
 	manualInsertTarget: { listId: string; index: number } | null;
 	definitionFields: PaletteDefinition["fields"];
 	inspectorGroups: InspectorGroups;
@@ -73,6 +79,10 @@ export const BuilderSidebars = ({
 	leftCollapsed,
 	rightCollapsed,
 	children,
+	paletteTab,
+	onPaletteTabChange,
+	selectedLibraryItemId,
+	onLibraryItemSelect,
 	search,
 	onSearchChange,
 	allPaletteBlocks,
@@ -88,6 +98,7 @@ export const BuilderSidebars = ({
 	selectedDefinitionKey,
 	onSelectDefinition,
 	onInsert,
+	componentLibraryUsageProvider,
 	manualInsertTarget,
 	definitionFields,
 	inspectorGroups,
@@ -181,6 +192,10 @@ export const BuilderSidebars = ({
 						}}
 					>
 						<PalettePanel
+							paletteTab={paletteTab}
+							onPaletteTabChange={onPaletteTabChange}
+							selectedLibraryItemId={selectedLibraryItemId}
+							onLibraryItemSelect={onLibraryItemSelect}
 							search={search}
 							onSearchChange={onSearchChange}
 							allPaletteBlocks={allPaletteBlocks}
@@ -194,9 +209,10 @@ export const BuilderSidebars = ({
 							collapsedGroups={collapsedGroups}
 							onToggleGroup={onToggleGroup}
 							selectedDefinitionKey={selectedDefinitionKey}
-							onSelectDefinition={onSelectDefinition}
-							onInsert={onInsert}
-							manualInsertTarget={manualInsertTarget}
+								onSelectDefinition={onSelectDefinition}
+								onInsert={onInsert}
+								componentLibraryUsageProvider={componentLibraryUsageProvider}
+								manualInsertTarget={manualInsertTarget}
 							onCollapse={onToggleLeftCollapsed}
 						/>
 						<BuilderSidebarResizeHandle

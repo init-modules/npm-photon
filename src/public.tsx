@@ -25,6 +25,7 @@ export {
 } from "./helpers/link-url";
 
 import { PhotonSearchHighlightEffect } from "./search/photon-search-highlight-effect";
+import { PhotonSiteSearchSurfaceRenderer } from "./search/photon-site-search";
 import { resolvePhotonSiteFrameMobileControls } from "./modules/system/site/site-mobile-frame";
 import type {
 	PhotonAccountTabExtension,
@@ -32,6 +33,12 @@ import type {
 	PhotonArea,
 	PhotonBlock,
 	PhotonI18nValue,
+	PhotonInteractionActionDefinition,
+	PhotonInteractionActionPresentation,
+	PhotonInteractionGuardDefinition,
+	PhotonInteractionGuardEvaluatorMap,
+	PhotonInteractionSurfaceDefinition,
+	PhotonInteractionSurfaceRendererMap,
 	PhotonLinkComponent,
 	PhotonLinkFactory,
 	PhotonNavigateHandler,
@@ -43,6 +50,10 @@ import type {
 	PhotonSearchHighlight,
 	PhotonSiteFrameExtension,
 } from "./types";
+
+const defaultPhotonInteractionSurfaceRenderers = {
+	"photon.site-search": PhotonSiteSearchSurfaceRenderer,
+} satisfies PhotonInteractionSurfaceRendererMap;
 
 export type PhotonPublicRuntimePageValue = Pick<
 	PhotonResolvedPage,
@@ -216,7 +227,13 @@ type PhotonPublicPageProps = {
 	linkComponent?: PhotonLinkComponent;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
 	accountTabs?: PhotonAccountTabExtension[];
+	interactionSurfaces?: PhotonInteractionSurfaceDefinition[];
+	interactionActions?: PhotonInteractionActionDefinition[];
+	interactionGuards?: PhotonInteractionGuardDefinition[];
+	interactionGuardEvaluators?: PhotonInteractionGuardEvaluatorMap;
+	interactionSurfaceRenderers?: PhotonInteractionSurfaceRendererMap;
 	requestAuth?: () => void;
+	requestAuthAction?: PhotonInteractionActionPresentation;
 	navigate?: PhotonNavigateHandler;
 	prefetch?: PhotonPrefetchHandler;
 	renderAuthPage?: PhotonAuthPageRenderer;
@@ -233,7 +250,13 @@ export const PhotonPublicPage = ({
 	linkComponent,
 	siteFrameExtensions,
 	accountTabs,
+	interactionSurfaces,
+	interactionActions,
+	interactionGuards,
+	interactionGuardEvaluators,
+	interactionSurfaceRenderers,
 	requestAuth,
+	requestAuthAction,
 	navigate,
 	prefetch,
 	renderAuthPage,
@@ -265,6 +288,10 @@ export const PhotonPublicPage = ({
 		color: designSettings.textColor,
 		fontFamily: designSettings.bodyFontFamily,
 	} as CSSProperties;
+	const resolvedInteractionSurfaceRenderers = {
+		...defaultPhotonInteractionSurfaceRenderers,
+		...(interactionSurfaceRenderers ?? {}),
+	};
 
 	return (
 		<PhotonProvider
@@ -276,9 +303,15 @@ export const PhotonPublicPage = ({
 			initialMode="preview"
 			isAdmin={false}
 			linkComponent={linkComponent}
-			siteFrameExtensions={siteFrameExtensions}
-			accountTabs={accountTabs}
+				siteFrameExtensions={siteFrameExtensions}
+				accountTabs={accountTabs}
+				interactionSurfaces={interactionSurfaces}
+				interactionActions={interactionActions}
+				interactionGuards={interactionGuards}
+				interactionGuardEvaluators={interactionGuardEvaluators}
+				interactionSurfaceRenderers={resolvedInteractionSurfaceRenderers}
 			requestAuth={requestAuth}
+			requestAuthAction={requestAuthAction}
 			navigate={navigate}
 			prefetch={prefetch}
 			renderAuthPage={renderAuthPage}
@@ -317,6 +350,52 @@ export {
 	usePhotonFieldValue as usePhotonValueAtPath,
 	usePhotonStore,
 } from "./context/photon-public-context";
+export {
+	PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY,
+	PHOTON_COMPONENT_REFERENCE_MODULE,
+	PHOTON_COMPONENT_REFERENCE_TYPE,
+	clonePhotonComponentLibraryBlocksForCopy,
+	clonePhotonComponentSourceBlockWithNewIds,
+	collectPhotonComponentLibraryUsages,
+	createPhotonComponentLibraryBlockId,
+	createPhotonComponentLibraryItemFromBlock,
+	createPhotonComponentReferenceBlock,
+	getPhotonComponentLibraryItems,
+	isPhotonComponentReferenceBlock,
+	parsePhotonComponentLibraryBlockId,
+	readPhotonComponentLibrarySettings,
+	resolvePhotonComponentReferenceBlocks,
+} from "./helpers/component-library";
+export {
+	PHOTON_INTERACTIONS_SITE_SETTING_KEY,
+	createPhotonInteractionExecutionResult,
+	createPhotonInteractionActionDefinition,
+	createPhotonInteractionGuardDefinition,
+	createPhotonInteractionTriggerSlot,
+	executePhotonInteractionActionPresentation,
+	executePhotonInteractionTriggerSlot,
+	photonInteractionExecutionSucceeded,
+	evaluatePhotonInteractionGuards,
+	readPhotonInteractionSettings,
+	resolvePhotonInteractionActionCatalog,
+	resolvePhotonInteractionSlotAction,
+	resolvePhotonInteractionSlotGuards,
+} from "./helpers/interactions";
+export {
+	PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY,
+	createPhotonActionValue,
+	createPhotonInteractionSurfaceDefinition,
+	readPhotonInteractionSurfaceSettings,
+	resolvePhotonInteractionSurfaceCatalog,
+	resolvePhotonInteractionSurfaceRequest,
+	resolvePhotonInteractionToastTemplate,
+} from "./helpers/interaction-surfaces";
+export {
+	mergePhotonStudioUrlState,
+	normalizePhotonStudioSurfaceMode,
+	parsePhotonStudioUrlState,
+	writePhotonStudioUrlState,
+} from "./helpers/studio-url-state";
 export { usePhotonRenderDepth } from "./context/photon-render-depth-context";
 export {
 	createPhotonBlockLocalizationSchema,
@@ -348,7 +427,10 @@ export {
 	PHOTON_SEARCH_QUERY_PARAM,
 	PHOTON_SEARCH_TARGET_PARAM,
 } from "./search/constants";
-export { PhotonSiteSearch } from "./search/photon-site-search";
+export {
+	PhotonSiteSearch,
+	PhotonSiteSearchSurfaceRenderer,
+} from "./search/photon-site-search";
 export type {
 	PhotonAccountTabExtension,
 	PhotonAuthPageRenderInput,
@@ -363,6 +445,45 @@ export type {
 	PhotonField,
 	PhotonFieldOption,
 	PhotonInstallableKit,
+	PhotonComponentLibraryEditorSelection,
+	PhotonComponentLibraryItem,
+	PhotonComponentLibrarySettings,
+	PhotonComponentLibrarySourceSelection,
+	PhotonComponentLibraryUsage,
+	PhotonComponentLibraryUsageProvider,
+	PhotonComponentReferenceProps,
+	PhotonInteractionActionDefinition,
+	PhotonInteractionActionExecutionHandlers,
+	PhotonInteractionActionInstance,
+	PhotonInteractionActionPresentation,
+	PhotonInteractionExecutionResult,
+	PhotonInteractionExecutionStatus,
+	PhotonInteractionGuardDefinition,
+	PhotonInteractionGuardEvaluationContext,
+	PhotonInteractionGuardEvaluationResult,
+	PhotonInteractionGuardEvaluator,
+	PhotonInteractionGuardEvaluatorMap,
+	PhotonInteractionGuardInstance,
+	PhotonInteractionGuardMissingEvaluatorPolicy,
+	PhotonInteractionPreviewScenario,
+	PhotonInteractionSurfaceDefinition,
+	PhotonInteractionSurfaceInstance,
+	PhotonInteractionSurfaceIntentBinding,
+	PhotonInteractionSurfaceKind,
+	PhotonInteractionSurfaceOpenHandler,
+	PhotonInteractionSurfaceRenderer,
+	PhotonInteractionSurfaceRendererMap,
+	PhotonInteractionSurfaceRendererProps,
+	PhotonInteractionSurfaceSettings,
+	PhotonInteractionSurfaceTrigger,
+	PhotonInteractionSurfaceVariant,
+	PhotonInteractionToastHandler,
+	PhotonInteractionToastInput,
+	PhotonInteractionToastStatus,
+	PhotonInteractionToastTemplate,
+	PhotonInteractionTriggerBinding,
+	PhotonInteractionTriggerSlot,
+	PhotonInteractionSettings,
 	PhotonLinkFactory,
 	PhotonLinkFactoryOptions,
 	PhotonLinkComponentProps,
@@ -373,6 +494,7 @@ export type {
 	PhotonLocaleStatus,
 	PhotonModule,
 	PhotonPageSettings,
+	PhotonResources,
 	PhotonPageSettingsPanelDefinition,
 	PhotonPageSettingsScope,
 	PhotonSiteFrameFooterSlot,
@@ -386,6 +508,7 @@ export type {
 	PhotonSiteFrameHeaderSlotItems,
 	PhotonSiteFrameHeaderSlots,
 	PhotonSiteFrameLinkItem,
+	PhotonSiteFrameNavigationColumn,
 	PhotonSiteFrameFloatingControls,
 	PhotonSiteFrameMobileBottomMenuControls,
 	PhotonSiteFrameMobileControls,

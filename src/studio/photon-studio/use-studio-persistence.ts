@@ -70,6 +70,30 @@ type UseStudioPersistenceProps = {
 	}) => void;
 };
 
+const resolvePhotonStudioSaveFailureDescription = (error: unknown): string => {
+	const responseData =
+		typeof error === "object" && error !== null
+			? (error as { response?: { data?: unknown } }).response?.data
+			: null;
+
+	if (typeof responseData === "object" && responseData !== null) {
+		const candidate = responseData as {
+			code?: unknown;
+			message?: unknown;
+		};
+
+		if (candidate.code === "photon_workspace_head_mismatch") {
+			return "This workspace changed before the save finished. Refresh the workspace, then apply the local draft again.";
+		}
+
+		if (typeof candidate.message === "string" && candidate.message.trim()) {
+			return candidate.message;
+		}
+	}
+
+	return error instanceof Error ? error.message : "Failed to save the document.";
+};
+
 export const useStudioPersistence = ({
 	initialDocument,
 	initialResources,
@@ -139,6 +163,9 @@ export const useStudioPersistence = ({
 			}),
 		}));
 	const hasLoadedDraftRef = useRef<string | null>(null);
+	const contentRevisionRef = useRef(contentRevision);
+	const isSavingRef = useRef(false);
+	const lastSavedStateRef = useRef(lastSavedState);
 	const initialStateFingerprint = useMemo(
 		() =>
 			getPhotonStudioFingerprint(
@@ -159,18 +186,27 @@ export const useStudioPersistence = ({
 	const hasUnsavedChanges = contentRevision !== lastSavedRevision;
 
 	useEffect(() => {
+		contentRevisionRef.current = contentRevision;
+	}, [contentRevision]);
+
+	useEffect(() => {
+		lastSavedStateRef.current = lastSavedState;
+	}, [lastSavedState]);
+
+	useEffect(() => {
+		const nextLastSavedState = createPhotonStudioSavePayload({
+			workspace: clonePhotonValue(normalizedWorkspace),
+			expectedHeadRevisionId: normalizedWorkspace.headRevisionId ?? null,
+			saveMode: "manual",
+			document: clonePhotonValue(initialDocument),
+			resources: clonePhotonValue(initialResources),
+			pageSettings: clonePhotonValue(initialPageSettings),
+			site: clonePhotonValue(initialSite),
+		});
+
 		setLastSavedRevision(0);
-		setLastSavedState(
-			createPhotonStudioSavePayload({
-				workspace: clonePhotonValue(normalizedWorkspace),
-				expectedHeadRevisionId: normalizedWorkspace.headRevisionId ?? null,
-				saveMode: "manual",
-				document: clonePhotonValue(initialDocument),
-				resources: clonePhotonValue(initialResources),
-				pageSettings: clonePhotonValue(initialPageSettings),
-				site: clonePhotonValue(initialSite),
-			}),
-		);
+		lastSavedStateRef.current = nextLastSavedState;
+		setLastSavedState(nextLastSavedState);
 		setSaveState("idle");
 	}, [
 		initialDocument,
@@ -244,6 +280,10 @@ export const useStudioPersistence = ({
 				}
 
 				if (!canSaveDocument) {
+					return;
+				}
+
+				if (contentRevisionRef.current !== 0) {
 					return;
 				}
 
@@ -333,26 +373,30 @@ export const useStudioPersistence = ({
 
 	const saveDocument = useCallback(
 		async (reason: PhotonStudioSaveReason) => {
-			if (!canSaveDocument || saveState === "saving") {
+			if (!canSaveDocument || isSavingRef.current) {
 				if (reason !== "autosave" && isAdmin) {
 					toast.error("Save unavailable", {
 						description:
-							"This workspace is readonly or direct commits are currently blocked.",
+							isSavingRef.current
+								? "A save is already in progress."
+								: "This workspace is readonly or direct commits are currently blocked.",
 					});
 				}
 
 				return;
 			}
 
+			isSavingRef.current = true;
 			setSaveState("saving");
 
 			try {
+				const baseSavedState = lastSavedStateRef.current;
 				const persistedState =
 					(await onSaveDocument?.(
 						createPhotonStudioSavePayload({
 							workspace: normalizedWorkspace,
 							expectedHeadRevisionId:
-								lastSavedState.expectedHeadRevisionId ??
+								baseSavedState.expectedHeadRevisionId ??
 								normalizedWorkspace.headRevisionId ??
 								null,
 							saveMode: reason,
@@ -370,7 +414,7 @@ export const useStudioPersistence = ({
 					createPhotonStudioSavePayload({
 						workspace: normalizedWorkspace,
 						expectedHeadRevisionId:
-							lastSavedState.expectedHeadRevisionId ??
+							baseSavedState.expectedHeadRevisionId ??
 							normalizedWorkspace.headRevisionId ??
 							null,
 						saveMode: reason,
@@ -388,23 +432,23 @@ export const useStudioPersistence = ({
 					workspace: persistedState.workspace ?? normalizedWorkspace,
 					capabilities: normalizedCapabilities,
 				});
-				setLastSavedState(
-					createPhotonStudioSavePayload({
-						workspace: clonePhotonValue(
-							persistedState.workspace ?? normalizedWorkspace,
-						),
-						expectedHeadRevisionId:
-							persistedState.expectedHeadRevisionId ??
-							persistedState.workspace?.headRevisionId ??
-							normalizedWorkspace.headRevisionId ??
-							null,
-						saveMode: persistedState.saveMode,
-						document: clonePhotonValue(persistedState.document),
-						resources: clonePhotonValue(persistedState.resources),
-						pageSettings: clonePhotonValue(persistedState.pageSettings),
-						site: clonePhotonValue(persistedState.site),
-					}),
-				);
+				const nextLastSavedState = createPhotonStudioSavePayload({
+					workspace: clonePhotonValue(
+						persistedState.workspace ?? normalizedWorkspace,
+					),
+					expectedHeadRevisionId:
+						persistedState.expectedHeadRevisionId ??
+						persistedState.workspace?.headRevisionId ??
+						normalizedWorkspace.headRevisionId ??
+						null,
+					saveMode: persistedState.saveMode,
+					document: clonePhotonValue(persistedState.document),
+					resources: clonePhotonValue(persistedState.resources),
+					pageSettings: clonePhotonValue(persistedState.pageSettings),
+					site: clonePhotonValue(persistedState.site),
+				});
+				lastSavedStateRef.current = nextLastSavedState;
+				setLastSavedState(nextLastSavedState);
 				setLastSavedRevision(0);
 				setSaveState("saved");
 
@@ -416,28 +460,23 @@ export const useStudioPersistence = ({
 			} catch (error) {
 				setSaveState("error");
 				toast.error("Save failed", {
-					description:
-						error instanceof Error
-							? error.message
-							: "Failed to save the document.",
+					description: resolvePhotonStudioSaveFailureDescription(error),
 				});
+			} finally {
+				isSavingRef.current = false;
 			}
 		},
 		[
 			canSaveDocument,
-			contentRevision,
 			isAdmin,
 			normalizedCapabilities,
 			normalizedWorkspace,
 			onSaveDocument,
 			pageSettings,
 			persistedDocument,
-			replaceState,
 			resources,
-			saveState,
 			site,
 			syncExternalState,
-			lastSavedState.expectedHeadRevisionId,
 		],
 	);
 

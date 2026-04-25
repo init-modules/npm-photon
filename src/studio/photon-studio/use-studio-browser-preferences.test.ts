@@ -103,6 +103,33 @@ test("builder surface hydration and persistence stay workspace-local", async () 
 	]);
 });
 
+test("builder surface hydration accepts surfaces alias as interactions mode", async () => {
+	const readStorage: typeof getStudioStorageItem = async <T>() =>
+		"surfaces" as T;
+	const hydrated = await loadStudioBuilderSurfacePreference({
+		isAdmin: true,
+		builderSurfaceMode: "canvas",
+		storageKey: "draft-key:builder-surface",
+		readStorage,
+	});
+
+	assert.equal(hydrated.builderSurfaceMode, "interactions");
+});
+
+test("builder surface hydration prefers URL builder surface over stored mode", async () => {
+	const readStorage: typeof getStudioStorageItem = async <T>() =>
+		"settings" as T;
+	const hydrated = await loadStudioBuilderSurfacePreference({
+		isAdmin: true,
+		builderSurfaceMode: "canvas",
+		search: "?builderSurface=interactions",
+		storageKey: "draft-key:builder-surface",
+		readStorage,
+	});
+
+	assert.equal(hydrated.builderSurfaceMode, "interactions");
+});
+
 test("manual save shortcut only fires on ctrl/cmd+s without modifier conflicts", () => {
 	assert.equal(
 		isStudioManualSaveShortcut({

@@ -1,10 +1,11 @@
 "use client";
 
 import clsx from "clsx";
+import type { PhotonStudioSurfaceMode } from "../../types";
 
 type CanvasSurfaceModeToggleProps = {
-	value: "canvas" | "settings";
-	onChange: (value: "canvas" | "settings") => void;
+	value: PhotonStudioSurfaceMode;
+	onChange: (value: PhotonStudioSurfaceMode) => void;
 };
 
 export const CanvasSurfaceModeToggle = ({
@@ -28,6 +29,10 @@ export const CanvasSurfaceModeToggle = ({
 				{
 					key: "settings" as const,
 					label: "Settings",
+				},
+				{
+					key: "interactions" as const,
+					label: "Interactions",
 				},
 			].map((option) => (
 				<button

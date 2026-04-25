@@ -260,6 +260,19 @@ const insertIntoList = (
 	return nextBlocks;
 };
 
+const insertManyIntoList = (
+	blocks: PhotonBlock[],
+	newBlocks: PhotonBlock[],
+	index: number,
+) => {
+	const nextBlocks = [...blocks];
+	const safeIndex = Math.min(Math.max(index, 0), nextBlocks.length);
+
+	nextBlocks.splice(safeIndex, 0, ...newBlocks);
+
+	return nextBlocks;
+};
+
 type InsertResult = {
 	blocks: PhotonBlock[];
 	inserted: boolean;
@@ -333,6 +346,160 @@ export const insertPhotonBlockInDocument = (
 	const result = insertIntoListTree(document.blocks, listId, block, index);
 
 	return result.inserted
+		? {
+				...document,
+				blocks: result.blocks,
+			}
+		: document;
+};
+
+const insertManyIntoListTree = (
+	blocks: PhotonBlock[],
+	listId: string,
+	newBlocks: PhotonBlock[],
+	index: number,
+): InsertResult => {
+	if (listId === PHOTON_ROOT_LIST_ID) {
+		return {
+			blocks: insertManyIntoList(blocks, newBlocks, index),
+			inserted: true,
+		};
+	}
+
+	let inserted = false;
+	const nextBlocks = blocks.map((candidate) => {
+		if (!candidate.areas?.length) {
+			return candidate;
+		}
+
+		const nextAreas = candidate.areas.map((area) => {
+			const areaListId = createPhotonAreaListId(candidate.id, area.id);
+
+			if (areaListId === listId) {
+				inserted = true;
+
+				return {
+					...area,
+					blocks: insertManyIntoList(area.blocks, newBlocks, index),
+				};
+			}
+
+			const result = insertManyIntoListTree(
+				area.blocks,
+				listId,
+				newBlocks,
+				index,
+			);
+
+			if (!result.inserted) {
+				return area;
+			}
+
+			inserted = true;
+
+			return {
+				...area,
+				blocks: result.blocks,
+			};
+		});
+
+		return inserted
+			? {
+					...candidate,
+					areas: nextAreas,
+				}
+			: candidate;
+	});
+
+	return {
+		blocks: inserted ? nextBlocks : blocks,
+		inserted,
+	};
+};
+
+export const insertPhotonBlocksInDocument = (
+	document: PhotonDocument,
+	listId: string,
+	blocks: PhotonBlock[],
+	index: number,
+) => {
+	const result = insertManyIntoListTree(document.blocks, listId, blocks, index);
+
+	return result.inserted
+		? {
+				...document,
+				blocks: result.blocks,
+			}
+		: document;
+};
+
+const replaceBlockWithBlocks = (
+	blocks: PhotonBlock[],
+	blockId: string,
+	replacementBlocks: PhotonBlock[],
+): UpdateResult => {
+	const targetIndex = blocks.findIndex((block) => block.id === blockId);
+
+	if (targetIndex >= 0) {
+		return {
+			blocks: [
+				...blocks.slice(0, targetIndex),
+				...replacementBlocks,
+				...blocks.slice(targetIndex + 1),
+			],
+			updated: true,
+		};
+	}
+
+	let updated = false;
+	const nextBlocks = blocks.map((block) => {
+		if (!block.areas?.length) {
+			return block;
+		}
+
+		let nestedUpdated = false;
+		const nextAreas = block.areas.map((area) => {
+			const result = replaceBlockWithBlocks(
+				area.blocks,
+				blockId,
+				replacementBlocks,
+			);
+
+			if (!result.updated) {
+				return area;
+			}
+
+			updated = true;
+			nestedUpdated = true;
+
+			return {
+				...area,
+				blocks: result.blocks,
+			};
+		});
+
+		return nestedUpdated
+			? {
+					...block,
+					areas: nextAreas,
+				}
+			: block;
+	});
+
+	return {
+		blocks: updated ? nextBlocks : blocks,
+		updated,
+	};
+};
+
+export const replacePhotonBlockWithBlocksInDocument = (
+	document: PhotonDocument,
+	blockId: string,
+	replacementBlocks: PhotonBlock[],
+) => {
+	const result = replaceBlockWithBlocks(document.blocks, blockId, replacementBlocks);
+
+	return result.updated
 		? {
 				...document,
 				blocks: result.blocks,

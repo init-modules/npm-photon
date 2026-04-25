@@ -10,13 +10,24 @@ import {
 import { resolvePhotonSiteDesignSettings } from "../../helpers/site-design";
 import type {
 	PhotonDocument,
+	PhotonComponentLibraryUsageProvider,
+	PhotonInteractionActionDefinition,
+	PhotonInteractionActionPresentation,
+	PhotonInteractionGuardDefinition,
+	PhotonInteractionSurfaceDefinition,
+	PhotonInteractionSurfaceOpenHandler,
+	PhotonInteractionToastHandler,
 	PhotonPageCatalogItem,
 	PhotonPageSettings,
 	PhotonSite,
+	PhotonStudioInteractionTab,
+	PhotonStudioPaletteTab,
+	PhotonStudioSurfaceMode,
 } from "../../types";
 import { SiteSurfaceCanvas } from "../canvas";
 import { CanvasTopToolbar } from "../canvas/canvas-top-toolbar";
 import { EditorDock } from "../editor-dock";
+import { InteractionSurfacesSurface } from "../interaction-surfaces-surface/interaction-surfaces-surface";
 import { PageSettingsSurface } from "../page-settings-surface/page-settings-surface";
 import type {
 	InspectorDefinitionMeta,
@@ -267,14 +278,26 @@ type PhotonStageProps = {
 	};
 	onCollapseAll: () => void;
 	onExpandAll: () => void;
-	onBuilderSurfaceModeChange: (value: "canvas" | "settings") => void;
+	onBuilderSurfaceModeChange: (value: PhotonStudioSurfaceMode) => void;
+	onPaletteTabChange: (value: PhotonStudioPaletteTab) => void;
+	onLibraryItemSelect: (value: string | null) => void;
+	onInteractionTabChange: (value: PhotonStudioInteractionTab) => void;
+	onInteractionActionSelect: (value: string | null) => void;
+	onInteractionGuardSelect: (value: string | null) => void;
+	onInteractionScenarioSelect: (value: string | null) => void;
+	onInteractionSurfaceSelect: (value: string | null) => void;
+	onInteractionToastSelect: (value: string | null) => void;
 	onLogout: () => void;
 	onModeChange: (mode: "preview" | "content" | "builder") => void;
 	onPreviewCollapsedChange: () => void;
 	onReset: () => void;
 	onSave: () => void;
 	builderEnabled: boolean;
-	builderSurfaceMode: "canvas" | "settings";
+	builderSurfaceMode: PhotonStudioSurfaceMode;
+	paletteTab: PhotonStudioPaletteTab;
+	selectedLibraryItemId: string | null;
+	selectedInteractionSurfaceId: string | null;
+	selectedInteractionToastId: string | null;
 	contentEnabled: boolean;
 	dockHeight: number;
 	isResizing: boolean;
@@ -315,6 +338,19 @@ type PhotonStageProps = {
 	pageSettings: PhotonPageSettings;
 	pageSettingsPanels: PageSettingsPanelDefinition[];
 	site: PhotonSite;
+	interactionSurfaces: PhotonInteractionSurfaceDefinition[];
+	interactionActions: PhotonInteractionActionDefinition[];
+	interactionGuards: PhotonInteractionGuardDefinition[];
+	interactionTab: PhotonStudioInteractionTab;
+	selectedInteractionActionId: string | null;
+	selectedInteractionGuardId: string | null;
+	selectedInteractionScenarioId: string | null;
+	openInteractionSurface: PhotonInteractionSurfaceOpenHandler;
+	showInteractionToast: PhotonInteractionToastHandler;
+	executeInteractionAction: (
+		action: PhotonInteractionActionPresentation | undefined | null,
+	) => boolean;
+	componentLibraryUsageProvider?: PhotonComponentLibraryUsageProvider;
 	siteSettingsPanels: SiteSettingsPanelDefinition[];
 	siteSettingsSubtabs: SiteSettingsSubtabDefinition[];
 	getPageSettingValue: (path: string) => unknown;
@@ -356,6 +392,14 @@ export const PhotonStage = ({
 	onCollapseAll,
 	onExpandAll,
 	onBuilderSurfaceModeChange,
+	onPaletteTabChange,
+	onLibraryItemSelect,
+	onInteractionTabChange,
+	onInteractionActionSelect,
+	onInteractionGuardSelect,
+	onInteractionScenarioSelect,
+	onInteractionSurfaceSelect,
+	onInteractionToastSelect,
 	onLogout,
 	onModeChange,
 	onPreviewCollapsedChange,
@@ -363,6 +407,14 @@ export const PhotonStage = ({
 	onSave,
 	builderEnabled,
 	builderSurfaceMode,
+	paletteTab,
+	selectedLibraryItemId,
+	interactionTab,
+	selectedInteractionActionId,
+	selectedInteractionGuardId,
+	selectedInteractionScenarioId,
+	selectedInteractionSurfaceId,
+	selectedInteractionToastId,
 	contentEnabled,
 	dockHeight,
 	isResizing,
@@ -401,6 +453,13 @@ export const PhotonStage = ({
 	pageSettings,
 	pageSettingsPanels,
 	site,
+	interactionSurfaces,
+	interactionActions,
+	interactionGuards,
+	openInteractionSurface,
+	showInteractionToast,
+	executeInteractionAction,
+	componentLibraryUsageProvider,
 	siteSettingsPanels,
 	siteSettingsSubtabs,
 	getPageSettingValue,
@@ -571,6 +630,10 @@ export const PhotonStage = ({
 				rightSidebarWidth={rightSidebarWidth}
 				leftCollapsed={leftCollapsed}
 				rightCollapsed={rightCollapsed}
+				paletteTab={paletteTab}
+				onPaletteTabChange={onPaletteTabChange}
+				selectedLibraryItemId={selectedLibraryItemId}
+				onLibraryItemSelect={onLibraryItemSelect}
 				search={search}
 				onSearchChange={onSearchChange}
 				allPaletteBlocks={allPaletteBlocks}
@@ -585,8 +648,9 @@ export const PhotonStage = ({
 				onToggleGroup={onToggleGroup}
 				selectedDefinitionKey={selectedDefinitionKey}
 				onSelectDefinition={onSelectDefinition}
-				onInsert={onInsert}
-				manualInsertTarget={manualInsertTarget}
+					onInsert={onInsert}
+					componentLibraryUsageProvider={componentLibraryUsageProvider}
+					manualInsertTarget={manualInsertTarget}
 				definitionFields={definitionFields}
 				inspectorGroups={inspectorGroups}
 				selectedFieldPath={selectedFieldPath}
@@ -645,6 +709,30 @@ export const PhotonStage = ({
 								onSiteSettingChange={onSiteSettingChange}
 								onSiteSettingFocus={onSiteSettingFocus}
 							/>
+						) : builderEnabled && builderSurfaceMode === "interactions" ? (
+								<InteractionSurfacesSurface
+									site={site}
+									definitions={interactionSurfaces}
+									actionDefinitions={interactionActions}
+									guardDefinitions={interactionGuards}
+									activeTab={interactionTab}
+									selectedActionId={selectedInteractionActionId}
+									selectedGuardId={selectedInteractionGuardId}
+									selectedScenarioId={selectedInteractionScenarioId}
+									selectedInstanceId={selectedInteractionSurfaceId}
+									selectedTemplateId={selectedInteractionToastId}
+									onActiveTabChange={onInteractionTabChange}
+									onSelectedActionChange={onInteractionActionSelect}
+									onSelectedGuardChange={onInteractionGuardSelect}
+									onSelectedScenarioChange={onInteractionScenarioSelect}
+									onSelectedInstanceChange={onInteractionSurfaceSelect}
+									onSelectedTemplateChange={onInteractionToastSelect}
+									onSiteSettingChange={onSiteSettingChange}
+									onSiteSettingFocus={onSiteSettingFocus}
+									openInteractionSurface={openInteractionSurface}
+									showInteractionToast={showInteractionToast}
+									executeInteractionAction={executeInteractionAction}
+								/>
 						) : (
 							<div
 								className={clsx(
@@ -693,6 +781,10 @@ export const PhotonStage = ({
 
 					{builderEnabled && builderSurfaceMode === "canvas" ? (
 						<BuilderMobilePanels
+							paletteTab={paletteTab}
+							onPaletteTabChange={onPaletteTabChange}
+							selectedLibraryItemId={selectedLibraryItemId}
+							onLibraryItemSelect={onLibraryItemSelect}
 							search={search}
 							onSearchChange={onSearchChange}
 							allPaletteBlocks={allPaletteBlocks}
@@ -707,8 +799,9 @@ export const PhotonStage = ({
 							onToggleGroup={onToggleGroup}
 							selectedDefinitionKey={selectedDefinitionKey}
 							onSelectDefinition={onSelectDefinition}
-							onInsert={onInsert}
-							manualInsertTarget={manualInsertTarget}
+								onInsert={onInsert}
+								componentLibraryUsageProvider={componentLibraryUsageProvider}
+								manualInsertTarget={manualInsertTarget}
 							definitionFields={definitionFields}
 							inspectorGroups={inspectorGroups}
 							selectedFieldPath={selectedFieldPath}
