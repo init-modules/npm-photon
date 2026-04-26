@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { ArrowDown, ArrowUp, ChevronDown, Plus, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { PhotonRichTextEditor } from "../../components/rich-text-editor";
 import {
 	DropdownMenu,
@@ -428,7 +428,7 @@ const INLINE_FIELD_KINDS = new Set<PhotonField["kind"] | PhotonNestedField["kind
 	"toggle",
 ]);
 
-export const FieldEditor = ({
+const FieldEditorImpl = ({
 	field,
 	blockId,
 	value,
@@ -773,3 +773,20 @@ export const FieldEditor = ({
 		</div>
 	);
 };
+
+/**
+ * Memoize on the props that actually drive the rendered output. The
+ * inspector panel passes inline `onChange`/`onFocus` closures that
+ * are recreated on every render — comparing them by reference would
+ * defeat memoization, so they are intentionally excluded. The store
+ * is the source of truth for committed values, so a stale closure
+ * cannot leak the wrong value back.
+ */
+export const FieldEditor = memo(FieldEditorImpl, (prev, next) => {
+	if (prev.field !== next.field) return false;
+	if (prev.blockId !== next.blockId) return false;
+	if (prev.absolutePath !== next.absolutePath) return false;
+	if (prev.hidePathLabel !== next.hidePathLabel) return false;
+	if (!Object.is(prev.value, next.value)) return false;
+	return true;
+});
