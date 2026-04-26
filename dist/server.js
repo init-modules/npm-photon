@@ -1,6 +1,6 @@
 import {
   createPhotonRuntime
-} from "./chunk-C2E4T4EA.js";
+} from "./chunk-CPTGXXVB.js";
 import {
   collectPhotonFooterExtensionItems,
   collectPhotonHeaderExtensionItems,
@@ -31,7 +31,7 @@ import {
   normalizePhotonStudioSurfaceMode,
   parsePhotonStudioUrlState,
   writePhotonStudioUrlState
-} from "./chunk-ANYY7ADN.js";
+} from "./chunk-ERQ5TAWA.js";
 import {
   PHOTON_SEARCH_OCCURRENCE_PARAM,
   PHOTON_SEARCH_QUERY_PARAM,
@@ -40,11 +40,17 @@ import {
 import {
   PHOTON_PAGE_SURFACE_REGION_KEY,
   collectPhotonAccountTabs,
+  collectPhotonConditionDefinitions,
+  collectPhotonConditionEvaluators,
   collectPhotonDocuments,
+  collectPhotonFormSchemas,
   collectPhotonInteractionActions,
   collectPhotonInteractionGuardEvaluators,
   collectPhotonInteractionGuards,
+  collectPhotonInteractionPolicies,
   collectPhotonInteractionSurfaces,
+  collectPhotonRouteContextFields,
+  collectPhotonSiteDataSchemas,
   collectPhotonSiteFrameExtensions,
   composePhotonSurfaceDocument,
   createPhotonBlock,
@@ -66,7 +72,7 @@ import {
   resolvePhotonSurfaceRegionDescriptors,
   resolvePhotonSurfaceRegionForBlockId,
   resolvePhotonSurfaceRegionForListId
-} from "./chunk-PWNAHWNN.js";
+} from "./chunk-725LMVL7.js";
 import {
   clonePhotonBlockTreeWithNewIds,
   collectBlockIds,
@@ -79,11 +85,15 @@ import {
   removePhotonBlockFromDocument,
   replacePhotonBlockWithBlocksInDocument,
   updatePhotonBlockInDocument
-} from "./chunk-DBONYFOO.js";
+} from "./chunk-XPZWWFIY.js";
 import {
   PHOTON_ROOT_LIST_ID,
-  createPhotonAreaListId
-} from "./chunk-LC3FJEJ5.js";
+  PHOTON_ROUTE_CONTEXT_SCOPE,
+  createPhotonAreaListId,
+  matchRoutePattern,
+  parseRoutePattern,
+  resolveRouteContext
+} from "./chunk-MQ64GIR5.js";
 import {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
   DEFAULT_PHOTON_WORKSPACE_REF,
@@ -121,6 +131,7 @@ import {
   getValueAtPath,
   isPhotonComponentReferenceBlock,
   isPhotonWorkspaceReadonly,
+  isRecord,
   normalizePhotonWorkspaceCapabilities,
   normalizePhotonWorkspaceDescriptor,
   normalizePhotonWorkspaceRef,
@@ -139,7 +150,7 @@ import {
   resolvePhotonInteractionSurfaceRequest,
   resolvePhotonInteractionToastTemplate,
   setValueAtPath
-} from "./chunk-ZJB32M2N.js";
+} from "./chunk-P4O7POLV.js";
 export {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
   DEFAULT_PHOTON_WORKSPACE_REF,
@@ -154,6 +165,7 @@ export {
   PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY,
   PHOTON_PAGE_SURFACE_REGION_KEY,
   PHOTON_ROOT_LIST_ID,
+  PHOTON_ROUTE_CONTEXT_SCOPE,
   PHOTON_SEARCH_OCCURRENCE_PARAM,
   PHOTON_SEARCH_QUERY_PARAM,
   PHOTON_SEARCH_TARGET_PARAM,
@@ -170,13 +182,19 @@ export {
   collectBlockIds,
   collectPhotonAccountTabs,
   collectPhotonComponentLibraryUsages,
+  collectPhotonConditionDefinitions,
+  collectPhotonConditionEvaluators,
   collectPhotonDocuments,
   collectPhotonFooterExtensionItems,
+  collectPhotonFormSchemas,
   collectPhotonHeaderExtensionItems,
   collectPhotonInteractionActions,
   collectPhotonInteractionGuardEvaluators,
   collectPhotonInteractionGuards,
+  collectPhotonInteractionPolicies,
   collectPhotonInteractionSurfaces,
+  collectPhotonRouteContextFields,
+  collectPhotonSiteDataSchemas,
   collectPhotonSiteFrameExtensions,
   composePhotonSurfaceDocument,
   createPhotonAccountTabExtension,
@@ -229,6 +247,8 @@ export {
   isPhotonInstallableKit,
   isPhotonSiteDesignPresetApplied,
   isPhotonWorkspaceReadonly,
+  isRecord,
+  matchRoutePattern,
   mergePhotonStudioUrlState,
   movePhotonArrayItem,
   movePhotonBlockInDocument,
@@ -238,6 +258,7 @@ export {
   normalizePhotonWorkspaceRef,
   parsePhotonComponentLibraryBlockId,
   parsePhotonStudioUrlState,
+  parseRoutePattern,
   photonInteractionExecutionSucceeded,
   photonSiteColorSchemes,
   photonSiteDesignPresets,
@@ -262,6 +283,7 @@ export {
   resolvePhotonSurfaceRegionDescriptors,
   resolvePhotonSurfaceRegionForBlockId,
   resolvePhotonSurfaceRegionForListId,
+  resolveRouteContext,
   setValueAtPath,
   updatePhotonBlockInDocument,
   writePhotonStudioUrlState

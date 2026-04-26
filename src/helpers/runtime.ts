@@ -5,11 +5,17 @@ import type {
 import { createPhotonRegistry } from "./document";
 import {
 	collectPhotonAccountTabs,
+	collectPhotonConditionDefinitions,
+	collectPhotonConditionEvaluators,
 	collectPhotonDocuments,
+	collectPhotonFormSchemas,
 	collectPhotonInteractionActions,
 	collectPhotonInteractionGuardEvaluators,
 	collectPhotonInteractionGuards,
+	collectPhotonInteractionPolicies,
 	collectPhotonInteractionSurfaces,
+	collectPhotonRouteContextFields,
+	collectPhotonSiteDataSchemas,
 	collectPhotonSiteFrameExtensions,
 } from "./installable";
 
@@ -25,4 +31,10 @@ export const createPhotonRuntime = (
 	interactionActions: collectPhotonInteractionActions(entries),
 	interactionGuards: collectPhotonInteractionGuards(entries),
 	interactionGuardEvaluators: collectPhotonInteractionGuardEvaluators(entries),
+	interactionPolicies: collectPhotonInteractionPolicies(entries),
+	conditionDefinitions: collectPhotonConditionDefinitions(entries),
+	conditionEvaluators: collectPhotonConditionEvaluators(entries),
+	siteDataSchemas: collectPhotonSiteDataSchemas(entries),
+	routeContextFields: collectPhotonRouteContextFields(entries),
+	formSchemas: collectPhotonFormSchemas(entries),
 });

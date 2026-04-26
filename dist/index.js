@@ -1,25 +1,25 @@
 import {
   EditableImage
-} from "./chunk-KWIFEENE.js";
+} from "./chunk-HSEUZBV5.js";
 import {
   EditableRichText
-} from "./chunk-GSJMCVCW.js";
+} from "./chunk-CB5ZFVUT.js";
 import {
   EditableText as EditableText2
-} from "./chunk-QSEH4ZN2.js";
+} from "./chunk-VL6XQBPA.js";
 import {
   EditableTextarea
-} from "./chunk-XYAES3R2.js";
+} from "./chunk-I6TBUZ7T.js";
 import {
   PhotonBlockRenderer,
   PhotonFieldEditorList,
   PhotonStudio
-} from "./chunk-D2H2QQMH.js";
+} from "./chunk-KGMZD3PY.js";
 import {
   PhotonRichTextEditor,
   photonRichTextContentClassName,
   renderPhotonRichTextHtml
-} from "./chunk-DSTVLR5H.js";
+} from "./chunk-HEAUAOXC.js";
 import {
   EditableImage as EditableImage2,
   EditableTextarea as EditableTextarea2,
@@ -36,10 +36,13 @@ import {
   normalizePhotonSiteLinkItems,
   normalizePhotonSiteNavigationColumns,
   normalizePhotonSiteStringItems,
+  photonSystemConditionDefinitions,
+  photonSystemConditionEvaluators,
   photonSystemInteractionActions,
+  photonSystemInteractionPolicies,
   photonSystemInteractionSurfaces,
   usePhotonComponentLibraryStack
-} from "./chunk-TISXOFAT.js";
+} from "./chunk-KVRKUEWY.js";
 import {
   KeyboardMenuList,
   PhotonRenderDepthProvider,
@@ -48,10 +51,10 @@ import {
   useKeyboardMenuController,
   usePhotonRenderDepth,
   usePhotonSiteFrameScrollLock
-} from "./chunk-ND6K56IL.js";
+} from "./chunk-U4YHDXTS.js";
 import {
   EditableText
-} from "./chunk-AUXN32PD.js";
+} from "./chunk-4XNGVWTF.js";
 import {
   buildPhotonSearchResultHref,
   buildPhotonSearchTargetId,
@@ -66,7 +69,7 @@ import {
 } from "./chunk-LOTB3E2O.js";
 import {
   createPhotonRuntime
-} from "./chunk-C2E4T4EA.js";
+} from "./chunk-CPTGXXVB.js";
 import {
   collectPhotonFooterExtensionItems,
   collectPhotonHeaderExtensionItems,
@@ -75,6 +78,14 @@ import {
   resolvePhotonAccountTabs,
   resolvePhotonSiteFrameExtensions
 } from "./chunk-HMZA6DQS.js";
+import {
+  buildActionPlan,
+  createSitePolicyOverride,
+  evaluateConditionExpression,
+  isSitePolicyOverride,
+  mapGuardsToActionPolicies,
+  sitePolicyPath
+} from "./chunk-F6JYM4BG.js";
 import {
   getPhotonSurfaceModeStyle
 } from "./chunk-IOB5G6YT.js";
@@ -100,7 +111,7 @@ import {
   normalizePhotonStudioSurfaceMode,
   parsePhotonStudioUrlState,
   writePhotonStudioUrlState
-} from "./chunk-ANYY7ADN.js";
+} from "./chunk-ERQ5TAWA.js";
 import {
   PHOTON_SEARCH_OCCURRENCE_PARAM,
   PHOTON_SEARCH_QUERY_PARAM,
@@ -108,9 +119,9 @@ import {
 } from "./chunk-CZ47CC3D.js";
 import {
   EditableGallery
-} from "./chunk-CEHIZZTF.js";
+} from "./chunk-BHHJRUMC.js";
 import "./chunk-RLJXTXGN.js";
-import "./chunk-K6EYZM4G.js";
+import "./chunk-3DINFRWK.js";
 import {
   PhotonLink,
   PhotonProvider,
@@ -118,9 +129,11 @@ import {
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonPersistedState,
+  usePhotonRouteContext,
+  usePhotonSiteData,
   usePhotonStore,
   usePhotonStoreApi
-} from "./chunk-4M3LI4MZ.js";
+} from "./chunk-BJK5VDXG.js";
 import {
   isPhotonMediaValue,
   resolvePhotonMediaPreviewUrl,
@@ -135,11 +148,17 @@ import {
 import {
   PHOTON_PAGE_SURFACE_REGION_KEY,
   collectPhotonAccountTabs,
+  collectPhotonConditionDefinitions,
+  collectPhotonConditionEvaluators,
   collectPhotonDocuments,
+  collectPhotonFormSchemas,
   collectPhotonInteractionActions,
   collectPhotonInteractionGuardEvaluators,
   collectPhotonInteractionGuards,
+  collectPhotonInteractionPolicies,
   collectPhotonInteractionSurfaces,
+  collectPhotonRouteContextFields,
+  collectPhotonSiteDataSchemas,
   collectPhotonSiteFrameExtensions,
   composePhotonSurfaceDocument,
   createPhotonBlock,
@@ -161,7 +180,17 @@ import {
   resolvePhotonSurfaceRegionDescriptors,
   resolvePhotonSurfaceRegionForBlockId,
   resolvePhotonSurfaceRegionForListId
-} from "./chunk-PWNAHWNN.js";
+} from "./chunk-725LMVL7.js";
+import {
+  PHOTON_SITE_DATA_BY_LOCALE_SETTING_KEY,
+  PHOTON_SITE_DATA_SETTING_KEY,
+  extractPhotonSiteDataBindings,
+  localeSitePath,
+  parsePhotonSiteDataBindingExpression,
+  resolvePhotonSiteData,
+  resolvePhotonSiteDataBinding,
+  sitePath
+} from "./chunk-JASL5BP5.js";
 import {
   decodePhotonHtmlEntities,
   getPhotonAnchorRel,
@@ -180,11 +209,15 @@ import {
   removePhotonBlockFromDocument,
   replacePhotonBlockWithBlocksInDocument,
   updatePhotonBlockInDocument
-} from "./chunk-DBONYFOO.js";
+} from "./chunk-XPZWWFIY.js";
 import {
   PHOTON_ROOT_LIST_ID,
-  createPhotonAreaListId
-} from "./chunk-LC3FJEJ5.js";
+  PHOTON_ROUTE_CONTEXT_SCOPE,
+  createPhotonAreaListId,
+  matchRoutePattern,
+  parseRoutePattern,
+  resolveRouteContext
+} from "./chunk-MQ64GIR5.js";
 import {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
   DEFAULT_PHOTON_WORKSPACE_REF,
@@ -212,6 +245,7 @@ import {
   createPhotonInteractionSurfaceDefinition,
   createPhotonInteractionTriggerSlot,
   createPhotonNodeId,
+  dedupePoliciesById,
   duplicatePhotonComponentLibraryItem,
   evaluatePhotonInteractionGuards,
   executePhotonInteractionActionPresentation,
@@ -222,6 +256,7 @@ import {
   getValueAtPath,
   isPhotonComponentReferenceBlock,
   isPhotonWorkspaceReadonly,
+  isRecord,
   normalizePhotonWorkspaceCapabilities,
   normalizePhotonWorkspaceDescriptor,
   normalizePhotonWorkspaceRef,
@@ -239,8 +274,9 @@ import {
   resolvePhotonInteractionSurfaceCatalog,
   resolvePhotonInteractionSurfaceRequest,
   resolvePhotonInteractionToastTemplate,
+  resolvePolicyCascade,
   setValueAtPath
-} from "./chunk-ZJB32M2N.js";
+} from "./chunk-P4O7POLV.js";
 
 // src/helpers/register-editable-editor-loaders.ts
 var registerLoader = (key, loader) => {
@@ -251,31 +287,31 @@ var registerLoader = (key, loader) => {
 };
 registerLoader(
   "gallery",
-  () => import("./editable-gallery-LEWZWCQL.js").then(
+  () => import("./editable-gallery-6BKXJIFF.js").then(
     (module) => module.EditableGallery
   )
 );
 registerLoader(
   "image",
-  () => import("./editable-image-77N4G635.js").then(
+  () => import("./editable-image-2FAT5E6F.js").then(
     (module) => module.EditableImage
   )
 );
 registerLoader(
   "richText",
-  () => import("./editable-rich-text-USIXHGCO.js").then(
+  () => import("./editable-rich-text-B2P33B37.js").then(
     (module) => module.EditableRichText
   )
 );
 registerLoader(
   "text",
-  () => import("./editable-text-6ECHSFGV.js").then(
+  () => import("./editable-text-7M54IDSL.js").then(
     (module) => module.EditableText
   )
 );
 registerLoader(
   "textarea",
-  () => import("./editable-textarea-5MTXXEPV.js").then(
+  () => import("./editable-textarea-T5QAUBWF.js").then(
     (module) => module.EditableTextarea
   )
 );
@@ -1267,8 +1303,8 @@ var siteFooterShellDefinition = definePhotonBlockDefinition({
   defaults: {
     variant: "classic-dark",
     brandTitle: createPhotonLocalizedDefault({
-      en: "Photon",
-      ru: "Photon"
+      en: "{{ brand.name }}",
+      ru: "{{ brand.name }}"
     }),
     brandBody: createPhotonLocalizedDefault({
       en: "Package-first live website editing for teams that want reusable packages, clean package boundaries and real page composition.",
@@ -1330,8 +1366,16 @@ var siteFooterShellDefinition = definePhotonBlockDefinition({
       ]
     }),
     contactItems: createPhotonLocalizedDefault({
-      en: ["+7 (707) 040-43-43", "hello@example.test", "Almaty, Kazakhstan"],
-      ru: ["+7 (707) 040-43-43", "hello@example.test", "\u0410\u043B\u043C\u0430\u0442\u044B, \u041A\u0430\u0437\u0430\u0445\u0441\u0442\u0430\u043D"]
+      en: [
+        "{{ contacts.phone }}",
+        "{{ contacts.email }}",
+        "{{ contacts.address }}"
+      ],
+      ru: [
+        "{{ contacts.phone }}",
+        "{{ contacts.email }}",
+        "{{ contacts.address }}"
+      ]
     }),
     legalLabel: createPhotonLocalizedDefault({
       en: "Privacy policy",
@@ -2460,8 +2504,8 @@ var siteHeaderShellDefinition = definePhotonBlockDefinition({
   defaults: {
     variant: "commerce-inline",
     brandLabel: createPhotonLocalizedDefault({
-      en: "Photon",
-      ru: "Photon"
+      en: "{{ brand.name }}",
+      ru: "{{ brand.name }}"
     }),
     brandHref: "/",
     logoImage: null,
@@ -2485,7 +2529,7 @@ var siteHeaderShellDefinition = definePhotonBlockDefinition({
       en: "Search the website",
       ru: "\u041F\u043E\u0438\u0441\u043A \u043F\u043E \u0441\u0430\u0439\u0442\u0443"
     }),
-    contactValue: "+7 (707) 040-43-43",
+    contactValue: "{{ contacts.phone }}",
     contactCaption: createPhotonLocalizedDefault({
       en: "Daily from 09:00 to 18:00",
       ru: "\u0415\u0436\u0435\u0434\u043D\u0435\u0432\u043D\u043E \u0441 09:00 \u0434\u043E 18:00"
@@ -2543,6 +2587,233 @@ var siteHeaderShellDefinition = definePhotonBlockDefinition({
   interactionSlots: resolveSiteHeaderInteractionSlots,
   component: SiteHeaderShell
 });
+
+// src/modules/system/site/site-data-schemas.ts
+var photonSystemSiteDataSchemas = [
+  {
+    id: "brand",
+    packageName: "photon-system",
+    label: "Brand",
+    description: "Project name and tagline used across the site.",
+    fields: [
+      {
+        path: "name",
+        label: "Brand name",
+        kind: "text",
+        defaultValue: "Photon",
+        group: "content"
+      },
+      {
+        path: "tagline",
+        label: "Tagline",
+        kind: "text",
+        defaultValue: "",
+        group: "content"
+      },
+      {
+        path: "legalName",
+        label: "Legal name",
+        kind: "text",
+        defaultValue: "",
+        group: "advanced"
+      }
+    ]
+  },
+  {
+    id: "contacts",
+    packageName: "photon-system",
+    label: "Contacts",
+    description: "Phone, email, and address used in headers, footers, and CTAs.",
+    fields: [
+      {
+        path: "phone",
+        label: "Phone",
+        kind: "phone",
+        defaultValue: "+7 (707) 040-43-43",
+        group: "contact"
+      },
+      {
+        path: "email",
+        label: "Email",
+        kind: "email",
+        defaultValue: "hello@example.test",
+        group: "contact"
+      },
+      {
+        path: "address",
+        label: "Address",
+        kind: "textarea",
+        defaultValue: "Almaty, Kazakhstan",
+        group: "contact"
+      },
+      {
+        path: "workingHours",
+        label: "Working hours",
+        kind: "text",
+        defaultValue: "",
+        group: "contact"
+      }
+    ]
+  },
+  {
+    id: "socials",
+    packageName: "photon-system",
+    label: "Social links",
+    description: "Public social media profiles.",
+    fields: [
+      {
+        path: "instagram",
+        label: "Instagram URL",
+        kind: "url",
+        defaultValue: "",
+        group: "social"
+      },
+      {
+        path: "whatsapp",
+        label: "WhatsApp URL",
+        kind: "url",
+        defaultValue: "",
+        group: "social"
+      }
+    ]
+  }
+];
+
+// src/modules/system/site/route-context-fields.ts
+var photonSystemRouteContextFields = [
+  {
+    path: "slug",
+    label: "Slug",
+    kind: "text",
+    description: "Item slug from the URL.",
+    packageName: "photon-system"
+  },
+  {
+    path: "city",
+    label: "City",
+    kind: "text",
+    description: "Active city. Defaults to almaty when URL has no city segment.",
+    defaultValue: "almaty",
+    packageName: "photon-system"
+  }
+];
+
+// src/modules/system/site/products-document.ts
+var photonSystemProductsDocument = {
+  id: "photon-products",
+  name: "Products",
+  route: "/products",
+  routePatterns: ["/products/:slug", "/:city/products/:slug"],
+  updatedAt: "2026-04-26T00:00:00.000Z",
+  blocks: [
+    {
+      id: "products-hero",
+      module: "marketing-demo",
+      type: "hero-spotlight",
+      props: {
+        eyebrow: "Route context demo",
+        title: "\u041A\u043E\u0444\u0435 {{ route.slug }} \u0432 {{ route.city }}",
+        body: "Single document, two URL shapes \u2014 `/products/:slug` (default city) and `/:city/products/:slug` (overridden). The hero text resolves `{{ route.slug }}` and `{{ route.city }}` from the matched URL pattern, falling back to the city default `almaty` when the segment is omitted.",
+        primaryLabel: "Try /astana/products/coffee",
+        primaryHref: "/astana/products/coffee",
+        secondaryLabel: "Default /products/coffee",
+        secondaryHref: "/products/coffee",
+        spotlightLabel: "Active city",
+        spotlightValue: "{{ route.city }}"
+      }
+    }
+  ]
+};
+
+// src/modules/system/site/form-schemas.ts
+var photonSystemFormSchemas = [
+  {
+    id: "photon.contact",
+    packageName: "photon-system",
+    label: "Contact form",
+    description: "Default contact form schema. Workspaces can extend or replace fields via site overrides.",
+    fields: [
+      {
+        id: "name",
+        name: "name",
+        type: "text",
+        label: "Your name",
+        placeholder: "Jane Doe",
+        required: true,
+        width: "half",
+        locked: true
+      },
+      {
+        id: "email",
+        name: "email",
+        type: "email",
+        label: "Email",
+        placeholder: "you@example.com",
+        required: true,
+        width: "half",
+        locked: true
+      },
+      {
+        id: "phone",
+        name: "phone",
+        type: "phone",
+        label: "Phone (optional)",
+        width: "half"
+      },
+      {
+        id: "message",
+        name: "message",
+        type: "textarea",
+        label: "Message",
+        required: true,
+        width: "full",
+        locked: true
+      }
+    ],
+    policy: {
+      allowAddFields: true,
+      allowRemoveFields: true,
+      allowReorder: true,
+      allowEditFieldNames: false,
+      lockedFieldIds: ["name", "email", "message"]
+    },
+    submit: {
+      intent: "photon.contact.submit",
+      endpoint: "/api/photon/contact",
+      successMessage: "Thanks \u2014 we'll be in touch shortly.",
+      errorMessage: "Sorry, the message could not be sent. Please try again later."
+    }
+  },
+  {
+    id: "photon.newsletter",
+    packageName: "photon-system",
+    label: "Newsletter signup",
+    description: "Single-field email subscription form.",
+    fields: [
+      {
+        id: "email",
+        name: "email",
+        type: "email",
+        label: "Email",
+        placeholder: "you@example.com",
+        required: true,
+        width: "full",
+        locked: true
+      }
+    ],
+    policy: {
+      allowAddFields: false,
+      allowRemoveFields: false,
+      allowReorder: false
+    },
+    submit: {
+      intent: "photon.newsletter.submit",
+      endpoint: "/api/photon/newsletter",
+      successMessage: "Subscribed.",
+      errorMessage: "Subscription failed."
+    }
+  }
+];
 
 // src/modules/system.tsx
 import { jsx as jsx5, jsxs as jsxs4 } from "react/jsx-runtime";
@@ -2897,7 +3168,16 @@ var photonSystemKit = createPhotonKit({
   label: "Photon System",
   modules: [photonSystemModule],
   interactionSurfaces: photonSystemInteractionSurfaces,
-  interactionActions: photonSystemInteractionActions
+  interactionActions: photonSystemInteractionActions,
+  interactionPolicies: photonSystemInteractionPolicies,
+  conditionDefinitions: photonSystemConditionDefinitions,
+  conditionEvaluators: photonSystemConditionEvaluators,
+  siteDataSchemas: photonSystemSiteDataSchemas,
+  routeContextFields: photonSystemRouteContextFields,
+  formSchemas: photonSystemFormSchemas,
+  documents: {
+    [photonSystemProductsDocument.id]: photonSystemProductsDocument
+  }
 });
 export {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
@@ -2920,9 +3200,12 @@ export {
   PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY,
   PHOTON_PAGE_SURFACE_REGION_KEY,
   PHOTON_ROOT_LIST_ID,
+  PHOTON_ROUTE_CONTEXT_SCOPE,
   PHOTON_SEARCH_OCCURRENCE_PARAM,
   PHOTON_SEARCH_QUERY_PARAM,
   PHOTON_SEARCH_TARGET_PARAM,
+  PHOTON_SITE_DATA_BY_LOCALE_SETTING_KEY,
+  PHOTON_SITE_DATA_SETTING_KEY,
   PHOTON_SITE_DESIGN_DEFAULTS,
   PHOTON_SITE_DESIGN_FALLBACK_DEFAULTS,
   PhotonBlockRenderer,
@@ -2939,6 +3222,7 @@ export {
   PhotonSurfaceSection,
   applyPhotonSiteColorScheme,
   applyPhotonSiteDesignPreset,
+  buildActionPlan,
   buildPhotonSearchResultHref,
   buildPhotonSearchTargetId,
   canEditPhotonWorkspace,
@@ -2950,13 +3234,19 @@ export {
   collectBlockIds,
   collectPhotonAccountTabs,
   collectPhotonComponentLibraryUsages,
+  collectPhotonConditionDefinitions,
+  collectPhotonConditionEvaluators,
   collectPhotonDocuments,
   collectPhotonFooterExtensionItems,
+  collectPhotonFormSchemas,
   collectPhotonHeaderExtensionItems,
   collectPhotonInteractionActions,
   collectPhotonInteractionGuardEvaluators,
   collectPhotonInteractionGuards,
+  collectPhotonInteractionPolicies,
   collectPhotonInteractionSurfaces,
+  collectPhotonRouteContextFields,
+  collectPhotonSiteDataSchemas,
   collectPhotonSiteFrameExtensions,
   composePhotonSurfaceDocument,
   createPhotonAccountTabExtension,
@@ -2981,14 +3271,18 @@ export {
   createPhotonSiteDesignSettings,
   createPhotonSiteFrameExtension,
   createPhotonTiptapJsonBindingAdapter,
+  createSitePolicyOverride,
   decodePhotonHtmlEntities,
   decomposePhotonSurfaceDocument,
+  dedupePoliciesById,
   definePhotonBlockDefinition,
   duplicatePhotonBlockInDocument,
   duplicatePhotonComponentLibraryItem,
+  evaluateConditionExpression,
   evaluatePhotonInteractionGuards,
   executePhotonInteractionActionPresentation,
   executePhotonInteractionTriggerSlot,
+  extractPhotonSiteDataBindings,
   findPhotonBlock,
   getFirstPhotonBlockId,
   getFirstPhotonSurfaceEditableBlockId,
@@ -3014,6 +3308,11 @@ export {
   isPhotonMediaValue,
   isPhotonSiteDesignPresetApplied,
   isPhotonWorkspaceReadonly,
+  isRecord,
+  isSitePolicyOverride,
+  localeSitePath,
+  mapGuardsToActionPolicies,
+  matchRoutePattern,
   mergePhotonStudioUrlState,
   movePhotonArrayItem,
   movePhotonBlockInDocument,
@@ -3024,7 +3323,9 @@ export {
   normalizePhotonWorkspaceDescriptor,
   normalizePhotonWorkspaceRef,
   parsePhotonComponentLibraryBlockId,
+  parsePhotonSiteDataBindingExpression,
   parsePhotonStudioUrlState,
+  parseRoutePattern,
   photonInteractionExecutionSucceeded,
   photonRichTextContentClassName,
   photonSiteColorSchemes,
@@ -3054,6 +3355,8 @@ export {
   resolvePhotonModules,
   resolvePhotonNavigationConfig,
   resolvePhotonRequestHeaders,
+  resolvePhotonSiteData,
+  resolvePhotonSiteDataBinding,
   resolvePhotonSiteDesignSettings,
   resolvePhotonSiteFrameExtensions,
   resolvePhotonSurfaceRegionDescriptors,
@@ -3061,8 +3364,12 @@ export {
   resolvePhotonSurfaceRegionForListId,
   resolvePhotonText,
   resolvePhotonWorkspaceParams,
+  resolvePolicyCascade,
+  resolveRouteContext,
   sanitizePhotonLinkHref,
   setValueAtPath,
+  sitePath,
+  sitePolicyPath,
   updatePhotonBlockInDocument,
   updatePhotonMediaUrl,
   useKeyboardMenuController,
@@ -3072,6 +3379,8 @@ export {
   usePhotonI18n,
   usePhotonPersistedState,
   usePhotonRenderDepth,
+  usePhotonRouteContext,
+  usePhotonSiteData,
   usePhotonStore,
   usePhotonStoreApi,
   usePhotonValueAtPath,

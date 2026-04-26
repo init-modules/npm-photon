@@ -57,6 +57,7 @@ export const EditorSaveButton = ({
 					<button
 						type="button"
 						onClick={onSave}
+						data-testid="photon-editor-save"
 						className={clsx(
 							"inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border px-4 text-sm font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition-[border-color,background-color,color] duration-200 ease-out",
 							meta.className,

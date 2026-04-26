@@ -9,6 +9,9 @@ import {
 } from "react";
 import { resolvePhotonSiteDesignSettings } from "../../helpers/site-design";
 import type {
+	PhotonActionPolicy,
+	PhotonConditionDefinition,
+	PhotonConditionEvaluatorMap,
 	PhotonDocument,
 	PhotonComponentLibraryUsageProvider,
 	PhotonInteractionActionDefinition,
@@ -20,6 +23,7 @@ import type {
 	PhotonPageCatalogItem,
 	PhotonPageSettings,
 	PhotonSite,
+	PhotonSiteDataSchema,
 	PhotonStudioInteractionTab,
 	PhotonStudioPaletteTab,
 	PhotonStudioSurfaceMode,
@@ -29,6 +33,7 @@ import { CanvasTopToolbar } from "../canvas/canvas-top-toolbar";
 import { EditorDock } from "../editor-dock";
 import { InteractionSurfacesSurface } from "../interaction-surfaces-surface/interaction-surfaces-surface";
 import { PageSettingsSurface } from "../page-settings-surface/page-settings-surface";
+import { SiteDataSurface } from "../site-data-surface/site-data-surface";
 import type {
 	InspectorDefinitionMeta,
 	InspectorGroups,
@@ -284,6 +289,7 @@ type PhotonStageProps = {
 	onInteractionTabChange: (value: PhotonStudioInteractionTab) => void;
 	onInteractionActionSelect: (value: string | null) => void;
 	onInteractionGuardSelect: (value: string | null) => void;
+	onInteractionPolicySelect: (value: string | null) => void;
 	onInteractionScenarioSelect: (value: string | null) => void;
 	onInteractionSurfaceSelect: (value: string | null) => void;
 	onInteractionToastSelect: (value: string | null) => void;
@@ -341,10 +347,17 @@ type PhotonStageProps = {
 	interactionSurfaces: PhotonInteractionSurfaceDefinition[];
 	interactionActions: PhotonInteractionActionDefinition[];
 	interactionGuards: PhotonInteractionGuardDefinition[];
+	interactionPolicies: PhotonActionPolicy[];
+	conditionDefinitions: PhotonConditionDefinition[];
+	conditionEvaluators: PhotonConditionEvaluatorMap;
+	siteDataSchemas: PhotonSiteDataSchema[];
 	interactionTab: PhotonStudioInteractionTab;
 	selectedInteractionActionId: string | null;
 	selectedInteractionGuardId: string | null;
+	selectedInteractionPolicyId: string | null;
 	selectedInteractionScenarioId: string | null;
+	selectedDataFieldId: string | null;
+	onSelectedDataFieldChange: (value: string | null) => void;
 	openInteractionSurface: PhotonInteractionSurfaceOpenHandler;
 	showInteractionToast: PhotonInteractionToastHandler;
 	executeInteractionAction: (
@@ -397,6 +410,7 @@ export const PhotonStage = ({
 	onInteractionTabChange,
 	onInteractionActionSelect,
 	onInteractionGuardSelect,
+	onInteractionPolicySelect,
 	onInteractionScenarioSelect,
 	onInteractionSurfaceSelect,
 	onInteractionToastSelect,
@@ -412,6 +426,9 @@ export const PhotonStage = ({
 	interactionTab,
 	selectedInteractionActionId,
 	selectedInteractionGuardId,
+	selectedInteractionPolicyId,
+	selectedDataFieldId,
+	onSelectedDataFieldChange,
 	selectedInteractionScenarioId,
 	selectedInteractionSurfaceId,
 	selectedInteractionToastId,
@@ -456,6 +473,10 @@ export const PhotonStage = ({
 	interactionSurfaces,
 	interactionActions,
 	interactionGuards,
+	interactionPolicies,
+	conditionDefinitions,
+	conditionEvaluators,
+	siteDataSchemas,
 	openInteractionSurface,
 	showInteractionToast,
 	executeInteractionAction,
@@ -715,15 +736,20 @@ export const PhotonStage = ({
 									definitions={interactionSurfaces}
 									actionDefinitions={interactionActions}
 									guardDefinitions={interactionGuards}
+									interactionPolicies={interactionPolicies}
+									conditionDefinitions={conditionDefinitions}
+									conditionEvaluators={conditionEvaluators}
 									activeTab={interactionTab}
 									selectedActionId={selectedInteractionActionId}
 									selectedGuardId={selectedInteractionGuardId}
+									selectedPolicyId={selectedInteractionPolicyId}
 									selectedScenarioId={selectedInteractionScenarioId}
 									selectedInstanceId={selectedInteractionSurfaceId}
 									selectedTemplateId={selectedInteractionToastId}
 									onActiveTabChange={onInteractionTabChange}
 									onSelectedActionChange={onInteractionActionSelect}
 									onSelectedGuardChange={onInteractionGuardSelect}
+									onSelectedPolicyChange={onInteractionPolicySelect}
 									onSelectedScenarioChange={onInteractionScenarioSelect}
 									onSelectedInstanceChange={onInteractionSurfaceSelect}
 									onSelectedTemplateChange={onInteractionToastSelect}
@@ -732,6 +758,15 @@ export const PhotonStage = ({
 									openInteractionSurface={openInteractionSurface}
 									showInteractionToast={showInteractionToast}
 									executeInteractionAction={executeInteractionAction}
+								/>
+						) : builderEnabled && builderSurfaceMode === "data" ? (
+								<SiteDataSurface
+									siteDataSchemas={siteDataSchemas}
+									selectedDataFieldId={selectedDataFieldId}
+									onSelectedDataFieldChange={onSelectedDataFieldChange}
+									site={site}
+									onSiteSettingChange={onSiteSettingChange}
+									onSiteSettingFocus={onSiteSettingFocus}
 								/>
 						) : (
 							<div

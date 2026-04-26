@@ -1,4 +1,5 @@
 import type { ComponentType, MouseEventHandler, ReactNode } from "react";
+import type { PhotonFormSchemaDescriptor } from "./forms/types";
 
 export type PhotonMode = "preview" | "content" | "builder";
 export type PhotonSurfaceMode =
@@ -247,12 +248,59 @@ export type PhotonResolvedInteractionSurfaceRequest = {
 	fallbackHref?: string;
 };
 
+export type PhotonInteractionSurfaceEditableFieldKind = "text" | "textarea" | "select";
+
+export type PhotonInteractionSurfaceEditableFieldOption = {
+	value: string;
+	label: string;
+};
+
+export type PhotonInteractionSurfaceEditableFieldInput =
+	| {
+			path: string;
+			value: string;
+			kind?: Exclude<PhotonInteractionSurfaceEditableFieldKind, "select">;
+			options?: never;
+			placeholder?: string;
+			className?: string;
+	  }
+	| {
+			path: string;
+			value: string;
+			kind: "select";
+			options: readonly PhotonInteractionSurfaceEditableFieldOption[];
+			placeholder?: string;
+			className?: string;
+	  };
+
+export type PhotonInteractionSurfaceEditableFieldRenderer = (
+	input: PhotonInteractionSurfaceEditableFieldInput,
+) => ReactNode;
+
+/**
+ * Surface renderer contract.
+ *
+ * `previewMode` controls which surface form to render:
+ * - `"runtime"` (default) — real interactive surface (e.g. open dialog).
+ * - `"builder-inline"` — compact static preview suitable for inspector chips.
+ * - `"builder-canvas-stage"` — full inline canvas stage with editable fields.
+ *
+ * In any `"builder-*"` mode the renderer MUST NOT open a real dialog/modal and
+ * MUST ignore `open`/`onOpenChange`. When the mode is unknown the renderer
+ * SHOULD return `null` instead of falling back to runtime — otherwise the
+ * builder canvas accidentally surfaces a real popup that the user cannot close.
+ *
+ * `editableField` is provided by the builder canvas stage; renderers in
+ * `"builder-canvas-stage"` mode use it to wrap user-editable labels into
+ * inline-edit controls. Without it, render labels as plain text.
+ */
 export type PhotonInteractionSurfaceRendererProps = {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	request: PhotonResolvedInteractionSurfaceRequest;
-	previewMode?: "runtime" | "builder-inline";
+	previewMode?: "runtime" | "builder-inline" | "builder-canvas-stage";
 	previewScenarioId?: string;
+	editableField?: PhotonInteractionSurfaceEditableFieldRenderer;
 };
 
 export type PhotonInteractionSurfaceRenderer =
@@ -386,6 +434,7 @@ export type PhotonInteractionActionDefinition = {
 	fields?: PhotonField[];
 	defaultInstances?: PhotonInteractionActionInstance[];
 	previewScenarios?: PhotonInteractionPreviewScenario[];
+	states?: PhotonActionStateDefinition[];
 };
 
 export type PhotonInteractionGuardInstance = {
@@ -398,6 +447,7 @@ export type PhotonInteractionGuardInstance = {
 	props?: Record<string, unknown>;
 };
 
+/** @deprecated Use PhotonActionPolicy. Guards remain only as a runtime compat alias. */
 export type PhotonInteractionGuardDefinition = {
 	id: string;
 	label: string;
@@ -428,7 +478,12 @@ export type PhotonInteractionTriggerSlot = {
 export type PhotonInteractionTriggerBinding = {
 	slotId: string;
 	actionInstanceId?: string;
+	/**
+	 * @deprecated Map guards to ActionPolicy entries instead.
+	 * Use interactionPolicies with condition-based prerequisites.
+	 */
 	guardInstanceIds?: string[];
+	/** Global field overrides applied across all preview states. */
 	overrides?: Record<string, unknown>;
 	enabled?: boolean;
 };
@@ -437,6 +492,9 @@ export type PhotonInteractionSettings = {
 	actionInstances?: Record<string, PhotonInteractionActionInstance>;
 	triggerBindings?: Record<string, PhotonInteractionTriggerBinding>;
 	guardInstances?: Record<string, PhotonInteractionGuardInstance>;
+	policies?: Record<string, PhotonActionPolicy>;
+	/** Builder-only: per-slot, per-scenario field overrides for canvas stage preview. Not used by public runtime. */
+	canvasStageOverrides?: Record<string, Record<string, Record<string, unknown>>>;
 };
 
 export type PhotonResolvedInteractionActionCatalog = {
@@ -447,6 +505,108 @@ export type PhotonResolvedInteractionActionCatalog = {
 	guardsById: Map<string, PhotonInteractionGuardDefinition>;
 	guardInstances: Record<string, PhotonInteractionGuardInstance>;
 	triggerBindings: Record<string, PhotonInteractionTriggerBinding>;
+	policies: PhotonActionPolicy[];
+	policiesById: Map<string, PhotonActionPolicy>;
+};
+
+// --- Action Policy System ---
+
+export type PhotonConditionResolution = "server" | "client" | "both";
+
+export type PhotonConditionExpression =
+	| { type: "ref"; conditionId: string }
+	| { type: "and"; operands: PhotonConditionExpression[] }
+	| { type: "or"; operands: PhotonConditionExpression[] }
+	| { type: "not"; operand: PhotonConditionExpression }
+	| { type: "eq"; path: string; value: string | number | boolean };
+
+export type PhotonConditionDefinition = {
+	id: string;
+	packageName: string;
+	label: string;
+	resolution: PhotonConditionResolution;
+	defaultServerPreviewStateId?: string;
+};
+
+export type PhotonSearchRuntimeState = {
+	query?: string;
+	results?: unknown[];
+	isProviderAvailable?: boolean;
+	lastError?: string | null;
+};
+
+export type PhotonConditionEvaluationContext = {
+	siteSettings: PhotonSiteSettings;
+	routeContext?: Record<string, unknown>;
+	resources?: PhotonResources;
+	searchState?: PhotonSearchRuntimeState;
+};
+
+export type PhotonConditionEvaluator = (
+	context: PhotonConditionEvaluationContext,
+) => boolean | null | undefined;
+
+export type PhotonConditionEvaluatorMap = Record<
+	string,
+	PhotonConditionEvaluator
+>;
+
+export type PhotonActionPolicyScope =
+	| "package-default"
+	| "site"
+	| "workspace";
+
+export type PhotonActionPolicyEnforcement = "client-hint" | "server-required";
+
+export type PhotonActionPolicy = {
+	id: string;
+	packageName: string;
+	targetActionId: string;
+	when: PhotonConditionExpression;
+	run: string;
+	scope: PhotonActionPolicyScope;
+	priority?: number;
+	enforcement?: PhotonActionPolicyEnforcement;
+	securityMode?: "fail-open" | "fail-closed";
+	schemaVersion?: number;
+};
+
+export type PhotonActionStateDefinition = {
+	id: string;
+	label: string;
+	condition?: PhotonConditionExpression;
+	triggerRendererKey?: string;
+	actionRendererKey?: string;
+	effectKey?: string;
+	isDefaultServerState?: boolean;
+};
+
+export type PhotonActionPlanStep = {
+	actionInstanceId: string;
+	policyId: string;
+};
+
+export type PhotonActionPlan = {
+	targetActionInstanceId: string;
+	steps: PhotonActionPlanStep[];
+	hasCycles: boolean;
+	warnings: string[];
+};
+
+export type PhotonActionPlanExecutionStatus =
+	| "completed"
+	| "cancelled"
+	| "blocked"
+	| "failed"
+	| "missing-action"
+	| "missing-evaluator"
+	| "cycle-detected";
+
+export type PhotonActionPlanResult = {
+	status: PhotonActionPlanExecutionStatus;
+	completedSteps: string[];
+	cancelledAt?: string;
+	warnings: string[];
 };
 
 export type PhotonComponentLibraryItem = {
@@ -507,12 +667,17 @@ export type PhotonComponentReferenceProps = {
 	label?: string;
 };
 
-export type PhotonStudioSurfaceMode = "canvas" | "settings" | "interactions";
+export type PhotonStudioSurfaceMode =
+	| "canvas"
+	| "settings"
+	| "interactions"
+	| "data";
 
 export type PhotonStudioPaletteTab = "blocks" | "library";
 
 export type PhotonStudioInteractionTab =
 	| "actions"
+	| "policies"
 	| "guards"
 	| "surfaces"
 	| "toasts";
@@ -525,11 +690,15 @@ export type PhotonStudioUrlState = {
 	interactionTab?: PhotonStudioInteractionTab;
 	action?: string;
 	guard?: string;
+	policy?: string;
 	scenario?: string;
 	block?: string;
 	trigger?: string;
+	/** Canvas stage open for this trigger slot id (separate from inspector trigger tab). */
+	canvasTrigger?: string;
 	paletteTab?: PhotonStudioPaletteTab;
 	library?: string;
+	dataField?: string;
 };
 
 export type PhotonStudioUrlStatePatch = {
@@ -566,6 +735,7 @@ export type PhotonDocument = {
 	id: string;
 	name: string;
 	route: string;
+	routePatterns?: string[];
 	updatedAt: string;
 	blocks: PhotonBlock[];
 };
@@ -1076,6 +1246,89 @@ export type PhotonInstallableKit = {
 	interactionActions?: PhotonInteractionActionDefinition[];
 	interactionGuards?: PhotonInteractionGuardDefinition[];
 	interactionGuardEvaluators?: PhotonInteractionGuardEvaluatorMap;
+	interactionPolicies?: PhotonActionPolicy[];
+	conditionDefinitions?: PhotonConditionDefinition[];
+	conditionEvaluators?: PhotonConditionEvaluatorMap;
+	siteDataSchemas?: PhotonSiteDataSchema[];
+	routeContextFields?: PhotonRouteContextField[];
+	formSchemas?: PhotonFormSchemaDescriptor[];
+};
+
+// --- Site Data ---
+
+export type PhotonSiteDataFieldKind =
+	| "text"
+	| "textarea"
+	| "url"
+	| "email"
+	| "phone"
+	| "number"
+	| "toggle";
+
+export type PhotonSiteDataField = {
+	path: string;
+	label: string;
+	kind: PhotonSiteDataFieldKind;
+	description?: string;
+	defaultValue?: unknown;
+	group?: "content" | "contact" | "social" | "advanced";
+};
+
+export type PhotonSiteDataSchema = {
+	id: string;
+	packageName: string;
+	label: string;
+	description?: string;
+	fields: PhotonSiteDataField[];
+};
+
+export type PhotonResolvedSiteData = {
+	schemas: PhotonSiteDataSchema[];
+	schemasById: Map<string, PhotonSiteDataSchema>;
+	values: Record<string, Record<string, unknown>>;
+};
+
+export type PhotonSiteDataBinding = {
+	schemaId: string;
+	fieldPath: string;
+};
+
+// --- Route Context ---
+
+export type PhotonRouteContextFieldKind = "text" | "number" | "enum";
+
+export type PhotonRouteContextField = {
+	path: string;
+	label: string;
+	kind: PhotonRouteContextFieldKind;
+	description?: string;
+	defaultValue?: string | number;
+	urlParam?: string;
+	enumValues?: string[];
+	packageName: string;
+};
+
+// --- Form Schemas (re-exports from forms/types for kit contributions) ---
+
+export type {
+	PhotonFormSchemaDescriptor,
+	PhotonFormFieldDefinition,
+	PhotonFormFieldType,
+	PhotonFormDefinition,
+	PhotonFormPolicy,
+	PhotonFormFieldOption,
+	PhotonFormFieldValidation,
+	PhotonFormFieldWidth,
+	PhotonFormMode,
+	PhotonFormValues,
+	PhotonResolvedFormField,
+} from "./forms/types";
+
+export type PhotonResolvedRouteContext = {
+	fields: PhotonRouteContextField[];
+	fieldsByPath: Map<string, PhotonRouteContextField>;
+	values: Record<string, unknown>;
+	matchedPattern: string | null;
 };
 
 export type PhotonRegistryEntry = PhotonModule | PhotonInstallableKit;
@@ -1176,6 +1429,12 @@ export type PhotonRuntime = {
 	interactionActions: PhotonInteractionActionDefinition[];
 	interactionGuards: PhotonInteractionGuardDefinition[];
 	interactionGuardEvaluators: PhotonInteractionGuardEvaluatorMap;
+	interactionPolicies: PhotonActionPolicy[];
+	conditionDefinitions: PhotonConditionDefinition[];
+	conditionEvaluators: PhotonConditionEvaluatorMap;
+	siteDataSchemas: PhotonSiteDataSchema[];
+	routeContextFields: PhotonRouteContextField[];
+	formSchemas: PhotonFormSchemaDescriptor[];
 };
 
 export type PhotonPageCatalogItem = {
@@ -1186,6 +1445,7 @@ export type PhotonPageCatalogItem = {
 	kind: "page" | "template";
 	route: string;
 	routePattern?: string | null;
+	routePatterns?: string[];
 	navigationRoute?: string | null;
 	canOpen: boolean;
 	canDuplicate: boolean;

@@ -1,3 +1,4 @@
+"use client";
 // src/i18n/photon-i18n-context.tsx
 import { createContext, useContext, useMemo } from "react";
 import { jsx } from "react/jsx-runtime";

@@ -13,10 +13,11 @@ import type { PhotonBlock } from "../../types";
 import { matchesTarget } from "../shared";
 import type { InsertTarget } from "../types";
 import { CanvasBlockList } from "./canvas-block-list";
-import { CanvasBlockInteractions } from "./canvas-block-interactions";
 import { CanvasBlockShell } from "./canvas-block-shell";
+import { CanvasTriggerStage } from "./canvas-trigger-stage";
 import { CanvasInsertZone } from "./canvas-insert-zone";
 import { CollapsedBlockPreview } from "./collapsed-block-preview";
+import { TriggerOverlay } from "./trigger-overlay";
 
 type CanvasBlockItemProps = {
 	block: PhotonBlock;
@@ -106,7 +107,10 @@ const CanvasBlockItemComponent = ({
 					/>
 				)}
 				{builderEnabled && isSelected ? (
-					<CanvasBlockInteractions block={block} />
+					<>
+						<TriggerOverlay block={block} />
+						<CanvasTriggerStage block={block} />
+					</>
 				) : null}
 			</CanvasBlockShell>
 			<CanvasInsertZone

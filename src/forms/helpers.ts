@@ -4,6 +4,7 @@ import type {
 	PhotonFormFieldDefinition,
 	PhotonFormFieldType,
 	PhotonFormPolicy,
+	PhotonFormSchemaDescriptor,
 	PhotonFormValues,
 	PhotonResolvedFormField,
 } from "./types";
@@ -315,3 +316,18 @@ export const readPhotonFormValues = (
 
 	return values;
 };
+
+export const photonFormSchemaToDefinition = (
+	schema: PhotonFormSchemaDescriptor,
+): PhotonFormDefinition => ({
+	id: schema.id,
+	mode: "extendable",
+	defaultFields: schema.fields,
+	policy: schema.policy,
+});
+
+export const findPhotonFormSchema = (
+	schemas: readonly PhotonFormSchemaDescriptor[],
+	schemaId: string,
+): PhotonFormSchemaDescriptor | undefined =>
+	schemas.find((schema) => schema.id === schemaId);

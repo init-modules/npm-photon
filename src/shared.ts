@@ -1,3 +1,8 @@
+export * from "./helpers/action-policy";
+export * from "./helpers/override-resolution";
+export * from "./helpers/site-policy-overrides";
+export * from "./helpers/site-data";
+export * from "./helpers/route-context";
 export * from "./helpers/link-url";
 export * from "./helpers/component-library";
 export * from "./helpers/interactions";
@@ -9,8 +14,22 @@ export * from "./helpers/tree";
 export * from "./helpers/workspace";
 export * from "./search/constants";
 export type {
+	PhotonActionPlan,
+	PhotonActionPlanExecutionStatus,
+	PhotonActionPlanResult,
+	PhotonActionPlanStep,
+	PhotonActionPolicy,
+	PhotonActionPolicyEnforcement,
+	PhotonActionPolicyScope,
+	PhotonActionStateDefinition,
 	PhotonArea,
 	PhotonBlock,
+	PhotonConditionDefinition,
+	PhotonConditionEvaluationContext,
+	PhotonConditionEvaluator,
+	PhotonConditionEvaluatorMap,
+	PhotonConditionExpression,
+	PhotonConditionResolution,
 	PhotonDocument,
 	PhotonDocumentsMap,
 	PhotonFieldBinding,
@@ -37,6 +56,11 @@ export type {
 	PhotonInteractionToastTemplate,
 	PhotonInteractionTriggerBinding,
 	PhotonInteractionTriggerSlot,
+	PhotonResolvedSiteData,
+	PhotonSiteDataBinding,
+	PhotonSiteDataField,
+	PhotonSiteDataFieldKind,
+	PhotonSiteDataSchema,
 	PhotonComponentLibraryItem,
 	PhotonComponentLibraryEditorSelection,
 	PhotonComponentLibrarySettings,

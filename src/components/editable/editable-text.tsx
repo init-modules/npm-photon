@@ -15,8 +15,9 @@ import {
 	usePhotonStore,
 } from "../../context/photon-context";
 import { PHOTON_EMPTY_TEXT } from "../../helpers/path";
+import { extractPhotonSiteDataBindings } from "../../helpers/site-data";
 import { buildPhotonSearchTargetId } from "../../search/helpers";
-import { editableFrameClassName } from "./shared";
+import { editableFrameClassName, useResolvedFieldValue } from "./shared";
 
 type EditableTextProps = HTMLAttributes<HTMLElement> & {
 	blockId: string;
@@ -43,6 +44,8 @@ export const EditableText = ({
 	);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const value = String(usePhotonFieldValue(blockId, path) ?? "");
+	const resolvedValue = useResolvedFieldValue(value);
+	const hasBinding = extractPhotonSiteDataBindings(value).length > 0;
 	const fallbackValue =
 		value ||
 		(placeholder !== PHOTON_EMPTY_TEXT ? String(placeholder) : "");
@@ -128,7 +131,17 @@ export const EditableText = ({
 			}
 			className={editableFrameClassName({ isActive, isEditable, className })}
 		>
-			{value || placeholder}
+			{resolvedValue || value || placeholder}
+			{isEditable && hasBinding ? (
+				<span
+					data-testid="photon-binding-indicator"
+					aria-hidden="true"
+					className="ml-1 inline-flex items-center text-xs opacity-60"
+					title={`Bound to: ${value}`}
+				>
+					🔗
+				</span>
+			) : null}
 		</Tag>
 	);
 };

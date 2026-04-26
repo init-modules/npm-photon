@@ -555,8 +555,8 @@ export const siteFooterShellDefinition = definePhotonBlockDefinition({
 	defaults: {
 		variant: "classic-dark",
 		brandTitle: createPhotonLocalizedDefault({
-			en: "Photon",
-			ru: "Photon",
+			en: "{{ brand.name }}",
+			ru: "{{ brand.name }}",
 		}),
 		brandBody: createPhotonLocalizedDefault({
 			en: "Package-first live website editing for teams that want reusable packages, clean package boundaries and real page composition.",
@@ -618,8 +618,16 @@ export const siteFooterShellDefinition = definePhotonBlockDefinition({
 			],
 		}),
 		contactItems: createPhotonLocalizedDefault({
-			en: ["+7 (707) 040-43-43", "hello@example.test", "Almaty, Kazakhstan"],
-			ru: ["+7 (707) 040-43-43", "hello@example.test", "Алматы, Казахстан"],
+			en: [
+				"{{ contacts.phone }}",
+				"{{ contacts.email }}",
+				"{{ contacts.address }}",
+			],
+			ru: [
+				"{{ contacts.phone }}",
+				"{{ contacts.email }}",
+				"{{ contacts.address }}",
+			],
 		}),
 		legalLabel: createPhotonLocalizedDefault({
 			en: "Privacy policy",

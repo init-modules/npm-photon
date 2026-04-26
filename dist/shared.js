@@ -1,4 +1,12 @@
 import {
+  buildActionPlan,
+  createSitePolicyOverride,
+  evaluateConditionExpression,
+  isSitePolicyOverride,
+  mapGuardsToActionPolicies,
+  sitePolicyPath
+} from "./chunk-F6JYM4BG.js";
+import {
   getPhotonSurfaceModeStyle
 } from "./chunk-IOB5G6YT.js";
 import {
@@ -18,12 +26,22 @@ import {
   normalizePhotonStudioSurfaceMode,
   parsePhotonStudioUrlState,
   writePhotonStudioUrlState
-} from "./chunk-ANYY7ADN.js";
+} from "./chunk-ERQ5TAWA.js";
 import {
   PHOTON_SEARCH_OCCURRENCE_PARAM,
   PHOTON_SEARCH_QUERY_PARAM,
   PHOTON_SEARCH_TARGET_PARAM
 } from "./chunk-CZ47CC3D.js";
+import {
+  PHOTON_SITE_DATA_BY_LOCALE_SETTING_KEY,
+  PHOTON_SITE_DATA_SETTING_KEY,
+  extractPhotonSiteDataBindings,
+  localeSitePath,
+  parsePhotonSiteDataBindingExpression,
+  resolvePhotonSiteData,
+  resolvePhotonSiteDataBinding,
+  sitePath
+} from "./chunk-JASL5BP5.js";
 import {
   decodePhotonHtmlEntities,
   getPhotonAnchorRel,
@@ -42,11 +60,15 @@ import {
   removePhotonBlockFromDocument,
   replacePhotonBlockWithBlocksInDocument,
   updatePhotonBlockInDocument
-} from "./chunk-DBONYFOO.js";
+} from "./chunk-XPZWWFIY.js";
 import {
   PHOTON_ROOT_LIST_ID,
-  createPhotonAreaListId
-} from "./chunk-LC3FJEJ5.js";
+  PHOTON_ROUTE_CONTEXT_SCOPE,
+  createPhotonAreaListId,
+  matchRoutePattern,
+  parseRoutePattern,
+  resolveRouteContext
+} from "./chunk-MQ64GIR5.js";
 import {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
   DEFAULT_PHOTON_WORKSPACE_REF,
@@ -73,6 +95,7 @@ import {
   createPhotonInteractionSurfaceDefinition,
   createPhotonInteractionTriggerSlot,
   createPhotonNodeId,
+  dedupePoliciesById,
   duplicatePhotonComponentLibraryItem,
   evaluatePhotonInteractionGuards,
   executePhotonInteractionActionPresentation,
@@ -98,8 +121,9 @@ import {
   resolvePhotonInteractionSlotGuards,
   resolvePhotonInteractionSurfaceCatalog,
   resolvePhotonInteractionSurfaceRequest,
-  resolvePhotonInteractionToastTemplate
-} from "./chunk-ZJB32M2N.js";
+  resolvePhotonInteractionToastTemplate,
+  resolvePolicyCascade
+} from "./chunk-P4O7POLV.js";
 export {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
   DEFAULT_PHOTON_WORKSPACE_REF,
@@ -111,13 +135,17 @@ export {
   PHOTON_INTERACTIONS_SITE_SETTING_KEY,
   PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY,
   PHOTON_ROOT_LIST_ID,
+  PHOTON_ROUTE_CONTEXT_SCOPE,
   PHOTON_SEARCH_OCCURRENCE_PARAM,
   PHOTON_SEARCH_QUERY_PARAM,
   PHOTON_SEARCH_TARGET_PARAM,
+  PHOTON_SITE_DATA_BY_LOCALE_SETTING_KEY,
+  PHOTON_SITE_DATA_SETTING_KEY,
   PHOTON_SITE_DESIGN_DEFAULTS,
   PHOTON_SITE_DESIGN_FALLBACK_DEFAULTS,
   applyPhotonSiteColorScheme,
   applyPhotonSiteDesignPreset,
+  buildActionPlan,
   canEditPhotonWorkspace,
   canSavePhotonWorkspace,
   clonePhotonBlockTreeWithNewIds,
@@ -138,12 +166,16 @@ export {
   createPhotonInteractionTriggerSlot,
   createPhotonNodeId,
   createPhotonSiteDesignSettings,
+  createSitePolicyOverride,
   decodePhotonHtmlEntities,
+  dedupePoliciesById,
   duplicatePhotonBlockInDocument,
   duplicatePhotonComponentLibraryItem,
+  evaluateConditionExpression,
   evaluatePhotonInteractionGuards,
   executePhotonInteractionActionPresentation,
   executePhotonInteractionTriggerSlot,
+  extractPhotonSiteDataBindings,
   findPhotonBlock,
   getFirstPhotonBlockId,
   getPhotonAnchorRel,
@@ -159,6 +191,10 @@ export {
   isPhotonFramelessSiteDesign,
   isPhotonSiteDesignPresetApplied,
   isPhotonWorkspaceReadonly,
+  isSitePolicyOverride,
+  localeSitePath,
+  mapGuardsToActionPolicies,
+  matchRoutePattern,
   mergePhotonStudioUrlState,
   movePhotonBlockInDocument,
   normalizePhotonStudioSurfaceMode,
@@ -167,7 +203,9 @@ export {
   normalizePhotonWorkspaceDescriptor,
   normalizePhotonWorkspaceRef,
   parsePhotonComponentLibraryBlockId,
+  parsePhotonSiteDataBindingExpression,
   parsePhotonStudioUrlState,
+  parseRoutePattern,
   photonInteractionExecutionSucceeded,
   readPhotonComponentLibrarySettings,
   readPhotonInteractionSettings,
@@ -183,8 +221,14 @@ export {
   resolvePhotonInteractionSurfaceCatalog,
   resolvePhotonInteractionSurfaceRequest,
   resolvePhotonInteractionToastTemplate,
+  resolvePhotonSiteData,
+  resolvePhotonSiteDataBinding,
   resolvePhotonSiteDesignSettings,
+  resolvePolicyCascade,
+  resolveRouteContext,
   sanitizePhotonLinkHref,
+  sitePath,
+  sitePolicyPath,
   updatePhotonBlockInDocument,
   writePhotonStudioUrlState
 };

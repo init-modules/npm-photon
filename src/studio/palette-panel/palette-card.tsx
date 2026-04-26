@@ -48,6 +48,7 @@ export const PaletteCard = ({
 			onClick={() => onSelect(definition)}
 			onDoubleClick={() => onInsert(definition)}
 			data-photon-palette-card="true"
+			data-testid={`photon-palette-card-${definition.key}`}
 			className={clsx(
 				"group flex w-full cursor-pointer items-center gap-3 rounded-[28px] border px-3.5 py-3.5 text-left transition duration-200",
 				hasMounted && isDragging && "opacity-0",

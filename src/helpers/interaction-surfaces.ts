@@ -11,6 +11,7 @@ import type {
 	PhotonResolvedInteractionSurfaceRequest,
 	PhotonSiteSettings,
 } from "../types";
+import { isRecord } from "./path";
 
 export const PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY =
 	"interactionSurfaces";
@@ -21,9 +22,6 @@ const byOrderThenLabel = (
 ) =>
 	(left.order ?? 0) - (right.order ?? 0) ||
 	left.label.localeCompare(right.label);
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-	typeof value === "object" && value !== null && !Array.isArray(value);
 
 const normalizeRecordMap = <T extends Record<string, unknown>>(
 	value: unknown,

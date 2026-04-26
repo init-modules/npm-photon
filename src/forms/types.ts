@@ -84,3 +84,19 @@ export type PhotonFormFieldRenderContext = {
 	helpText: ReactNode;
 	error?: ReactNode;
 };
+
+// Package-contributed declarative form schema (auth, contact, newsletter, etc.)
+export type PhotonFormSchemaDescriptor = {
+	id: string;
+	packageName: string;
+	label: string;
+	description?: string;
+	fields: PhotonFormFieldDefinition[];
+	policy?: PhotonFormPolicy;
+	submit?: {
+		intent?: string;
+		endpoint?: string;
+		successMessage?: string;
+		errorMessage?: string;
+	};
+};

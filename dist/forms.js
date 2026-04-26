@@ -1,11 +1,11 @@
 import {
   EditableText
-} from "./chunk-AUXN32PD.js";
+} from "./chunk-4XNGVWTF.js";
 import "./chunk-6LYMEWZL.js";
 import "./chunk-CZ47CC3D.js";
 import "./chunk-O6DIDPAQ.js";
 import "./chunk-V7CN23YR.js";
-import "./chunk-ZJB32M2N.js";
+import "./chunk-P4O7POLV.js";
 
 // src/forms/helpers.ts
 var fieldTypeOptions = [
@@ -241,6 +241,13 @@ var readPhotonFormValues = (form, fields) => {
   }
   return values;
 };
+var photonFormSchemaToDefinition = (schema) => ({
+  id: schema.id,
+  mode: "extendable",
+  defaultFields: schema.fields,
+  policy: schema.policy
+});
+var findPhotonFormSchema = (schemas, schemaId) => schemas.find((schema) => schema.id === schemaId);
 
 // src/forms/photon-form.tsx
 import clsx from "clsx";
@@ -421,6 +428,8 @@ export {
   PhotonForm,
   createPhotonFormFieldsField,
   definePhotonForm,
+  findPhotonFormSchema,
+  photonFormSchemaToDefinition,
   readPhotonFormValues,
   resolvePhotonFormFields
 };

@@ -17,6 +17,7 @@ import {
 } from "../helpers/link-url";
 import { clonePhotonValue } from "../helpers/path";
 import { decomposePhotonSurfaceDocument } from "../helpers/site";
+import { resolvePhotonSiteData } from "../helpers/site-data";
 import {
 	canEditPhotonWorkspace,
 	normalizePhotonWorkspaceCapabilities,
@@ -44,6 +45,7 @@ import type {
 	PhotonPrefetchHandler,
 	PhotonRegistry,
 	PhotonResources,
+	PhotonRouteContextField,
 	PhotonSearchHandler,
 	PhotonSite,
 	PhotonSiteFrameExtension,
@@ -90,6 +92,8 @@ type PhotonProviderProps = {
 	navigation?: PhotonNavigationConfig;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
 	accountTabs?: PhotonAccountTabExtension[];
+	routeContextFields?: PhotonRouteContextField[];
+	routeContextValues?: Record<string, unknown>;
 };
 
 const DefaultPhotonLinkComponent: PhotonLinkComponent = ({
@@ -142,6 +146,8 @@ export const PhotonProvider = ({
 	navigation = {},
 	siteFrameExtensions = [],
 	accountTabs = [],
+	routeContextFields = [],
+	routeContextValues = {},
 }: PhotonProviderProps) => {
 	const storeRef = useRef<PhotonStore | null>(null);
 	const externalStateFingerprint = useMemo(
@@ -214,6 +220,8 @@ export const PhotonProvider = ({
 			navigation,
 			siteFrameExtensions,
 			accountTabs,
+			routeContextFields,
+			routeContextValues,
 			i18n: i18n
 				? {
 						contentLocale: i18n.contentLocale,
@@ -283,6 +291,9 @@ export const PhotonProvider = ({
 				JSON.stringify(state.navigation) === JSON.stringify(navigation) &&
 				state.siteFrameExtensions === siteFrameExtensions &&
 				JSON.stringify(state.accountTabs) === JSON.stringify(accountTabs) &&
+				state.routeContextFields === routeContextFields &&
+				JSON.stringify(state.routeContextValues) ===
+					JSON.stringify(routeContextValues) &&
 				state.contentLocale === (i18n?.contentLocale ?? state.contentLocale) &&
 				state.defaultLocale === (i18n?.defaultLocale ?? state.defaultLocale) &&
 				state.mode === nextMode &&
@@ -314,6 +325,8 @@ export const PhotonProvider = ({
 				navigation: clonePhotonValue(navigation),
 				siteFrameExtensions,
 				accountTabs: clonePhotonValue(accountTabs),
+				routeContextFields,
+				routeContextValues: clonePhotonValue(routeContextValues),
 				contentLocale: i18n?.contentLocale ?? state.contentLocale,
 				defaultLocale: i18n?.defaultLocale ?? state.defaultLocale,
 				mode: nextEditable || nextMode === "preview" ? nextMode : "preview",
@@ -331,6 +344,8 @@ export const PhotonProvider = ({
 		navigation,
 		siteFrameExtensions,
 		accountTabs,
+		routeContextFields,
+		routeContextValues,
 		interactionSurfaces,
 		interactionActions,
 		interactionGuards,
@@ -409,6 +424,22 @@ export const usePhotonCanEdit = () =>
 			state.mode !== "preview" &&
 			canEditPhotonWorkspace(state.workspace, state.capabilities),
 	);
+
+export const usePhotonSiteData = () => {
+	const site = usePhotonStore((state) => state.site);
+	const siteDataSchemas = usePhotonStore((state) => state.siteDataSchemas);
+	const contentLocale = usePhotonStore((state) => state.contentLocale);
+	return useMemo(
+		() =>
+			resolvePhotonSiteData(siteDataSchemas, site.settings, {
+				locale: contentLocale,
+			}),
+		[contentLocale, siteDataSchemas, site.settings],
+	);
+};
+
+export const usePhotonRouteContext = (): Record<string, unknown> =>
+	usePhotonStore((state) => state.routeContextValues);
 
 export const usePhotonPersistedState = () => {
 	const document = usePhotonStore((state) => state.document);

@@ -56,7 +56,13 @@ import {
 } from "../helpers/interaction-surfaces";
 import type {
 	PhotonAccountTabExtension,
+	PhotonActionPolicy,
 	PhotonBlock,
+	PhotonConditionDefinition,
+	PhotonConditionEvaluatorMap,
+	PhotonFormSchemaDescriptor,
+	PhotonRouteContextField,
+	PhotonSiteDataSchema,
 	PhotonDocument,
 	PhotonFieldBinding,
 	PhotonInteractionActionDefinition,
@@ -117,6 +123,8 @@ export type PhotonStoreState = {
 	selectedBlockId: string | null;
 	selectedComponentLibrarySource: PhotonComponentLibrarySourceSelection | null;
 	selectedField: PhotonSelectedField;
+	selectedInspectorTriggerId: string | null;
+	selectedCanvasTriggerStageId: string | null;
 	uploadMedia?: PhotonMediaUploadHandler;
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
@@ -146,6 +154,13 @@ export type PhotonStoreState = {
 	interactionActions: PhotonInteractionActionDefinition[];
 	interactionGuards: PhotonInteractionGuardDefinition[];
 	interactionGuardEvaluators: PhotonInteractionGuardEvaluatorMap;
+	interactionPolicies: PhotonActionPolicy[];
+	conditionDefinitions: PhotonConditionDefinition[];
+	conditionEvaluators: PhotonConditionEvaluatorMap;
+	siteDataSchemas: PhotonSiteDataSchema[];
+	routeContextFields: PhotonRouteContextField[];
+	routeContextValues: Record<string, unknown>;
+	formSchemas: PhotonFormSchemaDescriptor[];
 	interactionSurfaceRenderers: PhotonInteractionSurfaceRendererMap;
 	activeInteractionSurface: ReturnType<
 		typeof resolvePhotonInteractionSurfaceRequest
@@ -157,6 +172,8 @@ export type PhotonStoreState = {
 	setMode: (nextMode: PhotonMode) => void;
 	selectBlock: (blockId: string | null) => void;
 	selectField: (blockId: string, path: string) => void;
+	selectInspectorTrigger: (triggerId: string | null) => void;
+	selectCanvasTriggerStage: (triggerId: string | null) => void;
 	clearSelectedField: () => void;
 	selectPageSettingField: (path: string) => void;
 	selectSiteSettingField: (path: string) => void;
@@ -241,6 +258,13 @@ export type PhotonStoreInit = {
 	interactionActions?: PhotonInteractionActionDefinition[];
 	interactionGuards?: PhotonInteractionGuardDefinition[];
 	interactionGuardEvaluators?: PhotonInteractionGuardEvaluatorMap;
+	interactionPolicies?: PhotonActionPolicy[];
+	conditionDefinitions?: PhotonConditionDefinition[];
+	conditionEvaluators?: PhotonConditionEvaluatorMap;
+	siteDataSchemas?: PhotonSiteDataSchema[];
+	routeContextFields?: PhotonRouteContextField[];
+	routeContextValues?: Record<string, unknown>;
+	formSchemas?: PhotonFormSchemaDescriptor[];
 	interactionSurfaceRenderers?: PhotonInteractionSurfaceRendererMap;
 	dispatchInteractionToast?: (template: PhotonInteractionToastTemplate) => void;
 	navigate?: PhotonNavigateHandler;
@@ -482,6 +506,13 @@ export const createPhotonStore = ({
 		interactionActions = [],
 		interactionGuards = [],
 		interactionGuardEvaluators = {},
+		interactionPolicies = [],
+		conditionDefinitions = [],
+		conditionEvaluators = {},
+		siteDataSchemas = [],
+		routeContextFields = [],
+		routeContextValues = {},
+		formSchemas = [],
 		interactionSurfaceRenderers = {},
 	dispatchInteractionToast,
 	navigate,
@@ -525,6 +556,8 @@ export const createPhotonStore = ({
 		),
 		selectedComponentLibrarySource: null,
 		selectedField: null,
+		selectedInspectorTriggerId: null,
+		selectedCanvasTriggerStageId: null,
 		uploadMedia,
 		searchSite,
 		requestAuthAction,
@@ -548,6 +581,13 @@ export const createPhotonStore = ({
 		interactionActions,
 		interactionGuards,
 		interactionGuardEvaluators,
+		interactionPolicies,
+		conditionDefinitions,
+		conditionEvaluators,
+		siteDataSchemas,
+			routeContextFields,
+			routeContextValues,
+			formSchemas,
 			interactionSurfaceRenderers,
 		navigate,
 		prefetch,
@@ -595,6 +635,7 @@ export const createPhotonStore = ({
 					actions: state.interactionActions,
 					guards: state.interactionGuards,
 					surfaces: state.interactionSurfaces,
+					policies: state.interactionPolicies,
 					siteSettings: state.site.settings,
 				});
 				const scenarioResources = options?.scenario?.resources;
@@ -673,6 +714,14 @@ export const createPhotonStore = ({
 				selectedBlockId: blockId,
 				selectedComponentLibrarySource: null,
 				selectedField: blockId ? state.selectedField : null,
+				selectedInspectorTriggerId:
+					blockId === state.selectedBlockId
+						? state.selectedInspectorTriggerId
+						: null,
+				selectedCanvasTriggerStageId:
+					blockId === state.selectedBlockId
+						? state.selectedCanvasTriggerStageId
+						: null,
 			}));
 		},
 		selectField: (blockId, path) => {
@@ -681,6 +730,12 @@ export const createPhotonStore = ({
 				selectedComponentLibrarySource: null,
 				selectedField: { blockId, path },
 			});
+		},
+		selectInspectorTrigger: (triggerId) => {
+			set({ selectedInspectorTriggerId: triggerId });
+		},
+		selectCanvasTriggerStage: (triggerId) => {
+			set({ selectedCanvasTriggerStageId: triggerId });
 		},
 		clearSelectedField: () => {
 			set({

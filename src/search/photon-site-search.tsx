@@ -32,6 +32,7 @@ import { usePhotonI18n } from "../i18n/photon-i18n-context";
 import { photonInteractionExecutionSucceeded } from "../helpers/interactions";
 import { createPhotonSiteSearchTriggerSlot } from "../modules/system/site/site-interaction-surfaces";
 import type {
+	PhotonInteractionSurfaceEditableFieldRenderer,
 	PhotonInteractionSurfaceRendererProps,
 	PhotonSearchResult,
 } from "../types";
@@ -50,7 +51,9 @@ type PhotonSiteSearchProps = {
 	surfaceLoading?: string;
 	surfaceEmpty?: string;
 	hideTrigger?: boolean;
-	previewMode?: "runtime" | "builder-inline";
+	previewMode?: "runtime" | "builder-inline" | "builder-canvas-stage";
+	previewScenarioId?: string;
+	editableField?: PhotonInteractionSurfaceEditableFieldRenderer;
 };
 
 const searchDialogStyle = {
@@ -122,6 +125,8 @@ export const PhotonSiteSearch = ({
 	surfaceEmpty,
 	hideTrigger = false,
 	previewMode = "runtime",
+	previewScenarioId,
+	editableField,
 }: PhotonSiteSearchProps) => {
 	const { translate } = usePhotonI18n();
 	const { locale, contentLocale } = usePhotonI18n();
@@ -319,6 +324,152 @@ export const PhotonSiteSearch = ({
 				});
 			});
 		}, [canSearch, deferredQuery, hasQuery, open, searchSite]);
+
+	if (previewMode === "builder-canvas-stage") {
+		const renderText = (
+			path: string,
+			value: string,
+			kind: "text" | "textarea" = "text",
+			placeholderText?: string,
+			className?: string,
+		) =>
+			editableField
+				? editableField({ path, value, kind, placeholder: placeholderText, className })
+				: (
+					<span className={className}>{value || placeholderText || ""}</span>
+				);
+		const stageScenario = previewScenarioId ?? "idle";
+		const mockResults: PhotonSearchResult[] = [
+			{
+				id: "mock-1",
+				pageKey: "home",
+				pageName: translate("photon.search.mock.page.home", "Home"),
+				pageGroup: null,
+				pageKind: "page",
+				route: "/",
+				blockId: "mock",
+				path: "title",
+				targetId: "mock-1",
+				occurrence: 0,
+				snippet: translate(
+					"photon.search.mock.snippet.home",
+					"Exact matches across all site pages.",
+				),
+			},
+			{
+				id: "mock-2",
+				pageKey: "products",
+				pageName: translate("photon.search.mock.page.products", "Products"),
+				pageGroup: translate("photon.search.mock.group.catalog", "Catalog"),
+				pageKind: "page",
+				route: "/products",
+				blockId: "mock",
+				path: "title",
+				targetId: "mock-2",
+				occurrence: 0,
+				snippet: translate(
+					"photon.search.mock.snippet.products",
+					"Browse the full product catalog.",
+				),
+			},
+			{
+				id: "mock-3",
+				pageKey: "about",
+				pageName: translate("photon.search.mock.page.about", "About"),
+				pageGroup: null,
+				pageKind: "page",
+				route: "/about",
+				blockId: "mock",
+				path: "title",
+				targetId: "mock-3",
+				occurrence: 0,
+				snippet: translate(
+					"photon.search.mock.snippet.about",
+					"Learn more about the team and mission.",
+				),
+			},
+		];
+		return (
+			<div
+				className="space-y-4"
+				data-testid="photon-site-search-canvas-stage"
+			>
+				<div
+					className="rounded-[22px] border p-5"
+					style={searchPanelStyle}
+				>
+					<div className="text-lg font-semibold text-[var(--photon-site-text)]">
+						{renderText("title", String(surfaceTitle ?? ""), "text", String(dialogTitle))}
+					</div>
+					<div className="mt-2 text-sm leading-6 text-[var(--photon-site-muted-text)]">
+						{renderText("description", String(surfaceDescription ?? ""), "textarea", String(dialogDescription))}
+					</div>
+					<div
+						className="mt-4 flex min-h-12 items-center gap-3 rounded-[18px] border px-3 text-sm text-[var(--photon-site-muted-text)]"
+						style={searchPanelStyle}
+					>
+						<Search className="h-4 w-4" />
+						<div className="flex-1">
+							{renderText("placeholder", String(surfacePlaceholder ?? ""), "text", String(placeholder))}
+						</div>
+					</div>
+					<div className="mt-3 text-xs leading-5 text-[var(--photon-site-muted-text)]">
+						{renderText("hint", String(surfaceHint ?? ""), "textarea", String(hintCopy))}
+					</div>
+					<div
+						className="mt-5 rounded-[18px] border p-4"
+						style={searchPanelStyle}
+						data-testid={`photon-site-search-stage-state-${stageScenario}`}
+					>
+						{stageScenario === "loading" ? (
+							<div className="flex items-center gap-3 text-sm text-[var(--photon-site-muted-text)]">
+								<Loader2 className="h-4 w-4 animate-spin" />
+								{renderText("loading", String(surfaceLoading ?? ""), "text", String(loadingCopy))}
+							</div>
+						) : null}
+						{stageScenario === "empty" ? (
+							<div className="text-sm text-[var(--photon-site-muted-text)]">
+								{renderText("empty", String(surfaceEmpty ?? ""), "textarea", String(emptyCopy))}
+							</div>
+						) : null}
+						{stageScenario === "error" ? (
+							<div className="text-sm text-[var(--photon-site-muted-text)]">
+								{translate(
+									"photon.search.error",
+									"Search is temporarily unavailable.",
+								)}
+							</div>
+						) : null}
+						{stageScenario === "results" ? (
+							<div className="space-y-2">
+								{mockResults.map((result) => (
+									<div
+										key={result.id}
+										className="rounded-[14px] border px-3 py-2 text-sm text-[var(--photon-site-text)]"
+										style={searchPanelStyle}
+									>
+										<div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--photon-site-muted-text)]">
+											{result.pageGroup ? `${result.pageGroup} · ` : ""}
+											{result.pageName}
+										</div>
+										<div>{result.snippet}</div>
+									</div>
+								))}
+							</div>
+						) : null}
+						{stageScenario === "idle" ? (
+							<div className="text-sm text-[var(--photon-site-muted-text)]">
+								{translate(
+									"photon.search.idle",
+									"Start typing to see live matches.",
+								)}
+							</div>
+						) : null}
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	if (previewMode === "builder-inline") {
 		return (
@@ -559,12 +710,16 @@ export const PhotonSiteSearchSurfaceRenderer = ({
 	onOpenChange,
 	request,
 	previewMode,
+	previewScenarioId,
+	editableField,
 }: PhotonInteractionSurfaceRendererProps) => (
 	<PhotonSiteSearch
 		blockId=""
 		placeholderPath=""
 		surfaceOpen={open}
 		onSurfaceOpenChange={onOpenChange}
+		previewScenarioId={previewScenarioId}
+		editableField={editableField}
 		surfacePlaceholder={
 			typeof request.props.placeholder === "string"
 				? request.props.placeholder

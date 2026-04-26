@@ -43,6 +43,7 @@ import type {
 	PhotonLinkFactory,
 	PhotonNavigateHandler,
 	PhotonNavigationConfig,
+	PhotonRouteContextField,
 	PhotonPrefetchHandler,
 	PhotonRegistry,
 	PhotonResolvedPage,
@@ -241,6 +242,8 @@ type PhotonPublicPageProps = {
 	searchSite?: PhotonSearchHandler;
 	activeSearchHighlight?: PhotonSearchHighlight | null;
 	navigation?: PhotonNavigationConfig;
+	routeContextFields?: PhotonRouteContextField[];
+	routeContextValues?: Record<string, unknown>;
 };
 
 export const PhotonPublicPage = ({
@@ -264,6 +267,8 @@ export const PhotonPublicPage = ({
 	searchSite,
 	activeSearchHighlight = null,
 	navigation,
+	routeContextFields,
+	routeContextValues,
 }: PhotonPublicPageProps) => {
 	const designSettings = resolvePhotonPublicSiteDesignSettings(
 		page.site.settings.design,
@@ -319,6 +324,8 @@ export const PhotonPublicPage = ({
 			searchSite={searchSite}
 			i18n={i18n}
 			navigation={navigation}
+			routeContextFields={routeContextFields}
+			routeContextValues={routeContextValues}
 		>
 			<PhotonSearchHighlightEffect activeHighlight={activeSearchHighlight} />
 			<main
@@ -405,6 +412,12 @@ export {
 export { createPhotonKit } from "./helpers/installable";
 export { createPhotonRuntime } from "./helpers/runtime";
 export {
+	matchRoutePattern,
+	parseRoutePattern,
+	resolveRouteContext,
+	PHOTON_ROUTE_CONTEXT_SCOPE,
+} from "./helpers/route-context";
+export {
 	collectPhotonPublicFooterExtensionItems as collectPhotonFooterExtensionItems,
 	collectPhotonPublicHeaderExtensionItems as collectPhotonHeaderExtensionItems,
 	createPhotonPublicAccountTabExtension as createPhotonAccountTabExtension,
@@ -433,10 +446,29 @@ export {
 } from "./search/photon-site-search";
 export type {
 	PhotonAccountTabExtension,
+	PhotonActionPlan,
+	PhotonActionPlanExecutionStatus,
+	PhotonActionPlanResult,
+	PhotonActionPlanStep,
+	PhotonActionPolicy,
+	PhotonActionPolicyEnforcement,
+	PhotonActionPolicyScope,
+	PhotonActionStateDefinition,
 	PhotonAuthPageRenderInput,
 	PhotonAuthPageRenderer,
 	PhotonBindingAdapter,
 	PhotonBlock,
+	PhotonConditionDefinition,
+	PhotonConditionEvaluationContext,
+	PhotonConditionEvaluator,
+	PhotonConditionEvaluatorMap,
+	PhotonConditionExpression,
+	PhotonConditionResolution,
+	PhotonResolvedSiteData,
+	PhotonSiteDataBinding,
+	PhotonSiteDataField,
+	PhotonSiteDataFieldKind,
+	PhotonSiteDataSchema,
 	PhotonBlockComponentProps,
 	PhotonBlockDefinition,
 	PhotonBlockLocalizationSchema,

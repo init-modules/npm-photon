@@ -8,7 +8,7 @@ import type {
 	PhotonDocument,
 	PhotonSiteSettings,
 } from "../types";
-import { clonePhotonValue } from "./path";
+import { clonePhotonValue, isRecord } from "./path";
 import { createPhotonNodeId } from "./node-id";
 
 export const PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY = "componentLibrary";
@@ -18,9 +18,6 @@ export const PHOTON_COMPONENT_REFERENCE_AREA_ID = "content";
 export const PHOTON_COMPONENT_REFERENCE_MAX_DEPTH = 8;
 
 const COMPONENT_BLOCK_ID_PREFIX = "__photon_component_block__";
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-	typeof value === "object" && value !== null && !Array.isArray(value);
 
 const normalizeItem = (
 	key: string,

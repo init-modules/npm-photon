@@ -13,7 +13,11 @@ import {
 	PhotonRichTextEditor,
 	photonRichTextContentClassName,
 } from "../rich-text-editor";
-import { createActivationProps, editableFrameClassName } from "./shared";
+import {
+	createActivationProps,
+	editableFrameClassName,
+	useResolvedFieldValue,
+} from "./shared";
 
 type EditableRichTextProps = {
 	blockId: string;
@@ -37,6 +41,7 @@ export const EditableRichText = ({
 		(state) => state.updateFieldValue,
 	);
 	const value = String(usePhotonFieldValue(blockId, path) ?? "");
+	const resolvedValue = useResolvedFieldValue(value);
 	const isEditable = usePhotonCanEdit();
 	const isActive =
 		selectedField?.blockId === blockId && selectedField.path === path;
@@ -74,7 +79,7 @@ export const EditableRichText = ({
 					!value && "text-[color:var(--photon-site-muted)] opacity-60",
 				)}
 				dangerouslySetInnerHTML={{
-					__html: renderPhotonRichTextHtml(value, placeholder),
+					__html: renderPhotonRichTextHtml(resolvedValue, placeholder),
 				}}
 			/>
 		</div>

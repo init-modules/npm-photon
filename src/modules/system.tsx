@@ -37,9 +37,16 @@ import { siteDesignSettingsPanel } from "./system/site/site-design-settings-pane
 import { siteFooterShellDefinition } from "./system/site/site-footer-shell-definition";
 import { siteHeaderShellDefinition } from "./system/site/site-header-shell-definition";
 import {
+	photonSystemConditionDefinitions,
+	photonSystemConditionEvaluators,
 	photonSystemInteractionActions,
+	photonSystemInteractionPolicies,
 	photonSystemInteractionSurfaces,
 } from "./system/site/site-interaction-surfaces";
+import { photonSystemSiteDataSchemas } from "./system/site/site-data-schemas";
+import { photonSystemRouteContextFields } from "./system/site/route-context-fields";
+import { photonSystemProductsDocument } from "./system/site/products-document";
+import { photonSystemFormSchemas } from "./system/site/form-schemas";
 
 type SplitLayoutColumn = {
 	areaId: string;
@@ -459,4 +466,13 @@ export const photonSystemKit: PhotonInstallableKit =
 	modules: [photonSystemModule],
 	interactionSurfaces: photonSystemInteractionSurfaces,
 	interactionActions: photonSystemInteractionActions,
+	interactionPolicies: photonSystemInteractionPolicies,
+	conditionDefinitions: photonSystemConditionDefinitions,
+	conditionEvaluators: photonSystemConditionEvaluators,
+	siteDataSchemas: photonSystemSiteDataSchemas,
+	routeContextFields: photonSystemRouteContextFields,
+	formSchemas: photonSystemFormSchemas,
+	documents: {
+		[photonSystemProductsDocument.id]: photonSystemProductsDocument,
+	},
 });

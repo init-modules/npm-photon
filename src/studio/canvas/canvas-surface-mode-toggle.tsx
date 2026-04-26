@@ -34,6 +34,10 @@ export const CanvasSurfaceModeToggle = ({
 					key: "interactions" as const,
 					label: "Interactions",
 				},
+				{
+					key: "data" as const,
+					label: "Data",
+				},
 			].map((option) => (
 				<button
 					key={option.key}

@@ -1,5 +1,25 @@
 import clsx from "clsx";
 import type { HTMLAttributes, KeyboardEvent, MouseEvent } from "react";
+import { useMemo } from "react";
+import {
+	usePhotonRouteContext,
+	usePhotonSiteData,
+} from "../../context/photon-context";
+import {
+	extractPhotonSiteDataBindings,
+	resolvePhotonSiteDataBinding,
+} from "../../helpers/site-data";
+
+export const useResolvedFieldValue = (value: string): string => {
+	const siteData = usePhotonSiteData();
+	const routeContext = usePhotonRouteContext();
+	return useMemo(() => {
+		if (extractPhotonSiteDataBindings(value).length === 0) {
+			return value;
+		}
+		return resolvePhotonSiteDataBinding(value, siteData, { routeContext });
+	}, [routeContext, siteData, value]);
+};
 
 type EditableFrameProps = {
 	isActive: boolean;

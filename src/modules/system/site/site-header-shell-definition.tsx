@@ -1267,8 +1267,8 @@ export const siteHeaderShellDefinition = definePhotonBlockDefinition({
 	defaults: {
 		variant: "commerce-inline",
 		brandLabel: createPhotonLocalizedDefault({
-			en: "Photon",
-			ru: "Photon",
+			en: "{{ brand.name }}",
+			ru: "{{ brand.name }}",
 		}),
 		brandHref: "/",
 		logoImage: null,
@@ -1292,7 +1292,7 @@ export const siteHeaderShellDefinition = definePhotonBlockDefinition({
 			en: "Search the website",
 			ru: "Поиск по сайту",
 		}),
-		contactValue: "+7 (707) 040-43-43",
+		contactValue: "{{ contacts.phone }}",
 		contactCaption: createPhotonLocalizedDefault({
 			en: "Daily from 09:00 to 18:00",
 			ru: "Ежедневно с 09:00 до 18:00",

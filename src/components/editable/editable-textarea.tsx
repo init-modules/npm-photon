@@ -9,7 +9,11 @@ import {
 } from "../../context/photon-context";
 import { PHOTON_EMPTY_TEXT } from "../../helpers/path";
 import { buildPhotonSearchTargetId } from "../../search/helpers";
-import { createActivationProps, editableFrameClassName } from "./shared";
+import {
+	createActivationProps,
+	editableFrameClassName,
+	useResolvedFieldValue,
+} from "./shared";
 
 type EditableTextareaProps = {
 	blockId: string;
@@ -34,6 +38,7 @@ export const EditableTextarea = ({
 	);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const value = String(usePhotonFieldValue(blockId, path) ?? "");
+	const resolvedValue = useResolvedFieldValue(value);
 	const fallbackValue =
 		value ||
 		(placeholder !== PHOTON_EMPTY_TEXT ? String(placeholder) : "");
@@ -110,7 +115,7 @@ export const EditableTextarea = ({
 			data-photon-search-target={searchTargetId}
 			className={editableFrameClassName({ isActive, isEditable, className })}
 		>
-			{value || placeholder}
+			{resolvedValue || value || placeholder}
 		</div>
 	);
 };

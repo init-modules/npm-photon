@@ -19,6 +19,10 @@ import type {
 import { FIELD_GROUP_LABELS } from "../shared";
 import type { InspectorDefinitionMeta, InspectorGroups } from "../types";
 import { FieldEditor } from "./field-editor";
+import {
+	InspectorTriggerTab,
+	useInspectorTriggerSlots,
+} from "./inspector-trigger-tab";
 
 type InspectorPanelProps = {
 	definitionFields: PhotonField[];
@@ -74,6 +78,26 @@ const fieldSupportsLocalization = (
 	return false;
 };
 
+const GROUP_ORDER = ["content", "style", "layout", "data", "misc"] as const;
+
+const orderInspectorGroupKeys = (groups: InspectorGroups): string[] => {
+	const keys = Object.keys(groups);
+	return keys.sort((left, right) => {
+		const leftIndex = GROUP_ORDER.indexOf(
+			left as (typeof GROUP_ORDER)[number],
+		);
+		const rightIndex = GROUP_ORDER.indexOf(
+			right as (typeof GROUP_ORDER)[number],
+		);
+		const leftRank = leftIndex === -1 ? GROUP_ORDER.length : leftIndex;
+		const rightRank = rightIndex === -1 ? GROUP_ORDER.length : rightIndex;
+		if (leftRank !== rightRank) {
+			return leftRank - rightRank;
+		}
+		return left.localeCompare(right);
+	});
+};
+
 const InspectorPanelComponent = ({
 	definitionFields,
 	inspectorGroups,
@@ -94,9 +118,35 @@ const InspectorPanelComponent = ({
 		(state) => state.updateFieldValue,
 	);
 	const selectField = usePhotonStore((state) => state.selectField);
+	const selectedInspectorTriggerId = usePhotonStore(
+		(state) => state.selectedInspectorTriggerId,
+	);
+	const selectInspectorTrigger = usePhotonStore(
+		(state) => state.selectInspectorTrigger,
+	);
 	const [activeTab, setActiveTab] = useState<"block" | "page">("block");
+	const triggerSlots = useInspectorTriggerSlots(selectedBlock);
+	const activeTriggerSlot =
+		selectedInspectorTriggerId && triggerSlots.length
+			? triggerSlots.find((slot) => slot.id === selectedInspectorTriggerId) ??
+				null
+			: null;
+	const isTriggerTabActive = Boolean(activeTriggerSlot);
 	const [showBlockJson, setShowBlockJson] = useState(false);
 	const [showDocumentJson, setShowDocumentJson] = useState(false);
+	const orderedGroupKeys = useMemo(
+		() => orderInspectorGroupKeys(inspectorGroups),
+		[inspectorGroups],
+	);
+	const [selectedGroupKey, setSelectedGroupKey] = useState<string | null>(
+		null,
+	);
+	const activeGroupKey = useMemo(() => {
+		if (selectedGroupKey && orderedGroupKeys.includes(selectedGroupKey)) {
+			return selectedGroupKey;
+		}
+		return orderedGroupKeys[0] ?? null;
+	}, [orderedGroupKeys, selectedGroupKey]);
 	const hasBlockContext =
 		selectedBlock !== null || inspectorDefinition !== null;
 	const pageTabLabel = currentPage?.isDynamic
@@ -190,12 +240,15 @@ const InspectorPanelComponent = ({
 						>
 							<button
 								type="button"
-								onClick={() => setActiveTab("block")}
+								onClick={() => {
+									selectInspectorTrigger(null);
+									setActiveTab("block");
+								}}
 								className={clsx(
 									"cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold transition",
 								)}
 								style={
-									activeTab === "block"
+									activeTab === "block" && !isTriggerTabActive
 										? {
 												background: "var(--photon-builder-accent-soft)",
 												color: "var(--photon-builder-accent-text)",
@@ -205,9 +258,42 @@ const InspectorPanelComponent = ({
 							>
 								{translate("photon.studio.inspector.blockTab", "Block")}
 							</button>
+							{triggerSlots.map((slot) => {
+								const isActive =
+									isTriggerTabActive &&
+									activeTriggerSlot?.id === slot.id;
+								return (
+									<button
+										key={slot.id}
+										type="button"
+										onClick={() => {
+											selectInspectorTrigger(slot.id);
+											setActiveTab("block");
+										}}
+										className={clsx(
+											"cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold transition",
+										)}
+										style={
+											isActive
+												? {
+														background:
+															"var(--photon-builder-accent-soft)",
+														color: "var(--photon-builder-accent-text)",
+													}
+												: { color: "var(--photon-builder-text-muted)" }
+										}
+										data-testid={`photon-inspector-trigger-tab-${slot.id}`}
+									>
+										{slot.label}
+									</button>
+								);
+							})}
 							<button
 								type="button"
-								onClick={() => setActiveTab("page")}
+								onClick={() => {
+									selectInspectorTrigger(null);
+									setActiveTab("page");
+								}}
 								className={clsx(
 									"cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold transition",
 								)}
@@ -384,7 +470,11 @@ const InspectorPanelComponent = ({
 					</>
 				) : null}
 
-				{activeTab === "block" && selectedBlock ? (
+				{activeTab === "block" && selectedBlock && isTriggerTabActive && activeTriggerSlot ? (
+					<InspectorTriggerTab block={selectedBlock} slot={activeTriggerSlot} />
+				) : null}
+
+				{activeTab === "block" && selectedBlock && !isTriggerTabActive ? (
 					<>
 						<section
 							className="rounded-[24px] border px-4 py-4"
@@ -451,72 +541,143 @@ const InspectorPanelComponent = ({
 							) : null}
 						</section>
 
-						{Object.entries(inspectorGroups).map(([groupKey, fields]) => (
+						{orderedGroupKeys.length > 0 ? (
 							<section
-								key={groupKey}
 								className="rounded-[24px] border px-4 py-4"
 								style={{
 									borderColor: "var(--photon-builder-border)",
 									background: "var(--photon-builder-panel-muted)",
 								}}
+								data-testid="photon-inspector-group-tabs"
 							>
 								<div
-									className="mb-4 text-[11px] uppercase tracking-[0.28em]"
-									style={{ color: "var(--photon-builder-text-soft)" }}
+									className="mb-4 flex flex-wrap gap-1"
+									role="tablist"
+									aria-label="Field groups"
 								>
-									{translate(
-										FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
-										translatePhotonFieldGroup(groupKey, translate),
-									)}
-								</div>
-								{groupKey === "content" &&
-								editableLocales.length > 1 &&
-								fields.some((field) => fieldSupportsLocalization(field)) ? (
-									<div
-										className="mb-4 inline-flex flex-wrap rounded-full border p-1"
-										style={{
-											borderColor: "var(--photon-builder-border)",
-											background: "var(--photon-builder-panel)",
-										}}
-									>
-										{editableLocales.map((locale) => (
+									{orderedGroupKeys.map((groupKey) => {
+										const isActive = groupKey === activeGroupKey;
+										const groupFields = inspectorGroups[groupKey] ?? [];
+										const label = translate(
+											FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
+											translatePhotonFieldGroup(groupKey, translate),
+										);
+										return (
 											<button
-												key={locale.code}
+												key={groupKey}
 												type="button"
-												onClick={() => onContentLocaleChange?.(locale.code)}
-												className="cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] transition"
+												role="tab"
+												aria-selected={isActive}
+												onClick={() => setSelectedGroupKey(groupKey)}
+												className="inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em]"
 												style={
-													locale.code === contentLocale
+													isActive
 														? {
-																background: "var(--photon-builder-accent-soft)",
+																borderColor:
+																	"var(--photon-builder-border-strong)",
+																background:
+																	"var(--photon-builder-accent-soft)",
 																color: "var(--photon-builder-accent-text)",
 															}
-														: { color: "var(--photon-builder-text-muted)" }
+														: {
+																borderColor: "var(--photon-builder-border)",
+																background: "var(--photon-builder-panel)",
+																color: "var(--photon-builder-text-soft)",
+															}
 												}
+												data-testid={`photon-inspector-group-tab-${groupKey}`}
 											>
-												{locale.code}
+												<span>{label}</span>
+												<span
+													className="rounded-full border px-2 py-0.5 text-[10px] tracking-normal"
+													style={{
+														borderColor: "var(--photon-builder-border)",
+														color: "var(--photon-builder-text-ghost)",
+													}}
+												>
+													{groupFields.length}
+												</span>
 											</button>
-										))}
-									</div>
-								) : null}
-								<div className="space-y-4">
-									{fields.map((field) => (
-										<FieldEditor
-											key={field.path}
-											field={field}
-											blockId={selectedBlock.id}
-											value={getFieldValue(selectedBlock.id, field.path)}
-											onFocus={(path) =>
-												selectField(selectedBlock.id, path ?? field.path)
-											}
-											onChange={(value) =>
-												updateFieldValue(selectedBlock.id, field.path, value)
-											}
-										/>
-									))}
+										);
+									})}
 								</div>
+								{(() => {
+									const activeKey = activeGroupKey ?? orderedGroupKeys[0];
+									const fields = activeKey
+										? (inspectorGroups[activeKey] ?? [])
+										: [];
+									const showLocaleSwitch =
+										activeKey === "content" &&
+										editableLocales.length > 1 &&
+										fields.some((field) => fieldSupportsLocalization(field));
+									return (
+										<>
+											{showLocaleSwitch ? (
+												<div
+													className="mb-4 inline-flex flex-wrap rounded-full border p-1"
+													style={{
+														borderColor: "var(--photon-builder-border)",
+														background: "var(--photon-builder-panel)",
+													}}
+												>
+													{editableLocales.map((locale) => (
+														<button
+															key={locale.code}
+															type="button"
+															onClick={() =>
+																onContentLocaleChange?.(locale.code)
+															}
+															className="cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] transition"
+															style={
+																locale.code === contentLocale
+																	? {
+																			background:
+																				"var(--photon-builder-accent-soft)",
+																			color:
+																				"var(--photon-builder-accent-text)",
+																		}
+																	: {
+																			color:
+																				"var(--photon-builder-text-muted)",
+																		}
+															}
+														>
+															{locale.code}
+														</button>
+													))}
+												</div>
+											) : null}
+											<div
+												className="space-y-4"
+												data-testid={`photon-inspector-group-panel-${activeKey ?? "empty"}`}
+											>
+												{fields.map((field) => (
+													<FieldEditor
+														key={field.path}
+														field={field}
+														blockId={selectedBlock.id}
+														value={getFieldValue(selectedBlock.id, field.path)}
+														onFocus={(path) =>
+															selectField(
+																selectedBlock.id,
+																path ?? field.path,
+															)
+														}
+														onChange={(value) =>
+															updateFieldValue(
+																selectedBlock.id,
+																field.path,
+																value,
+															)
+														}
+													/>
+												))}
+											</div>
+										</>
+									);
+								})()}
 							</section>
-						))}
+						) : null}
 
 						<section
 							className="rounded-[24px] border px-4 py-4"

@@ -2,7 +2,10 @@
 
 export const BuilderCanvasBanner = () => {
 	return (
-		<div className="mb-5 flex flex-col gap-4 rounded-[30px] border border-white/8 bg-[linear-gradient(180deg,rgba(8,17,31,0.88),rgba(6,12,22,0.96))] px-4 py-4 shadow-[0_24px_52px_rgba(0,0,0,0.16)] sm:flex-row sm:items-center sm:justify-between">
+		<div
+			data-testid="photon-builder-canvas-banner"
+			className="mb-5 flex flex-col gap-4 rounded-[30px] border border-white/8 bg-[linear-gradient(180deg,rgba(8,17,31,0.88),rgba(6,12,22,0.96))] px-4 py-4 shadow-[0_24px_52px_rgba(0,0,0,0.16)] sm:flex-row sm:items-center sm:justify-between"
+		>
 			<div>
 				<div className="text-[11px] uppercase tracking-[0.28em] text-white/45">
 					Live builder canvas

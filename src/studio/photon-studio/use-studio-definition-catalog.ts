@@ -40,7 +40,7 @@ export const createStudioDefinitionCatalog = ({
 	palettePackage,
 }: UseStudioDefinitionCatalogInput) => {
 	const allPaletteBlocks = normalizePaletteDefinitions(
-		registry.getPaletteBlocks() as any,
+		registry.getPaletteBlocks(),
 	);
 	const allPageSettingsPanels = registry.getPageSettingsPanels();
 	const allSiteSettingsPanels = registry.getSiteSettingsPanels();

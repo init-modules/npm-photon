@@ -19,7 +19,7 @@ import {
   photonSystemInteractionSurfaces,
   resolvePhotonPublicSiteDesignSettings,
   usePhotonComponentLibraryStack
-} from "./chunk-TISXOFAT.js";
+} from "./chunk-KVRKUEWY.js";
 import {
   PhotonRenderDepthProvider,
   PhotonSearchHighlightEffect,
@@ -27,7 +27,7 @@ import {
   resolvePhotonSiteFrameMobileControls,
   usePhotonRenderDepth,
   usePhotonSiteFrameScrollLock
-} from "./chunk-ND6K56IL.js";
+} from "./chunk-U4YHDXTS.js";
 import {
   EditableText,
   PhotonLink,
@@ -37,13 +37,13 @@ import {
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonStore
-} from "./chunk-AUXN32PD.js";
+} from "./chunk-4XNGVWTF.js";
 import {
   buildPhotonSearchTargetId
 } from "./chunk-6LYMEWZL.js";
 import {
   createPhotonRuntime
-} from "./chunk-C2E4T4EA.js";
+} from "./chunk-CPTGXXVB.js";
 import {
   collectPhotonFooterExtensionItems,
   collectPhotonHeaderExtensionItems,
@@ -58,7 +58,7 @@ import {
   normalizePhotonStudioSurfaceMode,
   parsePhotonStudioUrlState,
   writePhotonStudioUrlState
-} from "./chunk-ANYY7ADN.js";
+} from "./chunk-ERQ5TAWA.js";
 import {
   PHOTON_SEARCH_OCCURRENCE_PARAM,
   PHOTON_SEARCH_QUERY_PARAM,
@@ -78,12 +78,17 @@ import {
   definePhotonBlockDefinition,
   getPhotonSurfaceRegionBlocks,
   resolvePhotonSurfaceRegionDescriptors
-} from "./chunk-PWNAHWNN.js";
+} from "./chunk-725LMVL7.js";
 import {
   getPhotonAnchorRel,
   sanitizePhotonLinkHref
 } from "./chunk-V7CN23YR.js";
-import "./chunk-LC3FJEJ5.js";
+import {
+  PHOTON_ROUTE_CONTEXT_SCOPE,
+  matchRoutePattern,
+  parseRoutePattern,
+  resolveRouteContext
+} from "./chunk-MQ64GIR5.js";
 import {
   PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY,
   PHOTON_COMPONENT_REFERENCE_AREA_ID,
@@ -121,7 +126,7 @@ import {
   resolvePhotonInteractionSurfaceCatalog,
   resolvePhotonInteractionSurfaceRequest,
   resolvePhotonInteractionToastTemplate
-} from "./chunk-ZJB32M2N.js";
+} from "./chunk-P4O7POLV.js";
 
 // src/public.tsx
 import clsx6 from "clsx";
@@ -1131,8 +1136,8 @@ var siteFooterShellDefinition = definePhotonBlockDefinition({
   defaults: {
     variant: "classic-dark",
     brandTitle: createPhotonLocalizedDefault({
-      en: "Photon",
-      ru: "Photon"
+      en: "{{ brand.name }}",
+      ru: "{{ brand.name }}"
     }),
     brandBody: createPhotonLocalizedDefault({
       en: "Package-first live website editing for teams that want reusable packages, clean package boundaries and real page composition.",
@@ -1194,8 +1199,16 @@ var siteFooterShellDefinition = definePhotonBlockDefinition({
       ]
     }),
     contactItems: createPhotonLocalizedDefault({
-      en: ["+7 (707) 040-43-43", "hello@example.test", "Almaty, Kazakhstan"],
-      ru: ["+7 (707) 040-43-43", "hello@example.test", "\u0410\u043B\u043C\u0430\u0442\u044B, \u041A\u0430\u0437\u0430\u0445\u0441\u0442\u0430\u043D"]
+      en: [
+        "{{ contacts.phone }}",
+        "{{ contacts.email }}",
+        "{{ contacts.address }}"
+      ],
+      ru: [
+        "{{ contacts.phone }}",
+        "{{ contacts.email }}",
+        "{{ contacts.address }}"
+      ]
     }),
     legalLabel: createPhotonLocalizedDefault({
       en: "Privacy policy",
@@ -2330,8 +2343,8 @@ var siteHeaderShellDefinition = definePhotonBlockDefinition({
   defaults: {
     variant: "commerce-inline",
     brandLabel: createPhotonLocalizedDefault({
-      en: "Photon",
-      ru: "Photon"
+      en: "{{ brand.name }}",
+      ru: "{{ brand.name }}"
     }),
     brandHref: "/",
     logoImage: null,
@@ -2355,7 +2368,7 @@ var siteHeaderShellDefinition = definePhotonBlockDefinition({
       en: "Search the website",
       ru: "\u041F\u043E\u0438\u0441\u043A \u043F\u043E \u0441\u0430\u0439\u0442\u0443"
     }),
-    contactValue: "+7 (707) 040-43-43",
+    contactValue: "{{ contacts.phone }}",
     contactCaption: createPhotonLocalizedDefault({
       en: "Daily from 09:00 to 18:00",
       ru: "\u0415\u0436\u0435\u0434\u043D\u0435\u0432\u043D\u043E \u0441 09:00 \u0434\u043E 18:00"
@@ -2832,7 +2845,9 @@ var PhotonPublicPage = ({
   linkFactory,
   searchSite,
   activeSearchHighlight = null,
-  navigation
+  navigation,
+  routeContextFields,
+  routeContextValues
 }) => {
   const designSettings = resolvePhotonPublicSiteDesignSettings(
     page.site.settings.design
@@ -2888,6 +2903,8 @@ var PhotonPublicPage = ({
       searchSite,
       i18n,
       navigation,
+      routeContextFields,
+      routeContextValues,
       children: [
         /* @__PURE__ */ jsx7(PhotonSearchHighlightEffect, { activeHighlight: activeSearchHighlight }),
         /* @__PURE__ */ jsx7(
@@ -2915,6 +2932,7 @@ export {
   PHOTON_COMPONENT_REFERENCE_TYPE,
   PHOTON_INTERACTIONS_SITE_SETTING_KEY,
   PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY,
+  PHOTON_ROUTE_CONTEXT_SCOPE,
   PHOTON_SEARCH_OCCURRENCE_PARAM,
   PHOTON_SEARCH_QUERY_PARAM,
   PHOTON_SEARCH_TARGET_PARAM,
@@ -2951,10 +2969,12 @@ export {
   getPhotonComponentLibraryItems,
   getPhotonPublicSurfaceModeStyle as getPhotonSurfaceModeStyle,
   isPhotonComponentReferenceBlock,
+  matchRoutePattern,
   mergePhotonStudioUrlState,
   normalizePhotonStudioSurfaceMode,
   parsePhotonComponentLibraryBlockId,
   parsePhotonStudioUrlState,
+  parseRoutePattern,
   photonInteractionExecutionSucceeded,
   photonPublicSystemKit as photonSystemKit,
   photonPublicSystemModule as photonSystemModule,
@@ -2972,6 +2992,7 @@ export {
   resolvePhotonInteractionToastTemplate,
   resolvePhotonSiteFrameExtensions,
   resolvePhotonSiteFrameMobileControls,
+  resolveRouteContext,
   sanitizePhotonLinkHref,
   sanitizePhotonRichTextHtml,
   usePhoton,

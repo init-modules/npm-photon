@@ -28,6 +28,7 @@ import { inputClassName } from "../shared";
 import { GalleryFieldEditor } from "./gallery-field-editor";
 import { ImageFieldEditor } from "./image-field-editor";
 import { JsonFieldEditor } from "./json-field-editor";
+import { SiteDataBindingPicker } from "./site-data-binding-picker";
 
 type FieldEditorProps = {
 	field: PhotonField | PhotonNestedField;
@@ -459,23 +460,37 @@ export const FieldEditor = ({
 			) : null}
 
 			{field.kind === "textarea" ? (
-				<textarea
-					rows={5}
-					value={String(value ?? "")}
-					onFocus={() => onFocus(path)}
-					onChange={(event) => onChange(event.currentTarget.value)}
-					className={inputClassName}
-				/>
+				<div className="flex flex-col gap-2">
+					<textarea
+						rows={5}
+						value={String(value ?? "")}
+						onFocus={() => onFocus(path)}
+						onChange={(event) => onChange(event.currentTarget.value)}
+						className={inputClassName}
+					/>
+					<SiteDataBindingPicker
+						onPick={(binding) =>
+							onChange(`${String(value ?? "")}${binding}`)
+						}
+					/>
+				</div>
 			) : null}
 
 			{field.kind === "rich-text" ? (
-				<PhotonRichTextEditor
-					value={String(value ?? "")}
-					onFocus={() => onFocus(path)}
-					onChange={onChange}
-					className="text-sm text-[color:var(--photon-builder-text)]"
-					surfaceClassName="border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)]"
-				/>
+				<div className="flex flex-col gap-2">
+					<PhotonRichTextEditor
+						value={String(value ?? "")}
+						onFocus={() => onFocus(path)}
+						onChange={onChange}
+						className="text-sm text-[color:var(--photon-builder-text)]"
+						surfaceClassName="border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)]"
+					/>
+					<SiteDataBindingPicker
+						onPick={(binding) =>
+							onChange(`${String(value ?? "")}${binding}`)
+						}
+					/>
+				</div>
 			) : null}
 
 			{field.kind === "json" ? (
@@ -590,22 +605,31 @@ export const FieldEditor = ({
 			) : null}
 
 			{["text", "url", "color"].includes(field.kind) ? (
-				<input
-					type={
-						field.kind === "color"
-							? "color"
-							: field.kind === "url"
-								? "url"
-								: "text"
-					}
-					value={String(value ?? "")}
-					onFocus={() => onFocus(path)}
-					onChange={(event) => onChange(event.currentTarget.value)}
-					className={clsx(
-						inputClassName,
-						field.kind === "color" && "h-14 cursor-pointer px-2 py-2",
-					)}
-				/>
+				<div className="flex flex-col gap-2">
+					<input
+						type={
+							field.kind === "color"
+								? "color"
+								: field.kind === "url"
+									? "url"
+									: "text"
+						}
+						value={String(value ?? "")}
+						onFocus={() => onFocus(path)}
+						onChange={(event) => onChange(event.currentTarget.value)}
+						className={clsx(
+							inputClassName,
+							field.kind === "color" && "h-14 cursor-pointer px-2 py-2",
+						)}
+					/>
+					{field.kind !== "color" ? (
+						<SiteDataBindingPicker
+							onPick={(binding) =>
+								onChange(`${String(value ?? "")}${binding}`)
+							}
+						/>
+					) : null}
+				</div>
 			) : null}
 
 			{field.kind === "number" ? (

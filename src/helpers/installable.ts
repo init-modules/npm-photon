@@ -1,6 +1,10 @@
 import type {
 	PhotonAccountTabExtension,
+	PhotonActionPolicy,
+	PhotonConditionDefinition,
+	PhotonConditionEvaluatorMap,
 	PhotonDocumentsMap,
+	PhotonFormSchemaDescriptor,
 	PhotonInstallableKit,
 	PhotonInteractionActionDefinition,
 	PhotonInteractionGuardDefinition,
@@ -8,6 +12,8 @@ import type {
 	PhotonInteractionSurfaceDefinition,
 	PhotonModule,
 	PhotonRegistryEntry,
+	PhotonRouteContextField,
+	PhotonSiteDataSchema,
 	PhotonSiteFrameExtension,
 } from "../types";
 
@@ -89,4 +95,51 @@ export const collectPhotonInteractionGuardEvaluators = (
 				? (entry.interactionGuardEvaluators ?? {})
 				: {},
 		),
+	);
+
+export const collectPhotonInteractionPolicies = (
+	entries: PhotonRegistryEntry[],
+): PhotonActionPolicy[] =>
+	entries.flatMap((entry) =>
+		isPhotonInstallableKit(entry) ? (entry.interactionPolicies ?? []) : [],
+	);
+
+export const collectPhotonConditionDefinitions = (
+	entries: PhotonRegistryEntry[],
+): PhotonConditionDefinition[] =>
+	entries.flatMap((entry) =>
+		isPhotonInstallableKit(entry) ? (entry.conditionDefinitions ?? []) : [],
+	);
+
+export const collectPhotonConditionEvaluators = (
+	entries: PhotonRegistryEntry[],
+): PhotonConditionEvaluatorMap =>
+	Object.assign(
+		{},
+		...entries.map((entry) =>
+			isPhotonInstallableKit(entry)
+				? (entry.conditionEvaluators ?? {})
+				: {},
+		),
+	);
+
+export const collectPhotonSiteDataSchemas = (
+	entries: PhotonRegistryEntry[],
+): PhotonSiteDataSchema[] =>
+	entries.flatMap((entry) =>
+		isPhotonInstallableKit(entry) ? (entry.siteDataSchemas ?? []) : [],
+	);
+
+export const collectPhotonRouteContextFields = (
+	entries: PhotonRegistryEntry[],
+): PhotonRouteContextField[] =>
+	entries.flatMap((entry) =>
+		isPhotonInstallableKit(entry) ? (entry.routeContextFields ?? []) : [],
+	);
+
+export const collectPhotonFormSchemas = (
+	entries: PhotonRegistryEntry[],
+): PhotonFormSchemaDescriptor[] =>
+	entries.flatMap((entry) =>
+		isPhotonInstallableKit(entry) ? (entry.formSchemas ?? []) : [],
 	);

@@ -13,7 +13,12 @@ const isPhotonMode = (value: string | null): value is PhotonMode =>
 export const normalizePhotonStudioSurfaceMode = (
 	value: string | null | undefined,
 ): PhotonStudioSurfaceMode | undefined => {
-	if (value === "canvas" || value === "settings" || value === "interactions") {
+	if (
+		value === "canvas" ||
+		value === "settings" ||
+		value === "interactions" ||
+		value === "data"
+	) {
 		return value;
 	}
 
@@ -33,6 +38,7 @@ const normalizeInteractionTab = (
 	value: string | null,
 ): PhotonStudioInteractionTab | undefined =>
 	value === "actions" ||
+	value === "policies" ||
 	value === "guards" ||
 	value === "surfaces" ||
 	value === "toasts"
@@ -78,6 +84,9 @@ export const parsePhotonStudioUrlState = (
 			...(readValue(params, "guard")
 				? { guard: readValue(params, "guard") }
 				: {}),
+			...(readValue(params, "policy")
+				? { policy: readValue(params, "policy") }
+				: {}),
 			...(readValue(params, "scenario")
 				? { scenario: readValue(params, "scenario") }
 				: {}),
@@ -85,11 +94,17 @@ export const parsePhotonStudioUrlState = (
 		...(readValue(params, "trigger")
 			? { trigger: readValue(params, "trigger") }
 			: {}),
+		...(readValue(params, "canvasTrigger")
+			? { canvasTrigger: readValue(params, "canvasTrigger") }
+			: {}),
 		...(normalizePaletteTab(params.get("paletteTab"))
 			? { paletteTab: normalizePaletteTab(params.get("paletteTab")) }
 			: {}),
 		...(readValue(params, "library")
 			? { library: readValue(params, "library") }
+			: {}),
+		...(readValue(params, "dataField")
+			? { dataField: readValue(params, "dataField") }
 			: {}),
 	};
 };
@@ -116,11 +131,14 @@ export const writePhotonStudioUrlState = (
 	write("interactionTab");
 	write("action");
 	write("guard");
+	write("policy");
 	write("scenario");
 	write("block");
 	write("trigger");
+	write("canvasTrigger");
 	write("paletteTab");
 	write("library");
+	write("dataField");
 
 	return next;
 };

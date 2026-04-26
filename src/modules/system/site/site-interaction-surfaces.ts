@@ -1,10 +1,19 @@
 import { createPhotonInteractionSurfaceDefinition } from "../../../helpers/interaction-surfaces";
 import { createPhotonInteractionActionDefinition } from "../../../helpers/interactions";
 import type {
+	PhotonActionPolicy,
+	PhotonConditionDefinition,
+	PhotonConditionEvaluatorMap,
 	PhotonInteractionActionDefinition,
 	PhotonInteractionSurfaceDefinition,
 	PhotonInteractionTriggerSlot,
 } from "../../../types";
+
+export const PHOTON_SEARCH_CONDITION_IDS = {
+	queryIsEmpty: "search.queryIsEmpty",
+	hasResults: "search.hasResults",
+	providerUnavailable: "search.providerUnavailable",
+} as const;
 
 export const photonSiteSearchInteractionSurface =
 	createPhotonInteractionSurfaceDefinition({
@@ -165,8 +174,98 @@ export const photonSystemInteractionActions: PhotonInteractionActionDefinition[]
 				{ id: "loading", label: "Loading" },
 				{ id: "results", label: "Results" },
 			],
+			states: [
+				{
+					id: "idle",
+					label: "Idle",
+					condition: { type: "ref", conditionId: PHOTON_SEARCH_CONDITION_IDS.queryIsEmpty },
+				},
+				{ id: "loading", label: "Loading" },
+				{
+					id: "results",
+					label: "Results",
+					condition: { type: "ref", conditionId: PHOTON_SEARCH_CONDITION_IDS.hasResults },
+				},
+				{ id: "empty", label: "Empty" },
+				{
+					id: "error",
+					label: "Error",
+					condition: {
+						type: "ref",
+						conditionId: PHOTON_SEARCH_CONDITION_IDS.providerUnavailable,
+					},
+				},
+			],
 		}),
 	];
+
+export const photonSystemConditionDefinitions: PhotonConditionDefinition[] = [
+	{
+		id: PHOTON_SEARCH_CONDITION_IDS.queryIsEmpty,
+		packageName: "photon-system",
+		label: "Search query is empty",
+		resolution: "client",
+		defaultServerPreviewStateId: "idle",
+	},
+	{
+		id: PHOTON_SEARCH_CONDITION_IDS.hasResults,
+		packageName: "photon-system",
+		label: "Search has results",
+		resolution: "client",
+		defaultServerPreviewStateId: "idle",
+	},
+	{
+		id: PHOTON_SEARCH_CONDITION_IDS.providerUnavailable,
+		packageName: "photon-system",
+		label: "Search provider unavailable",
+		resolution: "both",
+		defaultServerPreviewStateId: "error",
+	},
+];
+
+export const photonSystemConditionEvaluators: PhotonConditionEvaluatorMap = {
+	[PHOTON_SEARCH_CONDITION_IDS.queryIsEmpty]: ({ searchState }) => {
+		if (!searchState || searchState.query === undefined) {
+			return null;
+		}
+		return searchState.query.trim().length === 0;
+	},
+	[PHOTON_SEARCH_CONDITION_IDS.hasResults]: ({ searchState }) => {
+		if (!searchState || searchState.results === undefined) {
+			return null;
+		}
+		return searchState.results.length > 0;
+	},
+	[PHOTON_SEARCH_CONDITION_IDS.providerUnavailable]: ({ searchState }) => {
+		if (!searchState) {
+			return null;
+		}
+		if (searchState.isProviderAvailable === false) {
+			return true;
+		}
+		if (searchState.isProviderAvailable === true) {
+			return Boolean(searchState.lastError);
+		}
+		return null;
+	},
+};
+
+export const photonSystemInteractionPolicies: PhotonActionPolicy[] = [
+	{
+		id: "photon.policy.search-fallback-when-unavailable",
+		packageName: "photon-system",
+		targetActionId: "photon.search-site",
+		when: {
+			type: "ref",
+			conditionId: PHOTON_SEARCH_CONDITION_IDS.providerUnavailable,
+		},
+		run: "photon:search-site",
+		scope: "package-default",
+		priority: 50,
+		enforcement: "client-hint",
+		securityMode: "fail-open",
+	},
+];
 
 export const createPhotonSiteSearchTriggerSlot = (
 	id: string,

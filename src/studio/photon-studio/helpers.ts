@@ -1,4 +1,4 @@
-import type { PhotonBlockDefinition } from "../../types";
+import type { PhotonBlockDefinition, PhotonRegistry } from "../../types";
 import type {
 	InspectorDefinitionMeta,
 	InspectorGroups,
@@ -6,7 +6,15 @@ import type {
 	PaletteFamilyGroup,
 } from "../types";
 
-const resolvePaletteFamily = (definition: PaletteDefinition) => {
+type RawPaletteBlock = ReturnType<PhotonRegistry["getPaletteBlocks"]>[number];
+
+type PaletteResolverInput = RawPaletteBlock & {
+	family?: string;
+	group?: string;
+	package?: string;
+};
+
+const resolvePaletteFamily = (definition: PaletteResolverInput) => {
 	if (definition.family?.trim()) {
 		return definition.family;
 	}
@@ -30,10 +38,10 @@ const resolvePaletteFamily = (definition: PaletteDefinition) => {
 	return "standard";
 };
 
-const resolvePaletteGroup = (definition: PaletteDefinition) =>
+const resolvePaletteGroup = (definition: PaletteResolverInput) =>
 	definition.group?.trim() || definition.category;
 
-const resolvePalettePackage = (definition: PaletteDefinition) => {
+const resolvePalettePackage = (definition: PaletteResolverInput) => {
 	if (definition.package?.trim()) {
 		return definition.package;
 	}
@@ -57,7 +65,9 @@ const resolvePalettePackage = (definition: PaletteDefinition) => {
 	return definition.module;
 };
 
-export const normalizePaletteDefinitions = (definitions: PaletteDefinition[]) =>
+export const normalizePaletteDefinitions = (
+	definitions: RawPaletteBlock[],
+): PaletteDefinition[] =>
 	definitions.map((definition) => ({
 		...definition,
 		family: resolvePaletteFamily(definition),

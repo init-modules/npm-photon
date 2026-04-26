@@ -141,6 +141,18 @@ export const PhotonStudioInner = ({
 	);
 	const selectedField = usePhotonStore((state) => state.selectedField);
 	const selectBlock = usePhotonStore((state) => state.selectBlock);
+	const selectedInspectorTriggerId = usePhotonStore(
+		(state) => state.selectedInspectorTriggerId,
+	);
+	const selectInspectorTrigger = usePhotonStore(
+		(state) => state.selectInspectorTrigger,
+	);
+	const selectedCanvasTriggerStageId = usePhotonStore(
+		(state) => state.selectedCanvasTriggerStageId,
+	);
+	const selectCanvasTriggerStage = usePhotonStore(
+		(state) => state.selectCanvasTriggerStage,
+	);
 	const selectPageSettingField = usePhotonStore(
 		(state) => state.selectPageSettingField,
 	);
@@ -164,6 +176,16 @@ export const PhotonStudioInner = ({
 	);
 	const interactionActions = usePhotonStore((state) => state.interactionActions);
 	const interactionGuards = usePhotonStore((state) => state.interactionGuards);
+	const interactionPolicies = usePhotonStore(
+		(state) => state.interactionPolicies,
+	);
+	const conditionDefinitions = usePhotonStore(
+		(state) => state.conditionDefinitions,
+	);
+	const conditionEvaluators = usePhotonStore(
+		(state) => state.conditionEvaluators,
+	);
+	const siteDataSchemas = usePhotonStore((state) => state.siteDataSchemas);
 	const openInteractionSurface = usePhotonStore(
 		(state) => state.openInteractionSurface,
 	);
@@ -322,6 +344,11 @@ export const PhotonStudioInner = ({
 		useState<string | null>(initialStudioUrlState.action ?? null);
 	const [selectedInteractionGuardId, setSelectedInteractionGuardId] =
 		useState<string | null>(initialStudioUrlState.guard ?? null);
+	const [selectedInteractionPolicyId, setSelectedInteractionPolicyId] =
+		useState<string | null>(initialStudioUrlState.policy ?? null);
+	const [selectedDataFieldId, setSelectedDataFieldId] = useState<
+		string | null
+	>(initialStudioUrlState.dataField ?? null);
 	const [selectedInteractionScenarioId, setSelectedInteractionScenarioId] =
 		useState<string | null>(initialStudioUrlState.scenario ?? null);
 	const [selectedInteractionSurfaceId, setSelectedInteractionSurfaceId] =
@@ -329,6 +356,18 @@ export const PhotonStudioInner = ({
 	const [selectedInteractionToastId, setSelectedInteractionToastId] = useState<
 		string | null
 	>(initialStudioUrlState.toast ?? null);
+
+	useEffect(() => {
+		if (initialStudioUrlState.trigger) {
+			selectInspectorTrigger(initialStudioUrlState.trigger);
+		}
+	}, [initialStudioUrlState.trigger, selectInspectorTrigger]);
+
+	useEffect(() => {
+		if (initialStudioUrlState.canvasTrigger) {
+			selectCanvasTriggerStage(initialStudioUrlState.canvasTrigger);
+		}
+	}, [initialStudioUrlState.canvasTrigger, selectCanvasTriggerStage]);
 
 	useEffect(() => {
 		if (typeof window === "undefined" || !isAdmin) {
@@ -362,12 +401,21 @@ export const PhotonStudioInner = ({
 			setSelectedInteractionToastId(state.toast ?? null);
 
 			selectBlock(state.block ?? null);
+			selectInspectorTrigger(state.trigger ?? null);
+			selectCanvasTriggerStage(state.canvasTrigger ?? null);
 		};
 
 		window.addEventListener("popstate", syncFromUrl);
 
 		return () => window.removeEventListener("popstate", syncFromUrl);
-	}, [isAdmin, selectBlock, setBuilderSurfaceMode, setMode]);
+	}, [
+		isAdmin,
+		selectBlock,
+		selectCanvasTriggerStage,
+		selectInspectorTrigger,
+		setBuilderSurfaceMode,
+		setMode,
+	]);
 
 	useEffect(() => {
 		if (typeof window === "undefined" || !isAdmin) {
@@ -397,11 +445,15 @@ export const PhotonStudioInner = ({
 			const timeoutId = window.setTimeout(() => {
 				const nextSearch = mergePhotonStudioUrlState(window.location.search, {
 					block: selectedBlockId ?? null,
+					trigger: selectedInspectorTriggerId ?? null,
+					canvasTrigger: selectedCanvasTriggerStageId ?? null,
 					paletteTab,
 					library: selectedLibraryItemId ?? null,
 					interactionTab,
 					action: selectedInteractionActionId ?? null,
 					guard: selectedInteractionGuardId ?? null,
+					policy: selectedInteractionPolicyId ?? null,
+					dataField: selectedDataFieldId ?? null,
 					scenario: selectedInteractionScenarioId ?? null,
 					surface: selectedInteractionSurfaceId ?? null,
 					toast: selectedInteractionToastId ?? null,
@@ -417,8 +469,12 @@ export const PhotonStudioInner = ({
 		paletteTab,
 		interactionTab,
 		selectedBlockId,
+		selectedInspectorTriggerId,
+		selectedCanvasTriggerStageId,
 		selectedInteractionActionId,
 		selectedInteractionGuardId,
+		selectedInteractionPolicyId,
+		selectedDataFieldId,
 		selectedInteractionScenarioId,
 		selectedInteractionSurfaceId,
 		selectedInteractionToastId,
@@ -653,9 +709,16 @@ export const PhotonStudioInner = ({
 					interactionSurfaces={interactionSurfaces}
 					interactionActions={interactionActions}
 					interactionGuards={interactionGuards}
+					interactionPolicies={interactionPolicies}
+					conditionDefinitions={conditionDefinitions}
+					conditionEvaluators={conditionEvaluators}
+					siteDataSchemas={siteDataSchemas}
+					selectedDataFieldId={selectedDataFieldId}
+					onSelectedDataFieldChange={setSelectedDataFieldId}
 					interactionTab={interactionTab}
 					selectedInteractionActionId={selectedInteractionActionId}
 					selectedInteractionGuardId={selectedInteractionGuardId}
+					selectedInteractionPolicyId={selectedInteractionPolicyId}
 					selectedInteractionScenarioId={selectedInteractionScenarioId}
 					openInteractionSurface={openInteractionSurface}
 					showInteractionToast={showInteractionToast}
@@ -675,6 +738,7 @@ export const PhotonStudioInner = ({
 					onInteractionTabChange={setInteractionTab}
 					onInteractionActionSelect={setSelectedInteractionActionId}
 					onInteractionGuardSelect={setSelectedInteractionGuardId}
+					onInteractionPolicySelect={setSelectedInteractionPolicyId}
 					onInteractionScenarioSelect={setSelectedInteractionScenarioId}
 					onInteractionSurfaceSelect={setSelectedInteractionSurfaceId}
 					onInteractionToastSelect={setSelectedInteractionToastId}

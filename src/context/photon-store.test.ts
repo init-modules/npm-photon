@@ -518,3 +518,43 @@ test("component library duplicate and delete lifecycle guards active usages", ()
 		false,
 	);
 });
+
+test("selectCanvasTriggerStage and selectInspectorTrigger are independent — one does not affect the other", () => {
+	const store = createStore();
+
+	store.getState().selectCanvasTriggerStage("search-trigger");
+
+	assert.equal(store.getState().selectedCanvasTriggerStageId, "search-trigger");
+	assert.equal(
+		store.getState().selectedInspectorTriggerId,
+		null,
+		"opening canvas stage must not open inspector trigger tab",
+	);
+
+	store.getState().selectInspectorTrigger("auth-trigger");
+
+	assert.equal(store.getState().selectedInspectorTriggerId, "auth-trigger");
+	assert.equal(
+		store.getState().selectedCanvasTriggerStageId,
+		"search-trigger",
+		"opening inspector trigger tab must not close canvas stage",
+	);
+});
+
+test("selectBlock resets both trigger selections when switching to a different block", () => {
+	const store = createStore();
+
+	store.getState().selectBlock("block-a");
+	store.getState().selectCanvasTriggerStage("search-trigger");
+	store.getState().selectInspectorTrigger("auth-trigger");
+
+	store.getState().selectBlock("block-a");
+
+	assert.equal(store.getState().selectedCanvasTriggerStageId, "search-trigger", "same block: canvas stage preserved");
+	assert.equal(store.getState().selectedInspectorTriggerId, "auth-trigger", "same block: inspector trigger preserved");
+
+	store.getState().selectBlock(null);
+
+	assert.equal(store.getState().selectedCanvasTriggerStageId, null, "deselect: canvas stage reset");
+	assert.equal(store.getState().selectedInspectorTriggerId, null, "deselect: inspector trigger reset");
+});

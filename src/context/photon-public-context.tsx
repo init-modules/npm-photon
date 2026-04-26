@@ -40,7 +40,12 @@ import { PhotonI18nProvider } from "../i18n/photon-i18n-context";
 import { PhotonInteractionSurfaceHost } from "../interaction-surfaces/photon-interaction-surface-host";
 import type {
 	PhotonAccountTabExtension,
+	PhotonActionPolicy,
 	PhotonBlock,
+	PhotonConditionDefinition,
+	PhotonConditionEvaluatorMap,
+	PhotonRouteContextField,
+	PhotonSiteDataSchema,
 	PhotonDocument,
 	PhotonAuthPageRenderer,
 	PhotonI18nValue,
@@ -108,6 +113,12 @@ type PhotonPublicContextValue = {
 	interactionActions: PhotonInteractionActionDefinition[];
 	interactionGuards: PhotonInteractionGuardDefinition[];
 	interactionGuardEvaluators: PhotonInteractionGuardEvaluatorMap;
+	interactionPolicies: PhotonActionPolicy[];
+	conditionDefinitions: PhotonConditionDefinition[];
+	conditionEvaluators: PhotonConditionEvaluatorMap;
+	siteDataSchemas: PhotonSiteDataSchema[];
+	routeContextFields: PhotonRouteContextField[];
+	routeContextValues: Record<string, unknown>;
 	interactionSurfaceRenderers: PhotonInteractionSurfaceRendererMap;
 	contentLocale: string;
 	defaultLocale: string;
@@ -132,6 +143,12 @@ type PhotonPublicProviderProps = {
 	interactionActions?: PhotonInteractionActionDefinition[];
 	interactionGuards?: PhotonInteractionGuardDefinition[];
 	interactionGuardEvaluators?: PhotonInteractionGuardEvaluatorMap;
+	interactionPolicies?: PhotonActionPolicy[];
+	conditionDefinitions?: PhotonConditionDefinition[];
+	conditionEvaluators?: PhotonConditionEvaluatorMap;
+	siteDataSchemas?: PhotonSiteDataSchema[];
+	routeContextFields?: PhotonRouteContextField[];
+	routeContextValues?: Record<string, unknown>;
 	interactionSurfaceRenderers?: PhotonInteractionSurfaceRendererMap;
 	navigate?: PhotonNavigateHandler;
 	prefetch?: PhotonPrefetchHandler;
@@ -268,6 +285,12 @@ export const PhotonProvider = ({
 	interactionActions = [],
 	interactionGuards = [],
 	interactionGuardEvaluators = {},
+	interactionPolicies = [],
+	conditionDefinitions = [],
+	conditionEvaluators = {},
+	siteDataSchemas = [],
+	routeContextFields = [],
+	routeContextValues = {},
 	interactionSurfaceRenderers = {},
 	navigate,
 	prefetch,
@@ -294,12 +317,14 @@ export const PhotonProvider = ({
 					actions: interactionActions,
 					guards: interactionGuards,
 					surfaces: interactionSurfaces,
+					policies: interactionPolicies,
 					siteSettings: initialSite.settings,
 				}),
 			[
 				initialSite.settings,
 				interactionActions,
 				interactionGuards,
+				interactionPolicies,
 				interactionSurfaces,
 			],
 		);
@@ -486,6 +511,12 @@ export const PhotonProvider = ({
 				interactionActions,
 				interactionGuards,
 				interactionGuardEvaluators,
+				interactionPolicies,
+				conditionDefinitions,
+				conditionEvaluators,
+				siteDataSchemas,
+				routeContextFields,
+				routeContextValues,
 				interactionSurfaceRenderers,
 			contentLocale: i18n?.contentLocale ?? "en",
 			defaultLocale: i18n?.defaultLocale ?? "en",
@@ -519,6 +550,12 @@ export const PhotonProvider = ({
 				interactionActions,
 				interactionGuards,
 				interactionGuardEvaluators,
+				interactionPolicies,
+				conditionDefinitions,
+				conditionEvaluators,
+				siteDataSchemas,
+				routeContextFields,
+				routeContextValues,
 				interactionSurfaceRenderers,
 			workspace,
 		],

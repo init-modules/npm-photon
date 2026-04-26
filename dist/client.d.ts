@@ -1,8 +1,8 @@
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
-export { P as PhotonStudio } from './photon-studio-Cu9ddXD6.js';
-export { g as getPhotonSurfaceModeStyle } from './surface-layout-CYZEKvb-.js';
-import './types-DkoIiv0C.js';
+export { P as PhotonStudio } from './photon-studio-CqEe1qiw.js';
+export { g as getPhotonSurfaceModeStyle } from './surface-layout-CdSaMTvH.js';
+import './types-BQcsKmzz.js';
 
 type PhotonSurfaceLayoutMetrics = {
     builderEnabled: boolean;

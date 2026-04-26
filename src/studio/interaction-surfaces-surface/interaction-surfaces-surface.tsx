@@ -19,6 +19,9 @@ import {
 	setValueAtPath,
 } from "../../helpers/path";
 import type {
+	PhotonActionPolicy,
+	PhotonConditionDefinition,
+	PhotonConditionEvaluatorMap,
 	PhotonInteractionSurfaceDefinition,
 	PhotonInteractionSurfaceInstance,
 	PhotonInteractionSurfaceIntentBinding,
@@ -33,19 +36,26 @@ import type {
 	PhotonInteractionGuardInstance,
 	PhotonStudioInteractionTab,
 } from "../../types";
+import { ActionStateCards } from "./action-state-cards";
+import { PoliciesPanel } from "./policies-panel";
 
 type InteractionSurfacesSurfaceProps = {
 	site: PhotonSite;
 	definitions: PhotonInteractionSurfaceDefinition[];
 	actionDefinitions: PhotonInteractionActionDefinition[];
 	guardDefinitions: PhotonInteractionGuardDefinition[];
+	interactionPolicies?: PhotonActionPolicy[];
+	conditionDefinitions?: PhotonConditionDefinition[];
+	conditionEvaluators?: PhotonConditionEvaluatorMap;
 	activeTab?: PhotonStudioInteractionTab;
 	selectedActionId?: string | null;
 	selectedGuardId?: string | null;
+	selectedPolicyId?: string | null;
 	selectedScenarioId?: string | null;
 	onActiveTabChange?: (tab: PhotonStudioInteractionTab) => void;
 	onSelectedActionChange?: (id: string | null) => void;
 	onSelectedGuardChange?: (id: string | null) => void;
+	onSelectedPolicyChange?: (id: string | null) => void;
 	onSelectedScenarioChange?: (id: string | null) => void;
 	selectedInstanceId?: string | null;
 	selectedTemplateId?: string | null;
@@ -131,13 +141,18 @@ export const InteractionSurfacesSurface = ({
 	definitions,
 	actionDefinitions,
 	guardDefinitions,
+	interactionPolicies = [],
+	conditionDefinitions = [],
+	conditionEvaluators = {},
 	activeTab: controlledActiveTab,
 	selectedActionId: controlledSelectedActionId,
 	selectedGuardId: controlledSelectedGuardId,
+	selectedPolicyId: controlledSelectedPolicyId,
 	selectedScenarioId: controlledSelectedScenarioId,
 	onActiveTabChange,
 	onSelectedActionChange,
 	onSelectedGuardChange,
+	onSelectedPolicyChange,
 	onSelectedScenarioChange,
 	selectedInstanceId: controlledSelectedInstanceId,
 	selectedTemplateId: controlledSelectedTemplateId,
@@ -163,9 +178,16 @@ export const InteractionSurfacesSurface = ({
 				actions: actionDefinitions,
 				guards: guardDefinitions,
 				surfaces: definitions,
+				policies: interactionPolicies,
 				siteSettings: site.settings,
 			}),
-		[actionDefinitions, definitions, guardDefinitions, site.settings],
+		[
+			actionDefinitions,
+			definitions,
+			guardDefinitions,
+			interactionPolicies,
+			site.settings,
+		],
 	);
 	const persistedSettings = readPhotonInteractionSurfaceSettings(site.settings);
 	const persistedInteractionSettings = readPhotonInteractionSettings(site.settings);
@@ -202,6 +224,9 @@ export const InteractionSurfacesSurface = ({
 		Object.values(actionCatalog.guardInstances)[0]?.id ?? "",
 	);
 	const [localSelectedScenarioId, setLocalSelectedScenarioId] = useState("");
+	const [localSelectedPolicyId, setLocalSelectedPolicyId] = useState(
+		interactionPolicies[0]?.id ?? "",
+	);
 	const activeTab = controlledActiveTab ?? localActiveTab;
 	const selectedInstanceId =
 		controlledSelectedInstanceId ?? localSelectedInstanceId;
@@ -235,6 +260,12 @@ export const InteractionSurfacesSurface = ({
 	const setSelectedScenarioId = (id: string | null) => {
 		setLocalSelectedScenarioId(id ?? "");
 		onSelectedScenarioChange?.(id);
+	};
+	const selectedPolicyId =
+		controlledSelectedPolicyId ?? localSelectedPolicyId;
+	const setSelectedPolicyId = (id: string | null) => {
+		setLocalSelectedPolicyId(id ?? "");
+		onSelectedPolicyChange?.(id);
 	};
 	const selectedInstance =
 		(selectedInstanceId ? catalog.instances[selectedInstanceId] : undefined) ??
@@ -466,7 +497,7 @@ export const InteractionSurfacesSurface = ({
 						<div className="flex flex-wrap gap-2">
 							{[
 								{ key: "actions" as const, label: "Actions" },
-								{ key: "guards" as const, label: "Guards" },
+								{ key: "policies" as const, label: "Policies" },
 								{ key: "surfaces" as const, label: "Surfaces" },
 								{ key: "toasts" as const, label: "Toasts" },
 							].map((tab) => (
@@ -582,6 +613,14 @@ export const InteractionSurfacesSurface = ({
 													)}
 												</div>
 											) : null}
+											{selectedActionDefinition?.states?.length ? (
+												<ActionStateCards
+													states={selectedActionDefinition.states}
+													conditionDefinitions={conditionDefinitions}
+													selectedScenarioId={selectedScenarioId || null}
+													onSelectScenario={setSelectedScenarioId}
+												/>
+											) : null}
 											{selectedActionSurfaceRequest &&
 											selectedActionFields.length ? (
 												<PhotonFieldEditorList
@@ -614,6 +653,20 @@ export const InteractionSurfacesSurface = ({
 									)}
 								</section>
 							</div>
+						) : null}
+
+						{activeTab === "policies" ? (
+							<PoliciesPanel
+								policies={actionCatalog.policies}
+								actionCatalog={actionCatalog}
+								conditionDefinitions={conditionDefinitions}
+								conditionEvaluators={conditionEvaluators}
+								selectedPolicyId={selectedPolicyId || null}
+								onSelectPolicy={setSelectedPolicyId}
+								onSiteSettingChange={onSiteSettingChange}
+								onSiteSettingFocus={onSiteSettingFocus}
+								siteSettings={site.settings}
+							/>
 						) : null}
 
 						{activeTab === "guards" ? (

@@ -5,6 +5,7 @@ export * from "./helpers/interactions";
 export * from "./helpers/interaction-surfaces";
 export * from "./helpers/path";
 export * from "./helpers/runtime";
+export * from "./helpers/route-context";
 export * from "./helpers/site";
 export * from "./helpers/site-design";
 export * from "./helpers/site-frame-extensions";

@@ -1,4 +1,5 @@
 import type {
+	PhotonActionPolicy,
 	PhotonInteractionActionDefinition,
 	PhotonInteractionActionExecutionHandlers,
 	PhotonInteractionActionInstance,
@@ -18,11 +19,10 @@ import type {
 	PhotonSiteSettings,
 } from "../types";
 import { resolvePhotonInteractionSurfaceCatalog } from "./interaction-surfaces";
+import { dedupePoliciesById } from "./override-resolution";
+import { isRecord } from "./path";
 
 export const PHOTON_INTERACTIONS_SITE_SETTING_KEY = "interactions";
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-	typeof value === "object" && value !== null && !Array.isArray(value);
 
 const normalizeRecordMap = <T extends { id?: string }>(
 	value: unknown,
@@ -223,6 +223,10 @@ export const readPhotonInteractionSettings = (
 		guardInstances: normalizeRecordMap<PhotonInteractionGuardInstance>(
 			rawSettings.guardInstances,
 		),
+		policies: normalizeRecordMap<PhotonActionPolicy>(rawSettings.policies),
+		canvasStageOverrides: isRecord(rawSettings.canvasStageOverrides)
+			? (rawSettings.canvasStageOverrides as PhotonInteractionSettings["canvasStageOverrides"])
+			: undefined,
 	};
 };
 
@@ -230,11 +234,13 @@ export const resolvePhotonInteractionActionCatalog = ({
 	actions,
 	guards,
 	surfaces,
+	policies,
 	siteSettings,
 }: {
 	actions?: readonly PhotonInteractionActionDefinition[];
 	guards?: readonly PhotonInteractionGuardDefinition[];
 	surfaces?: readonly PhotonInteractionSurfaceDefinition[];
+	policies?: readonly PhotonActionPolicy[];
 	siteSettings?: PhotonSiteSettings;
 }): PhotonResolvedInteractionActionCatalog => {
 	const persisted = readPhotonInteractionSettings(siteSettings);
@@ -249,6 +255,11 @@ export const resolvePhotonInteractionActionCatalog = ({
 	const guardsById = new Map(
 		sortedGuards.map((definition) => [definition.id, definition]),
 	);
+	const allPolicies = dedupePoliciesById([
+		...(policies ?? []),
+		...Object.values(persisted.policies ?? {}),
+	]);
+	const policiesById = new Map(allPolicies.map((p) => [p.id, p]));
 
 	return {
 		actions: sortedActions,
@@ -264,6 +275,8 @@ export const resolvePhotonInteractionActionCatalog = ({
 			persisted.guardInstances,
 		),
 		triggerBindings: persisted.triggerBindings ?? {},
+		policies: allPolicies,
+		policiesById,
 	};
 };
 
