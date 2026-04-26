@@ -19,6 +19,10 @@ import { clonePhotonValue } from "../helpers/path";
 import { decomposePhotonSurfaceDocument } from "../helpers/site";
 import { resolvePhotonSiteData } from "../helpers/site-data";
 import {
+	resolvePhotonBlockActiveState,
+	type PhotonBlockActiveStateResolution,
+} from "../helpers/block-active-state";
+import {
 	canEditPhotonWorkspace,
 	normalizePhotonWorkspaceCapabilities,
 	normalizePhotonWorkspaceDescriptor,
@@ -376,6 +380,9 @@ const PhotonStoreInteractionSurfaceHost = () => {
 	const closeInteractionSurface = usePhotonStore(
 		(state) => state.closeInteractionSurface,
 	);
+	const completeInteractionSurface = usePhotonStore(
+		(state) => state.completeInteractionSurface,
+	);
 
 	return (
 		<PhotonInteractionSurfaceHost
@@ -386,6 +393,7 @@ const PhotonStoreInteractionSurfaceHost = () => {
 					closeInteractionSurface();
 				}
 			}}
+			onComplete={completeInteractionSurface}
 		/>
 	);
 };
@@ -440,6 +448,64 @@ export const usePhotonSiteData = () => {
 
 export const usePhotonRouteContext = (): Record<string, unknown> =>
 	usePhotonStore((state) => state.routeContextValues);
+
+/**
+ * Resolves the active state for a block based on its definition's
+ * `states` (condition-driven) and `previewScenarios` (builder preview).
+ *
+ * Resolution order:
+ * 1. Builder preview override (`blockPreviewScenarios[blockId]`) wins
+ *    when it matches a state or scenario id.
+ * 2. First state whose `condition` evaluates `true` against current site/route context.
+ * 3. State marked `isDefaultServerState` when client-only conditions are unresolved.
+ * 4. `null` when the block declares no states/scenarios.
+ *
+ * Block components call this with their own `block.id` to render
+ * state-specific copy/UI without becoming aware of the resolver.
+ */
+export const usePhotonBlockActiveState = (
+	blockId: string,
+): PhotonBlockActiveStateResolution => {
+	const block = usePhotonStore((state) =>
+		state.document.blocks.find((b) => b.id === blockId),
+	);
+	const registry = usePhotonStore((state) => state.registry);
+	const conditionEvaluators = usePhotonStore(
+		(state) => state.conditionEvaluators,
+	);
+	const siteSettings = usePhotonStore((state) => state.site.settings);
+	const resources = usePhotonStore((state) => state.resources);
+	const routeContextValues = usePhotonStore(
+		(state) => state.routeContextValues,
+	);
+	const previewScenarioId = usePhotonStore(
+		(state) => state.blockPreviewScenarios[blockId] ?? null,
+	);
+
+	return useMemo(() => {
+		const definition = block
+			? registry.getDefinition(block.module, block.type)
+			: undefined;
+		return resolvePhotonBlockActiveState({
+			definition,
+			evaluators: conditionEvaluators,
+			context: {
+				siteSettings,
+				resources,
+				routeContext: routeContextValues,
+			},
+			previewScenarioId,
+		});
+	}, [
+		block,
+		registry,
+		conditionEvaluators,
+		siteSettings,
+		resources,
+		routeContextValues,
+		previewScenarioId,
+	]);
+};
 
 export const usePhotonPersistedState = () => {
 	const document = usePhotonStore((state) => state.document);

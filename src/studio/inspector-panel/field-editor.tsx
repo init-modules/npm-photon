@@ -12,6 +12,7 @@ import {
 	DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
 import { usePhotonStore } from "../../context/photon-context";
+import { usePhotonInspectorDensity } from "./inspector-density-context";
 import { PhotonFormFieldsEditor } from "../../forms/form-fields-editor";
 import { movePhotonArrayItem } from "../../helpers/document";
 import {
@@ -421,14 +422,25 @@ export const FieldEditor = ({
 }: FieldEditorProps) => {
 	const documentId = usePhotonStore((state) => state.document.id);
 	const uploadMedia = usePhotonStore((state) => state.uploadMedia);
+	const setFieldBinding = usePhotonStore((state) => state.setFieldBinding);
+	const fieldBinding = usePhotonStore((state) =>
+		state.getFieldBinding(blockId, absolutePath ?? field.path ?? ""),
+	);
 	const { translate } = usePhotonI18n();
+	const { tokens } = usePhotonInspectorDensity();
 	const path = absolutePath ?? field.path ?? "";
 
 	return (
-		<div>
-			<div className="mb-2 flex items-center justify-between gap-3">
+		<div data-photon-density-row>
+			<div
+				className={clsx(
+					tokens.rowSpacing,
+					"flex items-center justify-between",
+					tokens.labelInlineGap,
+				)}
+			>
 				<div
-					className="text-sm font-semibold"
+					className={tokens.fieldLabelClass}
 					style={{ color: "var(--photon-builder-text)" }}
 				>
 					{translate(
@@ -447,6 +459,54 @@ export const FieldEditor = ({
 					</button>
 				) : null}
 			</div>
+			{path ? (
+				<div
+					className={clsx(tokens.rowSpacing, "flex items-center gap-2")}
+					data-testid={`photon-field-binding-row-${path}`}
+				>
+					{fieldBinding ? (
+						<>
+							<span
+								className="rounded-full border px-2 py-0.5 font-mono text-[10px]"
+								style={{
+									borderColor: "var(--photon-builder-border-strong)",
+									background: "var(--photon-builder-accent-strong)",
+									color: "var(--photon-builder-accent)",
+								}}
+								data-testid={`photon-field-binding-pill-${path}`}
+							>
+								🔗 {fieldBinding.source}:{fieldBinding.path}
+							{fieldBinding.adapter ? (
+								<span
+									className="ml-1 opacity-70"
+									data-testid={`photon-field-binding-adapter-${path}`}
+								>
+									via {fieldBinding.adapter}
+								</span>
+							) : null}
+							</span>
+							<button
+								type="button"
+								onClick={() => setFieldBinding(blockId, path, null)}
+								className="cursor-pointer rounded-full border px-2 py-0.5 text-[10px]"
+								style={{
+									borderColor: "var(--photon-builder-border)",
+									color: "var(--photon-builder-text-soft)",
+								}}
+								data-testid={`photon-field-binding-unbind-${path}`}
+							>
+								× Unbind
+							</button>
+						</>
+					) : (
+						<SiteDataBindingPicker
+							mode="field"
+							label="Bind field"
+							onPick={(binding) => setFieldBinding(blockId, path, binding)}
+						/>
+					)}
+				</div>
+			) : null}
 			{field.description ? (
 				<div
 					className="mb-2 text-xs leading-5"

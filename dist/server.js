@@ -1,6 +1,6 @@
 import {
   createPhotonRuntime
-} from "./chunk-CPTGXXVB.js";
+} from "./chunk-2E3YDDEL.js";
 import {
   collectPhotonFooterExtensionItems,
   collectPhotonHeaderExtensionItems,
@@ -72,7 +72,7 @@ import {
   resolvePhotonSurfaceRegionDescriptors,
   resolvePhotonSurfaceRegionForBlockId,
   resolvePhotonSurfaceRegionForListId
-} from "./chunk-725LMVL7.js";
+} from "./chunk-FF7K4ALP.js";
 import {
   clonePhotonBlockTreeWithNewIds,
   collectBlockIds,
@@ -85,7 +85,7 @@ import {
   removePhotonBlockFromDocument,
   replacePhotonBlockWithBlocksInDocument,
   updatePhotonBlockInDocument
-} from "./chunk-XPZWWFIY.js";
+} from "./chunk-URGYF42Q.js";
 import {
   PHOTON_ROOT_LIST_ID,
   PHOTON_ROUTE_CONTEXT_SCOPE,
@@ -137,6 +137,7 @@ import {
   normalizePhotonWorkspaceRef,
   parsePhotonComponentLibraryBlockId,
   photonInteractionExecutionSucceeded,
+  planPhotonInteractionTriggerSlot,
   readPhotonComponentLibrarySettings,
   readPhotonInteractionSettings,
   readPhotonInteractionSurfaceSettings,
@@ -150,7 +151,7 @@ import {
   resolvePhotonInteractionSurfaceRequest,
   resolvePhotonInteractionToastTemplate,
   setValueAtPath
-} from "./chunk-P4O7POLV.js";
+} from "./chunk-WHYISUJX.js";
 export {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
   DEFAULT_PHOTON_WORKSPACE_REF,
@@ -262,6 +263,7 @@ export {
   photonInteractionExecutionSucceeded,
   photonSiteColorSchemes,
   photonSiteDesignPresets,
+  planPhotonInteractionTriggerSlot,
   readPhotonComponentLibrarySettings,
   readPhotonInteractionSettings,
   readPhotonInteractionSurfaceSettings,

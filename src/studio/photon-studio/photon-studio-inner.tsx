@@ -153,6 +153,12 @@ export const PhotonStudioInner = ({
 	const selectCanvasTriggerStage = usePhotonStore(
 		(state) => state.selectCanvasTriggerStage,
 	);
+	const selectedInteractionInstanceId = usePhotonStore(
+		(state) => state.selectedInteractionInstanceId,
+	);
+	const selectInteractionInstance = usePhotonStore(
+		(state) => state.selectInteractionInstance,
+	);
 	const selectPageSettingField = usePhotonStore(
 		(state) => state.selectPageSettingField,
 	);
@@ -368,6 +374,25 @@ export const PhotonStudioInner = ({
 			selectCanvasTriggerStage(initialStudioUrlState.canvasTrigger);
 		}
 	}, [initialStudioUrlState.canvasTrigger, selectCanvasTriggerStage]);
+
+	// When the inspector requests "Open instance" navigation via
+	// `selectInteractionInstance(id)`, switch the builder to the
+	// interaction-surfaces editor and mirror the id into the local
+	// surface selection so InteractionSurfacesSurface can scroll/highlight it.
+	// The store action is consumed (set back to null) once the navigation
+	// has been applied to avoid loops on subsequent re-renders.
+	useEffect(() => {
+		if (!selectedInteractionInstanceId) {
+			return;
+		}
+		setBuilderSurfaceMode("interactions");
+		setSelectedInteractionSurfaceId(selectedInteractionInstanceId);
+		selectInteractionInstance(null);
+	}, [
+		selectedInteractionInstanceId,
+		selectInteractionInstance,
+		setBuilderSurfaceMode,
+	]);
 
 	useEffect(() => {
 		if (typeof window === "undefined" || !isAdmin) {

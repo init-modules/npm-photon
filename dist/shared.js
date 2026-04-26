@@ -1,11 +1,8 @@
 import {
-  buildActionPlan,
   createSitePolicyOverride,
-  evaluateConditionExpression,
   isSitePolicyOverride,
-  mapGuardsToActionPolicies,
   sitePolicyPath
-} from "./chunk-F6JYM4BG.js";
+} from "./chunk-P7MR63BK.js";
 import {
   getPhotonSurfaceModeStyle
 } from "./chunk-IOB5G6YT.js";
@@ -41,7 +38,7 @@ import {
   resolvePhotonSiteData,
   resolvePhotonSiteDataBinding,
   sitePath
-} from "./chunk-JASL5BP5.js";
+} from "./chunk-UOWHTI2K.js";
 import {
   decodePhotonHtmlEntities,
   getPhotonAnchorRel,
@@ -60,7 +57,7 @@ import {
   removePhotonBlockFromDocument,
   replacePhotonBlockWithBlocksInDocument,
   updatePhotonBlockInDocument
-} from "./chunk-XPZWWFIY.js";
+} from "./chunk-URGYF42Q.js";
 import {
   PHOTON_ROOT_LIST_ID,
   PHOTON_ROUTE_CONTEXT_SCOPE,
@@ -72,6 +69,7 @@ import {
 import {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
   DEFAULT_PHOTON_WORKSPACE_REF,
+  PHOTON_CASCADE_SCOPE_ORDER,
   PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY,
   PHOTON_COMPONENT_REFERENCE_AREA_ID,
   PHOTON_COMPONENT_REFERENCE_MAX_DEPTH,
@@ -79,12 +77,14 @@ import {
   PHOTON_COMPONENT_REFERENCE_TYPE,
   PHOTON_INTERACTIONS_SITE_SETTING_KEY,
   PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY,
+  buildActionPlan,
   canEditPhotonWorkspace,
   canSavePhotonWorkspace,
   clonePhotonComponentLibraryBlocksForCopy,
   clonePhotonComponentSourceBlockWithNewIds,
   clonePhotonValue,
   collectPhotonComponentLibraryUsages,
+  comparePhotonCascadable,
   createPhotonActionValue,
   createPhotonComponentLibraryBlockId,
   createPhotonComponentLibraryItemFromBlock,
@@ -95,8 +95,11 @@ import {
   createPhotonInteractionSurfaceDefinition,
   createPhotonInteractionTriggerSlot,
   createPhotonNodeId,
+  dedupePhotonCascadeBy,
   dedupePoliciesById,
+  detectPhotonCascadeConflicts,
   duplicatePhotonComponentLibraryItem,
+  evaluateConditionExpression,
   evaluatePhotonInteractionGuards,
   executePhotonInteractionActionPresentation,
   executePhotonInteractionTriggerSlot,
@@ -105,11 +108,13 @@ import {
   getPhotonWorkspaceKey,
   isPhotonComponentReferenceBlock,
   isPhotonWorkspaceReadonly,
+  mapGuardsToActionPolicies,
   normalizePhotonWorkspaceCapabilities,
   normalizePhotonWorkspaceDescriptor,
   normalizePhotonWorkspaceRef,
   parsePhotonComponentLibraryBlockId,
   photonInteractionExecutionSucceeded,
+  planPhotonInteractionTriggerSlot,
   readPhotonComponentLibrarySettings,
   readPhotonInteractionSettings,
   readPhotonInteractionSurfaceSettings,
@@ -122,11 +127,13 @@ import {
   resolvePhotonInteractionSurfaceCatalog,
   resolvePhotonInteractionSurfaceRequest,
   resolvePhotonInteractionToastTemplate,
-  resolvePolicyCascade
-} from "./chunk-P4O7POLV.js";
+  resolvePolicyCascade,
+  sortPhotonCascade
+} from "./chunk-WHYISUJX.js";
 export {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
   DEFAULT_PHOTON_WORKSPACE_REF,
+  PHOTON_CASCADE_SCOPE_ORDER,
   PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY,
   PHOTON_COMPONENT_REFERENCE_AREA_ID,
   PHOTON_COMPONENT_REFERENCE_MAX_DEPTH,
@@ -154,6 +161,7 @@ export {
   clonePhotonValue,
   collectBlockIds,
   collectPhotonComponentLibraryUsages,
+  comparePhotonCascadable,
   createPhotonActionValue,
   createPhotonAreaListId,
   createPhotonComponentLibraryBlockId,
@@ -168,7 +176,9 @@ export {
   createPhotonSiteDesignSettings,
   createSitePolicyOverride,
   decodePhotonHtmlEntities,
+  dedupePhotonCascadeBy,
   dedupePoliciesById,
+  detectPhotonCascadeConflicts,
   duplicatePhotonBlockInDocument,
   duplicatePhotonComponentLibraryItem,
   evaluateConditionExpression,
@@ -207,6 +217,7 @@ export {
   parsePhotonStudioUrlState,
   parseRoutePattern,
   photonInteractionExecutionSucceeded,
+  planPhotonInteractionTriggerSlot,
   readPhotonComponentLibrarySettings,
   readPhotonInteractionSettings,
   readPhotonInteractionSurfaceSettings,
@@ -229,6 +240,7 @@ export {
   sanitizePhotonLinkHref,
   sitePath,
   sitePolicyPath,
+  sortPhotonCascade,
   updatePhotonBlockInDocument,
   writePhotonStudioUrlState
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PhotonFieldEditorList } from "../../components/photon-field-editor-list";
 import {
 	PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY,
@@ -230,6 +230,18 @@ export const InteractionSurfacesSurface = ({
 	const activeTab = controlledActiveTab ?? localActiveTab;
 	const selectedInstanceId =
 		controlledSelectedInstanceId ?? localSelectedInstanceId;
+	const instanceListRef = useRef<HTMLDivElement | null>(null);
+	useEffect(() => {
+		if (!selectedInstanceId || !instanceListRef.current) {
+			return;
+		}
+		const target = instanceListRef.current.querySelector<HTMLElement>(
+			`[data-instance-id="${CSS.escape(selectedInstanceId)}"]`,
+		);
+		if (target) {
+			target.scrollIntoView({ behavior: "smooth", block: "nearest" });
+		}
+	}, [selectedInstanceId]);
 	const selectedTemplateId =
 		controlledSelectedTemplateId ?? localSelectedTemplateId;
 	const selectedActionId =
@@ -784,7 +796,7 @@ export const InteractionSurfacesSurface = ({
 										</button>
 									))}
 								</div>
-								<div className="space-y-2">
+								<div className="space-y-2" ref={instanceListRef}>
 									{instances.map((instance) => {
 									const definition = catalog.definitionsById.get(
 										instance.definitionId,
@@ -794,6 +806,8 @@ export const InteractionSurfacesSurface = ({
 										<button
 											key={instance.id}
 											type="button"
+											data-instance-id={instance.id}
+											data-testid={`photon-interaction-instance-${instance.id}`}
 											onClick={() => setSelectedInstanceId(instance.id)}
 											className="w-full cursor-pointer rounded-[18px] border px-3 py-3 text-left transition"
 											style={

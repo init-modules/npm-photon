@@ -353,10 +353,37 @@ export {
 	PhotonLink,
 	PhotonProvider,
 	usePhoton,
+	usePhotonBlockActiveState,
 	usePhotonCanEdit,
 	usePhotonFieldValue as usePhotonValueAtPath,
 	usePhotonStore,
 } from "./context/photon-public-context";
+export {
+	resolvePhotonBlockActiveState,
+	type PhotonBlockActiveStateInput,
+	type PhotonBlockActiveStateResolution,
+} from "./helpers/block-active-state";
+export {
+	resolvePhotonDocumentForRoute,
+	type PhotonResolvedDocumentForRoute,
+} from "./helpers/route-family";
+export {
+	evaluatePhotonConditionForMode,
+	resolvePhotonActionStateForMode,
+	resolvePhotonConditionAxis,
+	type PhotonConditionResolutionMode,
+} from "./helpers/condition-resolution";
+export {
+	asPhotonComponentDefinition,
+	blockDefinitionAsPhotonComponentDefinition,
+	collectPhotonComponentSwitchableOptions,
+	getPhotonComponentInstanceLabel,
+	surfaceDefinitionAsPhotonComponentDefinition,
+	type PhotonComponentDefinition,
+	type PhotonComponentDefinitionSource,
+	type PhotonComponentInstance,
+	type PhotonComponentSwitchableOption,
+} from "./helpers/component-definition";
 export {
 	PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY,
 	PHOTON_COMPONENT_REFERENCE_MODULE,
@@ -383,6 +410,7 @@ export {
 	executePhotonInteractionTriggerSlot,
 	photonInteractionExecutionSucceeded,
 	evaluatePhotonInteractionGuards,
+	planPhotonInteractionTriggerSlot,
 	readPhotonInteractionSettings,
 	resolvePhotonInteractionActionCatalog,
 	resolvePhotonInteractionSlotAction,

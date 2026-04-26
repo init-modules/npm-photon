@@ -19,7 +19,7 @@ import {
   photonSystemInteractionSurfaces,
   resolvePhotonPublicSiteDesignSettings,
   usePhotonComponentLibraryStack
-} from "./chunk-KVRKUEWY.js";
+} from "./chunk-KYGLMZQU.js";
 import {
   PhotonRenderDepthProvider,
   PhotonSearchHighlightEffect,
@@ -34,16 +34,17 @@ import {
   PhotonProvider,
   getPhotonEditableEditorLoader,
   usePhoton,
+  usePhotonBlockActiveState,
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonStore
-} from "./chunk-4XNGVWTF.js";
+} from "./chunk-APC32IRT.js";
 import {
   buildPhotonSearchTargetId
 } from "./chunk-6LYMEWZL.js";
 import {
   createPhotonRuntime
-} from "./chunk-CPTGXXVB.js";
+} from "./chunk-2E3YDDEL.js";
 import {
   collectPhotonFooterExtensionItems,
   collectPhotonHeaderExtensionItems,
@@ -68,8 +69,12 @@ import {
   resolvePhotonMediaPreviewUrl
 } from "./chunk-QQDDM7OM.js";
 import {
+  evaluatePhotonConditionForMode,
+  resolvePhotonActionStateForMode,
+  resolvePhotonBlockActiveState,
+  resolvePhotonConditionAxis,
   usePhotonI18n
-} from "./chunk-O6DIDPAQ.js";
+} from "./chunk-TSGYFS2W.js";
 import {
   PHOTON_PAGE_SURFACE_REGION_KEY,
   createPhotonBlockLocalizationSchema,
@@ -78,7 +83,7 @@ import {
   definePhotonBlockDefinition,
   getPhotonSurfaceRegionBlocks,
   resolvePhotonSurfaceRegionDescriptors
-} from "./chunk-725LMVL7.js";
+} from "./chunk-FF7K4ALP.js";
 import {
   getPhotonAnchorRel,
   sanitizePhotonLinkHref
@@ -116,6 +121,7 @@ import {
   isPhotonComponentReferenceBlock,
   parsePhotonComponentLibraryBlockId,
   photonInteractionExecutionSucceeded,
+  planPhotonInteractionTriggerSlot,
   readPhotonComponentLibrarySettings,
   readPhotonInteractionSettings,
   readPhotonInteractionSurfaceSettings,
@@ -126,7 +132,7 @@ import {
   resolvePhotonInteractionSurfaceCatalog,
   resolvePhotonInteractionSurfaceRequest,
   resolvePhotonInteractionToastTemplate
-} from "./chunk-P4O7POLV.js";
+} from "./chunk-WHYISUJX.js";
 
 // src/public.tsx
 import clsx6 from "clsx";
@@ -633,6 +639,96 @@ var EditableRichText = ({
     }
   ) });
 };
+
+// src/helpers/route-family.ts
+var resolvePhotonDocumentForRoute = (path, documents) => {
+  const allDocuments = Object.values(documents);
+  for (const document of allDocuments) {
+    if (document.route === path) {
+      return { document, source: "exact" };
+    }
+  }
+  for (const document of allDocuments) {
+    if (!document.routePatterns?.length) {
+      continue;
+    }
+    for (const pattern of document.routePatterns) {
+      if (matchRoutePattern(pattern, path)) {
+        return {
+          document,
+          source: "pattern",
+          matchedPattern: pattern
+        };
+      }
+    }
+  }
+  return null;
+};
+
+// src/helpers/component-definition.ts
+var surfaceInstanceToComponentInstance = (instance) => ({
+  id: instance.id,
+  label: instance.label,
+  labelKey: instance.labelKey,
+  enabled: instance.enabled,
+  props: instance.props
+});
+var blockDefinitionAsPhotonComponentDefinition = (definition) => ({
+  id: definition.type,
+  label: definition.label,
+  labelKey: definition.labelKey,
+  description: definition.description,
+  descriptionKey: definition.descriptionKey,
+  kind: "inline",
+  package: definition.package,
+  fields: definition.fields,
+  previewScenarios: definition.previewScenarios,
+  states: definition.states,
+  source: { kind: "block", definition }
+});
+var surfaceDefinitionAsPhotonComponentDefinition = (definition) => ({
+  id: definition.id,
+  label: definition.label,
+  labelKey: definition.labelKey,
+  description: definition.description,
+  descriptionKey: definition.descriptionKey,
+  kind: definition.kind,
+  fields: definition.fields,
+  instances: definition.defaultInstances?.map(
+    surfaceInstanceToComponentInstance
+  ),
+  source: { kind: "surface", definition }
+});
+var asPhotonComponentDefinition = (definition) => {
+  if ("component" in definition) {
+    return blockDefinitionAsPhotonComponentDefinition(
+      definition
+    );
+  }
+  return surfaceDefinitionAsPhotonComponentDefinition(
+    definition
+  );
+};
+var getPhotonComponentInstanceLabel = (component, instanceId) => {
+  if (!instanceId) {
+    return component.label;
+  }
+  const instance = component.instances?.find((i) => i.id === instanceId);
+  return instance?.label ?? component.label;
+};
+var collectPhotonComponentSwitchableOptions = (component) => [
+  ...(component.previewScenarios ?? []).map((scenario) => ({
+    id: scenario.id,
+    label: scenario.label,
+    labelKey: scenario.labelKey,
+    kind: "scenario"
+  })),
+  ...(component.states ?? []).map((state) => ({
+    id: state.id,
+    label: state.label,
+    kind: "state"
+  }))
+];
 
 // src/helpers/public-surface-layout.ts
 var getPhotonPublicSurfaceModeStyle = (mode) => {
@@ -2941,9 +3037,12 @@ export {
   PhotonPublicPage,
   PhotonSiteSearch,
   PhotonSiteSearchSurfaceRenderer,
+  asPhotonComponentDefinition,
+  blockDefinitionAsPhotonComponentDefinition,
   clonePhotonComponentLibraryBlocksForCopy,
   clonePhotonComponentSourceBlockWithNewIds,
   collectPhotonComponentLibraryUsages,
+  collectPhotonComponentSwitchableOptions,
   collectPhotonFooterExtensionItems,
   collectPhotonHeaderExtensionItems,
   createPhotonAccountTabExtension,
@@ -2962,10 +3061,12 @@ export {
   createPhotonRuntime,
   createPhotonSiteFrameExtension,
   definePhotonBlockDefinition,
+  evaluatePhotonConditionForMode,
   evaluatePhotonInteractionGuards,
   executePhotonInteractionActionPresentation,
   executePhotonInteractionTriggerSlot,
   getPhotonAnchorRel,
+  getPhotonComponentInstanceLabel,
   getPhotonComponentLibraryItems,
   getPhotonPublicSurfaceModeStyle as getPhotonSurfaceModeStyle,
   isPhotonComponentReferenceBlock,
@@ -2978,12 +3079,17 @@ export {
   photonInteractionExecutionSucceeded,
   photonPublicSystemKit as photonSystemKit,
   photonPublicSystemModule as photonSystemModule,
+  planPhotonInteractionTriggerSlot,
   readPhotonComponentLibrarySettings,
   readPhotonInteractionSettings,
   readPhotonInteractionSurfaceSettings,
   renderPhotonRichTextHtml,
   resolvePhotonAccountTabs,
+  resolvePhotonActionStateForMode,
+  resolvePhotonBlockActiveState,
   resolvePhotonComponentReferenceBlocks,
+  resolvePhotonConditionAxis,
+  resolvePhotonDocumentForRoute,
   resolvePhotonInteractionActionCatalog,
   resolvePhotonInteractionSlotAction,
   resolvePhotonInteractionSlotGuards,
@@ -2995,7 +3101,9 @@ export {
   resolveRouteContext,
   sanitizePhotonLinkHref,
   sanitizePhotonRichTextHtml,
+  surfaceDefinitionAsPhotonComponentDefinition,
   usePhoton,
+  usePhotonBlockActiveState,
   usePhotonCanEdit,
   usePhotonI18n,
   usePhotonRenderDepth,

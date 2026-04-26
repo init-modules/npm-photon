@@ -18,7 +18,14 @@ import type {
 } from "../../types";
 import { FIELD_GROUP_LABELS } from "../shared";
 import type { InspectorDefinitionMeta, InspectorGroups } from "../types";
+import { BlockPreviewScenariosPicker } from "./block-preview-scenarios-picker";
 import { FieldEditor } from "./field-editor";
+import {
+	PhotonInspectorDensityProvider,
+	usePhotonInspectorDensity,
+} from "./inspector-density-context";
+import { InspectorDensityToggle } from "./inspector-density-toggle";
+import { RouteFamilyEditor } from "./route-family-editor";
 import {
 	InspectorTriggerTab,
 	useInspectorTriggerSlots,
@@ -226,10 +233,11 @@ const InspectorPanelComponent = ({
 				<div className="flex items-center justify-between gap-3">
 					<div className="min-w-0">
 						<div
-							className="text-[11px] uppercase tracking-[0.28em]"
+							className="flex items-center gap-2 text-[11px] uppercase tracking-[0.28em]"
 							style={{ color: "var(--photon-builder-text-soft)" }}
 						>
-							{translate("photon.studio.inspector.title", "Inspector")}
+							<span>{translate("photon.studio.inspector.title", "Inspector")}</span>
+							<InspectorDensityToggle />
 						</div>
 						<div
 							className="mt-4 inline-flex rounded-full border p-1"
@@ -540,6 +548,10 @@ const InspectorPanelComponent = ({
 								</div>
 							) : null}
 						</section>
+
+						<BlockPreviewScenariosPicker block={selectedBlock} />
+
+						<RouteFamilyEditor />
 
 						{orderedGroupKeys.length > 0 ? (
 							<section
@@ -933,4 +945,10 @@ const InspectorPanelComponent = ({
 	);
 };
 
-export const InspectorPanel = memo(InspectorPanelComponent);
+const InspectorPanelWithDensity = (props: InspectorPanelProps) => (
+	<PhotonInspectorDensityProvider>
+		<InspectorPanelComponent {...props} />
+	</PhotonInspectorDensityProvider>
+);
+
+export const InspectorPanel = memo(InspectorPanelWithDensity);

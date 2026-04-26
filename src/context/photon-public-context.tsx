@@ -36,6 +36,10 @@ import {
 	getPhotonComponentLibraryItems,
 	parsePhotonComponentLibraryBlockId,
 } from "../helpers/component-library";
+import {
+	resolvePhotonBlockActiveState,
+	type PhotonBlockActiveStateResolution,
+} from "../helpers/block-active-state";
 import { PhotonI18nProvider } from "../i18n/photon-i18n-context";
 import { PhotonInteractionSurfaceHost } from "../interaction-surfaces/photon-interaction-surface-host";
 import type {
@@ -627,6 +631,42 @@ export const usePhotonCanEdit = () =>
 			state.mode !== "preview" &&
 			canEditPhotonWorkspace(state.workspace, state.capabilities),
 	);
+
+/**
+ * Public-runtime variant of `usePhotonBlockActiveState`. Builder preview overrides
+ * are not applicable here (production runtime), so resolution always falls back to
+ * condition evaluation + server defaults.
+ */
+export const usePhotonBlockActiveState = (
+	blockId: string,
+): PhotonBlockActiveStateResolution => {
+	const ctx = usePhoton();
+	return useMemo(() => {
+		const block =
+			findPhotonPublicBlock(ctx.document.blocks, blockId) ??
+			findPhotonPublicComponentSourceBlock(ctx.site, blockId);
+		const definition = block
+			? ctx.registry.getDefinition(block.module, block.type)
+			: undefined;
+		return resolvePhotonBlockActiveState({
+			definition,
+			evaluators: ctx.conditionEvaluators,
+			context: {
+				siteSettings: ctx.site.settings,
+				resources: ctx.resources,
+				routeContext: ctx.routeContextValues,
+			},
+		});
+	}, [
+		ctx.document.blocks,
+		ctx.site,
+		ctx.registry,
+		ctx.conditionEvaluators,
+		ctx.resources,
+		ctx.routeContextValues,
+		blockId,
+	]);
+};
 
 type PhotonLinkProps = PhotonLinkComponentProps & {
 	navigateInPreviewOnly?: boolean;

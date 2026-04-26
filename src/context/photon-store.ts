@@ -42,6 +42,7 @@ import {
 	executePhotonInteractionActionPresentation,
 	executePhotonInteractionTriggerSlot,
 	photonInteractionExecutionSucceeded,
+	planPhotonInteractionTriggerSlot,
 	resolvePhotonInteractionActionCatalog,
 } from "../helpers/interactions";
 import {
@@ -125,6 +126,28 @@ export type PhotonStoreState = {
 	selectedField: PhotonSelectedField;
 	selectedInspectorTriggerId: string | null;
 	selectedCanvasTriggerStageId: string | null;
+	/** Builder-only: per-block preview scenario/state override for canvas state-switcher. Not persisted to site settings. */
+	blockPreviewScenarios: Record<string, string>;
+	/**
+	 * Pending action plan continuation. Set when a trigger executes a
+	 * prerequisite (e.g. opens sign-in dialog) instead of the target action.
+	 * The store re-evaluates the plan when the prerequisite surface closes:
+	 * if conditions changed (plan shrunk), the next step or target is auto-executed.
+	 * If no progress, the pending plan is cleared (user backed out).
+	 */
+	pendingActionPlan: {
+		targetAction: PhotonInteractionActionPresentation;
+		targetActionInstanceId: string;
+		previousStepCount: number;
+		slot: PhotonInteractionTriggerSlot | null;
+	} | null;
+	/**
+	 * The interaction action instance id that the builder requested to be
+	 * focused for editing (e.g. via "Open instance" link inside an action
+	 * flow row). `interaction-surfaces-surface` reads this to scroll/highlight
+	 * the matching instance editor. Cleared when null.
+	 */
+	selectedInteractionInstanceId: string | null;
 	uploadMedia?: PhotonMediaUploadHandler;
 	searchSite?: PhotonSearchHandler;
 	requestAuth?: () => void;
@@ -143,6 +166,14 @@ export type PhotonStoreState = {
 		},
 	) => PhotonInteractionExecutionResult;
 	closeInteractionSurface: () => void;
+	/**
+	 * Surface explicitly signals success completion (e.g. login OK, form
+	 * submitted). The runtime advances any pending action plan: target
+	 * action runs immediately if remaining plan is empty, next prereq
+	 * runs otherwise. Use this instead of `closeInteractionSurface`
+	 * whenever the surface knows it succeeded.
+	 */
+	completeInteractionSurface: () => void;
 	navigate?: PhotonNavigateHandler;
 	prefetch?: PhotonPrefetchHandler;
 	linkComponent: PhotonLinkComponent;
@@ -174,11 +205,32 @@ export type PhotonStoreState = {
 	selectField: (blockId: string, path: string) => void;
 	selectInspectorTrigger: (triggerId: string | null) => void;
 	selectCanvasTriggerStage: (triggerId: string | null) => void;
+	setBlockPreviewScenario: (
+		blockId: string,
+		scenarioId: string | null,
+	) => void;
+	selectInteractionInstance: (instanceId: string | null) => void;
 	clearSelectedField: () => void;
 	selectPageSettingField: (path: string) => void;
 	selectSiteSettingField: (path: string) => void;
 	updateFieldValue: (blockId: string, path: string, value: unknown) => void;
 	getFieldValue: (blockId: string, path: string) => unknown;
+	/**
+	 * Sets or clears a field-level binding on a block. When `binding` is
+	 * non-null the field's runtime value resolves from the bound source
+	 * (e.g. `{ source: "site-data", path: "brand.name" }`). When `null`
+	 * the binding is removed and the field falls back to its block prop value.
+	 *
+	 * Distinct from `updateFieldValue`, which writes the literal value
+	 * (or a `{{ template }}` string for substitution mode). Binding mode
+	 * is an object-level link — the picker emits a `PhotonFieldBinding`
+	 * directly so non-string fields can also reference shared data.
+	 */
+	setFieldBinding: (
+		blockId: string,
+		path: string,
+		binding: PhotonFieldBinding | null,
+	) => void;
 	updatePageSettingValue: (path: string, value: unknown) => void;
 	getPageSettingValue: (path: string) => unknown;
 	updateSiteSettingValue: (path: string, value: unknown) => void;
@@ -233,6 +285,16 @@ export type PhotonStoreState = {
 		capabilities?: Partial<PhotonWorkspaceCapabilities>;
 	}) => void;
 	resetDocument: () => void;
+	/**
+	 * Updates non-block document metadata (route patterns, name, route).
+	 * Block content goes through `updateFieldValue` / `insertBlock` etc.
+	 *
+	 * Pass partial updates; omit fields to leave them unchanged. Pass
+	 * `routePatterns: undefined` to clear the patterns array entirely.
+	 */
+	updateDocumentMetadata: (
+		patch: Partial<Pick<PhotonDocument, "routePatterns" | "name" | "route">>,
+	) => void;
 	toggleBlockCollapse: (blockId: string) => void;
 	collapseAllBlocks: () => void;
 	expandAllBlocks: () => void;
@@ -338,6 +400,93 @@ const followInteractionSurfaceFallback = (
 	} else if (typeof window !== "undefined") {
 		window.location.assign(fallbackHref);
 	}
+};
+
+/**
+ * Continuation helper used by `completeInteractionSurface` (explicit
+ * success). Re-evaluates the pending action plan and either advances
+ * to the next prereq, executes the target action, or clears the
+ * pending plan based on plan delta.
+ *
+ * `closeInteractionSurface` is now strict-clear (cancellation): foundation
+ * surface renderers (auth/search) call `onComplete()` on success and
+ * `onOpenChange(false)` only on dismissal. External renderers that have
+ * not migrated should also wire `onComplete` for chain continuation.
+ */
+const advancePendingActionPlanAfterSurfaceTransition = ({
+	get,
+	set,
+}: {
+	get: () => PhotonStoreState;
+	set: (
+		partial:
+			| Partial<PhotonStoreState>
+			| ((state: PhotonStoreState) => Partial<PhotonStoreState>),
+	) => void;
+}) => {
+	const state = get();
+	const pending = state.pendingActionPlan;
+	set({ activeInteractionSurface: null });
+
+	if (!pending) {
+		return;
+	}
+
+	const catalog = resolvePhotonInteractionActionCatalog({
+		actions: state.interactionActions,
+		guards: state.interactionGuards,
+		surfaces: state.interactionSurfaces,
+		policies: state.interactionPolicies,
+		siteSettings: state.site.settings,
+	});
+
+	const refreshedPlan = pending.slot
+		? planPhotonInteractionTriggerSlot({
+				slot: pending.slot,
+				catalog,
+				conditionEvaluators: state.conditionEvaluators,
+				conditionContext: {
+					siteSettings: state.site.settings,
+					resources: state.resources,
+					routeContext: state.routeContextValues,
+				},
+			})
+		: null;
+
+	if (!refreshedPlan) {
+		set({ pendingActionPlan: null });
+		return;
+	}
+
+	if (refreshedPlan.steps.length === 0) {
+		set({ pendingActionPlan: null });
+		get().executeInteractionAction(pending.targetAction);
+		return;
+	}
+
+	const planShrunk = refreshedPlan.steps.length < pending.previousStepCount;
+
+	if (planShrunk) {
+		const nextStep = refreshedPlan.steps[0];
+		const nextPresentation =
+			catalog.actionInstances[nextStep.actionInstanceId]?.presentation;
+		if (nextPresentation) {
+			set({
+				pendingActionPlan: {
+					...pending,
+					previousStepCount: refreshedPlan.steps.length,
+				},
+			});
+			get().executeInteractionAction(nextPresentation);
+			return;
+		}
+		set({ pendingActionPlan: null });
+		return;
+	}
+
+	// Plan unchanged ⇒ user did not progress. Both `close` and `complete`
+	// without progress mean the chain is over.
+	set({ pendingActionPlan: null });
 };
 
 export const getPhotonSelectedBlock = (
@@ -558,6 +707,9 @@ export const createPhotonStore = ({
 		selectedField: null,
 		selectedInspectorTriggerId: null,
 		selectedCanvasTriggerStageId: null,
+		blockPreviewScenarios: {},
+		pendingActionPlan: null,
+		selectedInteractionInstanceId: null,
 		uploadMedia,
 		searchSite,
 		requestAuthAction,
@@ -646,10 +798,16 @@ export const createPhotonStore = ({
 						}
 					: state.resources;
 
-				return executePhotonInteractionTriggerSlot({
+				const result = executePhotonInteractionTriggerSlot({
 					slot,
 					catalog,
 					evaluators: state.interactionGuardEvaluators,
+					conditionEvaluators: state.conditionEvaluators,
+					conditionContext: {
+						siteSettings: state.site.settings,
+						resources,
+						routeContext: state.routeContextValues,
+					},
 					context: {
 						document: state.document,
 						resources,
@@ -665,6 +823,22 @@ export const createPhotonStore = ({
 						navigate: state.navigate,
 					},
 				});
+
+				if (result.plan) {
+					set({
+						pendingActionPlan: {
+							targetAction: result.plan.targetAction,
+							targetActionInstanceId: result.plan.targetActionInstanceId,
+							previousStepCount: result.plan.previousStepCount,
+							slot,
+						},
+					});
+				} else if (result.executed) {
+					// Target executed (or final step), no continuation needed.
+					set({ pendingActionPlan: null });
+				}
+
+				return result;
 			},
 			openInteractionSurface: (trigger) => {
 			const state = get();
@@ -707,7 +881,13 @@ export const createPhotonStore = ({
 				return true;
 			},
 		closeInteractionSurface: () => {
-			set({ activeInteractionSurface: null });
+			set({
+				activeInteractionSurface: null,
+				pendingActionPlan: null,
+			});
+		},
+		completeInteractionSurface: () => {
+			advancePendingActionPlanAfterSurfaceTransition({ get, set });
 		},
 		selectBlock: (blockId) => {
 			set((state) => ({
@@ -736,6 +916,34 @@ export const createPhotonStore = ({
 		},
 		selectCanvasTriggerStage: (triggerId) => {
 			set({ selectedCanvasTriggerStageId: triggerId });
+		},
+		selectInteractionInstance: (instanceId) => {
+			set((state) => {
+				if (state.selectedInteractionInstanceId === instanceId) {
+					return state;
+				}
+				return { selectedInteractionInstanceId: instanceId };
+			});
+		},
+		setBlockPreviewScenario: (blockId, scenarioId) => {
+			set((state) => {
+				if (!scenarioId) {
+					if (!(blockId in state.blockPreviewScenarios)) {
+						return state;
+					}
+					const { [blockId]: _removed, ...rest } = state.blockPreviewScenarios;
+					return { blockPreviewScenarios: rest };
+				}
+				if (state.blockPreviewScenarios[blockId] === scenarioId) {
+					return state;
+				}
+				return {
+					blockPreviewScenarios: {
+						...state.blockPreviewScenarios,
+						[blockId]: scenarioId,
+					},
+				};
+			});
 		},
 		clearSelectedField: () => {
 			set({
@@ -852,6 +1060,56 @@ export const createPhotonStore = ({
 					return currentState;
 				}
 
+				return {
+					document: {
+						...nextDocument,
+						updatedAt: new Date().toISOString(),
+					},
+					contentRevision: bumpContentRevision(currentState),
+				};
+			});
+		},
+		setFieldBinding: (blockId, path, binding) => {
+			const state = get();
+			if (!canMutatePhotonState(state)) {
+				return;
+			}
+			const previous = getPhotonFieldBinding(state, blockId, path);
+			if (binding === null) {
+				if (!previous) {
+					return;
+				}
+			} else if (
+				previous &&
+				previous.source === binding.source &&
+				previous.path === binding.path &&
+				previous.mode === binding.mode &&
+				previous.adapter === binding.adapter
+			) {
+				return;
+			}
+			set((currentState) => {
+				const nextDocument = updatePhotonBlockInDocument(
+					currentState.document,
+					blockId,
+					(block) => {
+						const currentBindings = block.bindings ?? {};
+						if (binding === null) {
+							const { [path]: _removed, ...rest } = currentBindings;
+							return {
+								...block,
+								bindings: Object.keys(rest).length > 0 ? rest : undefined,
+							};
+						}
+						return {
+							...block,
+							bindings: {
+								...currentBindings,
+								[path]: binding,
+							},
+						};
+					},
+				);
 				return {
 					document: {
 						...nextDocument,
@@ -1399,6 +1657,39 @@ export const createPhotonStore = ({
 				mode: normalizePhotonMode(state.mode, state.isAdmin),
 				contentRevision: 0,
 			}));
+		},
+		updateDocumentMetadata: (patch) => {
+			const state = get();
+			if (!canMutatePhotonState(state)) {
+				return;
+			}
+			set((currentState) => {
+				const current = currentState.document;
+				const nextRoutePatterns =
+					"routePatterns" in patch ? patch.routePatterns : current.routePatterns;
+				const nextName = patch.name ?? current.name;
+				const nextRoute = patch.route ?? current.route;
+				if (
+					nextName === current.name &&
+					nextRoute === current.route &&
+					arePhotonValuesEqual(
+						nextRoutePatterns ?? null,
+						current.routePatterns ?? null,
+					)
+				) {
+					return currentState;
+				}
+				return {
+					document: {
+						...current,
+						name: nextName,
+						route: nextRoute,
+						routePatterns: nextRoutePatterns,
+						updatedAt: new Date().toISOString(),
+					},
+					contentRevision: bumpContentRevision(currentState),
+				};
+			});
 		},
 		resetDocument: () => {
 			set((state) => {

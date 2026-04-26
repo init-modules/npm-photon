@@ -1,5 +1,7 @@
 import type {
 	PhotonActionPolicy,
+	PhotonConditionEvaluationContext,
+	PhotonConditionEvaluatorMap,
 	PhotonInteractionActionDefinition,
 	PhotonInteractionActionExecutionHandlers,
 	PhotonInteractionActionInstance,
@@ -18,6 +20,10 @@ import type {
 	PhotonResolvedInteractionActionCatalog,
 	PhotonSiteSettings,
 } from "../types";
+import {
+	buildActionPlan,
+	mapGuardsToActionPolicies,
+} from "./action-policy";
 import { resolvePhotonInteractionSurfaceCatalog } from "./interaction-surfaces";
 import { dedupePoliciesById } from "./override-resolution";
 import { isRecord } from "./path";
@@ -497,16 +503,66 @@ export const evaluatePhotonInteractionGuards = ({
 	};
 };
 
+/**
+ * Builds a plan for the given target action instance, mixing site-level
+ * `interactionPolicies` (declared upfront) with bridge policies derived from
+ * the slot's legacy `guardInstanceIds`. Returns `null` when there is no
+ * target instance to plan against (e.g. link-only triggers).
+ */
+export const planPhotonInteractionTriggerSlot = ({
+	slot,
+	catalog,
+	conditionEvaluators,
+	conditionContext,
+}: {
+	slot: PhotonInteractionTriggerSlot;
+	catalog: PhotonResolvedInteractionActionCatalog;
+	conditionEvaluators?: PhotonConditionEvaluatorMap;
+	conditionContext?: PhotonConditionEvaluationContext;
+}) => {
+	const binding = catalog.triggerBindings[slot.id];
+	const targetActionInstanceId =
+		binding?.actionInstanceId ?? slot.actionInstanceId;
+
+	if (!targetActionInstanceId || !conditionEvaluators || !conditionContext) {
+		return null;
+	}
+
+	const slotGuards = resolvePhotonInteractionSlotGuards(slot, catalog);
+	const bridgePolicies = slotGuards.length
+		? mapGuardsToActionPolicies(slotGuards, catalog.guards, {
+				targetActionId: targetActionInstanceId,
+			})
+		: [];
+
+	return buildActionPlan(
+		targetActionInstanceId,
+		[...catalog.policies, ...bridgePolicies],
+		conditionEvaluators,
+		conditionContext,
+	);
+};
+
+const resolvePlanStepPresentation = (
+	stepActionInstanceId: string,
+	catalog: PhotonResolvedInteractionActionCatalog,
+): PhotonInteractionActionPresentation | undefined =>
+	catalog.actionInstances[stepActionInstanceId]?.presentation;
+
 export const executePhotonInteractionTriggerSlot = ({
 	slot,
 	catalog,
 	evaluators,
+	conditionEvaluators,
+	conditionContext,
 	context,
 	handlers,
 }: {
 	slot: PhotonInteractionTriggerSlot;
 	catalog: PhotonResolvedInteractionActionCatalog;
 	evaluators?: PhotonInteractionGuardEvaluatorMap;
+	conditionEvaluators?: PhotonConditionEvaluatorMap;
+	conditionContext?: PhotonConditionEvaluationContext;
 	context: Omit<
 		PhotonInteractionGuardEvaluationContext,
 		"guard" | "definition" | "slot" | "action"
@@ -549,6 +605,59 @@ export const executePhotonInteractionTriggerSlot = ({
 			reason: guardResult.reason,
 			action: fallbackAction ?? null,
 		};
+	}
+
+	const plan = planPhotonInteractionTriggerSlot({
+		slot,
+		catalog,
+		conditionEvaluators,
+		conditionContext,
+	});
+
+	if (plan) {
+		const failClosedWarning = plan.warnings.find((warning) =>
+			warning.startsWith("fail-closed"),
+		);
+		if (failClosedWarning) {
+			return {
+				status: "blocked",
+				executed: false,
+				reason: "missing-evaluator",
+				action: null,
+			};
+		}
+		if (plan.hasCycles) {
+			return {
+				status: "blocked",
+				executed: false,
+				reason: "cycle-detected",
+				action: null,
+			};
+		}
+		if (plan.steps.length > 0 && action) {
+			const firstStep = plan.steps[0];
+			const stepAction = resolvePlanStepPresentation(
+				firstStep.actionInstanceId,
+				catalog,
+			);
+			if (stepAction) {
+				const execution = executePhotonInteractionActionPresentation(
+					stepAction,
+					handlers,
+				);
+				return {
+					...execution,
+					status: "prerequisite-required",
+					reason: `policy:${firstStep.policyId}`,
+					action: stepAction,
+					plan: {
+						targetAction: action,
+						targetActionInstanceId: plan.targetActionInstanceId,
+						previousStepCount: plan.steps.length,
+					},
+				};
+			}
+		}
 	}
 
 	return executePhotonInteractionActionPresentation(action, handlers);

@@ -1,25 +1,25 @@
 import {
   EditableImage
-} from "./chunk-HSEUZBV5.js";
+} from "./chunk-7AWG3N73.js";
 import {
   EditableRichText
-} from "./chunk-CB5ZFVUT.js";
+} from "./chunk-X4SJQMFS.js";
 import {
   EditableText as EditableText2
-} from "./chunk-VL6XQBPA.js";
+} from "./chunk-ZP7TWSF4.js";
 import {
   EditableTextarea
-} from "./chunk-I6TBUZ7T.js";
+} from "./chunk-DTLADGP3.js";
 import {
   PhotonBlockRenderer,
   PhotonFieldEditorList,
   PhotonStudio
-} from "./chunk-KGMZD3PY.js";
+} from "./chunk-GISYXAUU.js";
 import {
   PhotonRichTextEditor,
   photonRichTextContentClassName,
   renderPhotonRichTextHtml
-} from "./chunk-HEAUAOXC.js";
+} from "./chunk-E57AFWQL.js";
 import {
   EditableImage as EditableImage2,
   EditableTextarea as EditableTextarea2,
@@ -42,7 +42,7 @@ import {
   photonSystemInteractionPolicies,
   photonSystemInteractionSurfaces,
   usePhotonComponentLibraryStack
-} from "./chunk-KVRKUEWY.js";
+} from "./chunk-KYGLMZQU.js";
 import {
   KeyboardMenuList,
   PhotonRenderDepthProvider,
@@ -54,7 +54,7 @@ import {
 } from "./chunk-U4YHDXTS.js";
 import {
   EditableText
-} from "./chunk-4XNGVWTF.js";
+} from "./chunk-APC32IRT.js";
 import {
   buildPhotonSearchResultHref,
   buildPhotonSearchTargetId,
@@ -69,7 +69,7 @@ import {
 } from "./chunk-LOTB3E2O.js";
 import {
   createPhotonRuntime
-} from "./chunk-CPTGXXVB.js";
+} from "./chunk-2E3YDDEL.js";
 import {
   collectPhotonFooterExtensionItems,
   collectPhotonHeaderExtensionItems,
@@ -79,13 +79,10 @@ import {
   resolvePhotonSiteFrameExtensions
 } from "./chunk-HMZA6DQS.js";
 import {
-  buildActionPlan,
   createSitePolicyOverride,
-  evaluateConditionExpression,
   isSitePolicyOverride,
-  mapGuardsToActionPolicies,
   sitePolicyPath
-} from "./chunk-F6JYM4BG.js";
+} from "./chunk-P7MR63BK.js";
 import {
   getPhotonSurfaceModeStyle
 } from "./chunk-IOB5G6YT.js";
@@ -119,13 +116,14 @@ import {
 } from "./chunk-CZ47CC3D.js";
 import {
   EditableGallery
-} from "./chunk-BHHJRUMC.js";
+} from "./chunk-MZS2O4LG.js";
 import "./chunk-RLJXTXGN.js";
-import "./chunk-3DINFRWK.js";
+import "./chunk-PS3NOI6Q.js";
 import {
   PhotonLink,
   PhotonProvider,
   usePhoton,
+  usePhotonBlockActiveState,
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonPersistedState,
@@ -133,7 +131,7 @@ import {
   usePhotonSiteData,
   usePhotonStore,
   usePhotonStoreApi
-} from "./chunk-BJK5VDXG.js";
+} from "./chunk-YD42FZ4X.js";
 import {
   isPhotonMediaValue,
   resolvePhotonMediaPreviewUrl,
@@ -144,7 +142,7 @@ import {
   PhotonI18nProvider,
   resolvePhotonText,
   usePhotonI18n
-} from "./chunk-O6DIDPAQ.js";
+} from "./chunk-TSGYFS2W.js";
 import {
   PHOTON_PAGE_SURFACE_REGION_KEY,
   collectPhotonAccountTabs,
@@ -180,7 +178,7 @@ import {
   resolvePhotonSurfaceRegionDescriptors,
   resolvePhotonSurfaceRegionForBlockId,
   resolvePhotonSurfaceRegionForListId
-} from "./chunk-725LMVL7.js";
+} from "./chunk-FF7K4ALP.js";
 import {
   PHOTON_SITE_DATA_BY_LOCALE_SETTING_KEY,
   PHOTON_SITE_DATA_SETTING_KEY,
@@ -190,7 +188,7 @@ import {
   resolvePhotonSiteData,
   resolvePhotonSiteDataBinding,
   sitePath
-} from "./chunk-JASL5BP5.js";
+} from "./chunk-UOWHTI2K.js";
 import {
   decodePhotonHtmlEntities,
   getPhotonAnchorRel,
@@ -209,7 +207,7 @@ import {
   removePhotonBlockFromDocument,
   replacePhotonBlockWithBlocksInDocument,
   updatePhotonBlockInDocument
-} from "./chunk-XPZWWFIY.js";
+} from "./chunk-URGYF42Q.js";
 import {
   PHOTON_ROOT_LIST_ID,
   PHOTON_ROUTE_CONTEXT_SCOPE,
@@ -221,6 +219,7 @@ import {
 import {
   DEFAULT_PHOTON_WORKSPACE_CAPABILITIES,
   DEFAULT_PHOTON_WORKSPACE_REF,
+  PHOTON_CASCADE_SCOPE_ORDER,
   PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY,
   PHOTON_COMPONENT_REFERENCE_AREA_ID,
   PHOTON_COMPONENT_REFERENCE_MAX_DEPTH,
@@ -229,12 +228,14 @@ import {
   PHOTON_EMPTY_TEXT,
   PHOTON_INTERACTIONS_SITE_SETTING_KEY,
   PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY,
+  buildActionPlan,
   canEditPhotonWorkspace,
   canSavePhotonWorkspace,
   clonePhotonComponentLibraryBlocksForCopy,
   clonePhotonComponentSourceBlockWithNewIds,
   clonePhotonValue,
   collectPhotonComponentLibraryUsages,
+  comparePhotonCascadable,
   createPhotonActionValue,
   createPhotonComponentLibraryBlockId,
   createPhotonComponentLibraryItemFromBlock,
@@ -245,8 +246,11 @@ import {
   createPhotonInteractionSurfaceDefinition,
   createPhotonInteractionTriggerSlot,
   createPhotonNodeId,
+  dedupePhotonCascadeBy,
   dedupePoliciesById,
+  detectPhotonCascadeConflicts,
   duplicatePhotonComponentLibraryItem,
+  evaluateConditionExpression,
   evaluatePhotonInteractionGuards,
   executePhotonInteractionActionPresentation,
   executePhotonInteractionTriggerSlot,
@@ -257,11 +261,13 @@ import {
   isPhotonComponentReferenceBlock,
   isPhotonWorkspaceReadonly,
   isRecord,
+  mapGuardsToActionPolicies,
   normalizePhotonWorkspaceCapabilities,
   normalizePhotonWorkspaceDescriptor,
   normalizePhotonWorkspaceRef,
   parsePhotonComponentLibraryBlockId,
   photonInteractionExecutionSucceeded,
+  planPhotonInteractionTriggerSlot,
   readPhotonComponentLibrarySettings,
   readPhotonInteractionSettings,
   readPhotonInteractionSurfaceSettings,
@@ -275,8 +281,9 @@ import {
   resolvePhotonInteractionSurfaceRequest,
   resolvePhotonInteractionToastTemplate,
   resolvePolicyCascade,
-  setValueAtPath
-} from "./chunk-P4O7POLV.js";
+  setValueAtPath,
+  sortPhotonCascade
+} from "./chunk-WHYISUJX.js";
 
 // src/helpers/register-editable-editor-loaders.ts
 var registerLoader = (key, loader) => {
@@ -287,31 +294,31 @@ var registerLoader = (key, loader) => {
 };
 registerLoader(
   "gallery",
-  () => import("./editable-gallery-6BKXJIFF.js").then(
+  () => import("./editable-gallery-NUVMGSCR.js").then(
     (module) => module.EditableGallery
   )
 );
 registerLoader(
   "image",
-  () => import("./editable-image-2FAT5E6F.js").then(
+  () => import("./editable-image-6S4V2E3R.js").then(
     (module) => module.EditableImage
   )
 );
 registerLoader(
   "richText",
-  () => import("./editable-rich-text-B2P33B37.js").then(
+  () => import("./editable-rich-text-BK6YGLZO.js").then(
     (module) => module.EditableRichText
   )
 );
 registerLoader(
   "text",
-  () => import("./editable-text-7M54IDSL.js").then(
+  () => import("./editable-text-6UDZVDEC.js").then(
     (module) => module.EditableText
   )
 );
 registerLoader(
   "textarea",
-  () => import("./editable-textarea-T5QAUBWF.js").then(
+  () => import("./editable-textarea-IUJ4GBEJ.js").then(
     (module) => module.EditableTextarea
   )
 );
@@ -3189,6 +3196,7 @@ export {
   EditableText2 as EditableText,
   EditableTextarea,
   KeyboardMenuList,
+  PHOTON_CASCADE_SCOPE_ORDER,
   PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY,
   PHOTON_COMPONENT_REFERENCE_AREA_ID,
   PHOTON_COMPONENT_REFERENCE_MAX_DEPTH,
@@ -3248,6 +3256,7 @@ export {
   collectPhotonRouteContextFields,
   collectPhotonSiteDataSchemas,
   collectPhotonSiteFrameExtensions,
+  comparePhotonCascadable,
   composePhotonSurfaceDocument,
   createPhotonAccountTabExtension,
   createPhotonActionValue,
@@ -3274,8 +3283,10 @@ export {
   createSitePolicyOverride,
   decodePhotonHtmlEntities,
   decomposePhotonSurfaceDocument,
+  dedupePhotonCascadeBy,
   dedupePoliciesById,
   definePhotonBlockDefinition,
+  detectPhotonCascadeConflicts,
   duplicatePhotonBlockInDocument,
   duplicatePhotonComponentLibraryItem,
   evaluateConditionExpression,
@@ -3332,6 +3343,7 @@ export {
   photonSiteDesignPresets,
   photonSystemKit,
   photonSystemModule,
+  planPhotonInteractionTriggerSlot,
   readPhotonComponentLibrarySettings,
   readPhotonInteractionSettings,
   readPhotonInteractionSurfaceSettings,
@@ -3370,10 +3382,12 @@ export {
   setValueAtPath,
   sitePath,
   sitePolicyPath,
+  sortPhotonCascade,
   updatePhotonBlockInDocument,
   updatePhotonMediaUrl,
   useKeyboardMenuController,
   usePhoton,
+  usePhotonBlockActiveState,
   usePhotonCanEdit,
   usePhotonFieldValue,
   usePhotonI18n,

@@ -81,8 +81,15 @@ const InlineEditableText = ({
 		);
 	}
 
+	// Pre-fill the input with the placeholder text when there is no
+	// stored value yet so clicking the displayed text starts editing
+	// from the same content the user just clicked, instead of an empty
+	// box. Once any commit lands the actual value lives in the store
+	// (and is persisted to the DB) and the placeholder fallback is no
+	// longer used.
+	const initialDraft = value || placeholder || "";
 	const startEditing = () => {
-		setDraft(value);
+		setDraft(initialDraft);
 		setEditing(true);
 	};
 	const commit = () => {
@@ -92,7 +99,7 @@ const InlineEditableText = ({
 		}
 	};
 	const cancel = () => {
-		setDraft(value);
+		setDraft(initialDraft);
 		setEditing(false);
 	};
 	if (editing) {

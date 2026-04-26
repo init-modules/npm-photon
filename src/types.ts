@@ -301,6 +301,17 @@ export type PhotonInteractionSurfaceRendererProps = {
 	previewMode?: "runtime" | "builder-inline" | "builder-canvas-stage";
 	previewScenarioId?: string;
 	editableField?: PhotonInteractionSurfaceEditableFieldRenderer;
+	/**
+	 * Renderers MUST call this when the surface flow finishes successfully
+	 * (login OK, form submitted, search picked). Distinct from
+	 * `onOpenChange(false)` which is ambiguous (cancel vs success).
+	 *
+	 * The runtime uses this signal to advance any pending action plan
+	 * deterministically without re-evaluating conditions. Renderers that
+	 * only know "I closed" should still call `onOpenChange(false)`; the
+	 * runtime falls back to plan re-evaluation for backward compat.
+	 */
+	onComplete?: () => void;
 };
 
 export type PhotonInteractionSurfaceRenderer =
@@ -358,7 +369,20 @@ export type PhotonInteractionExecutionStatus =
 	| "missing-action"
 	| "missing-evaluator"
 	| "missing-renderer"
-	| "fallback";
+	| "fallback"
+	| "prerequisite-required";
+
+/**
+ * Pending continuation metadata returned when a trigger plan executed a
+ * prerequisite (e.g. opened a sign-in dialog) instead of the target action.
+ * The runtime stores this and re-evaluates the plan when the prereq surface
+ * closes — if conditions changed, the next step (or target) is auto-executed.
+ */
+export type PhotonInteractionExecutionPlanMeta = {
+	targetAction: PhotonInteractionActionPresentation;
+	targetActionInstanceId: string;
+	previousStepCount: number;
+};
 
 export type PhotonInteractionExecutionResult = {
 	status: PhotonInteractionExecutionStatus;
@@ -367,6 +391,11 @@ export type PhotonInteractionExecutionResult = {
 	action?: PhotonInteractionActionPresentation | null;
 	guard?: PhotonInteractionGuardInstance;
 	fallbackHref?: string;
+	/**
+	 * Present when a prerequisite step was executed instead of the target
+	 * action. The store reads this to set up auto-continuation.
+	 */
+	plan?: PhotonInteractionExecutionPlanMeta;
 };
 
 export type PhotonInteractionGuardEvaluationContext = {
@@ -551,9 +580,41 @@ export type PhotonConditionEvaluatorMap = Record<
 	PhotonConditionEvaluator
 >;
 
+/**
+ * Cascade scope hierarchy from 6.md §Override Resolution Algorithm.
+ *
+ * Lower number = lower priority (broader, more general). Higher number
+ * wins when contributions conflict on the same key. Within one scope:
+ * explicit `priority` field wins; on tie, alphabetical `packageName`.
+ *
+ * The same scope ladder is reused across all layered domains: site data,
+ * action instances, action policies, library references, route context
+ * overrides, localized strings.
+ *
+ * Scope semantics:
+ * - `package-default`: shipped by an installable package
+ * - `site`: site-owner override across the whole site
+ * - `locale`: per-locale override (e.g. ru vs en copy)
+ * - `route-family`: per route-pattern family (e.g. all city pages)
+ * - `route-context`: per resolved route context (e.g. specific city)
+ * - `page`: per single page document
+ * - `component`: per block/component instance
+ * - `action-flow`: per specific action plan in flight
+ * - `workspace-draft`: builder draft override (not yet published)
+ * - `user-session`: per active user session (preview, A/B bucket)
+ */
 export type PhotonActionPolicyScope =
 	| "package-default"
 	| "site"
+	| "locale"
+	| "route-family"
+	| "route-context"
+	| "page"
+	| "component"
+	| "action-flow"
+	| "workspace-draft"
+	| "user-session"
+	// Backward-compatible alias; new code should prefer "workspace-draft".
 	| "workspace";
 
 export type PhotonActionPolicyEnforcement = "client-hint" | "server-required";
@@ -1165,6 +1226,21 @@ export type PhotonBlockDefinition<
 	interactionSlots?:
 		| PhotonInteractionTriggerSlot[]
 		| ((context: PhotonBlockInteractionSlotContext) => PhotonInteractionTriggerSlot[]);
+	/**
+	 * Preview-only scenarios for builder canvas state-switcher.
+	 * Used when the block has no condition-based runtime states but the
+	 * builder still wants to preview different visual variants (e.g. empty,
+	 * filled, error). Resolution priority: builder preview override > first scenario.
+	 */
+	previewScenarios?: PhotonInteractionPreviewScenario[];
+	/**
+	 * Condition-driven runtime states. The first state whose `condition`
+	 * evaluates `true` (in evaluator order) becomes the active state at runtime.
+	 * Use `isDefaultServerState` to mark the SSR fallback when client-only
+	 * conditions are unresolved. The block component reads the active state via
+	 * `usePhotonBlockActiveState(blockId)`.
+	 */
+	states?: PhotonActionStateDefinition[];
 	component: PhotonBlockComponent<Props>;
 };
 

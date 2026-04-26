@@ -10,7 +10,7 @@ import {
 	SlidersHorizontal,
 	Trash2,
 } from "lucide-react";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -163,21 +163,53 @@ const PalettePanelComponent = ({
 	const [pendingDeleteItemId, setPendingDeleteItemId] = useState<string | null>(
 		null,
 	);
+	// Workspace-wide usage scan is the most expensive thing the studio does
+	// (one resolvePage per page in the workspace). It only depends on the
+	// set of library item ids; the contextual `site`/`document`/`pageSettings`/
+	// `workspace` payload is passed for provider use but must not retrigger
+	// the effect — otherwise every inspector keystroke (which bumps `document`)
+	// fans out a resolvePage flood across the entire workspace.
+	// Also: skip entirely when the user is not viewing the library tab.
+	const libraryItemIdsKey = useMemo(
+		() =>
+			libraryItems
+				.map((item) => item.id)
+				.sort()
+				.join("|"),
+		[libraryItems],
+	);
+	const usageProviderInputRef = useRef({
+		site,
+		document,
+		pageSettings,
+		workspace,
+		libraryItems,
+	});
 	useEffect(() => {
-		let cancelled = false;
-
-		if (!componentLibraryUsageProvider) {
+		usageProviderInputRef.current = {
+			site,
+			document,
+			pageSettings,
+			workspace,
+			libraryItems,
+		};
+	}, [site, document, pageSettings, workspace, libraryItems]);
+	useEffect(() => {
+		if (!componentLibraryUsageProvider || paletteTab !== "library") {
 			setWorkspaceLibraryUsages([]);
 			return;
 		}
 
+		let cancelled = false;
+		const snapshot = usageProviderInputRef.current;
+
 		Promise.resolve(
 			componentLibraryUsageProvider({
-				site,
-				document,
-				pageSettings,
-				workspace,
-				itemIds: libraryItems.map((item) => item.id),
+				site: snapshot.site,
+				document: snapshot.document,
+				pageSettings: snapshot.pageSettings,
+				workspace: snapshot.workspace,
+				itemIds: snapshot.libraryItems.map((item) => item.id),
 			}),
 		).then((usages) => {
 			if (!cancelled) {
@@ -193,14 +225,7 @@ const PalettePanelComponent = ({
 		return () => {
 			cancelled = true;
 		};
-	}, [
-		componentLibraryUsageProvider,
-		document,
-		libraryItems,
-		pageSettings,
-		site,
-		workspace,
-	]);
+	}, [componentLibraryUsageProvider, libraryItemIdsKey, paletteTab]);
 	const libraryUsages = [...currentLibraryUsages, ...workspaceLibraryUsages];
 	const selectedReferenceBlock =
 		selectedBlock && isPhotonComponentReferenceBlock(selectedBlock)

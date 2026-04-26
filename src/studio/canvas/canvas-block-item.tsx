@@ -17,6 +17,7 @@ import { CanvasBlockShell } from "./canvas-block-shell";
 import { CanvasTriggerStage } from "./canvas-trigger-stage";
 import { CanvasInsertZone } from "./canvas-insert-zone";
 import { CollapsedBlockPreview } from "./collapsed-block-preview";
+import { CanvasBlockStateOverlay } from "./canvas-block-state-overlay";
 import { TriggerOverlay } from "./trigger-overlay";
 
 type CanvasBlockItemProps = {
@@ -108,6 +109,7 @@ const CanvasBlockItemComponent = ({
 				)}
 				{builderEnabled && isSelected ? (
 					<>
+						<CanvasBlockStateOverlay block={block} />
 						<TriggerOverlay block={block} />
 						<CanvasTriggerStage block={block} />
 					</>

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { usePhotonStore } from "../../context/photon-context";
+import { mapGuardsToActionPolicies } from "../../helpers/action-policy";
 import {
 	PHOTON_INTERACTIONS_SITE_SETTING_KEY,
 	readPhotonInteractionSettings,
@@ -14,6 +15,7 @@ import type {
 	PhotonBlock,
 	PhotonInteractionTriggerSlot,
 } from "../../types";
+import { TriggerActionFlow } from "./trigger-action-flow";
 
 type InspectorTriggerTabProps = {
 	block: PhotonBlock;
@@ -27,6 +29,7 @@ const PolicyRow = ({ policy }: { policy: PhotonActionPolicy }) => {
 	const [open, setOpen] = useState(false);
 	const conditionId =
 		policy.when.type === "ref" ? policy.when.conditionId : policy.when.type;
+	const isBridge = policy.id.startsWith("bridge:guard:");
 	return (
 		<div
 			className="rounded-2xl border text-xs"
@@ -42,12 +45,13 @@ const PolicyRow = ({ policy }: { policy: PhotonActionPolicy }) => {
 				className="flex w-full cursor-pointer items-center justify-between gap-2 px-3 py-2 text-left"
 			>
 				<span style={{ color: "var(--photon-builder-text)" }}>
-					Run <strong>{policy.run}</strong> when {conditionId}
+					Run <strong>{policy.run || "(default)"}</strong> when {conditionId}
 				</span>
 				<span
 					className="font-mono text-[10px] uppercase tracking-[0.18em]"
 					style={{ color: "var(--photon-builder-text-soft)" }}
 				>
+					{isBridge ? "legacy guard · " : ""}
 					{policy.scope}
 					{policy.priority !== undefined ? ` · p${policy.priority}` : ""}
 				</span>
@@ -127,13 +131,33 @@ export const InspectorTriggerTab = ({
 				(instance) => instance.id === currentBinding.actionInstanceId,
 			)?.definitionId ?? slot.allowedActionDefinitionIds?.[0]
 		: null;
-	const policiesForAction = useMemo(
-		() =>
-			interactionPolicies.filter(
-				(policy) => policy.targetActionId === targetDefinitionId,
-			),
-		[interactionPolicies, targetDefinitionId],
-	);
+	const policiesForAction = useMemo(() => {
+		const direct = interactionPolicies.filter(
+			(policy) => policy.targetActionId === targetDefinitionId,
+		);
+		const slotGuardIds =
+			currentBinding.guardInstanceIds ?? slot.guardInstanceIds ?? [];
+		const slotGuardInstances = slotGuardIds
+			.map((id) => actionCatalog.guardInstances[id])
+			.filter(
+				(value): value is NonNullable<typeof value> => value !== undefined,
+			);
+		const bridgePolicies = slotGuardInstances.length
+			? mapGuardsToActionPolicies(slotGuardInstances, interactionGuards, {
+					targetActionId: targetDefinitionId ?? "",
+					runActionInstanceId: currentBinding.actionInstanceId,
+				})
+			: [];
+		return [...direct, ...bridgePolicies];
+	}, [
+		interactionPolicies,
+		targetDefinitionId,
+		currentBinding.guardInstanceIds,
+		currentBinding.actionInstanceId,
+		slot.guardInstanceIds,
+		actionCatalog.guardInstances,
+		interactionGuards,
+	]);
 	const canvasStageOverrides = interactionSettings.canvasStageOverrides ?? {};
 	const persistTriggerBinding = (nextBinding: typeof currentBinding) => {
 		updateSiteSettingValue(interactionSettingPath("triggerBindings"), {
@@ -218,20 +242,29 @@ export const InspectorTriggerTab = ({
 				</label>
 			) : null}
 
+			<TriggerActionFlow slot={slot} />
+
 			{policiesForAction.length ? (
-				<div className="space-y-2">
-					<div
-						className="text-[10px] uppercase tracking-[0.22em]"
+				<details
+					className="rounded-2xl border px-3 py-2"
+					style={{
+						borderColor: "var(--photon-builder-border)",
+						background: "var(--photon-builder-panel-solid)",
+					}}
+					data-testid="photon-trigger-policy-debug"
+				>
+					<summary
+						className="cursor-pointer text-[10px] uppercase tracking-[0.22em]"
 						style={{ color: "var(--photon-builder-text-soft)" }}
 					>
-						Policies for this action
-					</div>
-					<div className="space-y-2">
+						Raw policies (debug)
+					</summary>
+					<div className="mt-2 space-y-2">
 						{policiesForAction.map((policy) => (
 							<PolicyRow key={policy.id} policy={policy} />
 						))}
 					</div>
-				</div>
+				</details>
 			) : null}
 
 			{(currentBinding.overrides && Object.keys(currentBinding.overrides).length > 0) ||

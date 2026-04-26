@@ -558,3 +558,669 @@ test("selectBlock resets both trigger selections when switching to a different b
 	assert.equal(store.getState().selectedCanvasTriggerStageId, null, "deselect: canvas stage reset");
 	assert.equal(store.getState().selectedInspectorTriggerId, null, "deselect: inspector trigger reset");
 });
+
+test("setBlockPreviewScenario writes per-block scenario id and clears it on null", () => {
+	const store = createStore();
+
+	store.getState().setBlockPreviewScenario("block-a", "loading");
+	assert.equal(
+		store.getState().blockPreviewScenarios["block-a"],
+		"loading",
+		"scenario id stored",
+	);
+
+	store.getState().setBlockPreviewScenario("block-b", "subscribed");
+	assert.equal(
+		store.getState().blockPreviewScenarios["block-b"],
+		"subscribed",
+		"second block stored independently",
+	);
+	assert.equal(
+		store.getState().blockPreviewScenarios["block-a"],
+		"loading",
+		"first block unaffected",
+	);
+
+	store.getState().setBlockPreviewScenario("block-a", null);
+	assert.equal(
+		store.getState().blockPreviewScenarios["block-a"],
+		undefined,
+		"null clears the entry",
+	);
+	assert.equal(
+		store.getState().blockPreviewScenarios["block-b"],
+		"subscribed",
+		"clearing one block does not touch siblings",
+	);
+});
+
+test("setBlockPreviewScenario is a no-op when value did not change (preserves reference)", () => {
+	const store = createStore();
+
+	store.getState().setBlockPreviewScenario("block-a", "loading");
+	const before = store.getState().blockPreviewScenarios;
+
+	store.getState().setBlockPreviewScenario("block-a", "loading");
+	assert.equal(
+		store.getState().blockPreviewScenarios,
+		before,
+		"identical scenario id leaves blockPreviewScenarios reference unchanged",
+	);
+});
+
+const createTriggerChainStore = (
+	initialAuthSubscribed: boolean,
+	authConditionEvaluator: () => boolean | null,
+) => {
+	const navigations: string[] = [];
+	const store = createPhotonStore({
+		initialDocument: createDocument("trigger-chain", "block-chain"),
+		initialResources: {},
+		initialPageSettings: {},
+		initialSite: {
+			settings: {},
+			regions: {},
+		},
+		registry: createPhotonRegistry([]),
+		linkComponent: () => null,
+		navigate: (href) => {
+			navigations.push(href);
+		},
+		interactionSurfaces: authSurfaceDefinitions,
+		interactionSurfaceRenderers: {
+			"auth.dialog": () => null,
+		},
+		interactionPolicies: [
+			{
+				id: "policy:auth-required-for-checkout",
+				packageName: "checkout-package",
+				targetActionId: "checkout:submit",
+				when: { type: "ref", conditionId: "auth.isGuest" },
+				run: "auth:default",
+				scope: "site",
+				enforcement: "client-hint",
+				securityMode: "fail-open",
+			},
+		],
+		conditionEvaluators: {
+			"auth.isGuest": authConditionEvaluator,
+		},
+		interactionActions: [
+			{
+				id: "checkout:submit-action",
+				label: "Submit checkout",
+				defaultInstances: [
+					{
+						id: "checkout:submit",
+						definitionId: "checkout:submit-action",
+						label: "Submit checkout",
+						presentation: { type: "link", href: "/checkout/done" },
+					},
+				],
+			},
+		],
+		isAdmin: true,
+	});
+	return { store, navigations };
+};
+
+test("trigger execution opens prereq surface and stores pendingActionPlan when policy condition matches", () => {
+	const { store, navigations } = createTriggerChainStore(false, () => true);
+
+	const result = store.getState().executeInteractionTriggerSlot({
+		id: "checkout-trigger",
+		label: "Checkout",
+		actionInstanceId: "checkout:submit",
+	});
+
+	assert.equal(result.status, "prerequisite-required");
+	assert.equal(result.executed, true);
+	assert.equal(
+		store.getState().activeInteractionSurface?.instance.id,
+		"auth:default",
+		"prereq surface (sign-in) opened",
+	);
+	assert.deepEqual(navigations, [], "target action (link) not yet executed");
+	const pending = store.getState().pendingActionPlan;
+	assert.ok(pending, "pendingActionPlan stored");
+	assert.equal(pending?.targetActionInstanceId, "checkout:submit");
+	assert.equal(pending?.previousStepCount, 1);
+});
+
+test("completing prereq surface re-evaluates plan and executes target action when conditions cleared", () => {
+	let isGuest = true;
+	const { store, navigations } = createTriggerChainStore(false, () => isGuest);
+
+	store.getState().executeInteractionTriggerSlot({
+		id: "checkout-trigger",
+		label: "Checkout",
+		actionInstanceId: "checkout:submit",
+	});
+
+	assert.equal(
+		store.getState().activeInteractionSurface?.instance.id,
+		"auth:default",
+	);
+	assert.ok(store.getState().pendingActionPlan, "plan pending while signing in");
+
+	// User completes sign-in (condition flips), then renderer signals completion.
+	isGuest = false;
+	store.getState().completeInteractionSurface();
+
+	assert.equal(
+		store.getState().activeInteractionSurface,
+		null,
+		"surface closed",
+	);
+	assert.equal(
+		store.getState().pendingActionPlan,
+		null,
+		"pendingActionPlan cleared after target executed",
+	);
+	assert.deepEqual(
+		navigations,
+		["/checkout/done"],
+		"target action executed via auto-continuation",
+	);
+});
+
+test("closeInteractionSurface is strict-clear: cancels pending plan even if conditions changed", () => {
+	let isGuest = true;
+	const { store, navigations } = createTriggerChainStore(false, () => isGuest);
+
+	store.getState().executeInteractionTriggerSlot({
+		id: "checkout-trigger",
+		label: "Checkout",
+		actionInstanceId: "checkout:submit",
+	});
+	assert.ok(store.getState().pendingActionPlan);
+
+	// Condition flips to satisfied, but user dismisses (close not complete).
+	isGuest = false;
+	store.getState().closeInteractionSurface();
+
+	assert.equal(store.getState().pendingActionPlan, null, "plan cleared");
+	assert.deepEqual(
+		navigations,
+		[],
+		"target NOT executed because close is strict-clear (cancel intent)",
+	);
+});
+
+test("closing prereq surface without progress clears pendingActionPlan and does not execute target", () => {
+	const { store, navigations } = createTriggerChainStore(false, () => true);
+
+	store.getState().executeInteractionTriggerSlot({
+		id: "checkout-trigger",
+		label: "Checkout",
+		actionInstanceId: "checkout:submit",
+	});
+	assert.ok(store.getState().pendingActionPlan);
+
+	// User closes the dialog without signing in — condition unchanged.
+	store.getState().closeInteractionSurface();
+
+	assert.equal(store.getState().pendingActionPlan, null);
+	assert.deepEqual(
+		navigations,
+		[],
+		"target action not executed because user cancelled",
+	);
+});
+
+test("trigger execution with no policies executes the target action immediately and leaves no pending plan", () => {
+	const { store, navigations } = createTriggerChainStore(false, () => false);
+
+	const result = store.getState().executeInteractionTriggerSlot({
+		id: "checkout-trigger",
+		label: "Checkout",
+		actionInstanceId: "checkout:submit",
+	});
+
+	assert.equal(result.status, "executed");
+	assert.deepEqual(navigations, ["/checkout/done"]);
+	assert.equal(store.getState().pendingActionPlan, null);
+});
+
+test("multi-step chain: sign-in then create-company then checkout target executes in sequence", () => {
+	const navigations: string[] = [];
+	let isGuest = true;
+	let hasCompany = false;
+	const store = createPhotonStore({
+		initialDocument: createDocument("multi-step", "block-multi"),
+		initialResources: {},
+		initialPageSettings: {},
+		initialSite: { settings: {}, regions: {} },
+		registry: createPhotonRegistry([]),
+		linkComponent: () => null,
+		navigate: (href) => {
+			navigations.push(href);
+		},
+		interactionSurfaces: [
+			...authSurfaceDefinitions,
+			{
+				id: "company.dialog",
+				label: "Company creation",
+				kind: "dialog",
+				rendererKey: "company.dialog",
+				defaultInstances: [
+					{
+						id: "company:create",
+						definitionId: "company.dialog",
+						label: "Create company",
+					},
+				],
+			},
+		],
+		interactionSurfaceRenderers: {
+			"auth.dialog": () => null,
+			"company.dialog": () => null,
+		},
+		interactionPolicies: [
+			{
+				id: "policy:auth-required",
+				packageName: "auth-package",
+				targetActionId: "checkout:submit",
+				when: { type: "ref", conditionId: "auth.isGuest" },
+				run: "auth:default",
+				scope: "site",
+			},
+			{
+				id: "policy:company-required",
+				packageName: "company-package",
+				targetActionId: "checkout:submit",
+				when: { type: "ref", conditionId: "company.hasNoCompany" },
+				run: "company:create",
+				scope: "site",
+			},
+		],
+		conditionEvaluators: {
+			"auth.isGuest": () => isGuest,
+			"company.hasNoCompany": () => !hasCompany,
+		},
+		interactionActions: [
+			{
+				id: "checkout:submit-action",
+				label: "Submit checkout",
+				defaultInstances: [
+					{
+						id: "checkout:submit",
+						definitionId: "checkout:submit-action",
+						label: "Submit checkout",
+						presentation: { type: "link", href: "/checkout/done" },
+					},
+				],
+			},
+		],
+		isAdmin: true,
+	});
+
+	// Step 1: clicking checkout opens the first prereq (sign-in dialog).
+	store.getState().executeInteractionTriggerSlot({
+		id: "checkout-trigger",
+		label: "Checkout",
+		actionInstanceId: "checkout:submit",
+	});
+	assert.equal(
+		store.getState().activeInteractionSurface?.instance.id,
+		"auth:default",
+		"first prereq surface (sign-in) opened",
+	);
+	assert.equal(
+		store.getState().pendingActionPlan?.previousStepCount,
+		2,
+		"plan tracks two outstanding prereqs",
+	);
+	assert.deepEqual(navigations, [], "target action not yet executed");
+
+	// User signs in successfully → completeInteractionSurface; runtime
+	// re-evaluates plan (now only company-required remains) and opens next prereq.
+	isGuest = false;
+	store.getState().completeInteractionSurface();
+	assert.equal(
+		store.getState().activeInteractionSurface?.instance.id,
+		"company:create",
+		"second prereq surface (create company) opened automatically",
+	);
+	assert.equal(
+		store.getState().pendingActionPlan?.previousStepCount,
+		1,
+		"plan now tracks one remaining prereq",
+	);
+	assert.deepEqual(navigations, [], "target action still not executed");
+
+	// User creates company → completeInteractionSurface; plan empty → target runs.
+	hasCompany = true;
+	store.getState().completeInteractionSurface();
+	assert.equal(
+		store.getState().activeInteractionSurface,
+		null,
+		"final surface closed",
+	);
+	assert.equal(
+		store.getState().pendingActionPlan,
+		null,
+		"pendingActionPlan cleared after target executed",
+	);
+	assert.deepEqual(
+		navigations,
+		["/checkout/done"],
+		"target action executed via 2-step auto-continuation",
+	);
+});
+
+test("multi-step chain: cancelling a middle prereq clears pendingActionPlan and stops the chain", () => {
+	const navigations: string[] = [];
+	let isGuest = true;
+	const hasCompany = false;
+	const store = createPhotonStore({
+		initialDocument: createDocument("multi-step-cancel", "block-multi"),
+		initialResources: {},
+		initialPageSettings: {},
+		initialSite: { settings: {}, regions: {} },
+		registry: createPhotonRegistry([]),
+		linkComponent: () => null,
+		navigate: (href) => {
+			navigations.push(href);
+		},
+		interactionSurfaces: [
+			...authSurfaceDefinitions,
+			{
+				id: "company.dialog",
+				label: "Company creation",
+				kind: "dialog",
+				rendererKey: "company.dialog",
+				defaultInstances: [
+					{
+						id: "company:create",
+						definitionId: "company.dialog",
+						label: "Create company",
+					},
+				],
+			},
+		],
+		interactionSurfaceRenderers: {
+			"auth.dialog": () => null,
+			"company.dialog": () => null,
+		},
+		interactionPolicies: [
+			{
+				id: "policy:auth-required",
+				packageName: "auth-package",
+				targetActionId: "checkout:submit",
+				when: { type: "ref", conditionId: "auth.isGuest" },
+				run: "auth:default",
+				scope: "site",
+			},
+			{
+				id: "policy:company-required",
+				packageName: "company-package",
+				targetActionId: "checkout:submit",
+				when: { type: "ref", conditionId: "company.hasNoCompany" },
+				run: "company:create",
+				scope: "site",
+			},
+		],
+		conditionEvaluators: {
+			"auth.isGuest": () => isGuest,
+			"company.hasNoCompany": () => !hasCompany,
+		},
+		interactionActions: [
+			{
+				id: "checkout:submit-action",
+				label: "Submit checkout",
+				defaultInstances: [
+					{
+						id: "checkout:submit",
+						definitionId: "checkout:submit-action",
+						label: "Submit checkout",
+						presentation: { type: "link", href: "/checkout/done" },
+					},
+				],
+			},
+		],
+		isAdmin: true,
+	});
+
+	store.getState().executeInteractionTriggerSlot({
+		id: "checkout-trigger",
+		label: "Checkout",
+		actionInstanceId: "checkout:submit",
+	});
+
+	// User completes sign-in → second prereq opens.
+	isGuest = false;
+	store.getState().completeInteractionSurface();
+	assert.equal(
+		store.getState().activeInteractionSurface?.instance.id,
+		"company:create",
+	);
+
+	// User cancels company creation (closes dialog without progress).
+	store.getState().closeInteractionSurface();
+	assert.equal(
+		store.getState().pendingActionPlan,
+		null,
+		"chain stopped after middle-step cancellation",
+	);
+	assert.deepEqual(
+		navigations,
+		[],
+		"target action not executed because chain was cancelled",
+	);
+});
+
+test("completeInteractionSurface without pending plan is a no-op (does not error)", () => {
+	const store = createStore();
+	store.getState().completeInteractionSurface();
+	assert.equal(store.getState().activeInteractionSurface, null);
+	assert.equal(store.getState().pendingActionPlan, null);
+});
+
+test("selectInteractionInstance sets selectedInteractionInstanceId and clears on null", () => {
+	const store = createStore();
+	store.getState().selectInteractionInstance("auth:default");
+	assert.equal(
+		store.getState().selectedInteractionInstanceId,
+		"auth:default",
+		"instance id stored",
+	);
+	store.getState().selectInteractionInstance(null);
+	assert.equal(
+		store.getState().selectedInteractionInstanceId,
+		null,
+		"null clears the selection",
+	);
+});
+
+test("selectInteractionInstance preserves reference when value did not change", () => {
+	const store = createStore();
+	store.getState().selectInteractionInstance("auth:default");
+	const before = store.getState();
+	store.getState().selectInteractionInstance("auth:default");
+	assert.equal(
+		store.getState(),
+		before,
+		"identical id leaves state reference unchanged",
+	);
+});
+
+test("setFieldBinding writes a binding object to block.bindings and clears it on null", () => {
+	const store = createStore();
+	const findBlock = () => {
+		const state = store.getState();
+		state.selectBlock("block-a");
+		return getPhotonSelectedBlock(store.getState());
+	};
+
+	store.getState().setFieldBinding("block-a", "label", {
+		source: "site-data",
+		path: "brand.name",
+	});
+	let block = findBlock();
+	assert.ok(block);
+	assert.deepEqual(block.bindings?.label, {
+		source: "site-data",
+		path: "brand.name",
+	});
+
+	store.getState().setFieldBinding("block-a", "label", null);
+	block = findBlock();
+	assert.equal(
+		block?.bindings,
+		undefined,
+		"bindings collection cleared when last binding removed",
+	);
+});
+
+test("setFieldBinding is a no-op when binding is structurally identical", () => {
+	const store = createStore();
+	store.getState().setFieldBinding("block-a", "label", {
+		source: "site-data",
+		path: "brand.name",
+	});
+	const before = store.getState().document;
+	store.getState().setFieldBinding("block-a", "label", {
+		source: "site-data",
+		path: "brand.name",
+	});
+	assert.equal(
+		store.getState().document,
+		before,
+		"identical binding leaves document reference unchanged",
+	);
+});
+
+test("updateDocumentMetadata updates routePatterns and bumps content revision", () => {
+	const store = createStore();
+	const initialRevision = store.getState().contentRevision;
+
+	store.getState().updateDocumentMetadata({
+		routePatterns: ["/:city", "/:city/products/:slug"],
+	});
+	assert.deepEqual(store.getState().document.routePatterns, [
+		"/:city",
+		"/:city/products/:slug",
+	]);
+	assert.equal(
+		store.getState().contentRevision,
+		initialRevision + 1,
+		"content revision bumped",
+	);
+
+	store.getState().updateDocumentMetadata({ routePatterns: undefined });
+	assert.equal(
+		store.getState().document.routePatterns,
+		undefined,
+		"undefined clears patterns",
+	);
+});
+
+test("updateDocumentMetadata is a no-op when nothing changes", () => {
+	const store = createStore();
+	store.getState().updateDocumentMetadata({
+		routePatterns: ["/:city"],
+	});
+	const beforeDoc = store.getState().document;
+	const beforeRevision = store.getState().contentRevision;
+	store.getState().updateDocumentMetadata({
+		routePatterns: ["/:city"],
+	});
+	assert.equal(
+		store.getState().document,
+		beforeDoc,
+		"identical patterns leave document reference unchanged",
+	);
+	assert.equal(
+		store.getState().contentRevision,
+		beforeRevision,
+		"no-op does not bump revision",
+	);
+});
+
+test("setFieldBinding preserves other bindings on the same block", () => {
+	const store = createStore();
+	const findBlock = () => {
+		store.getState().selectBlock("block-a");
+		return getPhotonSelectedBlock(store.getState());
+	};
+
+	store.getState().setFieldBinding("block-a", "label", {
+		source: "site-data",
+		path: "brand.name",
+	});
+	store.getState().setFieldBinding("block-a", "subtitle", {
+		source: "site-data",
+		path: "brand.tagline",
+	});
+	store.getState().setFieldBinding("block-a", "label", null);
+	const block = findBlock();
+	assert.equal(block?.bindings?.label, undefined, "label binding removed");
+	assert.deepEqual(
+		block?.bindings?.subtitle,
+		{ source: "site-data", path: "brand.tagline" },
+		"subtitle binding preserved",
+	);
+});
+
+test("trigger execution blocks when fail-closed policy condition is unresolved (missing evaluator result)", () => {
+	const navigations: string[] = [];
+	const store = createPhotonStore({
+		initialDocument: createDocument("trigger-chain", "block-chain"),
+		initialResources: {},
+		initialPageSettings: {},
+		initialSite: { settings: {}, regions: {} },
+		registry: createPhotonRegistry([]),
+		linkComponent: () => null,
+		navigate: (href) => {
+			navigations.push(href);
+		},
+		interactionSurfaces: authSurfaceDefinitions,
+		interactionSurfaceRenderers: { "auth.dialog": () => null },
+		interactionPolicies: [
+			{
+				id: "policy:fail-closed",
+				packageName: "test",
+				targetActionId: "checkout:submit",
+				when: { type: "ref", conditionId: "auth.unknown" },
+				run: "auth:default",
+				scope: "site",
+				securityMode: "fail-closed",
+			},
+		],
+		conditionEvaluators: {
+			"auth.unknown": () => null,
+		},
+		interactionActions: [
+			{
+				id: "checkout:submit-action",
+				label: "Submit checkout",
+				defaultInstances: [
+					{
+						id: "checkout:submit",
+						definitionId: "checkout:submit-action",
+						label: "Submit checkout",
+						presentation: { type: "link", href: "/checkout/done" },
+					},
+				],
+			},
+		],
+		isAdmin: true,
+	});
+
+	const result = store.getState().executeInteractionTriggerSlot({
+		id: "checkout-trigger",
+		label: "Checkout",
+		actionInstanceId: "checkout:submit",
+	});
+
+	assert.equal(result.status, "blocked");
+	assert.equal(result.reason, "missing-evaluator");
+	assert.deepEqual(navigations, []);
+	assert.equal(
+		store.getState().activeInteractionSurface,
+		null,
+		"surface not opened when fail-closed plan is blocked",
+	);
+	assert.equal(store.getState().pendingActionPlan, null);
+});
