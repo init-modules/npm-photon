@@ -4,6 +4,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { usePhotonStore } from "../../context/photon-context";
 import { usePhotonI18n } from "../../i18n/photon-i18n-context";
+import { PhotonInspectorSection } from "./inspector-section";
 
 /**
  * Inspector panel for managing the current document's `routePatterns`
@@ -51,33 +52,35 @@ export const RouteFamilyEditor = () => {
 	};
 
 	return (
-		<section
-			className="rounded-[24px] border px-4 py-4"
-			style={{
-				borderColor: "var(--photon-builder-border)",
-				background: "var(--photon-builder-panel-muted)",
-			}}
-			data-testid="photon-route-family-editor"
+		<PhotonInspectorSection
+			id="route-family"
+			title={translate("photon.studio.routeFamily.title", "Route family")}
+			subtitle={translate(
+				"photon.studio.routeFamily.description",
+				"URL patterns this document serves. Specific routes (e.g. /astana) can fully override this template.",
+			)}
+			defaultCollapsed={patterns.length === 0}
+			trailing={
+				patterns.length > 0 ? (
+					<span
+						className="rounded-sm border px-1 font-mono text-[9px] tabular-nums"
+						style={{
+							borderColor: "var(--photon-builder-border)",
+							color: "var(--photon-builder-text-soft)",
+						}}
+					>
+						{patterns.length}
+					</span>
+				) : null
+			}
 		>
 			<div
-				className="text-[11px] uppercase tracking-[0.28em]"
-				style={{ color: "var(--photon-builder-text-soft)" }}
+				className="space-y-1"
+				data-testid="photon-route-family-editor"
 			>
-				{translate("photon.studio.routeFamily.title", "Route family")}
-			</div>
-			<p
-				className="mt-2 text-xs leading-5"
-				style={{ color: "var(--photon-builder-text-muted)" }}
-			>
-				{translate(
-					"photon.studio.routeFamily.description",
-					"URL patterns this document serves. Specific routes (e.g. /astana) can fully override this template.",
-				)}
-			</p>
-			<div className="mt-3 space-y-2">
 				{patterns.length === 0 ? (
 					<div
-						className="text-xs italic"
+						className="text-[10.5px] italic"
 						style={{ color: "var(--photon-builder-text-soft)" }}
 					>
 						{translate(
@@ -89,7 +92,7 @@ export const RouteFamilyEditor = () => {
 					patterns.map((pattern) => (
 						<div
 							key={pattern}
-							className="flex items-center gap-2 rounded-2xl border px-3 py-2 font-mono text-xs"
+							className="flex items-center gap-1 rounded-sm border px-1.5 py-0.5 font-mono text-[11px]"
 							style={{
 								borderColor: "var(--photon-builder-border)",
 								background: "var(--photon-builder-panel-solid)",
@@ -97,11 +100,11 @@ export const RouteFamilyEditor = () => {
 							}}
 							data-testid={`photon-route-family-pattern-${pattern}`}
 						>
-							<span className="flex-1">{pattern}</span>
+							<span className="flex-1 truncate">{pattern}</span>
 							<button
 								type="button"
 								onClick={() => removePattern(pattern)}
-								className="cursor-pointer rounded-full p-1 hover:opacity-70"
+								className="cursor-pointer rounded-sm p-0.5 hover:opacity-70"
 								style={{ color: "var(--photon-builder-text-muted)" }}
 								aria-label={translate(
 									"photon.studio.routeFamily.remove",
@@ -109,21 +112,20 @@ export const RouteFamilyEditor = () => {
 								)}
 								data-testid={`photon-route-family-remove-${pattern}`}
 							>
-								<Trash2 size={12} />
+								<Trash2 size={10} />
 							</button>
 						</div>
 					))
 				)}
-				<div className="flex items-center gap-2">
+				<div className="flex items-center gap-1">
 					<input
 						type="text"
 						value={draftPattern}
 						onChange={(event) => setDraftPattern(event.currentTarget.value)}
 						placeholder="/:city/products/:slug"
-						className="flex-1 rounded-[10px] border px-2 py-1 font-mono text-xs"
+						className="h-6 flex-1 rounded-sm border bg-[color:var(--photon-builder-panel-solid)] px-1.5 font-mono text-[11px] outline-none focus:border-[color:var(--photon-builder-border-strong)]"
 						style={{
 							borderColor: "var(--photon-builder-border)",
-							background: "var(--photon-builder-panel-solid)",
 							color: "var(--photon-builder-text)",
 						}}
 						onKeyDown={(event) => {
@@ -137,7 +139,7 @@ export const RouteFamilyEditor = () => {
 					<button
 						type="button"
 						onClick={addPattern}
-						className="inline-flex cursor-pointer items-center gap-1 rounded-full border px-3 py-1 text-xs"
+						className="inline-flex h-6 cursor-pointer items-center gap-1 rounded-sm border px-1.5 text-[10px]"
 						style={{
 							borderColor: "var(--photon-builder-border-strong)",
 							color: "var(--photon-builder-text)",
@@ -148,6 +150,6 @@ export const RouteFamilyEditor = () => {
 					</button>
 				</div>
 			</div>
-		</section>
+		</PhotonInspectorSection>
 	);
 };
