@@ -724,6 +724,16 @@ const FieldEditorImpl = ({
 				<div className="flex min-w-0 flex-1 items-center gap-1">
 					{renderControl()}
 					{bindingPill}
+					{path && !fieldBinding ? (
+						<SiteDataBindingPicker
+							mode="field"
+							label="↗"
+							compact
+							onPick={(binding) =>
+								setFieldBinding(blockId, path, binding)
+							}
+						/>
+					) : null}
 				</div>
 				{path && !hidePathLabel ? (
 					<button

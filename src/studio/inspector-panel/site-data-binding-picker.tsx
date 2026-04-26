@@ -11,12 +11,16 @@ type StringPickProps = {
 	mode?: "string";
 	onPick: (binding: string) => void;
 	label?: string;
+	/** Compact icon-only trigger for inline rows. */
+	compact?: boolean;
 };
 
 type FieldPickProps = {
 	mode: "field";
 	onPick: (binding: PhotonFieldBinding) => void;
 	label?: string;
+	/** Compact icon-only trigger for inline rows. */
+	compact?: boolean;
 };
 
 type Props = StringPickProps | FieldPickProps;
@@ -39,7 +43,7 @@ const subtleStyle = {
 };
 
 export const SiteDataBindingPicker = (props: Props) => {
-	const { onPick, label } = props;
+	const { onPick, label, compact } = props;
 	const mode = props.mode ?? "string";
 	const siteData = usePhotonSiteData();
 	const routeContextFields = usePhotonStore(
@@ -101,7 +105,11 @@ export const SiteDataBindingPicker = (props: Props) => {
 			<button
 				type="button"
 				onClick={() => setIsOpen((prev) => !prev)}
-				className="cursor-pointer rounded-full border px-3 py-1 text-xs font-semibold"
+				className={
+					compact
+						? "inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm border text-[10px] font-semibold leading-none"
+						: "cursor-pointer rounded-sm border px-1.5 py-0.5 text-[10.5px] font-semibold leading-tight"
+				}
 				style={buttonStyle}
 				data-testid={
 					mode === "field"
@@ -109,8 +117,9 @@ export const SiteDataBindingPicker = (props: Props) => {
 						: "photon-bind-to-data-button"
 				}
 				aria-expanded={isOpen}
+				title={label ?? "Bind to data"}
 			>
-				🔗 {label ?? "Bind to data"}
+				{compact ? "🔗" : `🔗 ${label ?? "Bind to data"}`}
 			</button>
 			{isOpen && pendingPick ? (
 				<div
