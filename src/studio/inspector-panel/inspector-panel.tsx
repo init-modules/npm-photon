@@ -24,7 +24,6 @@ import {
 	PhotonInspectorDensityProvider,
 	usePhotonInspectorDensity,
 } from "./inspector-density-context";
-import { InspectorDensityToggle } from "./inspector-density-toggle";
 import { RouteFamilyEditor } from "./route-family-editor";
 import {
 	InspectorTriggerTab,
@@ -117,6 +116,7 @@ const InspectorPanelComponent = ({
 }: InspectorPanelProps) => {
 	const document = usePhotonStore((state) => state.document);
 	const { contentLocale, editableLocales, translate } = usePhotonI18n();
+	const { tokens } = usePhotonInspectorDensity();
 	const selectedBlock = usePhotonStore((state) =>
 		getPhotonSelectedBlock(state),
 	);
@@ -217,145 +217,124 @@ const InspectorPanelComponent = ({
 
 	return (
 		<div
-			className="flex h-full flex-col"
+			className="flex h-full flex-col text-[12px]"
 			style={{
 				background: "var(--photon-builder-shell-muted)",
 				color: "var(--photon-builder-text)",
 			}}
 		>
 			<div
-				className="border-b px-5 py-5"
+				className={clsx(
+					"flex items-center justify-between gap-2 border-b",
+					tokens.headerPadding,
+				)}
 				style={{
 					borderColor: "var(--photon-builder-border)",
 					background: "var(--photon-builder-shell-strong)",
 				}}
 			>
-				<div className="flex items-center justify-between gap-3">
-					<div className="min-w-0">
-						<div
-							className="flex items-center gap-2 text-[11px] uppercase tracking-[0.28em]"
-							style={{ color: "var(--photon-builder-text-soft)" }}
-						>
-							<span>{translate("photon.studio.inspector.title", "Inspector")}</span>
-							<InspectorDensityToggle />
-						</div>
-						<div
-							className="mt-4 inline-flex rounded-full border p-1"
-							style={{
-								borderColor: "var(--photon-builder-border)",
-								background: "var(--photon-builder-panel-muted)",
-							}}
-						>
+				<div className="flex min-w-0 items-center gap-1">
+					<button
+						type="button"
+						onClick={() => {
+							selectInspectorTrigger(null);
+							setActiveTab("block");
+						}}
+						className={tokens.tabClass}
+						style={
+							activeTab === "block" && !isTriggerTabActive
+								? {
+										background: "var(--photon-builder-accent-soft)",
+										color: "var(--photon-builder-accent-text)",
+									}
+								: { color: "var(--photon-builder-text-muted)" }
+						}
+					>
+						{translate("photon.studio.inspector.blockTab", "Block")}
+					</button>
+					{triggerSlots.map((slot) => {
+						const isActive =
+							isTriggerTabActive &&
+							activeTriggerSlot?.id === slot.id;
+						return (
 							<button
+								key={slot.id}
 								type="button"
 								onClick={() => {
-									selectInspectorTrigger(null);
+									selectInspectorTrigger(slot.id);
 									setActiveTab("block");
 								}}
-								className={clsx(
-									"cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold transition",
-								)}
+								className={tokens.tabClass}
 								style={
-									activeTab === "block" && !isTriggerTabActive
+									isActive
 										? {
-												background: "var(--photon-builder-accent-soft)",
+												background:
+													"var(--photon-builder-accent-soft)",
 												color: "var(--photon-builder-accent-text)",
 											}
 										: { color: "var(--photon-builder-text-muted)" }
 								}
+								data-testid={`photon-inspector-trigger-tab-${slot.id}`}
 							>
-								{translate("photon.studio.inspector.blockTab", "Block")}
+								{slot.label}
 							</button>
-							{triggerSlots.map((slot) => {
-								const isActive =
-									isTriggerTabActive &&
-									activeTriggerSlot?.id === slot.id;
-								return (
-									<button
-										key={slot.id}
-										type="button"
-										onClick={() => {
-											selectInspectorTrigger(slot.id);
-											setActiveTab("block");
-										}}
-										className={clsx(
-											"cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold transition",
-										)}
-										style={
-											isActive
-												? {
-														background:
-															"var(--photon-builder-accent-soft)",
-														color: "var(--photon-builder-accent-text)",
-													}
-												: { color: "var(--photon-builder-text-muted)" }
-										}
-										data-testid={`photon-inspector-trigger-tab-${slot.id}`}
-									>
-										{slot.label}
-									</button>
-								);
-							})}
-							<button
-								type="button"
-								onClick={() => {
-									selectInspectorTrigger(null);
-									setActiveTab("page");
-								}}
-								className={clsx(
-									"cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold transition",
-								)}
-								style={
-									activeTab === "page"
-										? {
-												background: "var(--photon-builder-accent-soft)",
-												color: "var(--photon-builder-accent-text)",
-											}
-										: { color: "var(--photon-builder-text-muted)" }
-								}
-							>
-								{pageTabLabel}
-							</button>
-						</div>
-					</div>
-					{onCollapse ? (
-						<button
-							type="button"
-							onClick={onCollapse}
-							className="cursor-pointer rounded-full border p-2 transition"
-							style={{
-								borderColor: "var(--photon-builder-border)",
-								background: "var(--photon-builder-panel-muted)",
-								color: "var(--photon-builder-text-soft)",
-							}}
-						>
-							<ChevronRight className="h-4 w-4" />
-						</button>
-					) : null}
+						);
+					})}
+					<button
+						type="button"
+						onClick={() => {
+							selectInspectorTrigger(null);
+							setActiveTab("page");
+						}}
+						className={tokens.tabClass}
+						style={
+							activeTab === "page"
+								? {
+										background: "var(--photon-builder-accent-soft)",
+										color: "var(--photon-builder-accent-text)",
+									}
+								: { color: "var(--photon-builder-text-muted)" }
+						}
+					>
+						{pageTabLabel}
+					</button>
 				</div>
+				{onCollapse ? (
+					<button
+						type="button"
+						onClick={onCollapse}
+						className="cursor-pointer rounded-sm p-1 transition"
+						style={{
+							color: "var(--photon-builder-text-soft)",
+						}}
+						aria-label="Collapse inspector"
+					>
+						<ChevronRight className="h-3.5 w-3.5" />
+					</button>
+				) : null}
 			</div>
 
 			<div
-				className="flex-1 space-y-5 overflow-y-auto px-4 py-4"
+				className="photon-inspector-scroll flex-1 space-y-1.5 overflow-y-auto px-1.5 py-1.5"
 				style={{ background: "var(--photon-builder-shell-muted)" }}
 			>
 				{activeTab === "block" && !selectedBlock && inspectorDefinition ? (
 					<>
 						<section
-							className="rounded-[24px] border px-4 py-4"
+							className="rounded-md border px-2 py-2"
 							style={{
 								borderColor: "var(--photon-builder-border)",
 								background: "var(--photon-builder-panel-muted)",
 							}}
 						>
 							<div
-								className="text-[11px] uppercase tracking-[0.28em]"
+								className={tokens.sectionHeaderClass}
 								style={{ color: "var(--photon-builder-text-soft)" }}
 							>
 								Palette block
 							</div>
 							<div
-								className="mt-3 text-lg font-semibold"
+								className={clsx("mt-1", tokens.subtitleClass)}
 								style={{ color: "var(--photon-builder-text)" }}
 							>
 								{inspectorDefinition.label}
@@ -396,7 +375,7 @@ const InspectorPanelComponent = ({
 								</div>
 							</div>
 							<div
-								className="mt-4 text-sm leading-6"
+								className="mt-1.5 text-[11.5px] leading-snug"
 								style={{ color: "var(--photon-builder-text-muted)" }}
 							>
 								{inspectorDefinition.description}
@@ -406,7 +385,7 @@ const InspectorPanelComponent = ({
 						{Object.entries(inspectorGroups).map(([groupKey, fields]) => (
 							<section
 								key={groupKey}
-								className="rounded-[24px] border px-4 py-4"
+								className="rounded-md border px-2 py-2"
 								style={{
 									borderColor: "var(--photon-builder-border)",
 									background: "var(--photon-builder-panel-muted)",
@@ -414,7 +393,7 @@ const InspectorPanelComponent = ({
 							>
 								<div className="mb-4 flex items-center justify-between gap-3">
 									<div
-										className="text-[11px] uppercase tracking-[0.28em]"
+										className={tokens.sectionHeaderClass}
 										style={{ color: "var(--photon-builder-text-soft)" }}
 									>
 										{translate(
@@ -485,20 +464,20 @@ const InspectorPanelComponent = ({
 				{activeTab === "block" && selectedBlock && !isTriggerTabActive ? (
 					<>
 						<section
-							className="rounded-[24px] border px-4 py-4"
+							className="rounded-md border px-2 py-2"
 							style={{
 								borderColor: "var(--photon-builder-border)",
 								background: "var(--photon-builder-panel-muted)",
 							}}
 						>
 							<div
-								className="text-[11px] uppercase tracking-[0.28em]"
+								className={tokens.sectionHeaderClass}
 								style={{ color: "var(--photon-builder-text-soft)" }}
 							>
 								Selected block
 							</div>
 							<div
-								className="mt-3 text-lg font-semibold"
+								className={clsx("mt-1", tokens.subtitleClass)}
 								style={{ color: "var(--photon-builder-text)" }}
 							>
 								{inspectorDefinition?.label ?? selectedBlock.type}
@@ -528,7 +507,7 @@ const InspectorPanelComponent = ({
 							</div>
 							{inspectorDefinition?.description ? (
 								<div
-									className="mt-4 text-sm leading-6"
+									className="mt-1.5 text-[11.5px] leading-snug"
 									style={{ color: "var(--photon-builder-text-muted)" }}
 								>
 									{inspectorDefinition.description}
@@ -555,7 +534,7 @@ const InspectorPanelComponent = ({
 
 						{orderedGroupKeys.length > 0 ? (
 							<section
-								className="rounded-[24px] border px-4 py-4"
+								className="rounded-md border px-2 py-2"
 								style={{
 									borderColor: "var(--photon-builder-border)",
 									background: "var(--photon-builder-panel-muted)",
@@ -692,7 +671,7 @@ const InspectorPanelComponent = ({
 						) : null}
 
 						<section
-							className="rounded-[24px] border px-4 py-4"
+							className="rounded-md border px-2 py-2"
 							style={{
 								borderColor: "var(--photon-builder-border)",
 								background: "var(--photon-builder-panel-muted)",
@@ -704,7 +683,7 @@ const InspectorPanelComponent = ({
 								className="flex w-full cursor-pointer items-center justify-between gap-3 text-left"
 							>
 								<div
-									className="text-[11px] uppercase tracking-[0.28em]"
+									className={tokens.sectionHeaderClass}
 									style={{ color: "var(--photon-builder-text-soft)" }}
 								>
 									Raw block manifest
@@ -740,7 +719,7 @@ const InspectorPanelComponent = ({
 				{activeTab === "block" ? (
 					<>
 						<section
-							className="rounded-[24px] border px-4 py-4"
+							className="rounded-md border px-2 py-2"
 							style={{
 								borderColor: "var(--photon-builder-border)",
 								background: "var(--photon-builder-panel-muted)",
@@ -752,7 +731,7 @@ const InspectorPanelComponent = ({
 								className="flex w-full cursor-pointer items-center justify-between gap-3 text-left"
 							>
 								<div
-									className="text-[11px] uppercase tracking-[0.28em]"
+									className={tokens.sectionHeaderClass}
 									style={{ color: "var(--photon-builder-text-soft)" }}
 								>
 									Document JSON
@@ -809,13 +788,13 @@ const InspectorPanelComponent = ({
 							}}
 						>
 							<div
-								className="text-[11px] uppercase tracking-[0.28em]"
+								className={tokens.sectionHeaderClass}
 								style={{ color: "var(--photon-builder-text-soft)" }}
 							>
 								{pageTabLabel} settings
 							</div>
 							<div
-								className="mt-3 text-lg font-semibold"
+								className={clsx("mt-1", tokens.subtitleClass)}
 								style={{ color: "var(--photon-builder-text)" }}
 							>
 								{summaryName}
@@ -861,7 +840,7 @@ const InspectorPanelComponent = ({
 						</section>
 
 						<section
-							className="rounded-[24px] border px-4 py-4"
+							className="rounded-md border px-2 py-2"
 							style={{
 								borderColor: "var(--photon-builder-border)",
 								background: "var(--photon-builder-panel-muted)",

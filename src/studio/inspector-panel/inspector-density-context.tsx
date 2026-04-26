@@ -3,94 +3,92 @@
 import {
 	createContext,
 	type ReactNode,
-	useCallback,
 	useContext,
 	useMemo,
-	useState,
 } from "react";
 
-export type PhotonInspectorDensity = "comfortable" | "compact";
-
 /**
- * Spacing/sizing tokens per density mode. Compact mirrors UE5 Details
- * panel (smaller row height, tighter gaps, denser type) without changing
- * the visual identity. Comfortable preserves the current spacing as the
- * default — opt-in via the inspector header toggle.
+ * Inspector visual density.
+ *
+ * Photon's inspector follows Unreal Engine's Details panel as a north
+ * star: every row is a single line with a fixed-width label gutter on
+ * the left and a tightly-packed control on the right. Sections are
+ * caret-folded headers, not card-style boxes. There is exactly one
+ * density — `compact` — and it is the only configuration we ship.
  */
+export type PhotonInspectorDensity = "compact";
+
 export type PhotonInspectorDensityTokens = {
 	/** Vertical gap between sibling field rows (Tailwind class). */
 	rowGap: string;
-	/** Padding inside section cards. */
+	/** Padding inside section bodies. */
 	sectionPadding: string;
-	/** Border radius for section cards. */
+	/** Padding for inspector header chrome. */
+	headerPadding: string;
+	/** Border radius for section bodies — kept tight, no card-style rounding. */
 	sectionRadius: string;
-	/** Section title font + tracking. */
-	sectionTitleClass: string;
-	/** Field label font. */
+	/** Section header (caret + uppercase tag) classes. */
+	sectionHeaderClass: string;
+	/** Field label font (left gutter). */
 	fieldLabelClass: string;
-	/** Inline gap between label and metadata. */
-	labelInlineGap: string;
 	/** Bottom margin between header / binding row / control. */
 	rowSpacing: string;
-};
-
-const COMFORTABLE_TOKENS: PhotonInspectorDensityTokens = {
-	rowGap: "space-y-3",
-	sectionPadding: "px-4 py-4",
-	sectionRadius: "rounded-[24px]",
-	sectionTitleClass: "text-[11px] uppercase tracking-[0.28em]",
-	fieldLabelClass: "text-sm font-semibold",
-	labelInlineGap: "gap-3",
-	rowSpacing: "mb-2",
+	/** Width of the left label gutter, used by single-line rows. */
+	labelGutterWidth: string;
+	/** Min row height — keeps single-line rows visually aligned. */
+	rowMinHeight: string;
+	/** Tab pill base class (block / page / trigger). */
+	tabClass: string;
+	/** Standard inline input class for inspector controls. */
+	inputClass: string;
+	/** Block-detail subtitle (palette card). */
+	subtitleClass: string;
 };
 
 const COMPACT_TOKENS: PhotonInspectorDensityTokens = {
-	rowGap: "space-y-1.5",
-	sectionPadding: "px-3 py-2",
-	sectionRadius: "rounded-[14px]",
-	sectionTitleClass: "text-[10px] uppercase tracking-[0.22em]",
-	fieldLabelClass: "text-xs font-medium",
-	labelInlineGap: "gap-2",
-	rowSpacing: "mb-1",
+	rowGap: "space-y-0.5",
+	sectionPadding: "px-2 py-1.5",
+	headerPadding: "px-3 py-2",
+	sectionRadius: "rounded-md",
+	sectionHeaderClass:
+		"text-[10px] font-semibold uppercase tracking-[0.16em] leading-tight",
+	fieldLabelClass:
+		"text-[11px] font-medium leading-tight tabular-nums",
+	rowSpacing: "",
+	labelGutterWidth: "min-w-[112px] max-w-[112px]",
+	rowMinHeight: "min-h-[24px]",
+	tabClass:
+		"cursor-pointer rounded px-2 py-0.5 text-[11px] font-semibold transition leading-tight",
+	inputClass:
+		"h-6 w-full min-w-0 rounded-sm border bg-[color:var(--photon-builder-field)] px-1.5 text-[11px] leading-tight outline-none transition-[border-color] focus:border-[color:var(--photon-builder-border-strong)] tabular-nums",
+	subtitleClass: "text-[13px] font-semibold leading-tight",
 };
 
 type PhotonInspectorDensityContextValue = {
 	density: PhotonInspectorDensity;
 	tokens: PhotonInspectorDensityTokens;
-	setDensity: (density: PhotonInspectorDensity) => void;
-	toggleDensity: () => void;
 };
 
 const PhotonInspectorDensityContext =
 	createContext<PhotonInspectorDensityContextValue | null>(null);
 
-const tokensForDensity = (
-	density: PhotonInspectorDensity,
-): PhotonInspectorDensityTokens =>
-	density === "compact" ? COMPACT_TOKENS : COMFORTABLE_TOKENS;
-
 export const PhotonInspectorDensityProvider = ({
 	children,
-	initialDensity = "comfortable",
 }: {
 	children: ReactNode;
+	/**
+	 * @deprecated Density is fixed to `compact`. Argument is kept for
+	 * backwards compatibility with previously-saved call sites; the
+	 * provided value is ignored.
+	 */
 	initialDensity?: PhotonInspectorDensity;
 }) => {
-	const [density, setDensity] =
-		useState<PhotonInspectorDensity>(initialDensity);
-	const toggleDensity = useCallback(() => {
-		setDensity((current) =>
-			current === "compact" ? "comfortable" : "compact",
-		);
-	}, []);
 	const value = useMemo<PhotonInspectorDensityContextValue>(
 		() => ({
-			density,
-			tokens: tokensForDensity(density),
-			setDensity,
-			toggleDensity,
+			density: "compact",
+			tokens: COMPACT_TOKENS,
 		}),
-		[density, toggleDensity],
+		[],
 	);
 	return (
 		<PhotonInspectorDensityContext.Provider value={value}>
@@ -100,8 +98,8 @@ export const PhotonInspectorDensityProvider = ({
 };
 
 /**
- * Returns density + tokens. Falls back to comfortable when no provider
- * is mounted — keeps existing inspector callers backwards compatible.
+ * Returns density + tokens. Falls back to compact tokens when no
+ * provider is mounted so isolated test harnesses keep rendering.
  */
 export const usePhotonInspectorDensity =
 	(): PhotonInspectorDensityContextValue => {
@@ -110,9 +108,7 @@ export const usePhotonInspectorDensity =
 			return context;
 		}
 		return {
-			density: "comfortable",
-			tokens: COMFORTABLE_TOKENS,
-			setDensity: () => {},
-			toggleDensity: () => {},
+			density: "compact",
+			tokens: COMPACT_TOKENS,
 		};
 	};

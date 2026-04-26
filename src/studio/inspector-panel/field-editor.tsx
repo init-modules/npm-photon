@@ -411,6 +411,23 @@ const RepeaterFieldEditor = ({
 	);
 };
 
+/**
+ * Single-row inline kinds use the compact UE-style layout: label-gutter
+ * on the left, control packed to the right, all on a single line.
+ * Block-style kinds (textarea, rich-text, repeater, json, image,
+ * gallery, object, form-fields, tags) keep the label on top with the
+ * control occupying the row below — they would not fit a single line
+ * cleanly.
+ */
+const INLINE_FIELD_KINDS = new Set<PhotonField["kind"] | PhotonNestedField["kind"]>([
+	"text",
+	"url",
+	"color",
+	"number",
+	"select",
+	"toggle",
+]);
+
 export const FieldEditor = ({
 	field,
 	blockId,
@@ -429,100 +446,60 @@ export const FieldEditor = ({
 	const { translate } = usePhotonI18n();
 	const { tokens } = usePhotonInspectorDensity();
 	const path = absolutePath ?? field.path ?? "";
+	const isInline = INLINE_FIELD_KINDS.has(field.kind);
+	const labelText = translate(
+		field.labelKey ?? field.label ?? "Field",
+		field.label ?? "Field",
+	);
 
-	return (
-		<div data-photon-density-row>
-			<div
-				className={clsx(
-					tokens.rowSpacing,
-					"flex items-center justify-between",
-					tokens.labelInlineGap,
-				)}
+	const labelNode = (
+		<div
+			className={clsx(
+				tokens.fieldLabelClass,
+				isInline ? clsx(tokens.labelGutterWidth, "truncate") : null,
+			)}
+			style={{ color: "var(--photon-builder-text)" }}
+			title={labelText}
+		>
+			{labelText}
+		</div>
+	);
+
+	const bindingPill =
+		path && fieldBinding ? (
+			<button
+				type="button"
+				onClick={() => setFieldBinding(blockId, path, null)}
+				className="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-sm border px-1 font-mono text-[10px] leading-tight"
+				style={{
+					borderColor: "var(--photon-builder-border-strong)",
+					background: "var(--photon-builder-accent-strong)",
+					color: "var(--photon-builder-accent)",
+				}}
+				data-testid={`photon-field-binding-pill-${path}`}
+				title="Unbind"
 			>
-				<div
-					className={tokens.fieldLabelClass}
-					style={{ color: "var(--photon-builder-text)" }}
-				>
-					{translate(
-						field.labelKey ?? field.label ?? "Field",
-						field.label ?? "Field",
-					)}
-				</div>
-				{path && !hidePathLabel ? (
-					<button
-						type="button"
-						onClick={() => onFocus(path)}
-						className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.24em] transition"
-						style={{ color: "var(--photon-builder-text-ghost)" }}
-					>
-						{path}
-					</button>
-				) : null}
-			</div>
-			{path ? (
-				<div
-					className={clsx(tokens.rowSpacing, "flex items-center gap-2")}
-					data-testid={`photon-field-binding-row-${path}`}
-				>
-					{fieldBinding ? (
-						<>
-							<span
-								className="rounded-full border px-2 py-0.5 font-mono text-[10px]"
-								style={{
-									borderColor: "var(--photon-builder-border-strong)",
-									background: "var(--photon-builder-accent-strong)",
-									color: "var(--photon-builder-accent)",
-								}}
-								data-testid={`photon-field-binding-pill-${path}`}
-							>
-								🔗 {fieldBinding.source}:{fieldBinding.path}
-							{fieldBinding.adapter ? (
-								<span
-									className="ml-1 opacity-70"
-									data-testid={`photon-field-binding-adapter-${path}`}
-								>
-									via {fieldBinding.adapter}
-								</span>
-							) : null}
-							</span>
-							<button
-								type="button"
-								onClick={() => setFieldBinding(blockId, path, null)}
-								className="cursor-pointer rounded-full border px-2 py-0.5 text-[10px]"
-								style={{
-									borderColor: "var(--photon-builder-border)",
-									color: "var(--photon-builder-text-soft)",
-								}}
-								data-testid={`photon-field-binding-unbind-${path}`}
-							>
-								× Unbind
-							</button>
-						</>
-					) : (
-						<SiteDataBindingPicker
-							mode="field"
-							label="Bind field"
-							onPick={(binding) => setFieldBinding(blockId, path, binding)}
-						/>
-					)}
-				</div>
-			) : null}
-			{field.description ? (
-				<div
-					className="mb-2 text-xs leading-5"
-					style={{ color: "var(--photon-builder-text-soft)" }}
-				>
-					{translate(
-						field.descriptionKey ?? field.description ?? "",
-						field.description,
-					)}
-				</div>
-			) : null}
+				<span>
+					{fieldBinding.source}:{fieldBinding.path}
+					{fieldBinding.adapter ? (
+						<span
+							className="ml-1 opacity-70"
+							data-testid={`photon-field-binding-adapter-${path}`}
+						>
+							·{fieldBinding.adapter}
+						</span>
+					) : null}
+				</span>
+				<span data-testid={`photon-field-binding-unbind-${path}`}>×</span>
+			</button>
+		) : null;
 
-			{field.kind === "textarea" ? (
-				<div className="flex flex-col gap-2">
+	const renderControl = () => {
+		if (field.kind === "textarea") {
+			return (
+				<div className="flex flex-col gap-1">
 					<textarea
-						rows={5}
+						rows={4}
 						value={String(value ?? "")}
 						onFocus={() => onFocus(path)}
 						onChange={(event) => onChange(event.currentTarget.value)}
@@ -534,15 +511,17 @@ export const FieldEditor = ({
 						}
 					/>
 				</div>
-			) : null}
+			);
+		}
 
-			{field.kind === "rich-text" ? (
-				<div className="flex flex-col gap-2">
+		if (field.kind === "rich-text") {
+			return (
+				<div className="flex flex-col gap-1">
 					<PhotonRichTextEditor
 						value={String(value ?? "")}
 						onFocus={() => onFocus(path)}
 						onChange={onChange}
-						className="text-sm text-[color:var(--photon-builder-text)]"
+						className="text-[12px] text-[color:var(--photon-builder-text)]"
 						surfaceClassName="border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)]"
 					/>
 					<SiteDataBindingPicker
@@ -551,9 +530,11 @@ export const FieldEditor = ({
 						}
 					/>
 				</div>
-			) : null}
+			);
+		}
 
-			{field.kind === "json" ? (
+		if (field.kind === "json") {
+			return (
 				<JsonFieldEditor
 					blockId={blockId}
 					path={path}
@@ -561,9 +542,11 @@ export const FieldEditor = ({
 					onFocus={() => onFocus(path)}
 					onApply={onChange}
 				/>
-			) : null}
+			);
+		}
 
-			{field.kind === "object" ? (
+		if (field.kind === "object") {
+			return (
 				<ObjectFieldEditor
 					field={field}
 					blockId={blockId}
@@ -572,9 +555,11 @@ export const FieldEditor = ({
 					onChange={onChange}
 					absolutePath={path}
 				/>
-			) : null}
+			);
+		}
 
-			{field.kind === "repeater" ? (
+		if (field.kind === "repeater") {
+			return (
 				<RepeaterFieldEditor
 					field={field}
 					blockId={blockId}
@@ -583,41 +568,47 @@ export const FieldEditor = ({
 					onChange={onChange}
 					absolutePath={path}
 				/>
-			) : null}
+			);
+		}
 
-			{field.kind === "form-fields" ? (
+		if (field.kind === "form-fields") {
+			return (
 				<PhotonFormFieldsEditor
 					value={value}
 					onChange={onChange}
-					onFocus={(path) => onFocus(joinFieldPath(absolutePath ?? "", path))}
+					onFocus={(p) => onFocus(joinFieldPath(absolutePath ?? "", p))}
 					absolutePath={path}
 				/>
-			) : null}
+			);
+		}
 
-			{field.kind === "select" ? (
+		if (field.kind === "select") {
+			return (
 				<SelectFieldEditor
 					field={field}
 					value={value}
 					onChange={onChange}
 					onFocus={onFocus}
 				/>
-			) : null}
+			);
+		}
 
-			{field.kind === "toggle" ? (
-				<label className="inline-flex cursor-pointer items-center gap-3 rounded-2xl border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] px-4 py-3 text-sm text-[color:var(--photon-builder-text)]">
-					<input
-						type="checkbox"
-						checked={Boolean(value)}
-						onFocus={() => onFocus(path)}
-						onChange={(event) => onChange(event.currentTarget.checked)}
-					/>
-					Enable value
-				</label>
-			) : null}
+		if (field.kind === "toggle") {
+			return (
+				<input
+					type="checkbox"
+					checked={Boolean(value)}
+					onFocus={() => onFocus(path)}
+					onChange={(event) => onChange(event.currentTarget.checked)}
+					className="h-3.5 w-3.5 cursor-pointer accent-[color:var(--photon-builder-accent)]"
+				/>
+			);
+		}
 
-			{field.kind === "tags" ? (
+		if (field.kind === "tags") {
+			return (
 				<textarea
-					rows={4}
+					rows={3}
 					value={
 						Array.isArray(value)
 							? value
@@ -638,9 +629,11 @@ export const FieldEditor = ({
 					placeholder="keyword one, keyword two"
 					className={inputClassName}
 				/>
-			) : null}
+			);
+		}
 
-			{field.kind === "image" ? (
+		if (field.kind === "image") {
+			return (
 				<ImageFieldEditor
 					blockId={blockId}
 					path={path}
@@ -650,9 +643,11 @@ export const FieldEditor = ({
 					onApply={onChange}
 					onUpload={uploadMedia}
 				/>
-			) : null}
+			);
+		}
 
-			{field.kind === "gallery" ? (
+		if (field.kind === "gallery") {
+			return (
 				<GalleryFieldEditor
 					blockId={blockId}
 					path={path}
@@ -662,37 +657,32 @@ export const FieldEditor = ({
 					onApply={onChange}
 					onUpload={uploadMedia}
 				/>
-			) : null}
+			);
+		}
 
-			{["text", "url", "color"].includes(field.kind) ? (
-				<div className="flex flex-col gap-2">
-					<input
-						type={
-							field.kind === "color"
-								? "color"
-								: field.kind === "url"
-									? "url"
-									: "text"
-						}
-						value={String(value ?? "")}
-						onFocus={() => onFocus(path)}
-						onChange={(event) => onChange(event.currentTarget.value)}
-						className={clsx(
-							inputClassName,
-							field.kind === "color" && "h-14 cursor-pointer px-2 py-2",
-						)}
-					/>
-					{field.kind !== "color" ? (
-						<SiteDataBindingPicker
-							onPick={(binding) =>
-								onChange(`${String(value ?? "")}${binding}`)
-							}
-						/>
-					) : null}
-				</div>
-			) : null}
+		if (["text", "url", "color"].includes(field.kind)) {
+			return (
+				<input
+					type={
+						field.kind === "color"
+							? "color"
+							: field.kind === "url"
+								? "url"
+								: "text"
+					}
+					value={String(value ?? "")}
+					onFocus={() => onFocus(path)}
+					onChange={(event) => onChange(event.currentTarget.value)}
+					className={clsx(
+						tokens.inputClass,
+						field.kind === "color" && "h-6 cursor-pointer p-0",
+					)}
+				/>
+			);
+		}
 
-			{field.kind === "number" ? (
+		if (field.kind === "number") {
+			return (
 				<input
 					type="number"
 					value={Number(value ?? 0)}
@@ -701,9 +691,85 @@ export const FieldEditor = ({
 					step={field.step ?? 1}
 					onFocus={() => onFocus(path)}
 					onChange={(event) => onChange(Number(event.currentTarget.value))}
-					className={inputClassName}
+					className={tokens.inputClass}
 				/>
+			);
+		}
+
+		return null;
+	};
+
+	const description = field.description ? (
+		<div
+			className="text-[10.5px] leading-snug"
+			style={{ color: "var(--photon-builder-text-soft)" }}
+		>
+			{translate(
+				field.descriptionKey ?? field.description ?? "",
+				field.description,
+			)}
+		</div>
+	) : null;
+
+	if (isInline) {
+		return (
+			<div
+				data-photon-density-row
+				className={clsx(
+					tokens.rowMinHeight,
+					"flex items-center gap-2 px-1",
+				)}
+			>
+				{labelNode}
+				<div className="flex min-w-0 flex-1 items-center gap-1">
+					{renderControl()}
+					{bindingPill}
+				</div>
+				{path && !hidePathLabel ? (
+					<button
+						type="button"
+						onClick={() => onFocus(path)}
+						className="shrink-0 cursor-pointer font-mono text-[9px] uppercase tracking-[0.16em] transition"
+						style={{ color: "var(--photon-builder-text-ghost)" }}
+						title={path}
+					>
+						⌗
+					</button>
+				) : null}
+			</div>
+		);
+	}
+
+	return (
+		<div data-photon-density-row className="px-1 py-1">
+			<div className="mb-1 flex items-center justify-between gap-2">
+				<div className="flex items-center gap-1.5">
+					{labelNode}
+					{bindingPill}
+				</div>
+				{path && !hidePathLabel ? (
+					<button
+						type="button"
+						onClick={() => onFocus(path)}
+						className="shrink-0 cursor-pointer font-mono text-[9px] uppercase tracking-[0.16em] transition"
+						style={{ color: "var(--photon-builder-text-ghost)" }}
+						title={path}
+					>
+						{path}
+					</button>
+				) : null}
+			</div>
+			{description ? <div className="mb-1">{description}</div> : null}
+			{path && !fieldBinding ? (
+				<div className="mb-1">
+					<SiteDataBindingPicker
+						mode="field"
+						label="Bind field"
+						onPick={(binding) => setFieldBinding(blockId, path, binding)}
+					/>
+				</div>
 			) : null}
+			{renderControl()}
 		</div>
 	);
 };

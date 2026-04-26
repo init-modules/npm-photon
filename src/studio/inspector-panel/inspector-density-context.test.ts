@@ -10,22 +10,32 @@ import {
 const requiredTokenKeys: Array<keyof PhotonInspectorDensityTokens> = [
 	"rowGap",
 	"sectionPadding",
+	"headerPadding",
 	"sectionRadius",
-	"sectionTitleClass",
+	"sectionHeaderClass",
 	"fieldLabelClass",
-	"labelInlineGap",
 	"rowSpacing",
+	"labelGutterWidth",
+	"rowMinHeight",
+	"tabClass",
+	"inputClass",
+	"subtitleClass",
 ];
 
 test("PhotonInspectorDensityTokens shape declares all required spacing keys", () => {
 	const sample: PhotonInspectorDensityTokens = {
 		rowGap: "x",
 		sectionPadding: "x",
+		headerPadding: "x",
 		sectionRadius: "x",
-		sectionTitleClass: "x",
+		sectionHeaderClass: "x",
 		fieldLabelClass: "x",
-		labelInlineGap: "x",
 		rowSpacing: "x",
+		labelGutterWidth: "x",
+		rowMinHeight: "x",
+		tabClass: "x",
+		inputClass: "x",
+		subtitleClass: "x",
 	};
 	for (const key of requiredTokenKeys) {
 		assert.ok(key in sample, `token shape must include ${key}`);
