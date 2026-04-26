@@ -385,6 +385,12 @@ export {
 	type PhotonComponentSwitchableOption,
 } from "./helpers/component-definition";
 export {
+	collectPhotonProfileSeedSiteSettings,
+	mergePhotonProfileSeedIntoSiteSettings,
+	type PhotonProfileSeedInput,
+	type PhotonProfileSeedSiteSettings,
+} from "./helpers/profile-seed";
+export {
 	PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY,
 	PHOTON_COMPONENT_REFERENCE_MODULE,
 	PHOTON_COMPONENT_REFERENCE_TYPE,
