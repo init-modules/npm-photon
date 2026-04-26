@@ -3,6 +3,7 @@
 import { usePhotonStore } from "../../context/photon-context";
 import { usePhotonI18n } from "../../i18n/photon-i18n-context";
 import type { PhotonBlock } from "../../types";
+import { PhotonInspectorSection } from "./inspector-section";
 
 type BlockPreviewScenariosPickerProps = {
 	block: PhotonBlock;
@@ -50,25 +51,33 @@ export const BlockPreviewScenariosPicker = ({
 	];
 
 	return (
-		<section
-			className="rounded-[24px] border px-4 py-4"
-			style={{
-				borderColor: "var(--photon-builder-border)",
-				background: "var(--photon-builder-panel-muted)",
-			}}
-			data-testid="photon-block-preview-scenarios-picker"
+		<PhotonInspectorSection
+			id="block-preview-scenarios"
+			title={translate(
+				"photon.studio.blockPreviewScenarios.title",
+				"Preview state",
+			)}
+			defaultCollapsed={previewScenarioId === null}
+			trailing={
+				<span
+					className="rounded-sm border px-1 font-mono text-[9px] tabular-nums"
+					style={{
+						borderColor: "var(--photon-builder-border)",
+						color: "var(--photon-builder-text-soft)",
+					}}
+				>
+					{items.length}
+				</span>
+			}
 		>
 			<div
-				className="text-[11px] uppercase tracking-[0.28em]"
-				style={{ color: "var(--photon-builder-text-soft)" }}
+				className="flex flex-wrap gap-1"
+				data-testid="photon-block-preview-scenarios-picker"
 			>
-				{translate("photon.studio.blockPreviewScenarios.title", "Preview state")}
-			</div>
-			<div className="mt-3 flex flex-wrap gap-2">
 				<button
 					type="button"
 					onClick={() => setBlockPreviewScenario(block.id, null)}
-					className="rounded-full border px-3 py-1 text-xs"
+					className="rounded-sm border px-1.5 py-0.5 text-[10.5px]"
 					style={{
 						borderColor: previewScenarioId
 							? "var(--photon-builder-border)"
@@ -91,7 +100,7 @@ export const BlockPreviewScenariosPicker = ({
 							key={`${item.group}:${item.id}`}
 							type="button"
 							onClick={() => setBlockPreviewScenario(block.id, item.id)}
-							className="rounded-full border px-3 py-1 text-xs"
+							className="rounded-sm border px-1.5 py-0.5 text-[10.5px]"
 							style={{
 								borderColor: isActive
 									? "var(--photon-builder-border-strong)"
@@ -111,13 +120,17 @@ export const BlockPreviewScenariosPicker = ({
 									className="ml-1 text-[9px] uppercase tracking-wider opacity-60"
 									aria-hidden="true"
 								>
-									·{translate("photon.studio.blockPreviewScenarios.stateBadge", "state")}
+									·
+									{translate(
+										"photon.studio.blockPreviewScenarios.stateBadge",
+										"state",
+									)}
 								</span>
 							) : null}
 						</button>
 					);
 				})}
 			</div>
-		</section>
+		</PhotonInspectorSection>
 	);
 };

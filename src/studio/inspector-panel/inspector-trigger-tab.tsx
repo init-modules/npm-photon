@@ -170,50 +170,56 @@ export const InspectorTriggerTab = ({
 		updateSiteSettingValue(interactionSettingPath("canvasStageOverrides"), rest);
 	};
 
+	const hasOverrides =
+		(currentBinding.overrides &&
+			Object.keys(currentBinding.overrides).length > 0) ||
+		(canvasStageOverrides[slot.id] &&
+			Object.values(canvasStageOverrides[slot.id]).some(
+				(s) => Object.keys(s).length > 0,
+			));
+
 	return (
 		<div
-			className="space-y-4"
+			className="space-y-1.5"
 			data-testid={`photon-inspector-trigger-${slot.id}`}
 		>
 			<header
-				className="rounded-[20px] border px-4 py-3"
+				className="rounded-md border px-2 py-1.5"
 				style={{
 					borderColor: "var(--photon-builder-border)",
 					background: "var(--photon-builder-panel-muted)",
 				}}
 			>
 				<div
-					className="text-[10px] uppercase tracking-[0.22em]"
+					className="text-[10px] font-semibold uppercase tracking-[0.16em]"
 					style={{ color: "var(--photon-builder-text-soft)" }}
 				>
 					Trigger · {block.id}
 				</div>
 				<div
-					className="mt-1 text-sm font-semibold"
+					className="mt-0.5 text-[12px] font-semibold leading-tight"
 					style={{ color: "var(--photon-builder-text)" }}
 				>
 					{slot.label}
 				</div>
 				{slot.description ? (
 					<p
-						className="mt-1 text-xs leading-5"
+						className="mt-0.5 text-[10.5px] leading-snug"
 						style={{ color: "var(--photon-builder-text-muted)" }}
 					>
 						{slot.description}
 					</p>
 				) : null}
-				<p
-					className="mt-2 text-[11px] leading-5"
-					style={{ color: "var(--photon-builder-text-soft)" }}
-				>
-					Visual editing happens on the canvas. This panel is for action
-					selection, policies and overrides reset.
-				</p>
 			</header>
 
 			{actionInstanceOptions.length ? (
-				<label className="grid gap-2 text-xs font-semibold">
-					Action
+				<div className="flex min-h-[24px] items-center gap-2 px-1">
+					<div
+						className="min-w-[112px] max-w-[112px] truncate text-[11px] font-medium leading-tight"
+						style={{ color: "var(--photon-builder-text)" }}
+					>
+						Action
+					</div>
 					<select
 						value={
 							currentBinding.actionInstanceId ?? slot.actionInstanceId ?? ""
@@ -225,10 +231,9 @@ export const InspectorTriggerTab = ({
 								actionInstanceId: event.currentTarget.value || undefined,
 							})
 						}
-						className="h-10 rounded-[14px] border px-3 text-sm outline-none"
+						className="h-6 min-w-0 flex-1 rounded-sm border bg-[color:var(--photon-builder-field)] px-1.5 text-[11px] outline-none focus:border-[color:var(--photon-builder-border-strong)]"
 						style={{
 							borderColor: "var(--photon-builder-border)",
-							background: "var(--photon-builder-panel-solid)",
 							color: "var(--photon-builder-text)",
 						}}
 					>
@@ -239,14 +244,14 @@ export const InspectorTriggerTab = ({
 							</option>
 						))}
 					</select>
-				</label>
+				</div>
 			) : null}
 
 			<TriggerActionFlow slot={slot} />
 
 			{policiesForAction.length ? (
 				<details
-					className="rounded-2xl border px-3 py-2"
+					className="rounded-md border px-1.5 py-1"
 					style={{
 						borderColor: "var(--photon-builder-border)",
 						background: "var(--photon-builder-panel-solid)",
@@ -254,12 +259,12 @@ export const InspectorTriggerTab = ({
 					data-testid="photon-trigger-policy-debug"
 				>
 					<summary
-						className="cursor-pointer text-[10px] uppercase tracking-[0.22em]"
+						className="cursor-pointer text-[10px] font-semibold uppercase tracking-[0.16em]"
 						style={{ color: "var(--photon-builder-text-soft)" }}
 					>
-						Raw policies (debug)
+						Raw policies (debug · {policiesForAction.length})
 					</summary>
-					<div className="mt-2 space-y-2">
+					<div className="mt-1 space-y-1">
 						{policiesForAction.map((policy) => (
 							<PolicyRow key={policy.id} policy={policy} />
 						))}
@@ -267,11 +272,7 @@ export const InspectorTriggerTab = ({
 				</details>
 			) : null}
 
-			{(currentBinding.overrides && Object.keys(currentBinding.overrides).length > 0) ||
-			(canvasStageOverrides[slot.id] &&
-				Object.values(canvasStageOverrides[slot.id]).some(
-					(s) => Object.keys(s).length > 0,
-				)) ? (
+			{hasOverrides ? (
 				<button
 					type="button"
 					onClick={() => {
@@ -282,7 +283,7 @@ export const InspectorTriggerTab = ({
 						});
 						clearCanvasStageOverrides();
 					}}
-					className="inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold"
+					className="inline-flex h-6 cursor-pointer items-center gap-1 rounded-sm border px-2 text-[10.5px] font-semibold"
 					style={{
 						borderColor: "var(--photon-builder-border)",
 						color: "var(--photon-builder-text-muted)",
