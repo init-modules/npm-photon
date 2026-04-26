@@ -5,6 +5,7 @@ export * from "./helpers/site-data";
 export * from "./helpers/route-context";
 export * from "./helpers/link-url";
 export * from "./helpers/component-library";
+export * from "./helpers/profile-seed";
 export * from "./helpers/interactions";
 export * from "./helpers/interaction-surfaces";
 export * from "./helpers/site-design";
