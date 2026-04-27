@@ -9573,6 +9573,11 @@ var PhotonInspectorSection = ({
     {
       className: clsx16("overflow-hidden", tokens.sectionRadius),
       style: {
+        // The body has no chamber bg of its own — section identity comes
+        // from the header band alone, exactly the way Unreal's Details
+        // panel does it. The body sits on the panel's own tone via the
+        // panel-solid wrap so consecutive sections still read as
+        // chambered, but the visual weight is carried by the header.
         background: "var(--photon-builder-panel-solid)"
       },
       "data-testid": `photon-inspector-section-${id}`,
@@ -9590,13 +9595,12 @@ var PhotonInspectorSection = ({
             "aria-expanded": isExpanded,
             "data-testid": `photon-inspector-section-header-${id}`,
             style: {
-              // Darker tone band on the header — Unreal Details panel uses
-              // the same trick to make sections immediately readable: the
-              // header sits a step deeper than the body, then a 1px hairline
-              // separates the two so the body content reads as "inside" the
-              // chamber.
-              background: "var(--photon-builder-shell-strong)",
-              boxShadow: isExpanded ? "inset 0 -1px 0 0 color-mix(in srgb, var(--photon-builder-border) 50%, transparent)" : void 0
+              // Pronounced darker band — `field` is the deepest standard
+              // inspector tone and matches Unreal's section-header strip.
+              // `box-shadow` paints a hairline separator under the header
+              // when expanded so the band reads as "above" the body.
+              background: "var(--photon-builder-field)",
+              boxShadow: isExpanded ? "inset 0 -1px 0 0 color-mix(in srgb, var(--photon-builder-border) 60%, transparent)" : void 0
             },
             children: [
               nonCollapsible ? null : isExpanded ? /* @__PURE__ */ jsx47(
