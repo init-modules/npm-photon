@@ -2185,8 +2185,8 @@ var FieldEditorImpl = ({
       }
     );
   }
-  const isFlatMediaField = field.kind === "image" || field.kind === "gallery";
-  if (isFlatMediaField) {
+  const isFlatField = field.kind === "image" || field.kind === "gallery" || field.kind === "textarea" || field.kind === "rich-text" || field.kind === "tags";
+  if (isFlatField) {
     return /* @__PURE__ */ jsxs8("div", { className: "flex flex-col gap-1 px-1 py-1", "data-photon-density-row": true, children: [
       /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-1.5", children: [
         /* @__PURE__ */ jsx13(

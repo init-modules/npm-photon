@@ -14,7 +14,7 @@ import {
   PhotonBlockRenderer,
   PhotonFieldEditorList,
   PhotonStudio
-} from "./chunk-FVCVIY4E.js";
+} from "./chunk-TXPWOERA.js";
 import {
   PhotonRichTextEditor,
   photonRichTextContentClassName,

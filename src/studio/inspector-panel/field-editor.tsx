@@ -819,13 +819,18 @@ const FieldEditorImpl = ({
 		);
 	}
 
-	// Visual media kinds (image, gallery) are flat fields, not sub-sections.
-	// Rendering their own dark caret-header band creates a "Logo image"
-	// section inside an auto-section like "Brand" — visually splitting
-	// what should read as a single list of Brand fields.
-	const isFlatMediaField = field.kind === "image" || field.kind === "gallery";
+	// Flat fields (image, gallery, textarea, rich-text, tags) render without
+	// section chrome. A single textarea/rich-text field does not need a
+	// collapsible section with dark header; it should render flat like image/gallery
+	// do — label + control on separate rows, no caret-folding.
+	const isFlatField =
+		field.kind === "image" ||
+		field.kind === "gallery" ||
+		field.kind === "textarea" ||
+		field.kind === "rich-text" ||
+		field.kind === "tags";
 
-	if (isFlatMediaField) {
+	if (isFlatField) {
 		return (
 			<div className="flex flex-col gap-1 px-1 py-1" data-photon-density-row>
 				<div className="flex items-center gap-1.5">
