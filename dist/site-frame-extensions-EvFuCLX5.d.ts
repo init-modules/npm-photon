@@ -1,4 +1,4 @@
-import { P as PhotonSiteFrameExtension, a as PhotonSiteFrameExtensionContext, b as PhotonSiteFrameFooterSlots, c as PhotonSiteFrameHeaderSlots, d as PhotonAccountTabExtension } from './types-B49fMVug.js';
+import { ag as PhotonSiteFrameExtension, ah as PhotonSiteFrameExtensionContext, ai as PhotonSiteFrameFooterSlots, aj as PhotonSiteFrameHeaderSlots, ak as PhotonAccountTabExtension } from './types-1-bZpAzJ.js';
 
 declare const createPhotonSiteFrameExtension: (extension: PhotonSiteFrameExtension) => PhotonSiteFrameExtension;
 declare const createPhotonAccountTabExtension: (tab: PhotonAccountTabExtension) => PhotonAccountTabExtension;

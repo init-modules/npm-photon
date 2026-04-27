@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react';
-import { e as PhotonSurfaceMode } from './types-B49fMVug.js';
+import { al as PhotonSurfaceMode } from './types-1-bZpAzJ.js';
 
 declare const getPhotonSurfaceModeStyle: (mode: PhotonSurfaceMode) => CSSProperties | undefined;
 

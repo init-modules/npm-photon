@@ -116,7 +116,7 @@ var PhotonBlockRenderer = ({
 // src/studio/inspector-panel/field-editor.tsx
 import clsx4 from "clsx";
 import { ArrowDown as ArrowDown2, ArrowUp as ArrowUp2, ChevronDown, Plus as Plus2, Trash2 as Trash22 } from "lucide-react";
-import { useEffect as useEffect2, useState as useState7 } from "react";
+import { memo, useEffect as useEffect2, useState as useState6 } from "react";
 
 // src/components/ui/dropdown-menu/index.ts
 import {
@@ -193,50 +193,34 @@ DropdownMenuRadioItem.displayName = DropdownMenuPrimitive2.RadioItem.displayName
 // src/studio/inspector-panel/inspector-density-context.tsx
 import {
   createContext,
-  useCallback,
   useContext,
-  useMemo,
-  useState
+  useMemo
 } from "react";
 import { jsx as jsx4 } from "react/jsx-runtime";
-var COMFORTABLE_TOKENS = {
-  rowGap: "space-y-3",
-  sectionPadding: "px-4 py-4",
-  sectionRadius: "rounded-[24px]",
-  sectionTitleClass: "text-[11px] uppercase tracking-[0.28em]",
-  fieldLabelClass: "text-sm font-semibold",
-  labelInlineGap: "gap-3",
-  rowSpacing: "mb-2"
-};
 var COMPACT_TOKENS = {
-  rowGap: "space-y-1.5",
-  sectionPadding: "px-3 py-2",
-  sectionRadius: "rounded-[14px]",
-  sectionTitleClass: "text-[10px] uppercase tracking-[0.22em]",
-  fieldLabelClass: "text-xs font-medium",
-  labelInlineGap: "gap-2",
-  rowSpacing: "mb-1"
+  rowGap: "space-y-0.5",
+  sectionPadding: "px-2 py-1.5",
+  headerPadding: "px-3 py-2",
+  sectionRadius: "rounded-md",
+  sectionHeaderClass: "text-[10px] font-semibold uppercase tracking-[0.16em] leading-tight",
+  fieldLabelClass: "text-[11px] font-medium leading-tight tabular-nums",
+  rowSpacing: "",
+  labelGutterWidth: "min-w-[112px] max-w-[112px]",
+  rowMinHeight: "min-h-[24px]",
+  tabClass: "cursor-pointer rounded px-2 py-0.5 text-[11px] font-semibold transition leading-tight",
+  inputClass: "h-6 w-full min-w-0 rounded-sm border bg-[color:var(--photon-builder-field)] px-1.5 text-[11px] leading-tight outline-none transition-[border-color] focus:border-[color:var(--photon-builder-border-strong)] tabular-nums",
+  subtitleClass: "text-[13px] font-semibold leading-tight"
 };
 var PhotonInspectorDensityContext = createContext(null);
-var tokensForDensity = (density) => density === "compact" ? COMPACT_TOKENS : COMFORTABLE_TOKENS;
 var PhotonInspectorDensityProvider = ({
-  children,
-  initialDensity = "comfortable"
+  children
 }) => {
-  const [density, setDensity] = useState(initialDensity);
-  const toggleDensity = useCallback(() => {
-    setDensity(
-      (current) => current === "compact" ? "comfortable" : "compact"
-    );
-  }, []);
   const value = useMemo(
     () => ({
-      density,
-      tokens: tokensForDensity(density),
-      setDensity,
-      toggleDensity
+      density: "compact",
+      tokens: COMPACT_TOKENS
     }),
-    [density, toggleDensity]
+    []
   );
   return /* @__PURE__ */ jsx4(PhotonInspectorDensityContext.Provider, { value, children });
 };
@@ -246,18 +230,14 @@ var usePhotonInspectorDensity = () => {
     return context;
   }
   return {
-    density: "comfortable",
-    tokens: COMFORTABLE_TOKENS,
-    setDensity: () => {
-    },
-    toggleDensity: () => {
-    }
+    density: "compact",
+    tokens: COMPACT_TOKENS
   };
 };
 
 // src/forms/form-fields-editor.tsx
 import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
-import { useState as useState2 } from "react";
+import { useState } from "react";
 
 // src/studio/shared/constants.ts
 import {
@@ -510,7 +490,7 @@ var PhotonFormFieldsEditor = ({
   onFocus
 }) => {
   const fields = normalizeFields(value);
-  const [expandedFieldId, setExpandedFieldId] = useState2(
+  const [expandedFieldId, setExpandedFieldId] = useState(
     fields[0]?.id ?? null
   );
   const emit = (nextFields) => {
@@ -840,7 +820,7 @@ var PhotonFormFieldsEditor = ({
 
 // src/studio/inspector-panel/gallery-field-editor.tsx
 import clsx3 from "clsx";
-import { useState as useState3 } from "react";
+import { useState as useState2 } from "react";
 import { toast } from "sonner";
 import { jsx as jsx9, jsxs as jsxs4 } from "react/jsx-runtime";
 var GalleryFieldEditor = ({
@@ -852,7 +832,7 @@ var GalleryFieldEditor = ({
   onApply,
   onUpload
 }) => {
-  const [isUploading, setIsUploading] = useState3(false);
+  const [isUploading, setIsUploading] = useState2(false);
   const items = Array.isArray(value) ? value : [];
   const updateItems = (nextItems) => {
     onApply(nextItems);
@@ -1086,7 +1066,7 @@ var GalleryFieldEditor = ({
 };
 
 // src/studio/inspector-panel/image-field-editor.tsx
-import { useState as useState4 } from "react";
+import { useState as useState3 } from "react";
 import { toast as toast2 } from "sonner";
 
 // src/studio/inspector-panel/shared.ts
@@ -1111,7 +1091,7 @@ var ImageFieldEditor = ({
   onApply,
   onUpload
 }) => {
-  const [isUploading, setIsUploading] = useState4(false);
+  const [isUploading, setIsUploading] = useState3(false);
   const source = resolvePhotonMediaPreviewUrl(value);
   const mediaValue = isPhotonMediaValue(value) ? value : null;
   return /* @__PURE__ */ jsxs5("div", { className: "space-y-3", children: [
@@ -1256,7 +1236,7 @@ var ImageFieldEditor = ({
 
 // src/studio/inspector-panel/json-field-editor.tsx
 import { WandSparkles } from "lucide-react";
-import { useEffect, useState as useState5 } from "react";
+import { useEffect, useState as useState4 } from "react";
 import { jsx as jsx11, jsxs as jsxs6 } from "react/jsx-runtime";
 var JsonFieldEditor = ({
   blockId,
@@ -1265,8 +1245,8 @@ var JsonFieldEditor = ({
   onApply,
   onFocus
 }) => {
-  const [draft, setDraft] = useState5(JSON.stringify(initialValue, null, 2));
-  const [error, setError] = useState5(null);
+  const [draft, setDraft] = useState4(JSON.stringify(initialValue, null, 2));
+  const [error, setError] = useState4(null);
   const testIdSuffix = path.replace(/[^a-zA-Z0-9_-]+/g, "-");
   useEffect(() => {
     setDraft(JSON.stringify(initialValue, null, 2));
@@ -1332,7 +1312,7 @@ var JsonFieldEditor = ({
 };
 
 // src/studio/inspector-panel/site-data-binding-picker.tsx
-import { useMemo as useMemo2, useState as useState6 } from "react";
+import { useMemo as useMemo2, useState as useState5 } from "react";
 import { jsx as jsx12, jsxs as jsxs7 } from "react/jsx-runtime";
 var buttonStyle = {
   borderColor: "var(--photon-builder-border)",
@@ -1349,7 +1329,7 @@ var subtleStyle = {
   color: "var(--photon-builder-text-muted)"
 };
 var SiteDataBindingPicker = (props) => {
-  const { onPick, label } = props;
+  const { onPick, label, compact } = props;
   const mode = props.mode ?? "string";
   const siteData = usePhotonSiteData();
   const routeContextFields = usePhotonStore(
@@ -1362,8 +1342,8 @@ var SiteDataBindingPicker = (props) => {
     ),
     [registry]
   );
-  const [isOpen, setIsOpen] = useState6(false);
-  const [pendingPick, setPendingPick] = useState6(null);
+  const [isOpen, setIsOpen] = useState5(false);
+  const [pendingPick, setPendingPick] = useState5(null);
   if (siteData.schemas.length === 0 && routeContextFields.length === 0) {
     return null;
   }
@@ -1392,19 +1372,17 @@ var SiteDataBindingPicker = (props) => {
     setIsOpen(false);
   };
   return /* @__PURE__ */ jsxs7("div", { className: "relative inline-flex", children: [
-    /* @__PURE__ */ jsxs7(
+    /* @__PURE__ */ jsx12(
       "button",
       {
         type: "button",
         onClick: () => setIsOpen((prev) => !prev),
-        className: "cursor-pointer rounded-full border px-3 py-1 text-xs font-semibold",
+        className: compact ? "inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm border text-[10px] font-semibold leading-none" : "cursor-pointer rounded-sm border px-1.5 py-0.5 text-[10.5px] font-semibold leading-tight",
         style: buttonStyle,
         "data-testid": mode === "field" ? "photon-bind-to-field-button" : "photon-bind-to-data-button",
         "aria-expanded": isOpen,
-        children: [
-          "\u{1F517} ",
-          label ?? "Bind to data"
-        ]
+        title: label ?? "Bind to data",
+        children: compact ? "\u{1F517}" : `\u{1F517} ${label ?? "Bind to data"}`
       }
     ),
     isOpen && pendingPick ? /* @__PURE__ */ jsxs7(
@@ -1519,7 +1497,7 @@ var SiteDataBindingPicker = (props) => {
 };
 
 // src/studio/inspector-panel/field-editor.tsx
-import { Fragment, jsx as jsx13, jsxs as jsxs8 } from "react/jsx-runtime";
+import { jsx as jsx13, jsxs as jsxs8 } from "react/jsx-runtime";
 var joinFieldPath = (parentPath, childPath) => {
   if (!childPath) {
     return parentPath;
@@ -1574,7 +1552,7 @@ var SelectFieldEditor = ({
   onFocus
 }) => {
   const { translate } = usePhotonI18n();
-  const [hasMounted, setHasMounted] = useState7(false);
+  const [hasMounted, setHasMounted] = useState6(false);
   const selectedValue = String(value ?? "");
   const activeOption = (field.options ?? []).find((option) => option.value === selectedValue) ?? null;
   const trigger = /* @__PURE__ */ jsxs8(
@@ -1832,7 +1810,15 @@ var RepeaterFieldEditor = ({
     )
   ] });
 };
-var FieldEditor = ({
+var INLINE_FIELD_KINDS = /* @__PURE__ */ new Set([
+  "text",
+  "url",
+  "color",
+  "number",
+  "select",
+  "toggle"
+]);
+var FieldEditorImpl = ({
   field,
   blockId,
   value,
@@ -1850,247 +1836,215 @@ var FieldEditor = ({
   const { translate } = usePhotonI18n();
   const { tokens } = usePhotonInspectorDensity();
   const path = absolutePath ?? field.path ?? "";
-  return /* @__PURE__ */ jsxs8("div", { "data-photon-density-row": true, children: [
-    /* @__PURE__ */ jsxs8(
-      "div",
-      {
-        className: clsx4(
-          tokens.rowSpacing,
-          "flex items-center justify-between",
-          tokens.labelInlineGap
-        ),
-        children: [
-          /* @__PURE__ */ jsx13(
-            "div",
-            {
-              className: tokens.fieldLabelClass,
-              style: { color: "var(--photon-builder-text)" },
-              children: translate(
-                field.labelKey ?? field.label ?? "Field",
-                field.label ?? "Field"
-              )
-            }
-          ),
-          path && !hidePathLabel ? /* @__PURE__ */ jsx13(
-            "button",
-            {
-              type: "button",
-              onClick: () => onFocus(path),
-              className: "cursor-pointer font-mono text-[10px] uppercase tracking-[0.24em] transition",
-              style: { color: "var(--photon-builder-text-ghost)" },
-              children: path
-            }
-          ) : null
-        ]
-      }
-    ),
-    path ? /* @__PURE__ */ jsx13(
-      "div",
-      {
-        className: clsx4(tokens.rowSpacing, "flex items-center gap-2"),
-        "data-testid": `photon-field-binding-row-${path}`,
-        children: fieldBinding ? /* @__PURE__ */ jsxs8(Fragment, { children: [
-          /* @__PURE__ */ jsxs8(
+  const isInline = INLINE_FIELD_KINDS.has(field.kind);
+  const labelText = translate(
+    field.labelKey ?? field.label ?? "Field",
+    field.label ?? "Field"
+  );
+  const labelNode = /* @__PURE__ */ jsx13(
+    "div",
+    {
+      className: clsx4(
+        tokens.fieldLabelClass,
+        isInline ? clsx4(tokens.labelGutterWidth, "truncate") : null
+      ),
+      style: { color: "var(--photon-builder-text)" },
+      title: labelText,
+      children: labelText
+    }
+  );
+  const bindingPill = path && fieldBinding ? /* @__PURE__ */ jsxs8(
+    "button",
+    {
+      type: "button",
+      onClick: () => setFieldBinding(blockId, path, null),
+      className: "inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-sm border px-1 font-mono text-[10px] leading-tight",
+      style: {
+        borderColor: "var(--photon-builder-border-strong)",
+        background: "var(--photon-builder-accent-strong)",
+        color: "var(--photon-builder-accent)"
+      },
+      "data-testid": `photon-field-binding-pill-${path}`,
+      title: "Unbind",
+      children: [
+        /* @__PURE__ */ jsxs8("span", { children: [
+          fieldBinding.source,
+          ":",
+          fieldBinding.path,
+          fieldBinding.adapter ? /* @__PURE__ */ jsxs8(
             "span",
             {
-              className: "rounded-full border px-2 py-0.5 font-mono text-[10px]",
-              style: {
-                borderColor: "var(--photon-builder-border-strong)",
-                background: "var(--photon-builder-accent-strong)",
-                color: "var(--photon-builder-accent)"
-              },
-              "data-testid": `photon-field-binding-pill-${path}`,
+              className: "ml-1 opacity-70",
+              "data-testid": `photon-field-binding-adapter-${path}`,
               children: [
-                "\u{1F517} ",
-                fieldBinding.source,
-                ":",
-                fieldBinding.path,
-                fieldBinding.adapter ? /* @__PURE__ */ jsxs8(
-                  "span",
-                  {
-                    className: "ml-1 opacity-70",
-                    "data-testid": `photon-field-binding-adapter-${path}`,
-                    children: [
-                      "via ",
-                      fieldBinding.adapter
-                    ]
-                  }
-                ) : null
+                "\xB7",
+                fieldBinding.adapter
               ]
             }
-          ),
-          /* @__PURE__ */ jsx13(
-            "button",
-            {
-              type: "button",
-              onClick: () => setFieldBinding(blockId, path, null),
-              className: "cursor-pointer rounded-full border px-2 py-0.5 text-[10px]",
-              style: {
-                borderColor: "var(--photon-builder-border)",
-                color: "var(--photon-builder-text-soft)"
-              },
-              "data-testid": `photon-field-binding-unbind-${path}`,
-              children: "\xD7 Unbind"
-            }
-          )
-        ] }) : /* @__PURE__ */ jsx13(
+          ) : null
+        ] }),
+        /* @__PURE__ */ jsx13("span", { "data-testid": `photon-field-binding-unbind-${path}`, children: "\xD7" })
+      ]
+    }
+  ) : null;
+  const renderControl = () => {
+    if (field.kind === "textarea") {
+      return /* @__PURE__ */ jsxs8("div", { className: "flex flex-col gap-1", children: [
+        /* @__PURE__ */ jsx13(
+          "textarea",
+          {
+            rows: 4,
+            value: String(value ?? ""),
+            onFocus: () => onFocus(path),
+            onChange: (event) => onChange(event.currentTarget.value),
+            className: inputClassName
+          }
+        ),
+        /* @__PURE__ */ jsx13(
           SiteDataBindingPicker,
           {
-            mode: "field",
-            label: "Bind field",
-            onPick: (binding) => setFieldBinding(blockId, path, binding)
+            onPick: (binding) => onChange(`${String(value ?? "")}${binding}`)
           }
         )
-      }
-    ) : null,
-    field.description ? /* @__PURE__ */ jsx13(
-      "div",
-      {
-        className: "mb-2 text-xs leading-5",
-        style: { color: "var(--photon-builder-text-soft)" },
-        children: translate(
-          field.descriptionKey ?? field.description ?? "",
-          field.description
+      ] });
+    }
+    if (field.kind === "rich-text") {
+      return /* @__PURE__ */ jsxs8("div", { className: "flex flex-col gap-1", children: [
+        /* @__PURE__ */ jsx13(
+          PhotonRichTextEditor,
+          {
+            value: String(value ?? ""),
+            onFocus: () => onFocus(path),
+            onChange,
+            className: "text-[12px] text-[color:var(--photon-builder-text)]",
+            surfaceClassName: "border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)]"
+          }
+        ),
+        /* @__PURE__ */ jsx13(
+          SiteDataBindingPicker,
+          {
+            onPick: (binding) => onChange(`${String(value ?? "")}${binding}`)
+          }
         )
-      }
-    ) : null,
-    field.kind === "textarea" ? /* @__PURE__ */ jsxs8("div", { className: "flex flex-col gap-2", children: [
-      /* @__PURE__ */ jsx13(
-        "textarea",
+      ] });
+    }
+    if (field.kind === "json") {
+      return /* @__PURE__ */ jsx13(
+        JsonFieldEditor,
         {
-          rows: 5,
-          value: String(value ?? ""),
+          blockId,
+          path,
+          initialValue: value,
           onFocus: () => onFocus(path),
-          onChange: (event) => onChange(event.currentTarget.value),
-          className: inputClassName
+          onApply: onChange
         }
-      ),
-      /* @__PURE__ */ jsx13(
-        SiteDataBindingPicker,
+      );
+    }
+    if (field.kind === "object") {
+      return /* @__PURE__ */ jsx13(
+        ObjectFieldEditor,
         {
-          onPick: (binding) => onChange(`${String(value ?? "")}${binding}`)
-        }
-      )
-    ] }) : null,
-    field.kind === "rich-text" ? /* @__PURE__ */ jsxs8("div", { className: "flex flex-col gap-2", children: [
-      /* @__PURE__ */ jsx13(
-        PhotonRichTextEditor,
-        {
-          value: String(value ?? ""),
-          onFocus: () => onFocus(path),
+          field,
+          blockId,
+          value,
+          onFocus,
           onChange,
-          className: "text-sm text-[color:var(--photon-builder-text)]",
-          surfaceClassName: "border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)]"
+          absolutePath: path
         }
-      ),
-      /* @__PURE__ */ jsx13(
-        SiteDataBindingPicker,
+      );
+    }
+    if (field.kind === "repeater") {
+      return /* @__PURE__ */ jsx13(
+        RepeaterFieldEditor,
         {
-          onPick: (binding) => onChange(`${String(value ?? "")}${binding}`)
+          field,
+          blockId,
+          value,
+          onFocus,
+          onChange,
+          absolutePath: path
         }
-      )
-    ] }) : null,
-    field.kind === "json" ? /* @__PURE__ */ jsx13(
-      JsonFieldEditor,
-      {
-        blockId,
-        path,
-        initialValue: value,
-        onFocus: () => onFocus(path),
-        onApply: onChange
-      }
-    ) : null,
-    field.kind === "object" ? /* @__PURE__ */ jsx13(
-      ObjectFieldEditor,
-      {
-        field,
-        blockId,
-        value,
-        onFocus,
-        onChange,
-        absolutePath: path
-      }
-    ) : null,
-    field.kind === "repeater" ? /* @__PURE__ */ jsx13(
-      RepeaterFieldEditor,
-      {
-        field,
-        blockId,
-        value,
-        onFocus,
-        onChange,
-        absolutePath: path
-      }
-    ) : null,
-    field.kind === "form-fields" ? /* @__PURE__ */ jsx13(
-      PhotonFormFieldsEditor,
-      {
-        value,
-        onChange,
-        onFocus: (path2) => onFocus(joinFieldPath(absolutePath ?? "", path2)),
-        absolutePath: path
-      }
-    ) : null,
-    field.kind === "select" ? /* @__PURE__ */ jsx13(
-      SelectFieldEditor,
-      {
-        field,
-        value,
-        onChange,
-        onFocus
-      }
-    ) : null,
-    field.kind === "toggle" ? /* @__PURE__ */ jsxs8("label", { className: "inline-flex cursor-pointer items-center gap-3 rounded-2xl border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] px-4 py-3 text-sm text-[color:var(--photon-builder-text)]", children: [
-      /* @__PURE__ */ jsx13(
+      );
+    }
+    if (field.kind === "form-fields") {
+      return /* @__PURE__ */ jsx13(
+        PhotonFormFieldsEditor,
+        {
+          value,
+          onChange,
+          onFocus: (p) => onFocus(joinFieldPath(absolutePath ?? "", p)),
+          absolutePath: path
+        }
+      );
+    }
+    if (field.kind === "select") {
+      return /* @__PURE__ */ jsx13(
+        SelectFieldEditor,
+        {
+          field,
+          value,
+          onChange,
+          onFocus
+        }
+      );
+    }
+    if (field.kind === "toggle") {
+      return /* @__PURE__ */ jsx13(
         "input",
         {
           type: "checkbox",
           checked: Boolean(value),
           onFocus: () => onFocus(path),
-          onChange: (event) => onChange(event.currentTarget.checked)
+          onChange: (event) => onChange(event.currentTarget.checked),
+          className: "h-3.5 w-3.5 cursor-pointer accent-[color:var(--photon-builder-accent)]"
         }
-      ),
-      "Enable value"
-    ] }) : null,
-    field.kind === "tags" ? /* @__PURE__ */ jsx13(
-      "textarea",
-      {
-        rows: 4,
-        value: Array.isArray(value) ? value.map((item) => String(item).trim()).filter(Boolean).join(", ") : "",
-        onFocus: () => onFocus(path),
-        onChange: (event) => onChange(
-          event.currentTarget.value.split(/[\n,]/).map((item) => item.trim()).filter(Boolean)
-        ),
-        placeholder: "keyword one, keyword two",
-        className: inputClassName
-      }
-    ) : null,
-    field.kind === "image" ? /* @__PURE__ */ jsx13(
-      ImageFieldEditor,
-      {
-        blockId,
-        path,
-        documentId,
-        value,
-        onFocus: () => onFocus(path),
-        onApply: onChange,
-        onUpload: uploadMedia
-      }
-    ) : null,
-    field.kind === "gallery" ? /* @__PURE__ */ jsx13(
-      GalleryFieldEditor,
-      {
-        blockId,
-        path,
-        documentId,
-        value,
-        onFocus: () => onFocus(path),
-        onApply: onChange,
-        onUpload: uploadMedia
-      }
-    ) : null,
-    ["text", "url", "color"].includes(field.kind) ? /* @__PURE__ */ jsxs8("div", { className: "flex flex-col gap-2", children: [
-      /* @__PURE__ */ jsx13(
+      );
+    }
+    if (field.kind === "tags") {
+      return /* @__PURE__ */ jsx13(
+        "textarea",
+        {
+          rows: 3,
+          value: Array.isArray(value) ? value.map((item) => String(item).trim()).filter(Boolean).join(", ") : "",
+          onFocus: () => onFocus(path),
+          onChange: (event) => onChange(
+            event.currentTarget.value.split(/[\n,]/).map((item) => item.trim()).filter(Boolean)
+          ),
+          placeholder: "keyword one, keyword two",
+          className: inputClassName
+        }
+      );
+    }
+    if (field.kind === "image") {
+      return /* @__PURE__ */ jsx13(
+        ImageFieldEditor,
+        {
+          blockId,
+          path,
+          documentId,
+          value,
+          onFocus: () => onFocus(path),
+          onApply: onChange,
+          onUpload: uploadMedia
+        }
+      );
+    }
+    if (field.kind === "gallery") {
+      return /* @__PURE__ */ jsx13(
+        GalleryFieldEditor,
+        {
+          blockId,
+          path,
+          documentId,
+          value,
+          onFocus: () => onFocus(path),
+          onApply: onChange,
+          onUpload: uploadMedia
+        }
+      );
+    }
+    if (["text", "url", "color"].includes(field.kind)) {
+      return /* @__PURE__ */ jsx13(
         "input",
         {
           type: field.kind === "color" ? "color" : field.kind === "url" ? "url" : "text",
@@ -2098,33 +2052,117 @@ var FieldEditor = ({
           onFocus: () => onFocus(path),
           onChange: (event) => onChange(event.currentTarget.value),
           className: clsx4(
-            inputClassName,
-            field.kind === "color" && "h-14 cursor-pointer px-2 py-2"
+            tokens.inputClass,
+            field.kind === "color" && "h-6 cursor-pointer p-0"
           )
         }
-      ),
-      field.kind !== "color" ? /* @__PURE__ */ jsx13(
-        SiteDataBindingPicker,
+      );
+    }
+    if (field.kind === "number") {
+      return /* @__PURE__ */ jsx13(
+        "input",
         {
-          onPick: (binding) => onChange(`${String(value ?? "")}${binding}`)
+          type: "number",
+          value: Number(value ?? 0),
+          min: field.min,
+          max: field.max,
+          step: field.step ?? 1,
+          onFocus: () => onFocus(path),
+          onChange: (event) => onChange(Number(event.currentTarget.value)),
+          className: tokens.inputClass
+        }
+      );
+    }
+    return null;
+  };
+  const description = field.description ? /* @__PURE__ */ jsx13(
+    "div",
+    {
+      className: "text-[10.5px] leading-snug",
+      style: { color: "var(--photon-builder-text-soft)" },
+      children: translate(
+        field.descriptionKey ?? field.description ?? "",
+        field.description
+      )
+    }
+  ) : null;
+  if (isInline) {
+    return /* @__PURE__ */ jsxs8(
+      "div",
+      {
+        "data-photon-density-row": true,
+        className: clsx4(
+          tokens.rowMinHeight,
+          "flex items-center gap-2 px-1"
+        ),
+        children: [
+          labelNode,
+          /* @__PURE__ */ jsxs8("div", { className: "flex min-w-0 flex-1 items-center gap-1", children: [
+            renderControl(),
+            bindingPill,
+            path && !fieldBinding ? /* @__PURE__ */ jsx13(
+              SiteDataBindingPicker,
+              {
+                mode: "field",
+                label: "\u2197",
+                compact: true,
+                onPick: (binding) => setFieldBinding(blockId, path, binding)
+              }
+            ) : null
+          ] }),
+          path && !hidePathLabel ? /* @__PURE__ */ jsx13(
+            "button",
+            {
+              type: "button",
+              onClick: () => onFocus(path),
+              className: "shrink-0 cursor-pointer font-mono text-[9px] uppercase tracking-[0.16em] transition",
+              style: { color: "var(--photon-builder-text-ghost)" },
+              title: path,
+              children: "\u2317"
+            }
+          ) : null
+        ]
+      }
+    );
+  }
+  return /* @__PURE__ */ jsxs8("div", { "data-photon-density-row": true, className: "px-1 py-1", children: [
+    /* @__PURE__ */ jsxs8("div", { className: "mb-1 flex items-center justify-between gap-2", children: [
+      /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-1.5", children: [
+        labelNode,
+        bindingPill
+      ] }),
+      path && !hidePathLabel ? /* @__PURE__ */ jsx13(
+        "button",
+        {
+          type: "button",
+          onClick: () => onFocus(path),
+          className: "shrink-0 cursor-pointer font-mono text-[9px] uppercase tracking-[0.16em] transition",
+          style: { color: "var(--photon-builder-text-ghost)" },
+          title: path,
+          children: path
         }
       ) : null
-    ] }) : null,
-    field.kind === "number" ? /* @__PURE__ */ jsx13(
-      "input",
+    ] }),
+    description ? /* @__PURE__ */ jsx13("div", { className: "mb-1", children: description }) : null,
+    path && !fieldBinding ? /* @__PURE__ */ jsx13("div", { className: "mb-1", children: /* @__PURE__ */ jsx13(
+      SiteDataBindingPicker,
       {
-        type: "number",
-        value: Number(value ?? 0),
-        min: field.min,
-        max: field.max,
-        step: field.step ?? 1,
-        onFocus: () => onFocus(path),
-        onChange: (event) => onChange(Number(event.currentTarget.value)),
-        className: inputClassName
+        mode: "field",
+        label: "Bind field",
+        onPick: (binding) => setFieldBinding(blockId, path, binding)
       }
-    ) : null
+    ) }) : null,
+    renderControl()
   ] });
 };
+var FieldEditor = memo(FieldEditorImpl, (prev, next) => {
+  if (prev.field !== next.field) return false;
+  if (prev.blockId !== next.blockId) return false;
+  if (prev.absolutePath !== next.absolutePath) return false;
+  if (prev.hidePathLabel !== next.hidePathLabel) return false;
+  if (!Object.is(prev.value, next.value)) return false;
+  return true;
+});
 
 // src/components/photon-field-editor-list.tsx
 import { jsx as jsx14 } from "react/jsx-runtime";
@@ -2168,7 +2206,7 @@ import {
   useCallback as useCallback4,
   useDeferredValue,
   useEffect as useEffect19,
-  useRef as useRef6,
+  useRef as useRef7,
   useState as useState28
 } from "react";
 import { createPortal } from "react-dom";
@@ -2203,7 +2241,7 @@ var BlockOverlayCard = ({ block }) => {
 };
 
 // src/studio/canvas/canvas-block-item.tsx
-import { Fragment as Fragment3, memo as memo2 } from "react";
+import { Fragment as Fragment2, memo as memo3 } from "react";
 
 // src/studio/canvas/canvas-block-shell.tsx
 import { useDraggable } from "@dnd-kit/core";
@@ -2215,8 +2253,8 @@ import {
   GripVertical,
   Trash2 as Trash23
 } from "lucide-react";
-import { memo, useEffect as useEffect3, useState as useState8 } from "react";
-import { Fragment as Fragment2, jsx as jsx16, jsxs as jsxs10 } from "react/jsx-runtime";
+import { memo as memo2, useEffect as useEffect3, useState as useState7 } from "react";
+import { Fragment, jsx as jsx16, jsxs as jsxs10 } from "react/jsx-runtime";
 var CanvasBlockShellComponent = ({
   block,
   blockLabel,
@@ -2240,7 +2278,7 @@ var CanvasBlockShellComponent = ({
     },
     disabled: !builderEnabled
   });
-  const [hasMounted, setHasMounted] = useState8(false);
+  const [hasMounted, setHasMounted] = useState7(false);
   const chromeEnabled = builderEnabled || collapseControlsEnabled;
   const contentChromeOnly = collapseControlsEnabled && !builderEnabled;
   const edgeToEdgeChrome = chromeStyle === "edge-to-edge";
@@ -2251,7 +2289,7 @@ var CanvasBlockShellComponent = ({
     "border transition",
     isSelected ? "border-[color:var(--photon-builder-border-strong)] shadow-[0_0_0_1px_var(--photon-builder-accent-strong)]" : "border-[color:var(--photon-builder-border)] group-hover:border-[color:var(--photon-builder-border-strong)]"
   );
-  const chromeBadges = builderEnabled ? /* @__PURE__ */ jsxs10(Fragment2, { children: [
+  const chromeBadges = builderEnabled ? /* @__PURE__ */ jsxs10(Fragment, { children: [
     /* @__PURE__ */ jsx16(
       "div",
       {
@@ -2277,7 +2315,7 @@ var CanvasBlockShellComponent = ({
       }
     )
   ] }) : null;
-  const chromeControls = chromeEnabled ? /* @__PURE__ */ jsxs10(Fragment2, { children: [
+  const chromeControls = chromeEnabled ? /* @__PURE__ */ jsxs10(Fragment, { children: [
     /* @__PURE__ */ jsx16(
       "button",
       {
@@ -2295,7 +2333,7 @@ var CanvasBlockShellComponent = ({
         children: isCollapsed ? /* @__PURE__ */ jsx16(ChevronDown2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx16(ChevronUp, { className: "h-4 w-4" })
       }
     ),
-    builderEnabled ? /* @__PURE__ */ jsxs10(Fragment2, { children: [
+    builderEnabled ? /* @__PURE__ */ jsxs10(Fragment, { children: [
       /* @__PURE__ */ jsx16(
         "button",
         {
@@ -2430,11 +2468,11 @@ var CanvasBlockShellComponent = ({
     }
   );
 };
-var CanvasBlockShell = memo(CanvasBlockShellComponent);
+var CanvasBlockShell = memo2(CanvasBlockShellComponent);
 
 // src/studio/canvas/canvas-trigger-stage.tsx
 import { Pencil, X } from "lucide-react";
-import { useMemo as useMemo3, useState as useState9 } from "react";
+import { useMemo as useMemo3, useState as useState8 } from "react";
 import { jsx as jsx17, jsxs as jsxs11 } from "react/jsx-runtime";
 var interactionSettingPath = (suffix) => `${PHOTON_INTERACTIONS_SITE_SETTING_KEY}.${suffix}`;
 var InlineEditableText = ({
@@ -2451,8 +2489,8 @@ var InlineEditableText = ({
     "photon.studio.canvasStage.emptyValue",
     "(empty)"
   );
-  const [editing, setEditing] = useState9(false);
-  const [draft, setDraft] = useState9(value);
+  const [editing, setEditing] = useState8(false);
+  const [draft, setDraft] = useState8(value);
   if (select && options) {
     const selectedLabel = (options.find((o) => o.value === value)?.label ?? value) || emptyLabel;
     return /* @__PURE__ */ jsx17(
@@ -2472,8 +2510,9 @@ var InlineEditableText = ({
       }
     );
   }
+  const initialDraft = value || placeholder || "";
   const startEditing = () => {
-    setDraft(value);
+    setDraft(initialDraft);
     setEditing(true);
   };
   const commit = () => {
@@ -2483,7 +2522,7 @@ var InlineEditableText = ({
     }
   };
   const cancel = () => {
-    setDraft(value);
+    setDraft(initialDraft);
     setEditing(false);
   };
   if (editing) {
@@ -2594,7 +2633,7 @@ var TriggerStageSection = ({
   const canvasStageOverrides = interactionSettings.canvasStageOverrides ?? {};
   const slotCanvasOverrides = canvasStageOverrides[slot.id] ?? {};
   const scenarios = slot.previewScenarios ?? [];
-  const [scenarioId, setScenarioId] = useState9(
+  const [scenarioId, setScenarioId] = useState8(
     scenarios[0]?.id ?? "idle"
   );
   const persistOverride = (path, value) => {
@@ -3218,7 +3257,7 @@ var TriggerOverlay = ({ block }) => {
 };
 
 // src/studio/canvas/canvas-block-item.tsx
-import { Fragment as Fragment4, jsx as jsx22, jsxs as jsxs16 } from "react/jsx-runtime";
+import { Fragment as Fragment3, jsx as jsx22, jsxs as jsxs16 } from "react/jsx-runtime";
 var CanvasBlockItemComponent = ({
   block,
   index,
@@ -3250,7 +3289,7 @@ var CanvasBlockItemComponent = ({
   );
   const definition = registry.getDefinition(block.module, block.type);
   const chromeStyle = definition?.category === "Site Frame" ? "edge-to-edge" : "default";
-  return /* @__PURE__ */ jsxs16(Fragment3, { children: [
+  return /* @__PURE__ */ jsxs16(Fragment2, { children: [
     /* @__PURE__ */ jsxs16(
       CanvasBlockShell,
       {
@@ -3290,7 +3329,7 @@ var CanvasBlockItemComponent = ({
               ) })
             }
           ),
-          builderEnabled && isSelected ? /* @__PURE__ */ jsxs16(Fragment4, { children: [
+          builderEnabled && isSelected ? /* @__PURE__ */ jsxs16(Fragment3, { children: [
             /* @__PURE__ */ jsx22(CanvasBlockStateOverlay, { block }),
             /* @__PURE__ */ jsx22(TriggerOverlay, { block }),
             /* @__PURE__ */ jsx22(CanvasTriggerStage, { block })
@@ -3312,7 +3351,7 @@ var CanvasBlockItemComponent = ({
     )
   ] });
 };
-var CanvasBlockItem = memo2(CanvasBlockItemComponent);
+var CanvasBlockItem = memo3(CanvasBlockItemComponent);
 
 // src/studio/canvas/canvas-block-list.tsx
 import { jsx as jsx23, jsxs as jsxs17 } from "react/jsx-runtime";
@@ -3360,7 +3399,7 @@ var CanvasBlockList = ({
 
 // src/studio/canvas/site-surface-canvas.tsx
 import clsx7 from "clsx";
-import { memo as memo3, useEffect as useEffect4, useRef, useState as useState10 } from "react";
+import { memo as memo4, useEffect as useEffect4, useRef, useState as useState9 } from "react";
 import { jsx as jsx24, jsxs as jsxs18 } from "react/jsx-runtime";
 var SiteSurfaceRegionSection = ({
   region,
@@ -3376,7 +3415,7 @@ var SiteSurfaceRegionSection = ({
   previewEnabled
 }) => {
   const sectionRef = useRef(null);
-  const [surfaceWidth, setSurfaceWidth] = useState10(0);
+  const [surfaceWidth, setSurfaceWidth] = useState9(0);
   const blocks = getPhotonSurfaceRegionBlocks(document2, region.key) ?? [];
   const regionListId = getPhotonSurfaceRegionListId(region.key);
   const isPageRegion = region.key === PHOTON_PAGE_SURFACE_REGION_KEY;
@@ -3519,7 +3558,7 @@ var SiteSurfaceCanvasComponent = ({
     region.key
   )) });
 };
-var SiteSurfaceCanvas = memo3(SiteSurfaceCanvasComponent);
+var SiteSurfaceCanvas = memo4(SiteSurfaceCanvasComponent);
 
 // src/studio/editor-dock/editor-dock.tsx
 import clsx10 from "clsx";
@@ -3576,7 +3615,7 @@ var EditorDockBrand = ({
 
 // src/studio/editor-dock/editor-locale-select.tsx
 import { ChevronDown as ChevronDown3 } from "lucide-react";
-import { useEffect as useEffect5, useState as useState11 } from "react";
+import { useEffect as useEffect5, useState as useState10 } from "react";
 import { jsx as jsx26, jsxs as jsxs20 } from "react/jsx-runtime";
 var EditorLocaleSelect = ({
   label,
@@ -3584,7 +3623,7 @@ var EditorLocaleSelect = ({
   options,
   onChange
 }) => {
-  const [hasMounted, setHasMounted] = useState11(false);
+  const [hasMounted, setHasMounted] = useState10(false);
   const activeOption = options.find((option) => option.code === value) ?? options[0] ?? null;
   useEffect5(() => {
     setHasMounted(true);
@@ -3629,7 +3668,7 @@ var EditorLocaleSelect = ({
 
 // src/studio/editor-dock/editor-mode-select.tsx
 import { ChevronDown as ChevronDown4, Eye, PanelsTopLeft as PanelsTopLeft3, PenLine } from "lucide-react";
-import { useEffect as useEffect6, useState as useState12 } from "react";
+import { useEffect as useEffect6, useState as useState11 } from "react";
 import { jsx as jsx27, jsxs as jsxs21 } from "react/jsx-runtime";
 var MODE_OPTIONS = [
   { label: "Preview", value: "preview", icon: Eye },
@@ -3641,10 +3680,10 @@ var EditorModeSelect = ({
   onChange
 }) => {
   const activeValue = MODE_OPTIONS.find((option) => option.value === value)?.value ?? "preview";
-  const [optimisticValue, setOptimisticValue] = useState12(activeValue);
+  const [optimisticValue, setOptimisticValue] = useState11(activeValue);
   const activeOption = MODE_OPTIONS.find((option) => option.value === optimisticValue) ?? MODE_OPTIONS[0];
   const ActiveIcon = activeOption.icon;
-  const [hasMounted, setHasMounted] = useState12(false);
+  const [hasMounted, setHasMounted] = useState11(false);
   useEffect6(() => {
     setHasMounted(true);
   }, []);
@@ -3696,7 +3735,7 @@ var EditorModeSelect = ({
 // src/studio/editor-dock/editor-page-browser.tsx
 import clsx8 from "clsx";
 import { ChevronDown as ChevronDown5, FilePlus2, FolderTree } from "lucide-react";
-import { useEffect as useEffect7, useMemo as useMemo5, useState as useState13 } from "react";
+import { useEffect as useEffect7, useMemo as useMemo5, useState as useState12 } from "react";
 
 // src/i18n/photon-labels.ts
 var PALETTE_CATEGORY_KEYS = {
@@ -3727,7 +3766,7 @@ var translatePhotonFieldGroup = (group, translate) => translate(FIELD_GROUP_KEYS
 var translatePhotonPageGroup = (group, translate) => translate(PAGE_GROUP_KEYS[group] ?? group, group);
 
 // src/studio/editor-dock/editor-page-browser.tsx
-import { Fragment as Fragment5, jsx as jsx28, jsxs as jsxs22 } from "react/jsx-runtime";
+import { Fragment as Fragment4, jsx as jsx28, jsxs as jsxs22 } from "react/jsx-runtime";
 var EditorPageBrowser = ({
   activeMode,
   currentPage,
@@ -3736,12 +3775,12 @@ var EditorPageBrowser = ({
   onCreatePage
 }) => {
   const { translate } = usePhotonI18n();
-  const [menuOpen, setMenuOpen] = useState13(false);
-  const [dialogOpen, setDialogOpen] = useState13(false);
-  const [name, setName] = useState13("");
-  const [route, setRoute] = useState13("");
-  const [duplicateCurrent, setDuplicateCurrent] = useState13(false);
-  const [isSubmitting, setIsSubmitting] = useState13(false);
+  const [menuOpen, setMenuOpen] = useState12(false);
+  const [dialogOpen, setDialogOpen] = useState12(false);
+  const [name, setName] = useState12("");
+  const [route, setRoute] = useState12("");
+  const [duplicateCurrent, setDuplicateCurrent] = useState12(false);
+  const [isSubmitting, setIsSubmitting] = useState12(false);
   const groupedPages = useMemo5(() => {
     return pages.reduce(
       (groups, page) => {
@@ -3786,7 +3825,7 @@ var EditorPageBrowser = ({
     }
     window.requestAnimationFrame(() => pageMenu.focusList());
   }, [menuOpen]);
-  return /* @__PURE__ */ jsxs22(Fragment5, { children: [
+  return /* @__PURE__ */ jsxs22(Fragment4, { children: [
     /* @__PURE__ */ jsxs22(Root2, { open: menuOpen, onOpenChange: setMenuOpen, modal: false, children: [
       /* @__PURE__ */ jsx28(Trigger, { asChild: true, children: /* @__PURE__ */ jsxs22(
         "button",
@@ -4125,7 +4164,7 @@ var EditorPageBrowser = ({
 // src/studio/editor-dock/editor-save-button.tsx
 import clsx9 from "clsx";
 import { ChevronRight, History, LoaderCircle, Save } from "lucide-react";
-import { useState as useState14 } from "react";
+import { useState as useState13 } from "react";
 
 // src/components/ui/context-menu/index.ts
 import {
@@ -4276,8 +4315,6 @@ var EditorResetDialog = ({
 
 // src/studio/editor-dock/get-save-button-meta.ts
 var getSaveButtonMeta = ({
-  activeMode,
-  autosaveEnabled,
   hasUnsavedChanges,
   saveState
 }) => {
@@ -4297,40 +4334,37 @@ var getSaveButtonMeta = ({
   }
   if (hasUnsavedChanges) {
     return {
-      label: autosaveEnabled ? "Sync pending" : "Draft pending",
+      label: "Draft pending",
       className: "border-[color:var(--photon-builder-border-strong)] bg-[color:color-mix(in_srgb,var(--photon-builder-accent)_14%,var(--photon-builder-panel-solid))] text-[color:var(--photon-builder-accent-text)] hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-accent-soft)] hover:text-[color:var(--photon-builder-accent-text)]",
       dotClassName: "bg-[color:var(--photon-builder-accent)]"
     };
   }
   return {
-    label: activeMode === "builder" && autosaveEnabled ? "Builder synced" : autosaveEnabled ? "Synced" : "Saved",
+    label: "Saved",
     className: "border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] text-[color:var(--photon-builder-text-muted)] hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)]",
     dotClassName: "bg-[color:var(--photon-builder-text-soft)]"
   };
 };
 
 // src/studio/editor-dock/editor-save-button.tsx
-import { Fragment as Fragment6, jsx as jsx34, jsxs as jsxs25 } from "react/jsx-runtime";
+import { Fragment as Fragment5, jsx as jsx34, jsxs as jsxs25 } from "react/jsx-runtime";
 var EditorSaveButton = ({
   activeMode,
-  autosaveEnabled,
   hasUnsavedChanges,
   collapsedBlockCount,
   saveState,
   showCollapsedInPreview,
-  onAutosaveChange,
   onPreviewCollapsedChange,
   onReset,
   onSave
 }) => {
-  const [resetDialogOpen, setResetDialogOpen] = useState14(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState13(false);
   const meta = getSaveButtonMeta({
     activeMode,
-    autosaveEnabled,
     hasUnsavedChanges,
     saveState
   });
-  return /* @__PURE__ */ jsxs25(Fragment6, { children: [
+  return /* @__PURE__ */ jsxs25(Fragment5, { children: [
     /* @__PURE__ */ jsxs25(Root3, { children: [
       /* @__PURE__ */ jsx34(Trigger2, { asChild: true, children: /* @__PURE__ */ jsxs25(
         "button",
@@ -4359,14 +4393,6 @@ var EditorSaveButton = ({
           /* @__PURE__ */ jsx34(Save, { className: "mr-3 h-4 w-4 text-[color:var(--photon-builder-text-soft)]" }),
           "Save now"
         ] }),
-        /* @__PURE__ */ jsx34(
-          ContextMenuCheckboxItem,
-          {
-            checked: autosaveEnabled,
-            onCheckedChange: (checked) => onAutosaveChange(checked === true),
-            children: "Autosave"
-          }
-        ),
         /* @__PURE__ */ jsxs25(
           ContextMenuItem,
           {
@@ -4402,14 +4428,13 @@ var EditorSaveButton = ({
 };
 
 // src/studio/editor-dock/editor-dock.tsx
-import { Fragment as Fragment7, jsx as jsx35, jsxs as jsxs26 } from "react/jsx-runtime";
+import { Fragment as Fragment6, jsx as jsx35, jsxs as jsxs26 } from "react/jsx-runtime";
 var PHOTON_EDITOR_DOCK_FALLBACK_HEIGHT = 80;
 var EditorDock = ({
   activeMode,
   canManage,
   hasUnsavedChanges,
   collapsedBlockCount,
-  autosaveEnabled,
   saveState,
   showCollapsedInPreview,
   title,
@@ -4418,7 +4443,6 @@ var EditorDock = ({
   pages,
   onHeightChange,
   onAuthOpen,
-  onAutosaveChange,
   onOpenPage,
   onCreatePage,
   onContentLocaleChange,
@@ -4500,7 +4524,7 @@ var EditorDock = ({
                       "flex-wrap lg:flex-nowrap",
                       canManage ? "xl:justify-end" : "lg:justify-end"
                     ),
-                    children: canManage ? /* @__PURE__ */ jsxs26(Fragment7, { children: [
+                    children: canManage ? /* @__PURE__ */ jsxs26(Fragment6, { children: [
                       /* @__PURE__ */ jsx35(
                         EditorPageBrowser,
                         {
@@ -4555,12 +4579,10 @@ var EditorDock = ({
                         EditorSaveButton,
                         {
                           activeMode,
-                          autosaveEnabled,
                           hasUnsavedChanges,
                           collapsedBlockCount,
                           saveState,
                           showCollapsedInPreview,
-                          onAutosaveChange,
                           onPreviewCollapsedChange,
                           onReset,
                           onSave
@@ -4650,13 +4672,13 @@ import {
   SlidersHorizontal,
   Trash2 as Trash24
 } from "lucide-react";
-import { memo as memo4, useEffect as useEffect10, useMemo as useMemo6, useState as useState16 } from "react";
+import { memo as memo5, useEffect as useEffect10, useMemo as useMemo6, useRef as useRef3, useState as useState15 } from "react";
 
 // src/studio/palette-panel/palette-card.tsx
 import { useDraggable as useDraggable2 } from "@dnd-kit/core";
 import clsx11 from "clsx";
 import { Boxes as Boxes2 } from "lucide-react";
-import { useEffect as useEffect9, useState as useState15 } from "react";
+import { useEffect as useEffect9, useState as useState14 } from "react";
 import { jsx as jsx37, jsxs as jsxs28 } from "react/jsx-runtime";
 var PaletteCard = ({
   definition,
@@ -4674,7 +4696,7 @@ var PaletteCard = ({
       definitionKey: definition.key
     }
   });
-  const [hasMounted, setHasMounted] = useState15(false);
+  const [hasMounted, setHasMounted] = useState14(false);
   const Icon = STUDIO_ICONS[definition.icon] ?? Boxes2;
   useEffect9(() => {
     setHasMounted(true);
@@ -4728,7 +4750,7 @@ var PaletteCard = ({
 };
 
 // src/studio/palette-panel/palette-panel.tsx
-import { Fragment as Fragment8, jsx as jsx38, jsxs as jsxs29 } from "react/jsx-runtime";
+import { Fragment as Fragment7, jsx as jsx38, jsxs as jsxs29 } from "react/jsx-runtime";
 var normalizeLibraryUsageSource = (source) => {
   if (source === "current") {
     return "currentDocument";
@@ -4808,23 +4830,44 @@ var PalettePanelComponent = ({
     })),
     [document2]
   );
-  const [workspaceLibraryUsages, setWorkspaceLibraryUsages] = useState16([]);
-  const [pendingDeleteItemId, setPendingDeleteItemId] = useState16(
+  const [workspaceLibraryUsages, setWorkspaceLibraryUsages] = useState15([]);
+  const [pendingDeleteItemId, setPendingDeleteItemId] = useState15(
     null
   );
+  const libraryItemIdsKey = useMemo6(
+    () => libraryItems.map((item) => item.id).sort().join("|"),
+    [libraryItems]
+  );
+  const usageProviderInputRef = useRef3({
+    site,
+    document: document2,
+    pageSettings,
+    workspace,
+    libraryItems
+  });
   useEffect10(() => {
-    let cancelled = false;
-    if (!componentLibraryUsageProvider) {
+    usageProviderInputRef.current = {
+      site,
+      document: document2,
+      pageSettings,
+      workspace,
+      libraryItems
+    };
+  }, [site, document2, pageSettings, workspace, libraryItems]);
+  useEffect10(() => {
+    if (!componentLibraryUsageProvider || paletteTab !== "library") {
       setWorkspaceLibraryUsages([]);
       return;
     }
+    let cancelled = false;
+    const snapshot = usageProviderInputRef.current;
     Promise.resolve(
       componentLibraryUsageProvider({
-        site,
-        document: document2,
-        pageSettings,
-        workspace,
-        itemIds: libraryItems.map((item) => item.id)
+        site: snapshot.site,
+        document: snapshot.document,
+        pageSettings: snapshot.pageSettings,
+        workspace: snapshot.workspace,
+        itemIds: snapshot.libraryItems.map((item) => item.id)
       })
     ).then((usages) => {
       if (!cancelled) {
@@ -4839,14 +4882,7 @@ var PalettePanelComponent = ({
     return () => {
       cancelled = true;
     };
-  }, [
-    componentLibraryUsageProvider,
-    document2,
-    libraryItems,
-    pageSettings,
-    site,
-    workspace
-  ]);
+  }, [componentLibraryUsageProvider, libraryItemIdsKey, paletteTab]);
   const libraryUsages = [...currentLibraryUsages, ...workspaceLibraryUsages];
   const selectedReferenceBlock = selectedBlock && isPhotonComponentReferenceBlock(selectedBlock) ? selectedBlock : null;
   const normalizedSearch = search.trim().toLowerCase();
@@ -4898,7 +4934,7 @@ var PalettePanelComponent = ({
   const pendingDeleteWorkspaceUsageCount = pendingDeleteUsages.filter(
     (usage) => isWorkspaceLibraryUsage(usage)
   ).length;
-  return /* @__PURE__ */ jsxs29(Fragment8, { children: [
+  return /* @__PURE__ */ jsxs29(Fragment7, { children: [
     /* @__PURE__ */ jsxs29("div", { className: "flex h-full flex-col", children: [
       /* @__PURE__ */ jsxs29(
         "div",
@@ -5496,10 +5532,10 @@ var PalettePanelComponent = ({
     )
   ] });
 };
-var PalettePanel = memo4(PalettePanelComponent);
+var PalettePanel = memo5(PalettePanelComponent);
 
 // src/studio/photon-studio/use-studio-browser-preferences.ts
-import { useEffect as useEffect11, useState as useState17 } from "react";
+import { useEffect as useEffect11, useState as useState16 } from "react";
 
 // src/studio/photon-studio/studio-browser-storage.ts
 import { openDB } from "idb";
@@ -5707,12 +5743,12 @@ var useStudioBrowserPreferences = ({
   hydrateModePreference,
   onManualSave
 }) => {
-  const [modePreferenceHydrated, setModePreferenceHydrated] = useState17(false);
-  const [builderSurfaceMode, setBuilderSurfaceMode] = useState17("canvas");
+  const [modePreferenceHydrated, setModePreferenceHydrated] = useState16(false);
+  const [builderSurfaceMode, setBuilderSurfaceMode] = useState16("canvas");
   const [
     builderSurfacePreferenceHydrated,
     setBuilderSurfacePreferenceHydrated
-  ] = useState17(false);
+  ] = useState16(false);
   const { modeStorageKey, builderSurfaceStorageKey } = resolveStudioBrowserPreferenceStorageKeys(draftStorageKey);
   useEffect11(() => {
     if (typeof window === "undefined") {
@@ -5984,7 +6020,7 @@ var useStudioDefinitionCatalog = (input) => useMemo7(
 );
 
 // src/studio/photon-studio/use-studio-drag-state.ts
-import { useState as useState18 } from "react";
+import { useState as useState17 } from "react";
 var useStudioDragState = ({
   builderEnabled,
   document: document2,
@@ -5996,11 +6032,11 @@ var useStudioDragState = ({
   selectBlock,
   onClearPaletteSelection
 }) => {
-  const [activePaletteKey, setActivePaletteKey] = useState18(null);
-  const [activeBlockId, setActiveBlockId] = useState18(null);
-  const [activeDragKind, setActiveDragKind] = useState18(null);
-  const [dropTarget, setDropTarget] = useState18(null);
-  const [paletteOverlayOrigin, setPaletteOverlayOrigin] = useState18(null);
+  const [activePaletteKey, setActivePaletteKey] = useState17(null);
+  const [activeBlockId, setActiveBlockId] = useState17(null);
+  const [activeDragKind, setActiveDragKind] = useState17(null);
+  const [dropTarget, setDropTarget] = useState17(null);
+  const [paletteOverlayOrigin, setPaletteOverlayOrigin] = useState17(null);
   const activePaletteDefinition = activePaletteKey ? allPaletteBlocks.find(
     (definition) => definition.key === activePaletteKey
   ) ?? null : null;
@@ -6098,7 +6134,7 @@ var useStudioDragState = ({
 };
 
 // src/studio/photon-studio/use-studio-persistence.ts
-import { useCallback as useCallback2, useEffect as useEffect12, useMemo as useMemo8, useRef as useRef3, useState as useState19 } from "react";
+import { useCallback, useEffect as useEffect12, useMemo as useMemo8, useRef as useRef4, useState as useState18 } from "react";
 import { toast as toast3 } from "sonner";
 
 // src/studio/photon-studio/persistence-helpers.ts
@@ -6282,13 +6318,13 @@ var useStudioPersistence = ({
     }),
     [isAdmin, normalizedCapabilities, normalizedWorkspace]
   );
-  const [autosaveEnabled, setAutosaveEnabled] = useState19(
+  const [autosaveEnabled, setAutosaveEnabled] = useState18(
     getDefaultPhotonAutosaveEnabled
   );
-  const [saveState, setSaveState] = useState19("idle");
-  const [hasHydrated, setHasHydrated] = useState19(false);
-  const [lastSavedRevision, setLastSavedRevision] = useState19(0);
-  const [lastSavedState, setLastSavedState] = useState19(() => ({
+  const [saveState, setSaveState] = useState18("idle");
+  const [hasHydrated, setHasHydrated] = useState18(false);
+  const [lastSavedRevision, setLastSavedRevision] = useState18(0);
+  const [lastSavedState, setLastSavedState] = useState18(() => ({
     ...createPhotonStudioSavePayload({
       workspace: clonePhotonValue(normalizedWorkspace),
       expectedHeadRevisionId: normalizedWorkspace.headRevisionId ?? null,
@@ -6299,10 +6335,10 @@ var useStudioPersistence = ({
       site: clonePhotonValue(initialSite)
     })
   }));
-  const hasLoadedDraftRef = useRef3(null);
-  const contentRevisionRef = useRef3(contentRevision);
-  const isSavingRef = useRef3(false);
-  const lastSavedStateRef = useRef3(lastSavedState);
+  const hasLoadedDraftRef = useRef4(null);
+  const contentRevisionRef = useRef4(contentRevision);
+  const isSavingRef = useRef4(false);
+  const lastSavedStateRef = useRef4(lastSavedState);
   const initialStateFingerprint = useMemo8(
     () => getPhotonStudioFingerprint(
       initialDocument,
@@ -6468,7 +6504,7 @@ var useStudioPersistence = ({
       serializeLegacy: String
     });
   }, [autosaveEnabled, autosaveStorageKey, hasHydrated, isAdmin]);
-  const saveDocument = useCallback2(
+  const saveDocument = useCallback(
     async (reason) => {
       if (!canSaveDocument || isSavingRef.current) {
         if (reason !== "autosave" && isAdmin) {
@@ -6556,7 +6592,7 @@ var useStudioPersistence = ({
       syncExternalState
     ]
   );
-  const restoreLastSavedState = useCallback2(() => {
+  const restoreLastSavedState = useCallback(() => {
     syncExternalState({
       initialDocument: clonePhotonValue(lastSavedState.document),
       initialResources: clonePhotonValue(lastSavedState.resources),
@@ -6573,21 +6609,6 @@ var useStudioPersistence = ({
     normalizedCapabilities,
     normalizedWorkspace,
     syncExternalState
-  ]);
-  useEffect12(() => {
-    if (!canSaveDocument || !autosaveEnabled || !hasUnsavedChanges) {
-      return;
-    }
-    const timeoutId = window.setTimeout(() => {
-      void saveDocument("autosave");
-    }, 900);
-    return () => window.clearTimeout(timeoutId);
-  }, [
-    autosaveEnabled,
-    canSaveDocument,
-    contentRevision,
-    hasUnsavedChanges,
-    saveDocument
   ]);
   useEffect12(() => {
     if (saveState === "idle" || saveState === "saving") {
@@ -6614,8 +6635,8 @@ var useStudioPersistence = ({
 // src/studio/photon-studio/use-studio-sidebars.ts
 import {
   useEffect as useEffect13,
-  useRef as useRef4,
-  useState as useState20
+  useRef as useRef5,
+  useState as useState19
 } from "react";
 var DEFAULT_LEFT_WIDTH = 304;
 var DEFAULT_RIGHT_WIDTH = 368;
@@ -6632,13 +6653,13 @@ var isPersistedSidebarState = (value) => {
   return typeof candidate.leftWidth === "number" && typeof candidate.rightWidth === "number" && typeof candidate.leftCollapsed === "boolean" && typeof candidate.rightCollapsed === "boolean";
 };
 var useStudioSidebars = ({ storageKey }) => {
-  const [leftWidth, setLeftWidth] = useState20(DEFAULT_LEFT_WIDTH);
-  const [rightWidth, setRightWidth] = useState20(DEFAULT_RIGHT_WIDTH);
-  const [leftCollapsed, setLeftCollapsed] = useState20(false);
-  const [rightCollapsed, setRightCollapsed] = useState20(false);
-  const [hasHydrated, setHasHydrated] = useState20(false);
-  const [isResizing, setIsResizing] = useState20(false);
-  const resizeFrameRef = useRef4(null);
+  const [leftWidth, setLeftWidth] = useState19(DEFAULT_LEFT_WIDTH);
+  const [rightWidth, setRightWidth] = useState19(DEFAULT_RIGHT_WIDTH);
+  const [leftCollapsed, setLeftCollapsed] = useState19(false);
+  const [rightCollapsed, setRightCollapsed] = useState19(false);
+  const [hasHydrated, setHasHydrated] = useState19(false);
+  const [isResizing, setIsResizing] = useState19(false);
+  const resizeFrameRef = useRef5(null);
   useEffect13(() => {
     let cancelled = false;
     void (async () => {
@@ -6764,7 +6785,7 @@ var useStudioSidebars = ({ storageKey }) => {
 };
 
 // src/studio/photon-studio/use-studio-site-setting-change.ts
-import { useCallback as useCallback3 } from "react";
+import { useCallback as useCallback2 } from "react";
 var applyStudioSiteSettingChange = ({
   path,
   value,
@@ -6819,7 +6840,7 @@ var useStudioSiteSettingChange = ({
   updateSiteSettingValue,
   onSiteSettingChange,
   replaceState
-}) => useCallback3(
+}) => useCallback2(
   (path, value) => {
     applyStudioSiteSettingChange({
       path,
@@ -6851,7 +6872,7 @@ var useStudioSiteSettingChange = ({
 );
 
 // src/studio/photon-studio/photon-stage.tsx
-import clsx20 from "clsx";
+import clsx21 from "clsx";
 import {
   useEffect as useEffect18
 } from "react";
@@ -7059,7 +7080,7 @@ var CanvasTopToolbar = ({
 
 // src/studio/interaction-surfaces-surface/interaction-surfaces-surface.tsx
 import clsx14 from "clsx";
-import { useEffect as useEffect14, useMemo as useMemo12, useRef as useRef5, useState as useState21 } from "react";
+import { useEffect as useEffect14, useMemo as useMemo12, useRef as useRef6, useState as useState20 } from "react";
 
 // src/studio/interaction-surfaces-surface/action-state-cards.tsx
 import { useMemo as useMemo9 } from "react";
@@ -7252,7 +7273,7 @@ var ActionChain = ({
 };
 
 // src/studio/interaction-surfaces-surface/policies-panel.tsx
-import { Fragment as Fragment9, jsx as jsx43, jsxs as jsxs33 } from "react/jsx-runtime";
+import { Fragment as Fragment8, jsx as jsx43, jsxs as jsxs33 } from "react/jsx-runtime";
 var interactionPath = (suffix) => `${PHOTON_INTERACTIONS_SITE_SETTING_KEY}.${suffix}`;
 var instanceCopyFields = [
   {
@@ -7410,7 +7431,7 @@ var PoliciesPanel = ({
                     }
                   ) : null
                 ] }),
-                /* @__PURE__ */ jsx43("div", { className: "flex flex-wrap items-center gap-2", children: hasSiteOverride ? /* @__PURE__ */ jsxs33(Fragment9, { children: [
+                /* @__PURE__ */ jsx43("div", { className: "flex flex-wrap items-center gap-2", children: hasSiteOverride ? /* @__PURE__ */ jsxs33(Fragment8, { children: [
                   /* @__PURE__ */ jsx43(
                     "span",
                     {
@@ -7459,7 +7480,7 @@ var PoliciesPanel = ({
               "data-testid": "photon-policy-runs-section",
               children: [
                 /* @__PURE__ */ jsx43("div", { className: "text-xs uppercase tracking-wide", style: subtleStyle2, children: "Runs" }),
-                runInstance ? /* @__PURE__ */ jsxs33(Fragment9, { children: [
+                runInstance ? /* @__PURE__ */ jsxs33(Fragment8, { children: [
                   /* @__PURE__ */ jsxs33("div", { className: "text-sm", children: [
                     "Action instance: ",
                     /* @__PURE__ */ jsx43("code", { children: selectedPolicy.run })
@@ -7517,7 +7538,7 @@ var PoliciesPanel = ({
 };
 
 // src/studio/interaction-surfaces-surface/interaction-surfaces-surface.tsx
-import { Fragment as Fragment10, jsx as jsx44, jsxs as jsxs34 } from "react/jsx-runtime";
+import { Fragment as Fragment9, jsx as jsx44, jsxs as jsxs34 } from "react/jsx-runtime";
 var shellStyle = {
   borderColor: "var(--photon-builder-border)",
   background: "linear-gradient(180deg, var(--photon-builder-panel-solid), var(--photon-builder-panel))",
@@ -7631,26 +7652,26 @@ var InteractionSurfacesSurface = ({
   const toastTemplates = Object.values(catalog.toastTemplates).filter(
     (template) => template.enabled !== false
   );
-  const [localSelectedInstanceId, setLocalSelectedInstanceId] = useState21(
+  const [localSelectedInstanceId, setLocalSelectedInstanceId] = useState20(
     instances[0]?.id ?? ""
   );
-  const [localSelectedTemplateId, setLocalSelectedTemplateId] = useState21(
+  const [localSelectedTemplateId, setLocalSelectedTemplateId] = useState20(
     toastTemplates[0]?.id ?? ""
   );
-  const [localActiveTab, setLocalActiveTab] = useState21("actions");
-  const [localSelectedActionId, setLocalSelectedActionId] = useState21(
+  const [localActiveTab, setLocalActiveTab] = useState20("actions");
+  const [localSelectedActionId, setLocalSelectedActionId] = useState20(
     Object.values(actionCatalog.actionInstances)[0]?.id ?? ""
   );
-  const [localSelectedGuardId, setLocalSelectedGuardId] = useState21(
+  const [localSelectedGuardId, setLocalSelectedGuardId] = useState20(
     Object.values(actionCatalog.guardInstances)[0]?.id ?? ""
   );
-  const [localSelectedScenarioId, setLocalSelectedScenarioId] = useState21("");
-  const [localSelectedPolicyId, setLocalSelectedPolicyId] = useState21(
+  const [localSelectedScenarioId, setLocalSelectedScenarioId] = useState20("");
+  const [localSelectedPolicyId, setLocalSelectedPolicyId] = useState20(
     interactionPolicies[0]?.id ?? ""
   );
   const activeTab = controlledActiveTab ?? localActiveTab;
   const selectedInstanceId = controlledSelectedInstanceId ?? localSelectedInstanceId;
-  const instanceListRef = useRef5(null);
+  const instanceListRef = useRef6(null);
   useEffect14(() => {
     if (!selectedInstanceId || !instanceListRef.current) {
       return;
@@ -8091,7 +8112,7 @@ var InteractionSurfacesSurface = ({
             }
           ) })
         ] }) : null,
-        activeTab === "surfaces" ? /* @__PURE__ */ jsxs34(Fragment10, { children: [
+        activeTab === "surfaces" ? /* @__PURE__ */ jsxs34(Fragment9, { children: [
           /* @__PURE__ */ jsxs34("div", { className: "grid gap-5 lg:grid-cols-[minmax(16rem,0.34fr)_minmax(0,0.66fr)]", children: [
             /* @__PURE__ */ jsxs34("section", { className: "rounded-[28px] border p-4", style: cardStyle3, children: [
               /* @__PURE__ */ jsx44(
@@ -8489,8 +8510,8 @@ var InteractionSurfacesSurface = ({
 
 // src/studio/page-settings-surface/page-settings-surface.tsx
 import clsx15 from "clsx";
-import { useEffect as useEffect15, useMemo as useMemo13, useState as useState22 } from "react";
-import { Fragment as Fragment11, jsx as jsx45, jsxs as jsxs35 } from "react/jsx-runtime";
+import { useEffect as useEffect15, useMemo as useMemo13, useState as useState21 } from "react";
+import { Fragment as Fragment10, jsx as jsx45, jsxs as jsxs35 } from "react/jsx-runtime";
 var scopeOrder = [
   "page",
   "template",
@@ -8609,8 +8630,8 @@ var PageSettingsSurface = ({
     () => resolveAvailableScopes(pageSettings),
     [pageSettings]
   );
-  const [activeTab, setActiveTab] = useState22("page");
-  const [activeScope, setActiveScope] = useState22(availableScopes[0] ?? "page");
+  const [activeTab, setActiveTab] = useState21("page");
+  const [activeScope, setActiveScope] = useState21(availableScopes[0] ?? "page");
   const siteSubtabs = useMemo13(
     () => [
       { key: "design", label: "Design" },
@@ -8623,7 +8644,7 @@ var PageSettingsSurface = ({
     ],
     [siteSettingsSubtabs]
   );
-  const [activeSiteTab, setActiveSiteTab] = useState22(
+  const [activeSiteTab, setActiveSiteTab] = useState21(
     siteSubtabs[0]?.key ?? "design"
   );
   useEffect15(() => {
@@ -8797,7 +8818,7 @@ var PageSettingsSurface = ({
                 }
               )
             ] }),
-            activeTab === "page" && availableScopes.length > 0 ? /* @__PURE__ */ jsxs35(Fragment11, { children: [
+            activeTab === "page" && availableScopes.length > 0 ? /* @__PURE__ */ jsxs35(Fragment10, { children: [
               /* @__PURE__ */ jsx45(
                 "div",
                 {
@@ -9079,7 +9100,7 @@ var PageSettingsSurface = ({
                 );
               })
             ] }) : null,
-            activeTab === "site" ? /* @__PURE__ */ jsxs35(Fragment11, { children: [
+            activeTab === "site" ? /* @__PURE__ */ jsxs35(Fragment10, { children: [
               /* @__PURE__ */ jsx45(
                 SettingsCard,
                 {
@@ -9406,12 +9427,95 @@ var SiteDataSurface = ({
 };
 
 // src/studio/inspector-panel/inspector-panel.tsx
+import clsx17 from "clsx";
+import { ChevronDown as ChevronDown9, ChevronRight as ChevronRight5 } from "lucide-react";
+import { memo as memo6, useEffect as useEffect16, useMemo as useMemo17, useState as useState26 } from "react";
+
+// src/studio/inspector-panel/inspector-section.tsx
 import clsx16 from "clsx";
-import { ChevronDown as ChevronDown8, ChevronRight as ChevronRight4 } from "lucide-react";
-import { memo as memo5, useEffect as useEffect16, useMemo as useMemo17, useState as useState26 } from "react";
+import { ChevronDown as ChevronDown8, ChevronRight as ChevronRight3 } from "lucide-react";
+import { useCallback as useCallback3, useState as useState22 } from "react";
+import { jsx as jsx47, jsxs as jsxs37 } from "react/jsx-runtime";
+var PhotonInspectorSection = ({
+  id,
+  title,
+  trailing,
+  subtitle,
+  defaultCollapsed = false,
+  nonCollapsible = false,
+  children
+}) => {
+  const { tokens } = usePhotonInspectorDensity();
+  const [collapsed, setCollapsed] = useState22(defaultCollapsed);
+  const toggle = useCallback3(() => setCollapsed((current) => !current), []);
+  const isExpanded = nonCollapsible || !collapsed;
+  return /* @__PURE__ */ jsxs37(
+    "section",
+    {
+      className: clsx16(
+        "border",
+        tokens.sectionRadius
+      ),
+      style: {
+        borderColor: "var(--photon-builder-border)",
+        background: "var(--photon-builder-panel-muted)"
+      },
+      "data-testid": `photon-inspector-section-${id}`,
+      "data-collapsed": !isExpanded,
+      children: [
+        /* @__PURE__ */ jsxs37(
+          "button",
+          {
+            type: "button",
+            onClick: nonCollapsible ? void 0 : toggle,
+            className: clsx16(
+              "flex w-full items-center gap-1.5 px-2 py-1 text-left",
+              nonCollapsible ? "cursor-default" : "cursor-pointer"
+            ),
+            "aria-expanded": isExpanded,
+            "data-testid": `photon-inspector-section-header-${id}`,
+            children: [
+              nonCollapsible ? null : isExpanded ? /* @__PURE__ */ jsx47(
+                ChevronDown8,
+                {
+                  className: "h-3 w-3 shrink-0",
+                  style: { color: "var(--photon-builder-text-soft)" }
+                }
+              ) : /* @__PURE__ */ jsx47(
+                ChevronRight3,
+                {
+                  className: "h-3 w-3 shrink-0",
+                  style: { color: "var(--photon-builder-text-soft)" }
+                }
+              ),
+              /* @__PURE__ */ jsx47(
+                "div",
+                {
+                  className: clsx16(tokens.sectionHeaderClass, "min-w-0 flex-1 truncate"),
+                  style: { color: "var(--photon-builder-text-soft)" },
+                  children: title
+                }
+              ),
+              trailing ? /* @__PURE__ */ jsx47("div", { className: "shrink-0", children: trailing }) : null
+            ]
+          }
+        ),
+        subtitle ? /* @__PURE__ */ jsx47(
+          "div",
+          {
+            className: "px-2 pb-1 text-[10.5px] leading-snug",
+            style: { color: "var(--photon-builder-text-soft)" },
+            children: subtitle
+          }
+        ) : null,
+        isExpanded ? /* @__PURE__ */ jsx47("div", { className: clsx16(tokens.sectionPadding, "pt-0"), children }) : null
+      ]
+    }
+  );
+};
 
 // src/studio/inspector-panel/block-preview-scenarios-picker.tsx
-import { jsx as jsx47, jsxs as jsxs37 } from "react/jsx-runtime";
+import { jsx as jsx48, jsxs as jsxs38 } from "react/jsx-runtime";
 var BlockPreviewScenariosPicker = ({
   block
 }) => {
@@ -9442,103 +9546,85 @@ var BlockPreviewScenariosPicker = ({
       group: "state"
     }))
   ];
-  return /* @__PURE__ */ jsxs37(
-    "section",
+  return /* @__PURE__ */ jsx48(
+    PhotonInspectorSection,
     {
-      className: "rounded-[24px] border px-4 py-4",
-      style: {
-        borderColor: "var(--photon-builder-border)",
-        background: "var(--photon-builder-panel-muted)"
-      },
-      "data-testid": "photon-block-preview-scenarios-picker",
-      children: [
-        /* @__PURE__ */ jsx47(
-          "div",
-          {
-            className: "text-[11px] uppercase tracking-[0.28em]",
-            style: { color: "var(--photon-builder-text-soft)" },
-            children: translate("photon.studio.blockPreviewScenarios.title", "Preview state")
-          }
-        ),
-        /* @__PURE__ */ jsxs37("div", { className: "mt-3 flex flex-wrap gap-2", children: [
-          /* @__PURE__ */ jsx47(
-            "button",
-            {
-              type: "button",
-              onClick: () => setBlockPreviewScenario(block.id, null),
-              className: "rounded-full border px-3 py-1 text-xs",
-              style: {
-                borderColor: previewScenarioId ? "var(--photon-builder-border)" : "var(--photon-builder-border-strong)",
-                background: previewScenarioId ? "var(--photon-builder-field)" : "var(--photon-builder-accent-strong)",
-                color: previewScenarioId ? "var(--photon-builder-text-soft)" : "var(--photon-builder-accent)"
-              },
-              "data-testid": `photon-block-preview-scenarios-picker-auto-${block.id}`,
-              children: translate("photon.studio.blockPreviewScenarios.auto", "Auto")
-            }
-          ),
-          items.map((item) => {
-            const isActive = previewScenarioId === item.id;
-            return /* @__PURE__ */ jsxs37(
+      id: "block-preview-scenarios",
+      title: translate(
+        "photon.studio.blockPreviewScenarios.title",
+        "Preview state"
+      ),
+      defaultCollapsed: previewScenarioId === null,
+      trailing: /* @__PURE__ */ jsx48(
+        "span",
+        {
+          className: "rounded-sm border px-1 font-mono text-[9px] tabular-nums",
+          style: {
+            borderColor: "var(--photon-builder-border)",
+            color: "var(--photon-builder-text-soft)"
+          },
+          children: items.length
+        }
+      ),
+      children: /* @__PURE__ */ jsxs38(
+        "div",
+        {
+          className: "flex flex-wrap gap-1",
+          "data-testid": "photon-block-preview-scenarios-picker",
+          children: [
+            /* @__PURE__ */ jsx48(
               "button",
               {
                 type: "button",
-                onClick: () => setBlockPreviewScenario(block.id, item.id),
-                className: "rounded-full border px-3 py-1 text-xs",
+                onClick: () => setBlockPreviewScenario(block.id, null),
+                className: "rounded-sm border px-1.5 py-0.5 text-[10.5px]",
                 style: {
-                  borderColor: isActive ? "var(--photon-builder-border-strong)" : "var(--photon-builder-border)",
-                  background: isActive ? "var(--photon-builder-accent-strong)" : "var(--photon-builder-field)",
-                  color: isActive ? "var(--photon-builder-accent)" : "var(--photon-builder-text-soft)"
+                  borderColor: previewScenarioId ? "var(--photon-builder-border)" : "var(--photon-builder-border-strong)",
+                  background: previewScenarioId ? "var(--photon-builder-field)" : "var(--photon-builder-accent-strong)",
+                  color: previewScenarioId ? "var(--photon-builder-text-soft)" : "var(--photon-builder-accent)"
                 },
-                "data-testid": `photon-block-preview-scenarios-picker-item-${block.id}-${item.id}`,
-                children: [
-                  item.label,
-                  item.group === "state" ? /* @__PURE__ */ jsxs37(
-                    "span",
-                    {
-                      className: "ml-1 text-[9px] uppercase tracking-wider opacity-60",
-                      "aria-hidden": "true",
-                      children: [
-                        "\xB7",
-                        translate("photon.studio.blockPreviewScenarios.stateBadge", "state")
-                      ]
-                    }
-                  ) : null
-                ]
-              },
-              `${item.group}:${item.id}`
-            );
-          })
-        ] })
-      ]
-    }
-  );
-};
-
-// src/studio/inspector-panel/inspector-density-toggle.tsx
-import { Maximize2, Minimize2 } from "lucide-react";
-import { jsx as jsx48 } from "react/jsx-runtime";
-var InspectorDensityToggle = () => {
-  const { density, toggleDensity } = usePhotonInspectorDensity();
-  const { translate } = usePhotonI18n();
-  const isCompact = density === "compact";
-  const Icon = isCompact ? Maximize2 : Minimize2;
-  return /* @__PURE__ */ jsx48(
-    "button",
-    {
-      type: "button",
-      onClick: toggleDensity,
-      className: "inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-full border opacity-70 transition hover:opacity-100",
-      style: {
-        borderColor: "var(--photon-builder-border)",
-        color: "var(--photon-builder-text-soft)"
-      },
-      "aria-label": translate(
-        isCompact ? "photon.studio.inspector.density.toComfortable" : "photon.studio.inspector.density.toCompact",
-        isCompact ? "Switch to comfortable density" : "Switch to compact density"
-      ),
-      "data-testid": "photon-inspector-density-toggle",
-      "data-density": density,
-      children: /* @__PURE__ */ jsx48(Icon, { size: 10 })
+                "data-testid": `photon-block-preview-scenarios-picker-auto-${block.id}`,
+                children: translate("photon.studio.blockPreviewScenarios.auto", "Auto")
+              }
+            ),
+            items.map((item) => {
+              const isActive = previewScenarioId === item.id;
+              return /* @__PURE__ */ jsxs38(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => setBlockPreviewScenario(block.id, item.id),
+                  className: "rounded-sm border px-1.5 py-0.5 text-[10.5px]",
+                  style: {
+                    borderColor: isActive ? "var(--photon-builder-border-strong)" : "var(--photon-builder-border)",
+                    background: isActive ? "var(--photon-builder-accent-strong)" : "var(--photon-builder-field)",
+                    color: isActive ? "var(--photon-builder-accent)" : "var(--photon-builder-text-soft)"
+                  },
+                  "data-testid": `photon-block-preview-scenarios-picker-item-${block.id}-${item.id}`,
+                  children: [
+                    item.label,
+                    item.group === "state" ? /* @__PURE__ */ jsxs38(
+                      "span",
+                      {
+                        className: "ml-1 text-[9px] uppercase tracking-wider opacity-60",
+                        "aria-hidden": "true",
+                        children: [
+                          "\xB7",
+                          translate(
+                            "photon.studio.blockPreviewScenarios.stateBadge",
+                            "state"
+                          )
+                        ]
+                      }
+                    ) : null
+                  ]
+                },
+                `${item.group}:${item.id}`
+              );
+            })
+          ]
+        }
+      )
     }
   );
 };
@@ -9546,7 +9632,7 @@ var InspectorDensityToggle = () => {
 // src/studio/inspector-panel/route-family-editor.tsx
 import { Plus as Plus4, Trash2 as Trash25 } from "lucide-react";
 import { useState as useState23 } from "react";
-import { jsx as jsx49, jsxs as jsxs38 } from "react/jsx-runtime";
+import { jsx as jsx49, jsxs as jsxs39 } from "react/jsx-runtime";
 var RouteFamilyEditor = () => {
   const { translate } = usePhotonI18n();
   const document2 = usePhotonStore((state) => state.document);
@@ -9577,120 +9663,117 @@ var RouteFamilyEditor = () => {
   const removePattern = (pattern) => {
     writePatterns(patterns.filter((p) => p !== pattern));
   };
-  return /* @__PURE__ */ jsxs38(
-    "section",
+  return /* @__PURE__ */ jsx49(
+    PhotonInspectorSection,
     {
-      className: "rounded-[24px] border px-4 py-4",
-      style: {
-        borderColor: "var(--photon-builder-border)",
-        background: "var(--photon-builder-panel-muted)"
-      },
-      "data-testid": "photon-route-family-editor",
-      children: [
-        /* @__PURE__ */ jsx49(
-          "div",
-          {
-            className: "text-[11px] uppercase tracking-[0.28em]",
-            style: { color: "var(--photon-builder-text-soft)" },
-            children: translate("photon.studio.routeFamily.title", "Route family")
-          }
-        ),
-        /* @__PURE__ */ jsx49(
-          "p",
-          {
-            className: "mt-2 text-xs leading-5",
-            style: { color: "var(--photon-builder-text-muted)" },
-            children: translate(
-              "photon.studio.routeFamily.description",
-              "URL patterns this document serves. Specific routes (e.g. /astana) can fully override this template."
-            )
-          }
-        ),
-        /* @__PURE__ */ jsxs38("div", { className: "mt-3 space-y-2", children: [
-          patterns.length === 0 ? /* @__PURE__ */ jsx49(
-            "div",
-            {
-              className: "text-xs italic",
-              style: { color: "var(--photon-builder-text-soft)" },
-              children: translate(
-                "photon.studio.routeFamily.empty",
-                "No patterns. Document only renders at its primary route."
-              )
-            }
-          ) : patterns.map((pattern) => /* @__PURE__ */ jsxs38(
-            "div",
-            {
-              className: "flex items-center gap-2 rounded-2xl border px-3 py-2 font-mono text-xs",
-              style: {
-                borderColor: "var(--photon-builder-border)",
-                background: "var(--photon-builder-panel-solid)",
-                color: "var(--photon-builder-text)"
-              },
-              "data-testid": `photon-route-family-pattern-${pattern}`,
-              children: [
-                /* @__PURE__ */ jsx49("span", { className: "flex-1", children: pattern }),
-                /* @__PURE__ */ jsx49(
-                  "button",
-                  {
-                    type: "button",
-                    onClick: () => removePattern(pattern),
-                    className: "cursor-pointer rounded-full p-1 hover:opacity-70",
-                    style: { color: "var(--photon-builder-text-muted)" },
-                    "aria-label": translate(
-                      "photon.studio.routeFamily.remove",
-                      "Remove pattern"
-                    ),
-                    "data-testid": `photon-route-family-remove-${pattern}`,
-                    children: /* @__PURE__ */ jsx49(Trash25, { size: 12 })
-                  }
-                )
-              ]
-            },
-            pattern
-          )),
-          /* @__PURE__ */ jsxs38("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsx49(
-              "input",
+      id: "route-family",
+      title: translate("photon.studio.routeFamily.title", "Route family"),
+      subtitle: translate(
+        "photon.studio.routeFamily.description",
+        "URL patterns this document serves. Specific routes (e.g. /astana) can fully override this template."
+      ),
+      defaultCollapsed: patterns.length === 0,
+      trailing: patterns.length > 0 ? /* @__PURE__ */ jsx49(
+        "span",
+        {
+          className: "rounded-sm border px-1 font-mono text-[9px] tabular-nums",
+          style: {
+            borderColor: "var(--photon-builder-border)",
+            color: "var(--photon-builder-text-soft)"
+          },
+          children: patterns.length
+        }
+      ) : null,
+      children: /* @__PURE__ */ jsxs39(
+        "div",
+        {
+          className: "space-y-1",
+          "data-testid": "photon-route-family-editor",
+          children: [
+            patterns.length === 0 ? /* @__PURE__ */ jsx49(
+              "div",
               {
-                type: "text",
-                value: draftPattern,
-                onChange: (event) => setDraftPattern(event.currentTarget.value),
-                placeholder: "/:city/products/:slug",
-                className: "flex-1 rounded-[10px] border px-2 py-1 font-mono text-xs",
+                className: "text-[10.5px] italic",
+                style: { color: "var(--photon-builder-text-soft)" },
+                children: translate(
+                  "photon.studio.routeFamily.empty",
+                  "No patterns. Document only renders at its primary route."
+                )
+              }
+            ) : patterns.map((pattern) => /* @__PURE__ */ jsxs39(
+              "div",
+              {
+                className: "flex items-center gap-1 rounded-sm border px-1.5 py-0.5 font-mono text-[11px]",
                 style: {
                   borderColor: "var(--photon-builder-border)",
                   background: "var(--photon-builder-panel-solid)",
                   color: "var(--photon-builder-text)"
                 },
-                onKeyDown: (event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    addPattern();
-                  }
-                },
-                "data-testid": "photon-route-family-input"
-              }
-            ),
-            /* @__PURE__ */ jsxs38(
-              "button",
-              {
-                type: "button",
-                onClick: addPattern,
-                className: "inline-flex cursor-pointer items-center gap-1 rounded-full border px-3 py-1 text-xs",
-                style: {
-                  borderColor: "var(--photon-builder-border-strong)",
-                  color: "var(--photon-builder-text)"
-                },
-                "data-testid": "photon-route-family-add",
+                "data-testid": `photon-route-family-pattern-${pattern}`,
                 children: [
-                  /* @__PURE__ */ jsx49(Plus4, { size: 10 }),
-                  " Add"
+                  /* @__PURE__ */ jsx49("span", { className: "flex-1 truncate", children: pattern }),
+                  /* @__PURE__ */ jsx49(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => removePattern(pattern),
+                      className: "cursor-pointer rounded-sm p-0.5 hover:opacity-70",
+                      style: { color: "var(--photon-builder-text-muted)" },
+                      "aria-label": translate(
+                        "photon.studio.routeFamily.remove",
+                        "Remove pattern"
+                      ),
+                      "data-testid": `photon-route-family-remove-${pattern}`,
+                      children: /* @__PURE__ */ jsx49(Trash25, { size: 10 })
+                    }
+                  )
                 ]
-              }
-            )
-          ] })
-        ] })
-      ]
+              },
+              pattern
+            )),
+            /* @__PURE__ */ jsxs39("div", { className: "flex items-center gap-1", children: [
+              /* @__PURE__ */ jsx49(
+                "input",
+                {
+                  type: "text",
+                  value: draftPattern,
+                  onChange: (event) => setDraftPattern(event.currentTarget.value),
+                  placeholder: "/:city/products/:slug",
+                  className: "h-6 flex-1 rounded-sm border bg-[color:var(--photon-builder-panel-solid)] px-1.5 font-mono text-[11px] outline-none focus:border-[color:var(--photon-builder-border-strong)]",
+                  style: {
+                    borderColor: "var(--photon-builder-border)",
+                    color: "var(--photon-builder-text)"
+                  },
+                  onKeyDown: (event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      addPattern();
+                    }
+                  },
+                  "data-testid": "photon-route-family-input"
+                }
+              ),
+              /* @__PURE__ */ jsxs39(
+                "button",
+                {
+                  type: "button",
+                  onClick: addPattern,
+                  className: "inline-flex h-6 cursor-pointer items-center gap-1 rounded-sm border px-1.5 text-[10px]",
+                  style: {
+                    borderColor: "var(--photon-builder-border-strong)",
+                    color: "var(--photon-builder-text)"
+                  },
+                  "data-testid": "photon-route-family-add",
+                  children: [
+                    /* @__PURE__ */ jsx49(Plus4, { size: 10 }),
+                    " Add"
+                  ]
+                }
+              )
+            ] })
+          ]
+        }
+      )
     }
   );
 };
@@ -9699,9 +9782,9 @@ var RouteFamilyEditor = () => {
 import { useMemo as useMemo16, useState as useState25 } from "react";
 
 // src/studio/inspector-panel/trigger-action-flow.tsx
-import { ChevronRight as ChevronRight3, Pencil as Pencil2 } from "lucide-react";
+import { ChevronRight as ChevronRight4, Pencil as Pencil2 } from "lucide-react";
 import { useMemo as useMemo15, useState as useState24 } from "react";
-import { Fragment as Fragment12, jsx as jsx50, jsxs as jsxs39 } from "react/jsx-runtime";
+import { Fragment as Fragment11, jsx as jsx50, jsxs as jsxs40 } from "react/jsx-runtime";
 var cardStyle4 = {
   borderColor: "var(--photon-builder-border)",
   background: "var(--photon-builder-panel-solid)"
@@ -9772,14 +9855,14 @@ var InstanceRow = ({
   const propPreview = instancePropPreview(instance);
   const conditionLabel = policy ? formatCondition(policy.when) : null;
   const isBridge = policy?.id.startsWith("bridge:guard:") ?? false;
-  return /* @__PURE__ */ jsxs39(
+  return /* @__PURE__ */ jsxs40(
     "div",
     {
       className: "rounded-2xl border text-xs",
       style: isTarget ? targetCardStyle : cardStyle4,
       "data-testid": isTarget ? "photon-trigger-action-flow-target" : `photon-trigger-action-flow-step-${policy?.id ?? "unknown"}`,
       children: [
-        /* @__PURE__ */ jsxs39(
+        /* @__PURE__ */ jsxs40(
           "button",
           {
             type: "button",
@@ -9787,7 +9870,7 @@ var InstanceRow = ({
             className: "flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left",
             children: [
               /* @__PURE__ */ jsx50(
-                ChevronRight3,
+                ChevronRight4,
                 {
                   size: 14,
                   style: {
@@ -9796,15 +9879,15 @@ var InstanceRow = ({
                   }
                 }
               ),
-              /* @__PURE__ */ jsxs39("div", { className: "flex flex-1 flex-col gap-0.5", children: [
-                /* @__PURE__ */ jsxs39("div", { className: "flex items-center gap-2", children: [
+              /* @__PURE__ */ jsxs40("div", { className: "flex flex-1 flex-col gap-0.5", children: [
+                /* @__PURE__ */ jsxs40("div", { className: "flex items-center gap-2", children: [
                   /* @__PURE__ */ jsx50("span", { className: "font-semibold", children: label }),
-                  conditionLabel ? /* @__PURE__ */ jsxs39("span", { style: subtleStyle3, children: [
+                  conditionLabel ? /* @__PURE__ */ jsxs40("span", { style: subtleStyle3, children: [
                     "when ",
                     conditionLabel
                   ] }) : null
                 ] }),
-                propPreview ? /* @__PURE__ */ jsxs39("div", { className: "truncate", style: mutedStyle, title: propPreview, children: [
+                propPreview ? /* @__PURE__ */ jsxs40("div", { className: "truncate", style: mutedStyle, title: propPreview, children: [
                   '"',
                   propPreview,
                   '"'
@@ -9821,7 +9904,7 @@ var InstanceRow = ({
             ]
           }
         ),
-        open ? /* @__PURE__ */ jsxs39(
+        open ? /* @__PURE__ */ jsxs40(
           "div",
           {
             className: "space-y-3 border-t px-3 py-2",
@@ -9829,7 +9912,7 @@ var InstanceRow = ({
               borderColor: "var(--photon-builder-border)"
             },
             children: [
-              instance ? /* @__PURE__ */ jsxs39("div", { className: "space-y-2", children: [
+              instance ? /* @__PURE__ */ jsxs40("div", { className: "space-y-2", children: [
                 /* @__PURE__ */ jsx50(
                   "div",
                   {
@@ -9838,7 +9921,7 @@ var InstanceRow = ({
                     children: "Instance copy"
                   }
                 ),
-                editableInstanceProps(instance).length === 0 ? /* @__PURE__ */ jsx50("div", { className: "text-xs italic", style: mutedStyle, children: "No editable props on this instance." }) : editableInstanceProps(instance).map((entry) => /* @__PURE__ */ jsxs39(
+                editableInstanceProps(instance).length === 0 ? /* @__PURE__ */ jsx50("div", { className: "text-xs italic", style: mutedStyle, children: "No editable props on this instance." }) : editableInstanceProps(instance).map((entry) => /* @__PURE__ */ jsxs40(
                   "label",
                   {
                     className: "flex flex-col gap-1 text-xs",
@@ -9898,30 +9981,30 @@ var InstanceRow = ({
                   entry.key
                 ))
               ] }) : null,
-              /* @__PURE__ */ jsxs39(
+              /* @__PURE__ */ jsxs40(
                 "div",
                 {
                   className: "space-y-1 font-mono text-[11px] leading-5",
                   style: mutedStyle,
                   children: [
-                    /* @__PURE__ */ jsxs39("div", { children: [
+                    /* @__PURE__ */ jsxs40("div", { children: [
                       "instance: ",
                       instance?.id ?? policy?.run ?? "\u2014"
                     ] }),
-                    policy ? /* @__PURE__ */ jsxs39(Fragment12, { children: [
-                      /* @__PURE__ */ jsxs39("div", { children: [
+                    policy ? /* @__PURE__ */ jsxs40(Fragment11, { children: [
+                      /* @__PURE__ */ jsxs40("div", { children: [
                         "policy: ",
                         policy.id
                       ] }),
-                      /* @__PURE__ */ jsxs39("div", { children: [
+                      /* @__PURE__ */ jsxs40("div", { children: [
                         "scope: ",
                         policy.scope
                       ] }),
-                      policy.priority !== void 0 ? /* @__PURE__ */ jsxs39("div", { children: [
+                      policy.priority !== void 0 ? /* @__PURE__ */ jsxs40("div", { children: [
                         "priority: ",
                         policy.priority
                       ] }) : null,
-                      /* @__PURE__ */ jsxs39("div", { children: [
+                      /* @__PURE__ */ jsxs40("div", { children: [
                         "enforcement: ",
                         policy.enforcement ?? "client-hint"
                       ] })
@@ -9929,7 +10012,7 @@ var InstanceRow = ({
                   ]
                 }
               ),
-              instance ? /* @__PURE__ */ jsxs39(
+              instance ? /* @__PURE__ */ jsxs40(
                 "button",
                 {
                   type: "button",
@@ -10054,7 +10137,7 @@ var TriggerActionFlow = ({ slot }) => {
   }
   const steps = plan?.steps ?? [];
   const showWarning = plan?.hasCycles || (plan?.warnings.some((warning) => warning.startsWith("fail-closed")) ?? false);
-  return /* @__PURE__ */ jsxs39(
+  return /* @__PURE__ */ jsxs40(
     "section",
     {
       className: "space-y-2",
@@ -10068,7 +10151,7 @@ var TriggerActionFlow = ({ slot }) => {
             children: "Action flow"
           }
         ),
-        showWarning ? /* @__PURE__ */ jsxs39(
+        showWarning ? /* @__PURE__ */ jsxs40(
           "div",
           {
             className: "rounded-2xl border p-3 text-xs",
@@ -10119,13 +10202,13 @@ var TriggerActionFlow = ({ slot }) => {
 };
 
 // src/studio/inspector-panel/inspector-trigger-tab.tsx
-import { jsx as jsx51, jsxs as jsxs40 } from "react/jsx-runtime";
+import { jsx as jsx51, jsxs as jsxs41 } from "react/jsx-runtime";
 var interactionSettingPath3 = (suffix) => `${PHOTON_INTERACTIONS_SITE_SETTING_KEY}.${suffix}`;
 var PolicyRow = ({ policy }) => {
   const [open, setOpen] = useState25(false);
   const conditionId = policy.when.type === "ref" ? policy.when.conditionId : policy.when.type;
   const isBridge = policy.id.startsWith("bridge:guard:");
-  return /* @__PURE__ */ jsxs40(
+  return /* @__PURE__ */ jsxs41(
     "div",
     {
       className: "rounded-2xl border text-xs",
@@ -10135,20 +10218,20 @@ var PolicyRow = ({ policy }) => {
       },
       "data-testid": `photon-trigger-policy-${policy.id}`,
       children: [
-        /* @__PURE__ */ jsxs40(
+        /* @__PURE__ */ jsxs41(
           "button",
           {
             type: "button",
             onClick: () => setOpen((value) => !value),
             className: "flex w-full cursor-pointer items-center justify-between gap-2 px-3 py-2 text-left",
             children: [
-              /* @__PURE__ */ jsxs40("span", { style: { color: "var(--photon-builder-text)" }, children: [
+              /* @__PURE__ */ jsxs41("span", { style: { color: "var(--photon-builder-text)" }, children: [
                 "Run ",
                 /* @__PURE__ */ jsx51("strong", { children: policy.run || "(default)" }),
                 " when ",
                 conditionId
               ] }),
-              /* @__PURE__ */ jsxs40(
+              /* @__PURE__ */ jsxs41(
                 "span",
                 {
                   className: "font-mono text-[10px] uppercase tracking-[0.18em]",
@@ -10163,7 +10246,7 @@ var PolicyRow = ({ policy }) => {
             ]
           }
         ),
-        open ? /* @__PURE__ */ jsxs40(
+        open ? /* @__PURE__ */ jsxs41(
           "div",
           {
             className: "space-y-1 border-t px-3 py-2 font-mono text-[11px] leading-5",
@@ -10172,19 +10255,19 @@ var PolicyRow = ({ policy }) => {
               color: "var(--photon-builder-text-muted)"
             },
             children: [
-              /* @__PURE__ */ jsxs40("div", { children: [
+              /* @__PURE__ */ jsxs41("div", { children: [
                 "id: ",
                 policy.id
               ] }),
-              /* @__PURE__ */ jsxs40("div", { children: [
+              /* @__PURE__ */ jsxs41("div", { children: [
                 "package: ",
                 policy.packageName
               ] }),
-              /* @__PURE__ */ jsxs40("div", { children: [
+              /* @__PURE__ */ jsxs41("div", { children: [
                 "target: ",
                 policy.targetActionId
               ] }),
-              /* @__PURE__ */ jsxs40("div", { children: [
+              /* @__PURE__ */ jsxs41("div", { children: [
                 "enforcement: ",
                 policy.enforcement ?? "client-hint"
               ] })
@@ -10277,25 +10360,28 @@ var InspectorTriggerTab = ({
     const { [slot.id]: _removed, ...rest } = canvasStageOverrides;
     updateSiteSettingValue(interactionSettingPath3("canvasStageOverrides"), rest);
   };
-  return /* @__PURE__ */ jsxs40(
+  const hasOverrides = currentBinding.overrides && Object.keys(currentBinding.overrides).length > 0 || canvasStageOverrides[slot.id] && Object.values(canvasStageOverrides[slot.id]).some(
+    (s) => Object.keys(s).length > 0
+  );
+  return /* @__PURE__ */ jsxs41(
     "div",
     {
-      className: "space-y-4",
+      className: "space-y-1.5",
       "data-testid": `photon-inspector-trigger-${slot.id}`,
       children: [
-        /* @__PURE__ */ jsxs40(
+        /* @__PURE__ */ jsxs41(
           "header",
           {
-            className: "rounded-[20px] border px-4 py-3",
+            className: "rounded-md border px-2 py-1.5",
             style: {
               borderColor: "var(--photon-builder-border)",
               background: "var(--photon-builder-panel-muted)"
             },
             children: [
-              /* @__PURE__ */ jsxs40(
+              /* @__PURE__ */ jsxs41(
                 "div",
                 {
-                  className: "text-[10px] uppercase tracking-[0.22em]",
+                  className: "text-[10px] font-semibold uppercase tracking-[0.16em]",
                   style: { color: "var(--photon-builder-text-soft)" },
                   children: [
                     "Trigger \xB7 ",
@@ -10306,7 +10392,7 @@ var InspectorTriggerTab = ({
               /* @__PURE__ */ jsx51(
                 "div",
                 {
-                  className: "mt-1 text-sm font-semibold",
+                  className: "mt-0.5 text-[12px] font-semibold leading-tight",
                   style: { color: "var(--photon-builder-text)" },
                   children: slot.label
                 }
@@ -10314,25 +10400,24 @@ var InspectorTriggerTab = ({
               slot.description ? /* @__PURE__ */ jsx51(
                 "p",
                 {
-                  className: "mt-1 text-xs leading-5",
+                  className: "mt-0.5 text-[10.5px] leading-snug",
                   style: { color: "var(--photon-builder-text-muted)" },
                   children: slot.description
                 }
-              ) : null,
-              /* @__PURE__ */ jsx51(
-                "p",
-                {
-                  className: "mt-2 text-[11px] leading-5",
-                  style: { color: "var(--photon-builder-text-soft)" },
-                  children: "Visual editing happens on the canvas. This panel is for action selection, policies and overrides reset."
-                }
-              )
+              ) : null
             ]
           }
         ),
-        actionInstanceOptions.length ? /* @__PURE__ */ jsxs40("label", { className: "grid gap-2 text-xs font-semibold", children: [
-          "Action",
-          /* @__PURE__ */ jsxs40(
+        actionInstanceOptions.length ? /* @__PURE__ */ jsxs41("div", { className: "flex min-h-[24px] items-center gap-2 px-1", children: [
+          /* @__PURE__ */ jsx51(
+            "div",
+            {
+              className: "min-w-[112px] max-w-[112px] truncate text-[11px] font-medium leading-tight",
+              style: { color: "var(--photon-builder-text)" },
+              children: "Action"
+            }
+          ),
+          /* @__PURE__ */ jsxs41(
             "select",
             {
               value: currentBinding.actionInstanceId ?? slot.actionInstanceId ?? "",
@@ -10341,10 +10426,9 @@ var InspectorTriggerTab = ({
                 slotId: slot.id,
                 actionInstanceId: event.currentTarget.value || void 0
               }),
-              className: "h-10 rounded-[14px] border px-3 text-sm outline-none",
+              className: "h-6 min-w-0 flex-1 rounded-sm border bg-[color:var(--photon-builder-field)] px-1.5 text-[11px] outline-none focus:border-[color:var(--photon-builder-border-strong)]",
               style: {
                 borderColor: "var(--photon-builder-border)",
-                background: "var(--photon-builder-panel-solid)",
                 color: "var(--photon-builder-text)"
               },
               children: [
@@ -10355,31 +10439,33 @@ var InspectorTriggerTab = ({
           )
         ] }) : null,
         /* @__PURE__ */ jsx51(TriggerActionFlow, { slot }),
-        policiesForAction.length ? /* @__PURE__ */ jsxs40(
+        policiesForAction.length ? /* @__PURE__ */ jsxs41(
           "details",
           {
-            className: "rounded-2xl border px-3 py-2",
+            className: "rounded-md border px-1.5 py-1",
             style: {
               borderColor: "var(--photon-builder-border)",
               background: "var(--photon-builder-panel-solid)"
             },
             "data-testid": "photon-trigger-policy-debug",
             children: [
-              /* @__PURE__ */ jsx51(
+              /* @__PURE__ */ jsxs41(
                 "summary",
                 {
-                  className: "cursor-pointer text-[10px] uppercase tracking-[0.22em]",
+                  className: "cursor-pointer text-[10px] font-semibold uppercase tracking-[0.16em]",
                   style: { color: "var(--photon-builder-text-soft)" },
-                  children: "Raw policies (debug)"
+                  children: [
+                    "Raw policies (debug \xB7 ",
+                    policiesForAction.length,
+                    ")"
+                  ]
                 }
               ),
-              /* @__PURE__ */ jsx51("div", { className: "mt-2 space-y-2", children: policiesForAction.map((policy) => /* @__PURE__ */ jsx51(PolicyRow, { policy }, policy.id)) })
+              /* @__PURE__ */ jsx51("div", { className: "mt-1 space-y-1", children: policiesForAction.map((policy) => /* @__PURE__ */ jsx51(PolicyRow, { policy }, policy.id)) })
             ]
           }
         ) : null,
-        currentBinding.overrides && Object.keys(currentBinding.overrides).length > 0 || canvasStageOverrides[slot.id] && Object.values(canvasStageOverrides[slot.id]).some(
-          (s) => Object.keys(s).length > 0
-        ) ? /* @__PURE__ */ jsx51(
+        hasOverrides ? /* @__PURE__ */ jsx51(
           "button",
           {
             type: "button",
@@ -10391,7 +10477,7 @@ var InspectorTriggerTab = ({
               });
               clearCanvasStageOverrides();
             },
-            className: "inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold",
+            className: "inline-flex h-6 cursor-pointer items-center gap-1 rounded-sm border px-2 text-[10.5px] font-semibold",
             style: {
               borderColor: "var(--photon-builder-border)",
               color: "var(--photon-builder-text-muted)"
@@ -10444,7 +10530,7 @@ var useInspectorTriggerSlots = (block) => {
 };
 
 // src/studio/inspector-panel/inspector-panel.tsx
-import { Fragment as Fragment13, jsx as jsx52, jsxs as jsxs41 } from "react/jsx-runtime";
+import { Fragment as Fragment12, jsx as jsx52, jsxs as jsxs42 } from "react/jsx-runtime";
 var readString2 = (settings, key) => {
   const value = settings[key];
   return typeof value === "string" && value.trim() !== "" ? value : void 0;
@@ -10496,6 +10582,7 @@ var InspectorPanelComponent = ({
 }) => {
   const document2 = usePhotonStore((state) => state.document);
   const { contentLocale, editableLocales, translate } = usePhotonI18n();
+  const { tokens } = usePhotonInspectorDensity();
   const selectedBlock = usePhotonStore(
     (state) => getPhotonSelectedBlock(state)
   );
@@ -10564,105 +10651,79 @@ var InspectorPanelComponent = ({
       setActiveTab("block");
     }
   }, [selectedBlock]);
-  return /* @__PURE__ */ jsxs41(
+  return /* @__PURE__ */ jsxs42(
     "div",
     {
-      className: "flex h-full flex-col",
+      className: "flex h-full flex-col text-[12px]",
       style: {
         background: "var(--photon-builder-shell-muted)",
         color: "var(--photon-builder-text)"
       },
       children: [
-        /* @__PURE__ */ jsx52(
+        /* @__PURE__ */ jsxs42(
           "div",
           {
-            className: "border-b px-5 py-5",
+            className: clsx17(
+              "flex items-center justify-between gap-2 border-b",
+              tokens.headerPadding
+            ),
             style: {
               borderColor: "var(--photon-builder-border)",
               background: "var(--photon-builder-shell-strong)"
             },
-            children: /* @__PURE__ */ jsxs41("div", { className: "flex items-center justify-between gap-3", children: [
-              /* @__PURE__ */ jsxs41("div", { className: "min-w-0", children: [
-                /* @__PURE__ */ jsxs41(
-                  "div",
+            children: [
+              /* @__PURE__ */ jsxs42("div", { className: "flex min-w-0 items-center gap-1", children: [
+                /* @__PURE__ */ jsx52(
+                  "button",
                   {
-                    className: "flex items-center gap-2 text-[11px] uppercase tracking-[0.28em]",
-                    style: { color: "var(--photon-builder-text-soft)" },
-                    children: [
-                      /* @__PURE__ */ jsx52("span", { children: translate("photon.studio.inspector.title", "Inspector") }),
-                      /* @__PURE__ */ jsx52(InspectorDensityToggle, {})
-                    ]
+                    type: "button",
+                    onClick: () => {
+                      selectInspectorTrigger(null);
+                      setActiveTab("block");
+                    },
+                    className: tokens.tabClass,
+                    style: activeTab === "block" && !isTriggerTabActive ? {
+                      background: "var(--photon-builder-accent-soft)",
+                      color: "var(--photon-builder-accent-text)"
+                    } : { color: "var(--photon-builder-text-muted)" },
+                    children: translate("photon.studio.inspector.blockTab", "Block")
                   }
                 ),
-                /* @__PURE__ */ jsxs41(
-                  "div",
-                  {
-                    className: "mt-4 inline-flex rounded-full border p-1",
-                    style: {
-                      borderColor: "var(--photon-builder-border)",
-                      background: "var(--photon-builder-panel-muted)"
+                triggerSlots.map((slot) => {
+                  const isActive = isTriggerTabActive && activeTriggerSlot?.id === slot.id;
+                  return /* @__PURE__ */ jsx52(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => {
+                        selectInspectorTrigger(slot.id);
+                        setActiveTab("block");
+                      },
+                      className: tokens.tabClass,
+                      style: isActive ? {
+                        background: "var(--photon-builder-accent-soft)",
+                        color: "var(--photon-builder-accent-text)"
+                      } : { color: "var(--photon-builder-text-muted)" },
+                      "data-testid": `photon-inspector-trigger-tab-${slot.id}`,
+                      children: slot.label
                     },
-                    children: [
-                      /* @__PURE__ */ jsx52(
-                        "button",
-                        {
-                          type: "button",
-                          onClick: () => {
-                            selectInspectorTrigger(null);
-                            setActiveTab("block");
-                          },
-                          className: clsx16(
-                            "cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold transition"
-                          ),
-                          style: activeTab === "block" && !isTriggerTabActive ? {
-                            background: "var(--photon-builder-accent-soft)",
-                            color: "var(--photon-builder-accent-text)"
-                          } : { color: "var(--photon-builder-text-muted)" },
-                          children: translate("photon.studio.inspector.blockTab", "Block")
-                        }
-                      ),
-                      triggerSlots.map((slot) => {
-                        const isActive = isTriggerTabActive && activeTriggerSlot?.id === slot.id;
-                        return /* @__PURE__ */ jsx52(
-                          "button",
-                          {
-                            type: "button",
-                            onClick: () => {
-                              selectInspectorTrigger(slot.id);
-                              setActiveTab("block");
-                            },
-                            className: clsx16(
-                              "cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold transition"
-                            ),
-                            style: isActive ? {
-                              background: "var(--photon-builder-accent-soft)",
-                              color: "var(--photon-builder-accent-text)"
-                            } : { color: "var(--photon-builder-text-muted)" },
-                            "data-testid": `photon-inspector-trigger-tab-${slot.id}`,
-                            children: slot.label
-                          },
-                          slot.id
-                        );
-                      }),
-                      /* @__PURE__ */ jsx52(
-                        "button",
-                        {
-                          type: "button",
-                          onClick: () => {
-                            selectInspectorTrigger(null);
-                            setActiveTab("page");
-                          },
-                          className: clsx16(
-                            "cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold transition"
-                          ),
-                          style: activeTab === "page" ? {
-                            background: "var(--photon-builder-accent-soft)",
-                            color: "var(--photon-builder-accent-text)"
-                          } : { color: "var(--photon-builder-text-muted)" },
-                          children: pageTabLabel
-                        }
-                      )
-                    ]
+                    slot.id
+                  );
+                }),
+                /* @__PURE__ */ jsx52(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => {
+                      selectInspectorTrigger(null);
+                      setActiveTab("page");
+                    },
+                    className: tokens.tabClass,
+                    style: activeTab === "page" ? {
+                      background: "var(--photon-builder-accent-soft)",
+                      color: "var(--photon-builder-accent-text)"
+                    } : { color: "var(--photon-builder-text-muted)" },
+                    children: pageTabLabel
                   }
                 )
               ] }),
@@ -10671,29 +10732,28 @@ var InspectorPanelComponent = ({
                 {
                   type: "button",
                   onClick: onCollapse,
-                  className: "cursor-pointer rounded-full border p-2 transition",
+                  className: "cursor-pointer rounded-sm p-1 transition",
                   style: {
-                    borderColor: "var(--photon-builder-border)",
-                    background: "var(--photon-builder-panel-muted)",
                     color: "var(--photon-builder-text-soft)"
                   },
-                  children: /* @__PURE__ */ jsx52(ChevronRight4, { className: "h-4 w-4" })
+                  "aria-label": "Collapse inspector",
+                  children: /* @__PURE__ */ jsx52(ChevronRight5, { className: "h-3.5 w-3.5" })
                 }
               ) : null
-            ] })
+            ]
           }
         ),
-        /* @__PURE__ */ jsxs41(
+        /* @__PURE__ */ jsxs42(
           "div",
           {
-            className: "flex-1 space-y-5 overflow-y-auto px-4 py-4",
+            className: "photon-inspector-scroll flex-1 space-y-1.5 overflow-y-auto px-1.5 py-1.5",
             style: { background: "var(--photon-builder-shell-muted)" },
             children: [
-              activeTab === "block" && !selectedBlock && inspectorDefinition ? /* @__PURE__ */ jsxs41(Fragment13, { children: [
-                /* @__PURE__ */ jsxs41(
+              activeTab === "block" && !selectedBlock && inspectorDefinition ? /* @__PURE__ */ jsxs42(Fragment12, { children: [
+                /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-[24px] border px-4 py-4",
+                    className: "rounded-md border px-2 py-2",
                     style: {
                       borderColor: "var(--photon-builder-border)",
                       background: "var(--photon-builder-panel-muted)"
@@ -10702,7 +10762,7 @@ var InspectorPanelComponent = ({
                       /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "text-[11px] uppercase tracking-[0.28em]",
+                          className: tokens.sectionHeaderClass,
                           style: { color: "var(--photon-builder-text-soft)" },
                           children: "Palette block"
                         }
@@ -10710,12 +10770,12 @@ var InspectorPanelComponent = ({
                       /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "mt-3 text-lg font-semibold",
+                          className: clsx17("mt-1", tokens.subtitleClass),
                           style: { color: "var(--photon-builder-text)" },
                           children: inspectorDefinition.label
                         }
                       ),
-                      /* @__PURE__ */ jsxs41("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
+                      /* @__PURE__ */ jsxs42("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
                         /* @__PURE__ */ jsx52(
                           "div",
                           {
@@ -10743,7 +10803,7 @@ var InspectorPanelComponent = ({
                             )
                           }
                         ),
-                        /* @__PURE__ */ jsxs41(
+                        /* @__PURE__ */ jsxs42(
                           "div",
                           {
                             className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
@@ -10762,7 +10822,7 @@ var InspectorPanelComponent = ({
                       /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "mt-4 text-sm leading-6",
+                          className: "mt-1.5 text-[11.5px] leading-snug",
                           style: { color: "var(--photon-builder-text-muted)" },
                           children: inspectorDefinition.description
                         }
@@ -10770,20 +10830,20 @@ var InspectorPanelComponent = ({
                     ]
                   }
                 ),
-                Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsxs41(
+                Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-[24px] border px-4 py-4",
+                    className: "rounded-md border px-2 py-2",
                     style: {
                       borderColor: "var(--photon-builder-border)",
                       background: "var(--photon-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsxs41("div", { className: "mb-4 flex items-center justify-between gap-3", children: [
+                      /* @__PURE__ */ jsxs42("div", { className: "mb-4 flex items-center justify-between gap-3", children: [
                         /* @__PURE__ */ jsx52(
                           "div",
                           {
-                            className: "text-[11px] uppercase tracking-[0.28em]",
+                            className: tokens.sectionHeaderClass,
                             style: { color: "var(--photon-builder-text-soft)" },
                             children: translate(
                               FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
@@ -10800,7 +10860,7 @@ var InspectorPanelComponent = ({
                           }
                         )
                       ] }),
-                      /* @__PURE__ */ jsx52("div", { className: "space-y-3", children: fields.map((field) => /* @__PURE__ */ jsxs41(
+                      /* @__PURE__ */ jsx52("div", { className: "space-y-3", children: fields.map((field) => /* @__PURE__ */ jsxs42(
                         "div",
                         {
                           className: "rounded-2xl border px-4 py-3",
@@ -10809,7 +10869,7 @@ var InspectorPanelComponent = ({
                             background: "var(--photon-builder-field)"
                           },
                           children: [
-                            /* @__PURE__ */ jsxs41("div", { className: "flex items-center justify-between gap-3", children: [
+                            /* @__PURE__ */ jsxs42("div", { className: "flex items-center justify-between gap-3", children: [
                               /* @__PURE__ */ jsx52(
                                 "div",
                                 {
@@ -10856,11 +10916,11 @@ var InspectorPanelComponent = ({
                 ))
               ] }) : null,
               activeTab === "block" && selectedBlock && isTriggerTabActive && activeTriggerSlot ? /* @__PURE__ */ jsx52(InspectorTriggerTab, { block: selectedBlock, slot: activeTriggerSlot }) : null,
-              activeTab === "block" && selectedBlock && !isTriggerTabActive ? /* @__PURE__ */ jsxs41(Fragment13, { children: [
-                /* @__PURE__ */ jsxs41(
+              activeTab === "block" && selectedBlock && !isTriggerTabActive ? /* @__PURE__ */ jsxs42(Fragment12, { children: [
+                /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-[24px] border px-4 py-4",
+                    className: "rounded-md border px-2 py-2",
                     style: {
                       borderColor: "var(--photon-builder-border)",
                       background: "var(--photon-builder-panel-muted)"
@@ -10869,7 +10929,7 @@ var InspectorPanelComponent = ({
                       /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "text-[11px] uppercase tracking-[0.28em]",
+                          className: tokens.sectionHeaderClass,
                           style: { color: "var(--photon-builder-text-soft)" },
                           children: "Selected block"
                         }
@@ -10877,12 +10937,12 @@ var InspectorPanelComponent = ({
                       /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "mt-3 text-lg font-semibold",
+                          className: clsx17("mt-1", tokens.subtitleClass),
                           style: { color: "var(--photon-builder-text)" },
                           children: inspectorDefinition?.label ?? selectedBlock.type
                         }
                       ),
-                      /* @__PURE__ */ jsxs41("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
+                      /* @__PURE__ */ jsxs42("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
                         /* @__PURE__ */ jsx52(
                           "div",
                           {
@@ -10910,12 +10970,12 @@ var InspectorPanelComponent = ({
                       inspectorDefinition?.description ? /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "mt-4 text-sm leading-6",
+                          className: "mt-1.5 text-[11.5px] leading-snug",
                           style: { color: "var(--photon-builder-text-muted)" },
                           children: inspectorDefinition.description
                         }
                       ) : null,
-                      selectedFieldPath ? /* @__PURE__ */ jsxs41(
+                      selectedFieldPath ? /* @__PURE__ */ jsxs42(
                         "div",
                         {
                           className: "mt-4 rounded-2xl border px-3 py-3 text-sm",
@@ -10936,10 +10996,10 @@ var InspectorPanelComponent = ({
                 ),
                 /* @__PURE__ */ jsx52(BlockPreviewScenariosPicker, { block: selectedBlock }),
                 /* @__PURE__ */ jsx52(RouteFamilyEditor, {}),
-                orderedGroupKeys.length > 0 ? /* @__PURE__ */ jsxs41(
+                orderedGroupKeys.length > 0 ? /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-[24px] border px-4 py-4",
+                    className: "rounded-md border px-2 py-2",
                     style: {
                       borderColor: "var(--photon-builder-border)",
                       background: "var(--photon-builder-panel-muted)"
@@ -10959,7 +11019,7 @@ var InspectorPanelComponent = ({
                               FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
                               translatePhotonFieldGroup(groupKey, translate)
                             );
-                            return /* @__PURE__ */ jsxs41(
+                            return /* @__PURE__ */ jsxs42(
                               "button",
                               {
                                 type: "button",
@@ -11001,7 +11061,7 @@ var InspectorPanelComponent = ({
                         const activeKey = activeGroupKey ?? orderedGroupKeys[0];
                         const fields = activeKey ? inspectorGroups[activeKey] ?? [] : [];
                         const showLocaleSwitch = activeKey === "content" && editableLocales.length > 1 && fields.some((field) => fieldSupportsLocalization(field));
-                        return /* @__PURE__ */ jsxs41(Fragment13, { children: [
+                        return /* @__PURE__ */ jsxs42(Fragment12, { children: [
                           showLocaleSwitch ? /* @__PURE__ */ jsx52(
                             "div",
                             {
@@ -11058,16 +11118,16 @@ var InspectorPanelComponent = ({
                     ]
                   }
                 ) : null,
-                /* @__PURE__ */ jsxs41(
+                /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-[24px] border px-4 py-4",
+                    className: "rounded-md border px-2 py-2",
                     style: {
                       borderColor: "var(--photon-builder-border)",
                       background: "var(--photon-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsxs41(
+                      /* @__PURE__ */ jsxs42(
                         "button",
                         {
                           type: "button",
@@ -11077,19 +11137,19 @@ var InspectorPanelComponent = ({
                             /* @__PURE__ */ jsx52(
                               "div",
                               {
-                                className: "text-[11px] uppercase tracking-[0.28em]",
+                                className: tokens.sectionHeaderClass,
                                 style: { color: "var(--photon-builder-text-soft)" },
                                 children: "Raw block manifest"
                               }
                             ),
                             showBlockJson ? /* @__PURE__ */ jsx52(
-                              ChevronDown8,
+                              ChevronDown9,
                               {
                                 className: "h-4 w-4",
                                 style: { color: "var(--photon-builder-text-soft)" }
                               }
                             ) : /* @__PURE__ */ jsx52(
-                              ChevronRight4,
+                              ChevronRight5,
                               {
                                 className: "h-4 w-4",
                                 style: { color: "var(--photon-builder-text-soft)" }
@@ -11114,17 +11174,17 @@ var InspectorPanelComponent = ({
                   }
                 )
               ] }) : null,
-              activeTab === "block" ? /* @__PURE__ */ jsxs41(Fragment13, { children: [
-                /* @__PURE__ */ jsxs41(
+              activeTab === "block" ? /* @__PURE__ */ jsxs42(Fragment12, { children: [
+                /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-[24px] border px-4 py-4",
+                    className: "rounded-md border px-2 py-2",
                     style: {
                       borderColor: "var(--photon-builder-border)",
                       background: "var(--photon-builder-panel-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsxs41(
+                      /* @__PURE__ */ jsxs42(
                         "button",
                         {
                           type: "button",
@@ -11134,19 +11194,19 @@ var InspectorPanelComponent = ({
                             /* @__PURE__ */ jsx52(
                               "div",
                               {
-                                className: "text-[11px] uppercase tracking-[0.28em]",
+                                className: tokens.sectionHeaderClass,
                                 style: { color: "var(--photon-builder-text-soft)" },
                                 children: "Document JSON"
                               }
                             ),
                             showDocumentJson ? /* @__PURE__ */ jsx52(
-                              ChevronDown8,
+                              ChevronDown9,
                               {
                                 className: "h-4 w-4",
                                 style: { color: "var(--photon-builder-text-soft)" }
                               }
                             ) : /* @__PURE__ */ jsx52(
-                              ChevronRight4,
+                              ChevronRight5,
                               {
                                 className: "h-4 w-4",
                                 style: { color: "var(--photon-builder-text-soft)" }
@@ -11182,8 +11242,8 @@ var InspectorPanelComponent = ({
                   }
                 ) : null
               ] }) : null,
-              activeTab === "page" ? /* @__PURE__ */ jsxs41(Fragment13, { children: [
-                /* @__PURE__ */ jsxs41(
+              activeTab === "page" ? /* @__PURE__ */ jsxs42(Fragment12, { children: [
+                /* @__PURE__ */ jsxs42(
                   "section",
                   {
                     className: "rounded-[24px] border border-dashed px-4 py-4 text-sm leading-6",
@@ -11192,10 +11252,10 @@ var InspectorPanelComponent = ({
                       color: "var(--photon-builder-text-muted)"
                     },
                     children: [
-                      /* @__PURE__ */ jsxs41(
+                      /* @__PURE__ */ jsxs42(
                         "div",
                         {
-                          className: "text-[11px] uppercase tracking-[0.28em]",
+                          className: tokens.sectionHeaderClass,
                           style: { color: "var(--photon-builder-text-soft)" },
                           children: [
                             pageTabLabel,
@@ -11206,12 +11266,12 @@ var InspectorPanelComponent = ({
                       /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "mt-3 text-lg font-semibold",
+                          className: clsx17("mt-1", tokens.subtitleClass),
                           style: { color: "var(--photon-builder-text)" },
                           children: summaryName
                         }
                       ),
-                      /* @__PURE__ */ jsxs41("div", { className: "mt-2 flex flex-wrap items-center gap-2", children: [
+                      /* @__PURE__ */ jsxs42("div", { className: "mt-2 flex flex-wrap items-center gap-2", children: [
                         /* @__PURE__ */ jsx52(
                           "div",
                           {
@@ -11253,10 +11313,10 @@ var InspectorPanelComponent = ({
                     ]
                   }
                 ),
-                /* @__PURE__ */ jsxs41(
+                /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-[24px] border px-4 py-4",
+                    className: "rounded-md border px-2 py-2",
                     style: {
                       borderColor: "var(--photon-builder-border)",
                       background: "var(--photon-builder-panel-muted)"
@@ -11270,8 +11330,8 @@ var InspectorPanelComponent = ({
                           children: "Basics"
                         }
                       ),
-                      /* @__PURE__ */ jsxs41("div", { className: "space-y-3", children: [
-                        /* @__PURE__ */ jsxs41(
+                      /* @__PURE__ */ jsxs42("div", { className: "space-y-3", children: [
+                        /* @__PURE__ */ jsxs42(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
@@ -11299,7 +11359,7 @@ var InspectorPanelComponent = ({
                             ]
                           }
                         ),
-                        /* @__PURE__ */ jsxs41(
+                        /* @__PURE__ */ jsxs42(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
@@ -11327,7 +11387,7 @@ var InspectorPanelComponent = ({
                             ]
                           }
                         ),
-                        currentPage?.isDynamic ? /* @__PURE__ */ jsxs41(
+                        currentPage?.isDynamic ? /* @__PURE__ */ jsxs42(
                           "div",
                           {
                             className: "rounded-2xl border px-4 py-3",
@@ -11368,10 +11428,10 @@ var InspectorPanelComponent = ({
   );
 };
 var InspectorPanelWithDensity = (props) => /* @__PURE__ */ jsx52(PhotonInspectorDensityProvider, { children: /* @__PURE__ */ jsx52(InspectorPanelComponent, { ...props }) });
-var InspectorPanel = memo5(InspectorPanelWithDensity);
+var InspectorPanel = memo6(InspectorPanelWithDensity);
 
 // src/studio/photon-studio/builder-mobile-panels.tsx
-import { jsx as jsx53, jsxs as jsxs42 } from "react/jsx-runtime";
+import { jsx as jsx53, jsxs as jsxs43 } from "react/jsx-runtime";
 var BuilderMobilePanels = ({
   paletteTab,
   onPaletteTabChange,
@@ -11402,7 +11462,7 @@ var BuilderMobilePanels = ({
   currentPage,
   onContentLocaleChange
 }) => {
-  return /* @__PURE__ */ jsxs42("div", { className: "mt-6 grid gap-4 lg:hidden", children: [
+  return /* @__PURE__ */ jsxs43("div", { className: "mt-6 grid gap-4 lg:hidden", children: [
     /* @__PURE__ */ jsx53(
       PalettePanel,
       {
@@ -11445,15 +11505,15 @@ var BuilderMobilePanels = ({
 };
 
 // src/studio/photon-studio/builder-sidebars.tsx
-import clsx19 from "clsx";
+import clsx20 from "clsx";
 import {
   useEffect as useEffect17,
   useState as useState27
 } from "react";
 
 // src/studio/photon-studio/builder-sidebar-edge-toggle.tsx
-import clsx17 from "clsx";
-import { ChevronLeft as ChevronLeft2, ChevronRight as ChevronRight5 } from "lucide-react";
+import clsx18 from "clsx";
+import { ChevronLeft as ChevronLeft2, ChevronRight as ChevronRight6 } from "lucide-react";
 import { jsx as jsx54 } from "react/jsx-runtime";
 var BuilderSidebarEdgeToggle = ({
   side,
@@ -11463,7 +11523,7 @@ var BuilderSidebarEdgeToggle = ({
   return /* @__PURE__ */ jsx54(
     "div",
     {
-      className: clsx17(
+      className: clsx18(
         "fixed bottom-0 z-20 hidden lg:block",
         side === "left" ? "left-0 w-5" : "right-0 w-5"
       ),
@@ -11476,7 +11536,7 @@ var BuilderSidebarEdgeToggle = ({
           type: "button",
           "aria-label": `Expand ${side} sidebar`,
           onClick: onExpand,
-          className: clsx17(
+          className: clsx18(
             "absolute top-6 rounded-full border p-2 shadow-[var(--photon-builder-shadow)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
             side === "left" ? "-left-10 group-hover:translate-x-9" : "-right-10 group-hover:-translate-x-9"
           ),
@@ -11485,7 +11545,7 @@ var BuilderSidebarEdgeToggle = ({
             background: "var(--photon-builder-panel-solid)",
             color: "var(--photon-builder-text-muted)"
           },
-          children: side === "left" ? /* @__PURE__ */ jsx54(ChevronRight5, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx54(ChevronLeft2, { className: "h-4 w-4" })
+          children: side === "left" ? /* @__PURE__ */ jsx54(ChevronRight6, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx54(ChevronLeft2, { className: "h-4 w-4" })
         }
       ) })
     }
@@ -11493,19 +11553,19 @@ var BuilderSidebarEdgeToggle = ({
 };
 
 // src/studio/photon-studio/builder-sidebar-resize-handle.tsx
-import clsx18 from "clsx";
-import { jsx as jsx55, jsxs as jsxs43 } from "react/jsx-runtime";
+import clsx19 from "clsx";
+import { jsx as jsx55, jsxs as jsxs44 } from "react/jsx-runtime";
 var BuilderSidebarResizeHandle = ({
   side,
   onPointerDown
 }) => {
-  return /* @__PURE__ */ jsxs43(
+  return /* @__PURE__ */ jsxs44(
     "button",
     {
       type: "button",
       "aria-label": `Resize ${side} sidebar`,
       onPointerDown,
-      className: clsx18(
+      className: clsx19(
         "group absolute bottom-0 top-0 z-20 hidden w-6 cursor-col-resize touch-none lg:block",
         side === "left" ? "right-0 translate-x-1/2" : "left-0 -translate-x-1/2"
       ),
@@ -11518,7 +11578,7 @@ var BuilderSidebarResizeHandle = ({
 };
 
 // src/studio/photon-studio/builder-sidebars.tsx
-import { Fragment as Fragment14, jsx as jsx56, jsxs as jsxs44 } from "react/jsx-runtime";
+import { Fragment as Fragment13, jsx as jsx56, jsxs as jsxs45 } from "react/jsx-runtime";
 var BuilderSidebars = ({
   sidebarsVisible,
   dockHeight,
@@ -11571,7 +11631,7 @@ var BuilderSidebars = ({
     }, 0);
     return () => window.clearTimeout(timeoutId);
   }, []);
-  return /* @__PURE__ */ jsxs44(Fragment14, { children: [
+  return /* @__PURE__ */ jsxs45(Fragment13, { children: [
     transitionsEnabled && sidebarsVisible && leftCollapsed ? /* @__PURE__ */ jsx56(
       BuilderSidebarEdgeToggle,
       {
@@ -11588,10 +11648,10 @@ var BuilderSidebars = ({
         onExpand: onExpandRight
       }
     ) : null,
-    /* @__PURE__ */ jsxs44(
+    /* @__PURE__ */ jsxs45(
       "div",
       {
-        className: clsx19(
+        className: clsx20(
           "relative min-w-0 lg:pl-[var(--photon-left-sidebar-width)] lg:pr-[var(--photon-right-sidebar-width)]",
           !isResizing && "lg:transition-[padding] lg:duration-500 lg:ease-[cubic-bezier(0.22,1,0.36,1)]"
         ),
@@ -11603,7 +11663,7 @@ var BuilderSidebars = ({
           /* @__PURE__ */ jsx56(
             "aside",
             {
-              className: clsx19(
+              className: clsx20(
                 "fixed bottom-0 z-30 hidden overflow-hidden lg:block",
                 transitionsEnabled && !isResizing && "transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
                 (!sidebarsVisible || leftCollapsed) && "pointer-events-none"
@@ -11616,10 +11676,10 @@ var BuilderSidebars = ({
               },
               "aria-hidden": !sidebarsVisible || leftCollapsed,
               "data-testid": "photon-builder-sidebar-left",
-              children: /* @__PURE__ */ jsxs44(
+              children: /* @__PURE__ */ jsxs45(
                 "div",
                 {
-                  className: clsx19(
+                  className: clsx20(
                     "relative h-full min-w-0 overflow-hidden border-r backdrop-blur-md"
                   ),
                   style: {
@@ -11672,7 +11732,7 @@ var BuilderSidebars = ({
           /* @__PURE__ */ jsx56(
             "aside",
             {
-              className: clsx19(
+              className: clsx20(
                 "fixed bottom-0 z-30 hidden overflow-hidden lg:block",
                 transitionsEnabled && !isResizing && "transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
                 (!sidebarsVisible || rightCollapsed) && "pointer-events-none"
@@ -11685,10 +11745,10 @@ var BuilderSidebars = ({
               },
               "aria-hidden": !sidebarsVisible || rightCollapsed,
               "data-testid": "photon-builder-sidebar-right",
-              children: /* @__PURE__ */ jsxs44(
+              children: /* @__PURE__ */ jsxs45(
                 "div",
                 {
-                  className: clsx19(
+                  className: clsx20(
                     "relative h-full min-w-0 overflow-hidden border-l backdrop-blur-md"
                   ),
                   style: {
@@ -11730,7 +11790,7 @@ var BuilderSidebars = ({
 };
 
 // src/studio/photon-studio/photon-stage.tsx
-import { jsx as jsx57, jsxs as jsxs45 } from "react/jsx-runtime";
+import { jsx as jsx57, jsxs as jsxs46 } from "react/jsx-runtime";
 var clampChannel = (value) => Math.max(0, Math.min(255, Math.round(value)));
 var HEX_COLOR_PATTERN = /^#([\da-f]{3}|[\da-f]{6})$/i;
 var RGB_COLOR_PATTERN = /^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*[\d.]+\s*)?\)$/i;
@@ -11865,7 +11925,6 @@ var PhotonStage = ({
   canManage,
   hasUnsavedChanges,
   collapsedBlockCount,
-  autosaveEnabled,
   saveState,
   showCollapsedInPreview,
   title,
@@ -11874,7 +11933,6 @@ var PhotonStage = ({
   pages,
   onHeightChange,
   onAuthOpen,
-  onAutosaveChange,
   onOpenPage,
   onCreatePage,
   onContentLocaleChange,
@@ -12050,7 +12108,7 @@ var PhotonStage = ({
       }
     };
   }, [builderThemeStyle, canManage]);
-  return /* @__PURE__ */ jsxs45(
+  return /* @__PURE__ */ jsxs46(
     "div",
     {
       className: "relative z-10 transition-[background-color,color] duration-500",
@@ -12067,7 +12125,6 @@ var PhotonStage = ({
             canManage,
             hasUnsavedChanges,
             collapsedBlockCount,
-            autosaveEnabled,
             saveState,
             showCollapsedInPreview,
             title,
@@ -12076,7 +12133,6 @@ var PhotonStage = ({
             pages,
             onHeightChange,
             onAuthOpen,
-            onAutosaveChange,
             onOpenPage,
             onCreatePage,
             onContentLocaleChange,
@@ -12090,7 +12146,7 @@ var PhotonStage = ({
             onSave
           }
         ) : null,
-        /* @__PURE__ */ jsxs45(
+        /* @__PURE__ */ jsxs46(
           BuilderSidebars,
           {
             sidebarsVisible,
@@ -12149,10 +12205,10 @@ var PhotonStage = ({
                   onExpandAll
                 }
               ),
-              /* @__PURE__ */ jsxs45(
+              /* @__PURE__ */ jsxs46(
                 "main",
                 {
-                  className: clsx20(
+                  className: clsx21(
                     "min-w-0 transition-colors duration-500",
                     canManage ? "min-h-screen pb-0" : "pb-0",
                     builderEnabled ? "px-4 sm:px-6 lg:px-8" : canvasSurfaceVisible ? "px-0" : "px-4 sm:px-6 lg:px-8"
@@ -12162,7 +12218,7 @@ var PhotonStage = ({
                     /* @__PURE__ */ jsx57(
                       "div",
                       {
-                        className: clsx20(
+                        className: clsx21(
                           "mx-auto transition-[max-width,opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
                           canvasSurfaceVisible ? "max-w-none" : "max-w-[1480px]"
                         ),
@@ -12222,10 +12278,10 @@ var PhotonStage = ({
                             onSiteSettingChange,
                             onSiteSettingFocus
                           }
-                        ) : /* @__PURE__ */ jsxs45(
+                        ) : /* @__PURE__ */ jsxs46(
                           "div",
                           {
-                            className: clsx20(
+                            className: clsx21(
                               "relative",
                               !isResizing && "transition-[border-radius,box-shadow] duration-300",
                               builderEnabled ? "rounded-[28px] border shadow-[var(--photon-builder-canvas-shadow)]" : null
@@ -12309,7 +12365,7 @@ var PhotonStage = ({
 };
 
 // src/studio/photon-studio/photon-studio-inner.tsx
-import { jsx as jsx58, jsxs as jsxs46 } from "react/jsx-runtime";
+import { jsx as jsx58, jsxs as jsxs47 } from "react/jsx-runtime";
 var PhotonStudioInner = ({
   initialDocument,
   initialResources = {},
@@ -12459,7 +12515,7 @@ var PhotonStudioInner = ({
   );
   const [showCollapsedInPreview, setShowCollapsedInPreview] = useState28(false);
   const [hasMounted, setHasMounted] = useState28(false);
-  const lastExternalModeRef = useRef6(initialMode);
+  const lastExternalModeRef = useRef7(initialMode);
   const deferredSearch = useDeferredValue(search);
   const builderEnabled = isAdmin && mode === "builder";
   const contentEnabled = isAdmin && mode === "content";
@@ -12483,8 +12539,6 @@ var PhotonStudioInner = ({
     storageKey: `${draftStorageKey}:sidebars`
   });
   const {
-    autosaveEnabled,
-    setAutosaveEnabled,
     hasUnsavedChanges,
     restoreLastSavedState,
     saveState,
@@ -12779,14 +12833,14 @@ var PhotonStudioInner = ({
     );
   };
   const contentNotice = renderContentNotice ?? null;
-  return /* @__PURE__ */ jsxs46("div", { className: "relative min-h-screen", children: [
+  return /* @__PURE__ */ jsxs47("div", { className: "relative min-h-screen", children: [
     /* @__PURE__ */ jsx58(
       PhotonSearchHighlightEffect,
       {
         activeHighlight: activeSearchHighlight
       }
     ),
-    /* @__PURE__ */ jsxs46(
+    /* @__PURE__ */ jsxs47(
       DndContext,
       {
         id: "photon-studio",
@@ -12804,14 +12858,12 @@ var PhotonStudioInner = ({
               canManage,
               hasUnsavedChanges,
               collapsedBlockCount,
-              autosaveEnabled,
               saveState,
               showCollapsedInPreview,
               title,
               description,
               onHeightChange: setDockHeight,
               onAuthOpen: () => onRequestAuth?.(),
-              onAutosaveChange: setAutosaveEnabled,
               onCollapseAll: collapseAllBlocks,
               onExpandAll: expandAllBlocks,
               onLogout: () => void onLogout?.(),

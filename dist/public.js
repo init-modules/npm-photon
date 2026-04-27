@@ -53,6 +53,10 @@ import {
   resolvePhotonAccountTabs,
   resolvePhotonSiteFrameExtensions
 } from "./chunk-HMZA6DQS.js";
+import {
+  collectPhotonProfileSeedSiteSettings,
+  mergePhotonProfileSeedIntoSiteSettings
+} from "./chunk-5MVWS6SK.js";
 import "./chunk-IOB5G6YT.js";
 import {
   mergePhotonStudioUrlState,
@@ -3045,6 +3049,7 @@ export {
   collectPhotonComponentSwitchableOptions,
   collectPhotonFooterExtensionItems,
   collectPhotonHeaderExtensionItems,
+  collectPhotonProfileSeedSiteSettings,
   createPhotonAccountTabExtension,
   createPhotonActionValue,
   createPhotonBlockLocalizationSchema,
@@ -3071,6 +3076,7 @@ export {
   getPhotonPublicSurfaceModeStyle as getPhotonSurfaceModeStyle,
   isPhotonComponentReferenceBlock,
   matchRoutePattern,
+  mergePhotonProfileSeedIntoSiteSettings,
   mergePhotonStudioUrlState,
   normalizePhotonStudioSurfaceMode,
   parsePhotonComponentLibraryBlockId,

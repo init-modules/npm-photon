@@ -4,6 +4,10 @@ import {
   sitePolicyPath
 } from "./chunk-P7MR63BK.js";
 import {
+  collectPhotonProfileSeedSiteSettings,
+  mergePhotonProfileSeedIntoSiteSettings
+} from "./chunk-5MVWS6SK.js";
+import {
   getPhotonSurfaceModeStyle
 } from "./chunk-IOB5G6YT.js";
 import {
@@ -161,6 +165,7 @@ export {
   clonePhotonValue,
   collectBlockIds,
   collectPhotonComponentLibraryUsages,
+  collectPhotonProfileSeedSiteSettings,
   comparePhotonCascadable,
   createPhotonActionValue,
   createPhotonAreaListId,
@@ -205,6 +210,7 @@ export {
   localeSitePath,
   mapGuardsToActionPolicies,
   matchRoutePattern,
+  mergePhotonProfileSeedIntoSiteSettings,
   mergePhotonStudioUrlState,
   movePhotonBlockInDocument,
   normalizePhotonStudioSurfaceMode,
