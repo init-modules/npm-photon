@@ -45,13 +45,9 @@ export const PhotonInspectorSection = ({
 
 	return (
 		<section
-			className={clsx(
-				"border",
-				tokens.sectionRadius,
-			)}
+			className={tokens.sectionRadius}
 			style={{
-				borderColor: "var(--photon-builder-border)",
-				background: "var(--photon-builder-panel-muted)",
+				background: "var(--photon-builder-panel-solid)",
 			}}
 			data-testid={`photon-inspector-section-${id}`}
 			data-collapsed={!isExpanded}
@@ -60,7 +56,7 @@ export const PhotonInspectorSection = ({
 				type="button"
 				onClick={nonCollapsible ? undefined : toggle}
 				className={clsx(
-					"flex w-full items-center gap-1.5 px-2 py-1 text-left",
+					"flex w-full items-center gap-1.5 px-2 py-1.5 text-left",
 					nonCollapsible ? "cursor-default" : "cursor-pointer",
 				)}
 				aria-expanded={isExpanded}

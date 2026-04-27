@@ -225,11 +225,10 @@ const InspectorPanelComponent = ({
 		>
 			<div
 				className={clsx(
-					"flex items-center justify-between gap-2 border-b",
+					"flex items-center justify-between gap-2",
 					tokens.headerPadding,
 				)}
 				style={{
-					borderColor: "var(--photon-builder-border)",
 					background: "var(--photon-builder-shell-strong)",
 				}}
 			>
@@ -321,10 +320,9 @@ const InspectorPanelComponent = ({
 				{activeTab === "block" && !selectedBlock && inspectorDefinition ? (
 					<>
 						<section
-							className="rounded-md border px-2 py-2"
+							className="rounded-[3px] px-2 py-1.5"
 							style={{
-								borderColor: "var(--photon-builder-border)",
-								background: "var(--photon-builder-panel-muted)",
+								background: "var(--photon-builder-panel-solid)",
 							}}
 						>
 							<div
@@ -339,11 +337,10 @@ const InspectorPanelComponent = ({
 							>
 								{inspectorDefinition.label}
 							</div>
-							<div className="mt-1 flex flex-wrap items-center gap-2">
+							<div className="mt-1 flex flex-wrap items-center gap-1">
 								<div
-									className="rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]"
+									className="rounded-sm px-1.5 py-0 font-mono text-[10px] uppercase tracking-[0.14em]"
 									style={{
-										borderColor: "var(--photon-builder-border)",
 										background: "var(--photon-builder-field)",
 										color: "var(--photon-builder-text-soft)",
 									}}
@@ -351,9 +348,8 @@ const InspectorPanelComponent = ({
 									{inspectorDefinition.module}
 								</div>
 								<div
-									className="rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]"
+									className="rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]"
 									style={{
-										borderColor: "var(--photon-builder-border)",
 										background: "var(--photon-builder-field)",
 										color: "var(--photon-builder-text-soft)",
 									}}
@@ -364,9 +360,8 @@ const InspectorPanelComponent = ({
 									)}
 								</div>
 								<div
-									className="rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]"
+									className="rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]"
 									style={{
-										borderColor: "var(--photon-builder-border-strong)",
 										background: "var(--photon-builder-accent-strong)",
 										color: "var(--photon-builder-accent)",
 									}}
@@ -385,10 +380,9 @@ const InspectorPanelComponent = ({
 						{Object.entries(inspectorGroups).map(([groupKey, fields]) => (
 							<section
 								key={groupKey}
-								className="rounded-md border px-2 py-2"
+								className="rounded-[3px] px-2 py-1.5"
 								style={{
-									borderColor: "var(--photon-builder-border)",
-									background: "var(--photon-builder-panel-muted)",
+									background: "var(--photon-builder-panel-solid)",
 								}}
 							>
 								<div className="mb-4 flex items-center justify-between gap-3">
@@ -412,23 +406,21 @@ const InspectorPanelComponent = ({
 									{fields.map((field) => (
 										<div
 											key={field.path}
-											className="rounded-2xl border px-4 py-3"
+											className="rounded-sm px-2 py-1.5"
 											style={{
-												borderColor: "var(--photon-builder-border)",
 												background: "var(--photon-builder-field)",
 											}}
 										>
-											<div className="flex items-center justify-between gap-3">
+											<div className="flex items-center justify-between gap-2">
 												<div
-													className="text-sm font-semibold"
+													className="text-[12px] font-semibold leading-tight"
 													style={{ color: "var(--photon-builder-text)" }}
 												>
 													{field.label}
 												</div>
 												<div
-													className="rounded-full border px-2 py-1 text-[10px] uppercase tracking-[0.22em]"
+													className="rounded-sm px-1.5 py-0.5 text-[9.5px] uppercase tracking-[0.16em]"
 													style={{
-														borderColor: "var(--photon-builder-border)",
 														color: "var(--photon-builder-text-soft)",
 													}}
 												>
@@ -436,14 +428,14 @@ const InspectorPanelComponent = ({
 												</div>
 											</div>
 											<div
-												className="mt-2 font-mono text-[10px] uppercase tracking-[0.24em]"
+												className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.18em]"
 												style={{ color: "var(--photon-builder-text-ghost)" }}
 											>
 												{field.path}
 											</div>
 											{field.description ? (
 												<div
-													className="mt-2 text-xs leading-5"
+													className="mt-0.5 text-[11px] leading-snug"
 													style={{ color: "var(--photon-builder-text-soft)" }}
 												>
 													{field.description}
@@ -464,10 +456,9 @@ const InspectorPanelComponent = ({
 				{activeTab === "block" && selectedBlock && !isTriggerTabActive ? (
 					<>
 						<section
-							className="rounded-md border px-2 py-2"
+							className="rounded-[3px] px-2 py-1.5"
 							style={{
-								borderColor: "var(--photon-builder-border)",
-								background: "var(--photon-builder-panel-muted)",
+								background: "var(--photon-builder-panel-solid)",
 							}}
 						>
 							<div
@@ -491,9 +482,8 @@ const InspectorPanelComponent = ({
 								</div>
 								{inspectorDefinition ? (
 									<div
-										className="rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]"
+										className="rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]"
 										style={{
-											borderColor: "var(--photon-builder-border)",
 											background: "var(--photon-builder-field)",
 											color: "var(--photon-builder-text-soft)",
 										}}
@@ -515,9 +505,8 @@ const InspectorPanelComponent = ({
 							) : null}
 							{selectedFieldPath ? (
 								<div
-									className="mt-4 rounded-2xl border px-3 py-3 text-sm"
+									className="mt-1.5 rounded-sm px-2 py-1 text-[11px]"
 									style={{
-										borderColor: "var(--photon-builder-border-strong)",
 										background: "var(--photon-builder-accent-strong)",
 										color: "var(--photon-builder-accent)",
 									}}
@@ -534,15 +523,14 @@ const InspectorPanelComponent = ({
 
 						{orderedGroupKeys.length > 0 ? (
 							<section
-								className="rounded-md border px-2 py-2"
+								className="rounded-[3px] px-2 py-1.5"
 								style={{
-									borderColor: "var(--photon-builder-border)",
-									background: "var(--photon-builder-panel-muted)",
+									background: "var(--photon-builder-panel-solid)",
 								}}
 								data-testid="photon-inspector-group-tabs"
 							>
 								<div
-									className="mb-4 flex flex-wrap gap-1"
+									className="mb-1.5 flex flex-wrap gap-1"
 									role="tablist"
 									aria-label="Field groups"
 								>
@@ -560,19 +548,16 @@ const InspectorPanelComponent = ({
 												role="tab"
 												aria-selected={isActive}
 												onClick={() => setSelectedGroupKey(groupKey)}
-												className="inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em]"
+												className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.16em]"
 												style={
 													isActive
 														? {
-																borderColor:
-																	"var(--photon-builder-border-strong)",
 																background:
 																	"var(--photon-builder-accent-soft)",
 																color: "var(--photon-builder-accent-text)",
 															}
 														: {
-																borderColor: "var(--photon-builder-border)",
-																background: "var(--photon-builder-panel)",
+																background: "transparent",
 																color: "var(--photon-builder-text-soft)",
 															}
 												}
@@ -580,11 +565,7 @@ const InspectorPanelComponent = ({
 											>
 												<span>{label}</span>
 												<span
-													className="rounded-full border px-2 py-0.5 text-[10px] tracking-normal"
-													style={{
-														borderColor: "var(--photon-builder-border)",
-														color: "var(--photon-builder-text-ghost)",
-													}}
+													className="rounded-sm px-1 py-0 text-[9.5px] tracking-normal opacity-70"
 												>
 													{groupFields.length}
 												</span>
@@ -605,10 +586,9 @@ const InspectorPanelComponent = ({
 										<>
 											{showLocaleSwitch ? (
 												<div
-													className="mb-4 inline-flex flex-wrap rounded-full border p-1"
+													className="mb-1.5 inline-flex flex-wrap rounded-sm p-0.5"
 													style={{
-														borderColor: "var(--photon-builder-border)",
-														background: "var(--photon-builder-panel)",
+														background: "var(--photon-builder-field)",
 													}}
 												>
 													{editableLocales.map((locale) => (
@@ -618,7 +598,7 @@ const InspectorPanelComponent = ({
 															onClick={() =>
 																onContentLocaleChange?.(locale.code)
 															}
-															className="cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] transition"
+															className="cursor-pointer rounded-sm px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] transition"
 															style={
 																locale.code === contentLocale
 																	? {
@@ -639,7 +619,7 @@ const InspectorPanelComponent = ({
 												</div>
 											) : null}
 											<div
-												className="space-y-4"
+												className="space-y-1"
 												data-testid={`photon-inspector-group-panel-${activeKey ?? "empty"}`}
 											>
 												{fields.map((field) => (
@@ -671,10 +651,9 @@ const InspectorPanelComponent = ({
 						) : null}
 
 						<section
-							className="rounded-md border px-2 py-2"
+							className="rounded-[3px] px-2 py-1.5"
 							style={{
-								borderColor: "var(--photon-builder-border)",
-								background: "var(--photon-builder-panel-muted)",
+								background: "var(--photon-builder-panel-solid)",
 							}}
 						>
 							<button
@@ -702,9 +681,8 @@ const InspectorPanelComponent = ({
 							</button>
 							{showBlockJson ? (
 								<pre
-									className="mt-4 h-[320px] overflow-x-auto rounded-2xl border p-4 text-xs leading-6"
+									className="mt-1.5 h-[280px] overflow-x-auto rounded-sm p-2 text-[10.5px] leading-5"
 									style={{
-										borderColor: "var(--photon-builder-border)",
 										background: "var(--photon-builder-field)",
 										color: "var(--photon-builder-text-muted)",
 									}}
@@ -719,10 +697,9 @@ const InspectorPanelComponent = ({
 				{activeTab === "block" ? (
 					<>
 						<section
-							className="rounded-md border px-2 py-2"
+							className="rounded-[3px] px-2 py-1.5"
 							style={{
-								borderColor: "var(--photon-builder-border)",
-								background: "var(--photon-builder-panel-muted)",
+								background: "var(--photon-builder-panel-solid)",
 							}}
 						>
 							<button
@@ -750,9 +727,8 @@ const InspectorPanelComponent = ({
 							</button>
 							{showDocumentJson ? (
 								<pre
-									className="mt-4 max-h-[320px] overflow-auto rounded-2xl border p-4 text-xs leading-6"
+									className="mt-1.5 max-h-[280px] overflow-auto rounded-sm p-2 text-[10.5px] leading-5"
 									style={{
-										borderColor: "var(--photon-builder-border)",
 										background: "var(--photon-builder-field)",
 										color: "var(--photon-builder-text-muted)",
 									}}
@@ -764,9 +740,9 @@ const InspectorPanelComponent = ({
 
 						{!definitionFields.length && !hasBlockContext ? (
 							<section
-								className="rounded-[24px] border border-dashed px-4 py-4 text-sm leading-6"
+								className="rounded-sm px-2 py-1.5 text-[11px] leading-snug"
 								style={{
-									borderColor: "var(--photon-builder-border)",
+									background: "var(--photon-builder-panel-solid)",
 									color: "var(--photon-builder-text-muted)",
 								}}
 							>
@@ -781,9 +757,9 @@ const InspectorPanelComponent = ({
 				{activeTab === "page" ? (
 					<>
 						<section
-							className="rounded-[24px] border border-dashed px-4 py-4 text-sm leading-6"
+							className="rounded-sm px-2 py-1.5 text-[11px] leading-snug"
 							style={{
-								borderColor: "var(--photon-builder-border)",
+								background: "var(--photon-builder-panel-solid)",
 								color: "var(--photon-builder-text-muted)",
 							}}
 						>
@@ -799,11 +775,10 @@ const InspectorPanelComponent = ({
 							>
 								{summaryName}
 							</div>
-							<div className="mt-2 flex flex-wrap items-center gap-2">
+							<div className="mt-1 flex flex-wrap items-center gap-1">
 								<div
-									className="rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]"
+									className="rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]"
 									style={{
-										borderColor: "var(--photon-builder-border)",
 										background: "var(--photon-builder-field)",
 										color: "var(--photon-builder-text-soft)",
 									}}
@@ -811,9 +786,8 @@ const InspectorPanelComponent = ({
 									{currentPage?.kind ?? "page"}
 								</div>
 								<div
-									className="rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]"
+									className="rounded-sm px-1.5 py-0 font-mono text-[10px] uppercase tracking-[0.14em]"
 									style={{
-										borderColor: "var(--photon-builder-border)",
 										background: "var(--photon-builder-field)",
 										color: "var(--photon-builder-text-soft)",
 									}}
@@ -821,15 +795,14 @@ const InspectorPanelComponent = ({
 									{currentPage?.route ?? document.route}
 								</div>
 								{currentPage?.isDynamic ? (
-									<div className="rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-amber-100/80">
+									<div className="rounded-sm bg-amber-300/10 px-1.5 py-0 text-[10px] uppercase tracking-[0.14em] text-amber-100/80">
 										Dynamic template
 									</div>
 								) : null}
 							</div>
 							<div
-								className="mt-4 rounded-2xl border px-3 py-3 text-sm leading-6"
+								className="mt-1.5 rounded-sm px-2 py-1 text-[11px] leading-snug"
 								style={{
-									borderColor: "var(--photon-builder-border-strong)",
 									background: "var(--photon-builder-accent-strong)",
 									color: "var(--photon-builder-accent)",
 								}}
@@ -840,54 +813,51 @@ const InspectorPanelComponent = ({
 						</section>
 
 						<section
-							className="rounded-md border px-2 py-2"
+							className="rounded-[3px] px-2 py-1.5"
 							style={{
-								borderColor: "var(--photon-builder-border)",
-								background: "var(--photon-builder-panel-muted)",
+								background: "var(--photon-builder-panel-solid)",
 							}}
 						>
 							<div
-								className="mb-4 text-[11px] uppercase tracking-[0.28em]"
+								className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em]"
 								style={{ color: "var(--photon-builder-text-soft)" }}
 							>
 								Basics
 							</div>
-							<div className="space-y-3">
+							<div className="space-y-1">
 								<div
-									className="rounded-2xl border px-4 py-3"
+									className="rounded-sm px-2 py-1.5"
 									style={{
-										borderColor: "var(--photon-builder-border)",
 										background: "var(--photon-builder-field)",
 									}}
 								>
 									<div
-										className="text-[11px] uppercase tracking-[0.24em]"
+										className="text-[10px] uppercase tracking-[0.16em]"
 										style={{ color: "var(--photon-builder-text-soft)" }}
 									>
 										Name
 									</div>
 									<div
-										className="mt-2 text-sm font-semibold"
+										className="mt-0.5 text-[12px] font-semibold leading-tight"
 										style={{ color: "var(--photon-builder-text)" }}
 									>
 										{summaryName}
 									</div>
 								</div>
 								<div
-									className="rounded-2xl border px-4 py-3"
+									className="rounded-sm px-2 py-1.5"
 									style={{
-										borderColor: "var(--photon-builder-border)",
 										background: "var(--photon-builder-field)",
 									}}
 								>
 									<div
-										className="text-[11px] uppercase tracking-[0.24em]"
+										className="text-[10px] uppercase tracking-[0.16em]"
 										style={{ color: "var(--photon-builder-text-soft)" }}
 									>
 										{currentPage?.isDynamic ? "Route pattern" : "Path"}
 									</div>
 									<div
-										className="mt-2 font-mono text-sm"
+										className="mt-0.5 font-mono text-[11px]"
 										style={{ color: "var(--photon-builder-text-muted)" }}
 									>
 										{summaryRoute}
@@ -895,20 +865,19 @@ const InspectorPanelComponent = ({
 								</div>
 								{currentPage?.isDynamic ? (
 									<div
-										className="rounded-2xl border px-4 py-3"
+										className="rounded-sm px-2 py-1.5"
 										style={{
-											borderColor: "var(--photon-builder-border)",
 											background: "var(--photon-builder-field)",
 										}}
 									>
 										<div
-											className="text-[11px] uppercase tracking-[0.24em]"
+											className="text-[10px] uppercase tracking-[0.16em]"
 											style={{ color: "var(--photon-builder-text-soft)" }}
 										>
 											Current route
 										</div>
 										<div
-											className="mt-2 font-mono text-sm"
+											className="mt-0.5 font-mono text-[11px]"
 											style={{ color: "var(--photon-builder-text-muted)" }}
 										>
 											{currentRoute}

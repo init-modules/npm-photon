@@ -119,7 +119,7 @@ const SelectFieldEditor = ({
 		<button
 			type="button"
 			onFocus={() => onFocus()}
-			className="inline-flex h-auto w-full min-w-0 cursor-pointer items-center justify-between gap-3 rounded-[20px] border px-4 py-3 text-left text-sm font-semibold shadow-none transition-[border-color,background-color] border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] text-[color:var(--photon-builder-text)] hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-panel-solid)] focus-visible:border-[color:var(--photon-builder-border-strong)] focus-visible:bg-[color:var(--photon-builder-panel-solid)]"
+			className="inline-flex h-6 w-full min-w-0 cursor-pointer items-center justify-between gap-1 rounded-sm px-1.5 text-left text-[11px] font-medium leading-tight shadow-none outline-none ring-1 ring-transparent transition-[box-shadow] bg-[color:var(--photon-builder-field)] text-[color:var(--photon-builder-text)] focus-visible:ring-[color:var(--photon-builder-border-strong)]"
 		>
 			<span className="min-w-0 truncate">
 				{translate(
@@ -174,7 +174,7 @@ const ObjectFieldEditor = ({
 	const objectValue = normalizeObjectValue(value);
 
 	return (
-		<div className="space-y-3 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3">
+		<div className="space-y-1 rounded-sm bg-[color:var(--photon-builder-field)] p-1.5">
 			{(field.fields ?? []).map((childField, index) => {
 				const childPath = childField.path ?? "";
 				const childAbsolutePath = joinFieldPath(absolutePath ?? "", childPath);
@@ -185,7 +185,7 @@ const ObjectFieldEditor = ({
 				return (
 					<div
 						key={childAbsolutePath || `${field.label ?? field.path}-${index}`}
-						className="rounded-[18px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] p-3"
+						className="rounded-sm px-1.5 py-1"
 					>
 						<FieldEditor
 							field={childField}
@@ -241,8 +241,8 @@ const RepeaterFieldEditor = ({
 	};
 
 	return (
-		<div className="space-y-3">
-			<div className="space-y-3 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3">
+		<div className="space-y-1">
+			<div className="space-y-1 rounded-sm bg-[color:var(--photon-builder-field)] p-1.5">
 				{items.map((item, index) => {
 					const itemAbsolutePath = joinFieldPath(
 						absolutePath ?? "",
@@ -266,18 +266,18 @@ const RepeaterFieldEditor = ({
 					return (
 						<div
 							key={itemAbsolutePath}
-							className="rounded-[18px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] p-3"
+							className="rounded-sm bg-[color:var(--photon-builder-panel-solid)] px-1.5 py-1"
 						>
-							<div className="mb-3 flex items-center justify-between gap-3">
+							<div className="mb-1 flex items-center justify-between gap-2">
 								<div className="min-w-0">
 									<div
-										className="truncate text-sm font-semibold"
+										className="truncate text-[11px] font-semibold leading-tight"
 										style={{ color: "var(--photon-builder-text)" }}
 									>
 										{itemLabel}
 									</div>
 								</div>
-								<div className="flex shrink-0 items-center gap-1">
+								<div className="flex shrink-0 items-center gap-0.5">
 									<button
 										type="button"
 										disabled={index === 0}
@@ -286,10 +286,10 @@ const RepeaterFieldEditor = ({
 												movePhotonArrayItem(items, index, index - 1),
 											)
 										}
-										className="inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-2 text-[color:var(--photon-builder-text-soft)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40"
+										className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40"
 										aria-label={`Move ${itemLabel} up`}
 									>
-										<ArrowUp className="h-4 w-4" />
+										<ArrowUp className="h-3 w-3" />
 									</button>
 									<button
 										type="button"
@@ -299,10 +299,10 @@ const RepeaterFieldEditor = ({
 												movePhotonArrayItem(items, index, index + 1),
 											)
 										}
-										className="inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-2 text-[color:var(--photon-builder-text-soft)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40"
+										className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40"
 										aria-label={`Move ${itemLabel} down`}
 									>
-										<ArrowDown className="h-4 w-4" />
+										<ArrowDown className="h-3 w-3" />
 									</button>
 									<button
 										type="button"
@@ -311,10 +311,10 @@ const RepeaterFieldEditor = ({
 												items.filter((_, itemIndex) => itemIndex !== index),
 											)
 										}
-										className="inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-2 text-[color:var(--photon-builder-text-soft)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:text-[color:var(--photon-builder-text)]"
+										className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)]"
 										aria-label={`Remove ${itemLabel}`}
 									>
-										<Trash2 className="h-4 w-4" />
+										<Trash2 className="h-3 w-3" />
 									</button>
 								</div>
 							</div>
@@ -354,7 +354,7 @@ const RepeaterFieldEditor = ({
 													childAbsolutePath ||
 													`${itemAbsolutePath}-${childIndex}`
 												}
-												className="rounded-[16px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3"
+												className="rounded-sm px-1.5 py-1"
 											>
 												<FieldEditor
 													field={childField}
@@ -399,9 +399,9 @@ const RepeaterFieldEditor = ({
 			<button
 				type="button"
 				onClick={addItem}
-				className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] px-4 py-3 text-sm font-semibold text-[color:var(--photon-builder-text)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-panel-solid)]"
+				className="inline-flex h-6 w-full cursor-pointer items-center justify-center gap-1 rounded-sm bg-[color:var(--photon-builder-field)] px-2 text-[11px] font-semibold text-[color:var(--photon-builder-text-muted)] transition hover:bg-[color:var(--photon-builder-panel-solid)] hover:text-[color:var(--photon-builder-text)]"
 			>
-				<Plus className="h-4 w-4" />
+				<Plus className="h-3 w-3" />
 				{translate(
 					field.addLabelKey ?? field.addLabel ?? "Add item",
 					field.addLabel ?? "Add item",
@@ -470,9 +470,8 @@ const FieldEditorImpl = ({
 			<button
 				type="button"
 				onClick={() => setFieldBinding(blockId, path, null)}
-				className="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-sm border px-1 font-mono text-[10px] leading-tight"
+				className="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-sm px-1 font-mono text-[10px] leading-tight"
 				style={{
-					borderColor: "var(--photon-builder-border-strong)",
 					background: "var(--photon-builder-accent-strong)",
 					color: "var(--photon-builder-accent)",
 				}}
@@ -522,7 +521,7 @@ const FieldEditorImpl = ({
 						onFocus={() => onFocus(path)}
 						onChange={onChange}
 						className="text-[12px] text-[color:var(--photon-builder-text)]"
-						surfaceClassName="border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)]"
+						surfaceClassName="bg-[color:var(--photon-builder-field)]"
 					/>
 					<SiteDataBindingPicker
 						onPick={(binding) =>

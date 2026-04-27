@@ -60,9 +60,9 @@ export const BlockPreviewScenariosPicker = ({
 			defaultCollapsed={previewScenarioId === null}
 			trailing={
 				<span
-					className="rounded-sm border px-1 font-mono text-[9px] tabular-nums"
+					className="rounded-sm px-1 font-mono text-[9px] tabular-nums"
 					style={{
-						borderColor: "var(--photon-builder-border)",
+						background: "var(--photon-builder-field)",
 						color: "var(--photon-builder-text-soft)",
 					}}
 				>
@@ -77,11 +77,8 @@ export const BlockPreviewScenariosPicker = ({
 				<button
 					type="button"
 					onClick={() => setBlockPreviewScenario(block.id, null)}
-					className="rounded-sm border px-1.5 py-0.5 text-[10.5px]"
+					className="rounded-sm px-1.5 py-0.5 text-[10.5px]"
 					style={{
-						borderColor: previewScenarioId
-							? "var(--photon-builder-border)"
-							: "var(--photon-builder-border-strong)",
 						background: previewScenarioId
 							? "var(--photon-builder-field)"
 							: "var(--photon-builder-accent-strong)",
@@ -100,11 +97,8 @@ export const BlockPreviewScenariosPicker = ({
 							key={`${item.group}:${item.id}`}
 							type="button"
 							onClick={() => setBlockPreviewScenario(block.id, item.id)}
-							className="rounded-sm border px-1.5 py-0.5 text-[10.5px]"
+							className="rounded-sm px-1.5 py-0.5 text-[10.5px]"
 							style={{
-								borderColor: isActive
-									? "var(--photon-builder-border-strong)"
-									: "var(--photon-builder-border)",
 								background: isActive
 									? "var(--photon-builder-accent-strong)"
 									: "var(--photon-builder-field)",

@@ -63,9 +63,9 @@ export const RouteFamilyEditor = () => {
 			trailing={
 				patterns.length > 0 ? (
 					<span
-						className="rounded-sm border px-1 font-mono text-[9px] tabular-nums"
+						className="rounded-sm px-1 font-mono text-[9px] tabular-nums"
 						style={{
-							borderColor: "var(--photon-builder-border)",
+							background: "var(--photon-builder-field)",
 							color: "var(--photon-builder-text-soft)",
 						}}
 					>
@@ -92,10 +92,9 @@ export const RouteFamilyEditor = () => {
 					patterns.map((pattern) => (
 						<div
 							key={pattern}
-							className="flex items-center gap-1 rounded-sm border px-1.5 py-0.5 font-mono text-[11px]"
+							className="flex items-center gap-1 rounded-sm px-1.5 py-0.5 font-mono text-[11px]"
 							style={{
-								borderColor: "var(--photon-builder-border)",
-								background: "var(--photon-builder-panel-solid)",
+								background: "var(--photon-builder-field)",
 								color: "var(--photon-builder-text)",
 							}}
 							data-testid={`photon-route-family-pattern-${pattern}`}
@@ -123,9 +122,8 @@ export const RouteFamilyEditor = () => {
 						value={draftPattern}
 						onChange={(event) => setDraftPattern(event.currentTarget.value)}
 						placeholder="/:city/products/:slug"
-						className="h-6 flex-1 rounded-sm border bg-[color:var(--photon-builder-panel-solid)] px-1.5 font-mono text-[11px] outline-none focus:border-[color:var(--photon-builder-border-strong)]"
+						className="h-6 flex-1 rounded-sm bg-[color:var(--photon-builder-field)] px-1.5 font-mono text-[11px] outline-none ring-1 ring-transparent transition-[box-shadow] focus:ring-[color:var(--photon-builder-border-strong)]"
 						style={{
-							borderColor: "var(--photon-builder-border)",
 							color: "var(--photon-builder-text)",
 						}}
 						onKeyDown={(event) => {
@@ -139,10 +137,10 @@ export const RouteFamilyEditor = () => {
 					<button
 						type="button"
 						onClick={addPattern}
-						className="inline-flex h-6 cursor-pointer items-center gap-1 rounded-sm border px-1.5 text-[10px]"
+						className="inline-flex h-6 cursor-pointer items-center gap-1 rounded-sm px-1.5 text-[10px]"
 						style={{
-							borderColor: "var(--photon-builder-border-strong)",
-							color: "var(--photon-builder-text)",
+							background: "var(--photon-builder-accent-soft)",
+							color: "var(--photon-builder-accent-text)",
 						}}
 						data-testid="photon-route-family-add"
 					>

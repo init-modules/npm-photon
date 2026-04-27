@@ -47,9 +47,9 @@ export type PhotonInspectorDensityTokens = {
 
 const COMPACT_TOKENS: PhotonInspectorDensityTokens = {
 	rowGap: "space-y-0.5",
-	sectionPadding: "px-2 py-1.5",
-	headerPadding: "px-3 py-2",
-	sectionRadius: "rounded-md",
+	sectionPadding: "px-1.5 pb-1.5",
+	headerPadding: "px-2.5 py-1.5",
+	sectionRadius: "rounded-[3px]",
 	sectionHeaderClass:
 		"text-[10px] font-semibold uppercase tracking-[0.16em] leading-tight",
 	fieldLabelClass:
@@ -58,9 +58,13 @@ const COMPACT_TOKENS: PhotonInspectorDensityTokens = {
 	labelGutterWidth: "min-w-[112px] max-w-[112px]",
 	rowMinHeight: "min-h-[24px]",
 	tabClass:
-		"cursor-pointer rounded px-2 py-0.5 text-[11px] font-semibold transition leading-tight",
+		"cursor-pointer rounded-sm px-2 py-0.5 text-[11px] font-semibold transition leading-tight",
+	// Inputs use a darker recess instead of a visible border: the section
+	// background is already a tone lighter, so the deeper `field` swatch alone
+	// chambers the input. A 1px ring of the same colour keeps focus state
+	// crisp without painting a permanent white-ish outline.
 	inputClass:
-		"h-6 w-full min-w-0 rounded-sm border bg-[color:var(--photon-builder-field)] px-1.5 text-[11px] leading-tight outline-none transition-[border-color] focus:border-[color:var(--photon-builder-border-strong)] tabular-nums",
+		"h-6 w-full min-w-0 rounded-sm bg-[color:var(--photon-builder-field)] px-1.5 text-[11px] leading-tight outline-none ring-1 ring-transparent transition-[box-shadow] focus:ring-[color:var(--photon-builder-border-strong)] tabular-nums",
 	subtitleClass: "text-[13px] font-semibold leading-tight",
 };
 

@@ -199,16 +199,20 @@ import {
 import { jsx as jsx4 } from "react/jsx-runtime";
 var COMPACT_TOKENS = {
   rowGap: "space-y-0.5",
-  sectionPadding: "px-2 py-1.5",
-  headerPadding: "px-3 py-2",
-  sectionRadius: "rounded-md",
+  sectionPadding: "px-1.5 pb-1.5",
+  headerPadding: "px-2.5 py-1.5",
+  sectionRadius: "rounded-[3px]",
   sectionHeaderClass: "text-[10px] font-semibold uppercase tracking-[0.16em] leading-tight",
   fieldLabelClass: "text-[11px] font-medium leading-tight tabular-nums",
   rowSpacing: "",
   labelGutterWidth: "min-w-[112px] max-w-[112px]",
   rowMinHeight: "min-h-[24px]",
-  tabClass: "cursor-pointer rounded px-2 py-0.5 text-[11px] font-semibold transition leading-tight",
-  inputClass: "h-6 w-full min-w-0 rounded-sm border bg-[color:var(--photon-builder-field)] px-1.5 text-[11px] leading-tight outline-none transition-[border-color] focus:border-[color:var(--photon-builder-border-strong)] tabular-nums",
+  tabClass: "cursor-pointer rounded-sm px-2 py-0.5 text-[11px] font-semibold transition leading-tight",
+  // Inputs use a darker recess instead of a visible border: the section
+  // background is already a tone lighter, so the deeper `field` swatch alone
+  // chambers the input. A 1px ring of the same colour keeps focus state
+  // crisp without painting a permanent white-ish outline.
+  inputClass: "h-6 w-full min-w-0 rounded-sm bg-[color:var(--photon-builder-field)] px-1.5 text-[11px] leading-tight outline-none ring-1 ring-transparent transition-[box-shadow] focus:ring-[color:var(--photon-builder-border-strong)] tabular-nums",
   subtitleClass: "text-[13px] font-semibold leading-tight"
 };
 var PhotonInspectorDensityContext = createContext(null);
@@ -1560,7 +1564,7 @@ var SelectFieldEditor = ({
     {
       type: "button",
       onFocus: () => onFocus(),
-      className: "inline-flex h-auto w-full min-w-0 cursor-pointer items-center justify-between gap-3 rounded-[20px] border px-4 py-3 text-left text-sm font-semibold shadow-none transition-[border-color,background-color] border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] text-[color:var(--photon-builder-text)] hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-panel-solid)] focus-visible:border-[color:var(--photon-builder-border-strong)] focus-visible:bg-[color:var(--photon-builder-panel-solid)]",
+      className: "inline-flex h-6 w-full min-w-0 cursor-pointer items-center justify-between gap-1 rounded-sm px-1.5 text-left text-[11px] font-medium leading-tight shadow-none outline-none ring-1 ring-transparent transition-[box-shadow] bg-[color:var(--photon-builder-field)] text-[color:var(--photon-builder-text)] focus-visible:ring-[color:var(--photon-builder-border-strong)]",
       children: [
         /* @__PURE__ */ jsx13("span", { className: "min-w-0 truncate", children: translate(
           activeOption?.labelKey ?? activeOption?.label ?? "Select value",
@@ -1606,14 +1610,14 @@ var ObjectFieldEditor = ({
   hidePathLabel
 }) => {
   const objectValue = normalizeObjectValue(value);
-  return /* @__PURE__ */ jsx13("div", { className: "space-y-3 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3", children: (field.fields ?? []).map((childField, index) => {
+  return /* @__PURE__ */ jsx13("div", { className: "space-y-1 rounded-sm bg-[color:var(--photon-builder-field)] p-1.5", children: (field.fields ?? []).map((childField, index) => {
     const childPath = childField.path ?? "";
     const childAbsolutePath = joinFieldPath(absolutePath ?? "", childPath);
     const childValue = childPath ? getValueAtPath(objectValue, childPath) : objectValue;
     return /* @__PURE__ */ jsx13(
       "div",
       {
-        className: "rounded-[18px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] p-3",
+        className: "rounded-sm px-1.5 py-1",
         children: /* @__PURE__ */ jsx13(
           FieldEditor,
           {
@@ -1658,8 +1662,8 @@ var RepeaterFieldEditor = ({
     });
     updateItems([...items, defaultItem]);
   };
-  return /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
-    /* @__PURE__ */ jsx13("div", { className: "space-y-3 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3", children: items.map((item, index) => {
+  return /* @__PURE__ */ jsxs8("div", { className: "space-y-1", children: [
+    /* @__PURE__ */ jsx13("div", { className: "space-y-1 rounded-sm bg-[color:var(--photon-builder-field)] p-1.5", children: items.map((item, index) => {
       const itemAbsolutePath = joinFieldPath(
         absolutePath ?? "",
         String(index)
@@ -1675,18 +1679,18 @@ var RepeaterFieldEditor = ({
       return /* @__PURE__ */ jsxs8(
         "div",
         {
-          className: "rounded-[18px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] p-3",
+          className: "rounded-sm bg-[color:var(--photon-builder-panel-solid)] px-1.5 py-1",
           children: [
-            /* @__PURE__ */ jsxs8("div", { className: "mb-3 flex items-center justify-between gap-3", children: [
+            /* @__PURE__ */ jsxs8("div", { className: "mb-1 flex items-center justify-between gap-2", children: [
               /* @__PURE__ */ jsx13("div", { className: "min-w-0", children: /* @__PURE__ */ jsx13(
                 "div",
                 {
-                  className: "truncate text-sm font-semibold",
+                  className: "truncate text-[11px] font-semibold leading-tight",
                   style: { color: "var(--photon-builder-text)" },
                   children: itemLabel
                 }
               ) }),
-              /* @__PURE__ */ jsxs8("div", { className: "flex shrink-0 items-center gap-1", children: [
+              /* @__PURE__ */ jsxs8("div", { className: "flex shrink-0 items-center gap-0.5", children: [
                 /* @__PURE__ */ jsx13(
                   "button",
                   {
@@ -1695,9 +1699,9 @@ var RepeaterFieldEditor = ({
                     onClick: () => updateItems(
                       movePhotonArrayItem(items, index, index - 1)
                     ),
-                    className: "inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-2 text-[color:var(--photon-builder-text-soft)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
+                    className: "inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
                     "aria-label": `Move ${itemLabel} up`,
-                    children: /* @__PURE__ */ jsx13(ArrowUp2, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx13(ArrowUp2, { className: "h-3 w-3" })
                   }
                 ),
                 /* @__PURE__ */ jsx13(
@@ -1708,9 +1712,9 @@ var RepeaterFieldEditor = ({
                     onClick: () => updateItems(
                       movePhotonArrayItem(items, index, index + 1)
                     ),
-                    className: "inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-2 text-[color:var(--photon-builder-text-soft)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
+                    className: "inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
                     "aria-label": `Move ${itemLabel} down`,
-                    children: /* @__PURE__ */ jsx13(ArrowDown2, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx13(ArrowDown2, { className: "h-3 w-3" })
                   }
                 ),
                 /* @__PURE__ */ jsx13(
@@ -1720,9 +1724,9 @@ var RepeaterFieldEditor = ({
                     onClick: () => updateItems(
                       items.filter((_, itemIndex) => itemIndex !== index)
                     ),
-                    className: "inline-flex cursor-pointer items-center justify-center rounded-full border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-2 text-[color:var(--photon-builder-text-soft)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:text-[color:var(--photon-builder-text)]",
+                    className: "inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)]",
                     "aria-label": `Remove ${itemLabel}`,
-                    children: /* @__PURE__ */ jsx13(Trash22, { className: "h-4 w-4" })
+                    children: /* @__PURE__ */ jsx13(Trash22, { className: "h-3 w-3" })
                   }
                 )
               ] })
@@ -1753,7 +1757,7 @@ var RepeaterFieldEditor = ({
               return /* @__PURE__ */ jsx13(
                 "div",
                 {
-                  className: "rounded-[16px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] p-3",
+                  className: "rounded-sm px-1.5 py-1",
                   children: /* @__PURE__ */ jsx13(
                     FieldEditor,
                     {
@@ -1798,9 +1802,9 @@ var RepeaterFieldEditor = ({
       {
         type: "button",
         onClick: addItem,
-        className: "inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-[20px] border border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-panel-muted)] px-4 py-3 text-sm font-semibold text-[color:var(--photon-builder-text)] transition hover:border-[color:var(--photon-builder-border-strong)] hover:bg-[color:var(--photon-builder-panel-solid)]",
+        className: "inline-flex h-6 w-full cursor-pointer items-center justify-center gap-1 rounded-sm bg-[color:var(--photon-builder-field)] px-2 text-[11px] font-semibold text-[color:var(--photon-builder-text-muted)] transition hover:bg-[color:var(--photon-builder-panel-solid)] hover:text-[color:var(--photon-builder-text)]",
         children: [
-          /* @__PURE__ */ jsx13(Plus2, { className: "h-4 w-4" }),
+          /* @__PURE__ */ jsx13(Plus2, { className: "h-3 w-3" }),
           translate(
             field.addLabelKey ?? field.addLabel ?? "Add item",
             field.addLabel ?? "Add item"
@@ -1858,9 +1862,8 @@ var FieldEditorImpl = ({
     {
       type: "button",
       onClick: () => setFieldBinding(blockId, path, null),
-      className: "inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-sm border px-1 font-mono text-[10px] leading-tight",
+      className: "inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-sm px-1 font-mono text-[10px] leading-tight",
       style: {
-        borderColor: "var(--photon-builder-border-strong)",
         background: "var(--photon-builder-accent-strong)",
         color: "var(--photon-builder-accent)"
       },
@@ -1917,7 +1920,7 @@ var FieldEditorImpl = ({
             onFocus: () => onFocus(path),
             onChange,
             className: "text-[12px] text-[color:var(--photon-builder-text)]",
-            surfaceClassName: "border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)]"
+            surfaceClassName: "bg-[color:var(--photon-builder-field)]"
           }
         ),
         /* @__PURE__ */ jsx13(
@@ -9452,13 +9455,9 @@ var PhotonInspectorSection = ({
   return /* @__PURE__ */ jsxs37(
     "section",
     {
-      className: clsx16(
-        "border",
-        tokens.sectionRadius
-      ),
+      className: tokens.sectionRadius,
       style: {
-        borderColor: "var(--photon-builder-border)",
-        background: "var(--photon-builder-panel-muted)"
+        background: "var(--photon-builder-panel-solid)"
       },
       "data-testid": `photon-inspector-section-${id}`,
       "data-collapsed": !isExpanded,
@@ -9469,7 +9468,7 @@ var PhotonInspectorSection = ({
             type: "button",
             onClick: nonCollapsible ? void 0 : toggle,
             className: clsx16(
-              "flex w-full items-center gap-1.5 px-2 py-1 text-left",
+              "flex w-full items-center gap-1.5 px-2 py-1.5 text-left",
               nonCollapsible ? "cursor-default" : "cursor-pointer"
             ),
             "aria-expanded": isExpanded,
@@ -9558,9 +9557,9 @@ var BlockPreviewScenariosPicker = ({
       trailing: /* @__PURE__ */ jsx48(
         "span",
         {
-          className: "rounded-sm border px-1 font-mono text-[9px] tabular-nums",
+          className: "rounded-sm px-1 font-mono text-[9px] tabular-nums",
           style: {
-            borderColor: "var(--photon-builder-border)",
+            background: "var(--photon-builder-field)",
             color: "var(--photon-builder-text-soft)"
           },
           children: items.length
@@ -9577,9 +9576,8 @@ var BlockPreviewScenariosPicker = ({
               {
                 type: "button",
                 onClick: () => setBlockPreviewScenario(block.id, null),
-                className: "rounded-sm border px-1.5 py-0.5 text-[10.5px]",
+                className: "rounded-sm px-1.5 py-0.5 text-[10.5px]",
                 style: {
-                  borderColor: previewScenarioId ? "var(--photon-builder-border)" : "var(--photon-builder-border-strong)",
                   background: previewScenarioId ? "var(--photon-builder-field)" : "var(--photon-builder-accent-strong)",
                   color: previewScenarioId ? "var(--photon-builder-text-soft)" : "var(--photon-builder-accent)"
                 },
@@ -9594,9 +9592,8 @@ var BlockPreviewScenariosPicker = ({
                 {
                   type: "button",
                   onClick: () => setBlockPreviewScenario(block.id, item.id),
-                  className: "rounded-sm border px-1.5 py-0.5 text-[10.5px]",
+                  className: "rounded-sm px-1.5 py-0.5 text-[10.5px]",
                   style: {
-                    borderColor: isActive ? "var(--photon-builder-border-strong)" : "var(--photon-builder-border)",
                     background: isActive ? "var(--photon-builder-accent-strong)" : "var(--photon-builder-field)",
                     color: isActive ? "var(--photon-builder-accent)" : "var(--photon-builder-text-soft)"
                   },
@@ -9676,9 +9673,9 @@ var RouteFamilyEditor = () => {
       trailing: patterns.length > 0 ? /* @__PURE__ */ jsx49(
         "span",
         {
-          className: "rounded-sm border px-1 font-mono text-[9px] tabular-nums",
+          className: "rounded-sm px-1 font-mono text-[9px] tabular-nums",
           style: {
-            borderColor: "var(--photon-builder-border)",
+            background: "var(--photon-builder-field)",
             color: "var(--photon-builder-text-soft)"
           },
           children: patterns.length
@@ -9703,10 +9700,9 @@ var RouteFamilyEditor = () => {
             ) : patterns.map((pattern) => /* @__PURE__ */ jsxs39(
               "div",
               {
-                className: "flex items-center gap-1 rounded-sm border px-1.5 py-0.5 font-mono text-[11px]",
+                className: "flex items-center gap-1 rounded-sm px-1.5 py-0.5 font-mono text-[11px]",
                 style: {
-                  borderColor: "var(--photon-builder-border)",
-                  background: "var(--photon-builder-panel-solid)",
+                  background: "var(--photon-builder-field)",
                   color: "var(--photon-builder-text)"
                 },
                 "data-testid": `photon-route-family-pattern-${pattern}`,
@@ -9739,9 +9735,8 @@ var RouteFamilyEditor = () => {
                   value: draftPattern,
                   onChange: (event) => setDraftPattern(event.currentTarget.value),
                   placeholder: "/:city/products/:slug",
-                  className: "h-6 flex-1 rounded-sm border bg-[color:var(--photon-builder-panel-solid)] px-1.5 font-mono text-[11px] outline-none focus:border-[color:var(--photon-builder-border-strong)]",
+                  className: "h-6 flex-1 rounded-sm bg-[color:var(--photon-builder-field)] px-1.5 font-mono text-[11px] outline-none ring-1 ring-transparent transition-[box-shadow] focus:ring-[color:var(--photon-builder-border-strong)]",
                   style: {
-                    borderColor: "var(--photon-builder-border)",
                     color: "var(--photon-builder-text)"
                   },
                   onKeyDown: (event) => {
@@ -9758,10 +9753,10 @@ var RouteFamilyEditor = () => {
                 {
                   type: "button",
                   onClick: addPattern,
-                  className: "inline-flex h-6 cursor-pointer items-center gap-1 rounded-sm border px-1.5 text-[10px]",
+                  className: "inline-flex h-6 cursor-pointer items-center gap-1 rounded-sm px-1.5 text-[10px]",
                   style: {
-                    borderColor: "var(--photon-builder-border-strong)",
-                    color: "var(--photon-builder-text)"
+                    background: "var(--photon-builder-accent-soft)",
+                    color: "var(--photon-builder-accent-text)"
                   },
                   "data-testid": "photon-route-family-add",
                   children: [
@@ -10211,10 +10206,9 @@ var PolicyRow = ({ policy }) => {
   return /* @__PURE__ */ jsxs41(
     "div",
     {
-      className: "rounded-2xl border text-xs",
+      className: "rounded-sm text-[11px]",
       style: {
-        borderColor: "var(--photon-builder-border)",
-        background: "var(--photon-builder-panel-solid)"
+        background: "var(--photon-builder-field)"
       },
       "data-testid": `photon-trigger-policy-${policy.id}`,
       children: [
@@ -10223,7 +10217,7 @@ var PolicyRow = ({ policy }) => {
           {
             type: "button",
             onClick: () => setOpen((value) => !value),
-            className: "flex w-full cursor-pointer items-center justify-between gap-2 px-3 py-2 text-left",
+            className: "flex w-full cursor-pointer items-center justify-between gap-2 px-2 py-1 text-left",
             children: [
               /* @__PURE__ */ jsxs41("span", { style: { color: "var(--photon-builder-text)" }, children: [
                 "Run ",
@@ -10234,7 +10228,7 @@ var PolicyRow = ({ policy }) => {
               /* @__PURE__ */ jsxs41(
                 "span",
                 {
-                  className: "font-mono text-[10px] uppercase tracking-[0.18em]",
+                  className: "font-mono text-[9.5px] uppercase tracking-[0.14em]",
                   style: { color: "var(--photon-builder-text-soft)" },
                   children: [
                     isBridge ? "legacy guard \xB7 " : "",
@@ -10249,9 +10243,8 @@ var PolicyRow = ({ policy }) => {
         open ? /* @__PURE__ */ jsxs41(
           "div",
           {
-            className: "space-y-1 border-t px-3 py-2 font-mono text-[11px] leading-5",
+            className: "space-y-0.5 px-2 pb-1 font-mono text-[10.5px] leading-snug",
             style: {
-              borderColor: "var(--photon-builder-border)",
               color: "var(--photon-builder-text-muted)"
             },
             children: [
@@ -10372,10 +10365,9 @@ var InspectorTriggerTab = ({
         /* @__PURE__ */ jsxs41(
           "header",
           {
-            className: "rounded-md border px-2 py-1.5",
+            className: "rounded-sm px-2 py-1.5",
             style: {
-              borderColor: "var(--photon-builder-border)",
-              background: "var(--photon-builder-panel-muted)"
+              background: "var(--photon-builder-panel-solid)"
             },
             children: [
               /* @__PURE__ */ jsxs41(
@@ -10426,9 +10418,8 @@ var InspectorTriggerTab = ({
                 slotId: slot.id,
                 actionInstanceId: event.currentTarget.value || void 0
               }),
-              className: "h-6 min-w-0 flex-1 rounded-sm border bg-[color:var(--photon-builder-field)] px-1.5 text-[11px] outline-none focus:border-[color:var(--photon-builder-border-strong)]",
+              className: "h-6 min-w-0 flex-1 rounded-sm bg-[color:var(--photon-builder-field)] px-1.5 text-[11px] outline-none ring-1 ring-transparent transition-[box-shadow] focus:ring-[color:var(--photon-builder-border-strong)]",
               style: {
-                borderColor: "var(--photon-builder-border)",
                 color: "var(--photon-builder-text)"
               },
               children: [
@@ -10442,9 +10433,8 @@ var InspectorTriggerTab = ({
         policiesForAction.length ? /* @__PURE__ */ jsxs41(
           "details",
           {
-            className: "rounded-md border px-1.5 py-1",
+            className: "rounded-sm px-1.5 py-1",
             style: {
-              borderColor: "var(--photon-builder-border)",
               background: "var(--photon-builder-panel-solid)"
             },
             "data-testid": "photon-trigger-policy-debug",
@@ -10664,11 +10654,10 @@ var InspectorPanelComponent = ({
           "div",
           {
             className: clsx17(
-              "flex items-center justify-between gap-2 border-b",
+              "flex items-center justify-between gap-2",
               tokens.headerPadding
             ),
             style: {
-              borderColor: "var(--photon-builder-border)",
               background: "var(--photon-builder-shell-strong)"
             },
             children: [
@@ -10753,10 +10742,9 @@ var InspectorPanelComponent = ({
                 /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-md border px-2 py-2",
+                    className: "rounded-[3px] px-2 py-1.5",
                     style: {
-                      borderColor: "var(--photon-builder-border)",
-                      background: "var(--photon-builder-panel-muted)"
+                      background: "var(--photon-builder-panel-solid)"
                     },
                     children: [
                       /* @__PURE__ */ jsx52(
@@ -10775,13 +10763,12 @@ var InspectorPanelComponent = ({
                           children: inspectorDefinition.label
                         }
                       ),
-                      /* @__PURE__ */ jsxs42("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
+                      /* @__PURE__ */ jsxs42("div", { className: "mt-1 flex flex-wrap items-center gap-1", children: [
                         /* @__PURE__ */ jsx52(
                           "div",
                           {
-                            className: "rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
+                            className: "rounded-sm px-1.5 py-0 font-mono text-[10px] uppercase tracking-[0.14em]",
                             style: {
-                              borderColor: "var(--photon-builder-border)",
                               background: "var(--photon-builder-field)",
                               color: "var(--photon-builder-text-soft)"
                             },
@@ -10791,9 +10778,8 @@ var InspectorPanelComponent = ({
                         /* @__PURE__ */ jsx52(
                           "div",
                           {
-                            className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
+                            className: "rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]",
                             style: {
-                              borderColor: "var(--photon-builder-border)",
                               background: "var(--photon-builder-field)",
                               color: "var(--photon-builder-text-soft)"
                             },
@@ -10806,9 +10792,8 @@ var InspectorPanelComponent = ({
                         /* @__PURE__ */ jsxs42(
                           "div",
                           {
-                            className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
+                            className: "rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]",
                             style: {
-                              borderColor: "var(--photon-builder-border-strong)",
                               background: "var(--photon-builder-accent-strong)",
                               color: "var(--photon-builder-accent)"
                             },
@@ -10833,10 +10818,9 @@ var InspectorPanelComponent = ({
                 Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-md border px-2 py-2",
+                    className: "rounded-[3px] px-2 py-1.5",
                     style: {
-                      borderColor: "var(--photon-builder-border)",
-                      background: "var(--photon-builder-panel-muted)"
+                      background: "var(--photon-builder-panel-solid)"
                     },
                     children: [
                       /* @__PURE__ */ jsxs42("div", { className: "mb-4 flex items-center justify-between gap-3", children: [
@@ -10863,17 +10847,16 @@ var InspectorPanelComponent = ({
                       /* @__PURE__ */ jsx52("div", { className: "space-y-3", children: fields.map((field) => /* @__PURE__ */ jsxs42(
                         "div",
                         {
-                          className: "rounded-2xl border px-4 py-3",
+                          className: "rounded-sm px-2 py-1.5",
                           style: {
-                            borderColor: "var(--photon-builder-border)",
                             background: "var(--photon-builder-field)"
                           },
                           children: [
-                            /* @__PURE__ */ jsxs42("div", { className: "flex items-center justify-between gap-3", children: [
+                            /* @__PURE__ */ jsxs42("div", { className: "flex items-center justify-between gap-2", children: [
                               /* @__PURE__ */ jsx52(
                                 "div",
                                 {
-                                  className: "text-sm font-semibold",
+                                  className: "text-[12px] font-semibold leading-tight",
                                   style: { color: "var(--photon-builder-text)" },
                                   children: field.label
                                 }
@@ -10881,9 +10864,8 @@ var InspectorPanelComponent = ({
                               /* @__PURE__ */ jsx52(
                                 "div",
                                 {
-                                  className: "rounded-full border px-2 py-1 text-[10px] uppercase tracking-[0.22em]",
+                                  className: "rounded-sm px-1.5 py-0.5 text-[9.5px] uppercase tracking-[0.16em]",
                                   style: {
-                                    borderColor: "var(--photon-builder-border)",
                                     color: "var(--photon-builder-text-soft)"
                                   },
                                   children: field.kind
@@ -10893,7 +10875,7 @@ var InspectorPanelComponent = ({
                             /* @__PURE__ */ jsx52(
                               "div",
                               {
-                                className: "mt-2 font-mono text-[10px] uppercase tracking-[0.24em]",
+                                className: "mt-0.5 font-mono text-[10px] uppercase tracking-[0.18em]",
                                 style: { color: "var(--photon-builder-text-ghost)" },
                                 children: field.path
                               }
@@ -10901,7 +10883,7 @@ var InspectorPanelComponent = ({
                             field.description ? /* @__PURE__ */ jsx52(
                               "div",
                               {
-                                className: "mt-2 text-xs leading-5",
+                                className: "mt-0.5 text-[11px] leading-snug",
                                 style: { color: "var(--photon-builder-text-soft)" },
                                 children: field.description
                               }
@@ -10920,10 +10902,9 @@ var InspectorPanelComponent = ({
                 /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-md border px-2 py-2",
+                    className: "rounded-[3px] px-2 py-1.5",
                     style: {
-                      borderColor: "var(--photon-builder-border)",
-                      background: "var(--photon-builder-panel-muted)"
+                      background: "var(--photon-builder-panel-solid)"
                     },
                     children: [
                       /* @__PURE__ */ jsx52(
@@ -10954,9 +10935,8 @@ var InspectorPanelComponent = ({
                         inspectorDefinition ? /* @__PURE__ */ jsx52(
                           "div",
                           {
-                            className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
+                            className: "rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]",
                             style: {
-                              borderColor: "var(--photon-builder-border)",
                               background: "var(--photon-builder-field)",
                               color: "var(--photon-builder-text-soft)"
                             },
@@ -10978,9 +10958,8 @@ var InspectorPanelComponent = ({
                       selectedFieldPath ? /* @__PURE__ */ jsxs42(
                         "div",
                         {
-                          className: "mt-4 rounded-2xl border px-3 py-3 text-sm",
+                          className: "mt-1.5 rounded-sm px-2 py-1 text-[11px]",
                           style: {
-                            borderColor: "var(--photon-builder-border-strong)",
                             background: "var(--photon-builder-accent-strong)",
                             color: "var(--photon-builder-accent)"
                           },
@@ -10999,17 +10978,16 @@ var InspectorPanelComponent = ({
                 orderedGroupKeys.length > 0 ? /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-md border px-2 py-2",
+                    className: "rounded-[3px] px-2 py-1.5",
                     style: {
-                      borderColor: "var(--photon-builder-border)",
-                      background: "var(--photon-builder-panel-muted)"
+                      background: "var(--photon-builder-panel-solid)"
                     },
                     "data-testid": "photon-inspector-group-tabs",
                     children: [
                       /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "mb-4 flex flex-wrap gap-1",
+                          className: "mb-1.5 flex flex-wrap gap-1",
                           role: "tablist",
                           "aria-label": "Field groups",
                           children: orderedGroupKeys.map((groupKey) => {
@@ -11026,14 +11004,12 @@ var InspectorPanelComponent = ({
                                 role: "tab",
                                 "aria-selected": isActive,
                                 onClick: () => setSelectedGroupKey(groupKey),
-                                className: "inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em]",
+                                className: "inline-flex cursor-pointer items-center gap-1 rounded-sm px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.16em]",
                                 style: isActive ? {
-                                  borderColor: "var(--photon-builder-border-strong)",
                                   background: "var(--photon-builder-accent-soft)",
                                   color: "var(--photon-builder-accent-text)"
                                 } : {
-                                  borderColor: "var(--photon-builder-border)",
-                                  background: "var(--photon-builder-panel)",
+                                  background: "transparent",
                                   color: "var(--photon-builder-text-soft)"
                                 },
                                 "data-testid": `photon-inspector-group-tab-${groupKey}`,
@@ -11042,11 +11018,7 @@ var InspectorPanelComponent = ({
                                   /* @__PURE__ */ jsx52(
                                     "span",
                                     {
-                                      className: "rounded-full border px-2 py-0.5 text-[10px] tracking-normal",
-                                      style: {
-                                        borderColor: "var(--photon-builder-border)",
-                                        color: "var(--photon-builder-text-ghost)"
-                                      },
+                                      className: "rounded-sm px-1 py-0 text-[9.5px] tracking-normal opacity-70",
                                       children: groupFields.length
                                     }
                                   )
@@ -11065,17 +11037,16 @@ var InspectorPanelComponent = ({
                           showLocaleSwitch ? /* @__PURE__ */ jsx52(
                             "div",
                             {
-                              className: "mb-4 inline-flex flex-wrap rounded-full border p-1",
+                              className: "mb-1.5 inline-flex flex-wrap rounded-sm p-0.5",
                               style: {
-                                borderColor: "var(--photon-builder-border)",
-                                background: "var(--photon-builder-panel)"
+                                background: "var(--photon-builder-field)"
                               },
                               children: editableLocales.map((locale) => /* @__PURE__ */ jsx52(
                                 "button",
                                 {
                                   type: "button",
                                   onClick: () => onContentLocaleChange?.(locale.code),
-                                  className: "cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] transition",
+                                  className: "cursor-pointer rounded-sm px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] transition",
                                   style: locale.code === contentLocale ? {
                                     background: "var(--photon-builder-accent-soft)",
                                     color: "var(--photon-builder-accent-text)"
@@ -11091,7 +11062,7 @@ var InspectorPanelComponent = ({
                           /* @__PURE__ */ jsx52(
                             "div",
                             {
-                              className: "space-y-4",
+                              className: "space-y-1",
                               "data-testid": `photon-inspector-group-panel-${activeKey ?? "empty"}`,
                               children: fields.map((field) => /* @__PURE__ */ jsx52(
                                 FieldEditor,
@@ -11121,10 +11092,9 @@ var InspectorPanelComponent = ({
                 /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-md border px-2 py-2",
+                    className: "rounded-[3px] px-2 py-1.5",
                     style: {
-                      borderColor: "var(--photon-builder-border)",
-                      background: "var(--photon-builder-panel-muted)"
+                      background: "var(--photon-builder-panel-solid)"
                     },
                     children: [
                       /* @__PURE__ */ jsxs42(
@@ -11161,9 +11131,8 @@ var InspectorPanelComponent = ({
                       showBlockJson ? /* @__PURE__ */ jsx52(
                         "pre",
                         {
-                          className: "mt-4 h-[320px] overflow-x-auto rounded-2xl border p-4 text-xs leading-6",
+                          className: "mt-1.5 h-[280px] overflow-x-auto rounded-sm p-2 text-[10.5px] leading-5",
                           style: {
-                            borderColor: "var(--photon-builder-border)",
                             background: "var(--photon-builder-field)",
                             color: "var(--photon-builder-text-muted)"
                           },
@@ -11178,10 +11147,9 @@ var InspectorPanelComponent = ({
                 /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-md border px-2 py-2",
+                    className: "rounded-[3px] px-2 py-1.5",
                     style: {
-                      borderColor: "var(--photon-builder-border)",
-                      background: "var(--photon-builder-panel-muted)"
+                      background: "var(--photon-builder-panel-solid)"
                     },
                     children: [
                       /* @__PURE__ */ jsxs42(
@@ -11218,9 +11186,8 @@ var InspectorPanelComponent = ({
                       showDocumentJson ? /* @__PURE__ */ jsx52(
                         "pre",
                         {
-                          className: "mt-4 max-h-[320px] overflow-auto rounded-2xl border p-4 text-xs leading-6",
+                          className: "mt-1.5 max-h-[280px] overflow-auto rounded-sm p-2 text-[10.5px] leading-5",
                           style: {
-                            borderColor: "var(--photon-builder-border)",
                             background: "var(--photon-builder-field)",
                             color: "var(--photon-builder-text-muted)"
                           },
@@ -11233,9 +11200,9 @@ var InspectorPanelComponent = ({
                 !definitionFields.length && !hasBlockContext ? /* @__PURE__ */ jsx52(
                   "section",
                   {
-                    className: "rounded-[24px] border border-dashed px-4 py-4 text-sm leading-6",
+                    className: "rounded-sm px-2 py-1.5 text-[11px] leading-snug",
                     style: {
-                      borderColor: "var(--photon-builder-border)",
+                      background: "var(--photon-builder-panel-solid)",
                       color: "var(--photon-builder-text-muted)"
                     },
                     children: "Builder tip: select any live block, click any palette block, or drop a new block into one of the visible plus zones to inspect it here."
@@ -11246,9 +11213,9 @@ var InspectorPanelComponent = ({
                 /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-[24px] border border-dashed px-4 py-4 text-sm leading-6",
+                    className: "rounded-sm px-2 py-1.5 text-[11px] leading-snug",
                     style: {
-                      borderColor: "var(--photon-builder-border)",
+                      background: "var(--photon-builder-panel-solid)",
                       color: "var(--photon-builder-text-muted)"
                     },
                     children: [
@@ -11271,13 +11238,12 @@ var InspectorPanelComponent = ({
                           children: summaryName
                         }
                       ),
-                      /* @__PURE__ */ jsxs42("div", { className: "mt-2 flex flex-wrap items-center gap-2", children: [
+                      /* @__PURE__ */ jsxs42("div", { className: "mt-1 flex flex-wrap items-center gap-1", children: [
                         /* @__PURE__ */ jsx52(
                           "div",
                           {
-                            className: "rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.24em]",
+                            className: "rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]",
                             style: {
-                              borderColor: "var(--photon-builder-border)",
                               background: "var(--photon-builder-field)",
                               color: "var(--photon-builder-text-soft)"
                             },
@@ -11287,23 +11253,21 @@ var InspectorPanelComponent = ({
                         /* @__PURE__ */ jsx52(
                           "div",
                           {
-                            className: "rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
+                            className: "rounded-sm px-1.5 py-0 font-mono text-[10px] uppercase tracking-[0.14em]",
                             style: {
-                              borderColor: "var(--photon-builder-border)",
                               background: "var(--photon-builder-field)",
                               color: "var(--photon-builder-text-soft)"
                             },
                             children: currentPage?.route ?? document2.route
                           }
                         ),
-                        currentPage?.isDynamic ? /* @__PURE__ */ jsx52("div", { className: "rounded-full border border-amber-300/18 bg-amber-300/10 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-amber-100/80", children: "Dynamic template" }) : null
+                        currentPage?.isDynamic ? /* @__PURE__ */ jsx52("div", { className: "rounded-sm bg-amber-300/10 px-1.5 py-0 text-[10px] uppercase tracking-[0.14em] text-amber-100/80", children: "Dynamic template" }) : null
                       ] }),
                       /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "mt-4 rounded-2xl border px-3 py-3 text-sm leading-6",
+                          className: "mt-1.5 rounded-sm px-2 py-1 text-[11px] leading-snug",
                           style: {
-                            borderColor: "var(--photon-builder-border-strong)",
                             background: "var(--photon-builder-accent-strong)",
                             color: "var(--photon-builder-accent)"
                           },
@@ -11316,34 +11280,32 @@ var InspectorPanelComponent = ({
                 /* @__PURE__ */ jsxs42(
                   "section",
                   {
-                    className: "rounded-md border px-2 py-2",
+                    className: "rounded-[3px] px-2 py-1.5",
                     style: {
-                      borderColor: "var(--photon-builder-border)",
-                      background: "var(--photon-builder-panel-muted)"
+                      background: "var(--photon-builder-panel-solid)"
                     },
                     children: [
                       /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "mb-4 text-[11px] uppercase tracking-[0.28em]",
+                          className: "mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em]",
                           style: { color: "var(--photon-builder-text-soft)" },
                           children: "Basics"
                         }
                       ),
-                      /* @__PURE__ */ jsxs42("div", { className: "space-y-3", children: [
+                      /* @__PURE__ */ jsxs42("div", { className: "space-y-1", children: [
                         /* @__PURE__ */ jsxs42(
                           "div",
                           {
-                            className: "rounded-2xl border px-4 py-3",
+                            className: "rounded-sm px-2 py-1.5",
                             style: {
-                              borderColor: "var(--photon-builder-border)",
                               background: "var(--photon-builder-field)"
                             },
                             children: [
                               /* @__PURE__ */ jsx52(
                                 "div",
                                 {
-                                  className: "text-[11px] uppercase tracking-[0.24em]",
+                                  className: "text-[10px] uppercase tracking-[0.16em]",
                                   style: { color: "var(--photon-builder-text-soft)" },
                                   children: "Name"
                                 }
@@ -11351,7 +11313,7 @@ var InspectorPanelComponent = ({
                               /* @__PURE__ */ jsx52(
                                 "div",
                                 {
-                                  className: "mt-2 text-sm font-semibold",
+                                  className: "mt-0.5 text-[12px] font-semibold leading-tight",
                                   style: { color: "var(--photon-builder-text)" },
                                   children: summaryName
                                 }
@@ -11362,16 +11324,15 @@ var InspectorPanelComponent = ({
                         /* @__PURE__ */ jsxs42(
                           "div",
                           {
-                            className: "rounded-2xl border px-4 py-3",
+                            className: "rounded-sm px-2 py-1.5",
                             style: {
-                              borderColor: "var(--photon-builder-border)",
                               background: "var(--photon-builder-field)"
                             },
                             children: [
                               /* @__PURE__ */ jsx52(
                                 "div",
                                 {
-                                  className: "text-[11px] uppercase tracking-[0.24em]",
+                                  className: "text-[10px] uppercase tracking-[0.16em]",
                                   style: { color: "var(--photon-builder-text-soft)" },
                                   children: currentPage?.isDynamic ? "Route pattern" : "Path"
                                 }
@@ -11379,7 +11340,7 @@ var InspectorPanelComponent = ({
                               /* @__PURE__ */ jsx52(
                                 "div",
                                 {
-                                  className: "mt-2 font-mono text-sm",
+                                  className: "mt-0.5 font-mono text-[11px]",
                                   style: { color: "var(--photon-builder-text-muted)" },
                                   children: summaryRoute
                                 }
@@ -11390,16 +11351,15 @@ var InspectorPanelComponent = ({
                         currentPage?.isDynamic ? /* @__PURE__ */ jsxs42(
                           "div",
                           {
-                            className: "rounded-2xl border px-4 py-3",
+                            className: "rounded-sm px-2 py-1.5",
                             style: {
-                              borderColor: "var(--photon-builder-border)",
                               background: "var(--photon-builder-field)"
                             },
                             children: [
                               /* @__PURE__ */ jsx52(
                                 "div",
                                 {
-                                  className: "text-[11px] uppercase tracking-[0.24em]",
+                                  className: "text-[10px] uppercase tracking-[0.16em]",
                                   style: { color: "var(--photon-builder-text-soft)" },
                                   children: "Current route"
                                 }
@@ -11407,7 +11367,7 @@ var InspectorPanelComponent = ({
                               /* @__PURE__ */ jsx52(
                                 "div",
                                 {
-                                  className: "mt-2 font-mono text-sm",
+                                  className: "mt-0.5 font-mono text-[11px]",
                                   style: { color: "var(--photon-builder-text-muted)" },
                                   children: currentRoute
                                 }

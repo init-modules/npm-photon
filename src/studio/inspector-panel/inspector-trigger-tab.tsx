@@ -32,23 +32,22 @@ const PolicyRow = ({ policy }: { policy: PhotonActionPolicy }) => {
 	const isBridge = policy.id.startsWith("bridge:guard:");
 	return (
 		<div
-			className="rounded-2xl border text-xs"
+			className="rounded-sm text-[11px]"
 			style={{
-				borderColor: "var(--photon-builder-border)",
-				background: "var(--photon-builder-panel-solid)",
+				background: "var(--photon-builder-field)",
 			}}
 			data-testid={`photon-trigger-policy-${policy.id}`}
 		>
 			<button
 				type="button"
 				onClick={() => setOpen((value) => !value)}
-				className="flex w-full cursor-pointer items-center justify-between gap-2 px-3 py-2 text-left"
+				className="flex w-full cursor-pointer items-center justify-between gap-2 px-2 py-1 text-left"
 			>
 				<span style={{ color: "var(--photon-builder-text)" }}>
 					Run <strong>{policy.run || "(default)"}</strong> when {conditionId}
 				</span>
 				<span
-					className="font-mono text-[10px] uppercase tracking-[0.18em]"
+					className="font-mono text-[9.5px] uppercase tracking-[0.14em]"
 					style={{ color: "var(--photon-builder-text-soft)" }}
 				>
 					{isBridge ? "legacy guard · " : ""}
@@ -58,9 +57,8 @@ const PolicyRow = ({ policy }: { policy: PhotonActionPolicy }) => {
 			</button>
 			{open ? (
 				<div
-					className="space-y-1 border-t px-3 py-2 font-mono text-[11px] leading-5"
+					className="space-y-0.5 px-2 pb-1 font-mono text-[10.5px] leading-snug"
 					style={{
-						borderColor: "var(--photon-builder-border)",
 						color: "var(--photon-builder-text-muted)",
 					}}
 				>
@@ -184,10 +182,9 @@ export const InspectorTriggerTab = ({
 			data-testid={`photon-inspector-trigger-${slot.id}`}
 		>
 			<header
-				className="rounded-md border px-2 py-1.5"
+				className="rounded-sm px-2 py-1.5"
 				style={{
-					borderColor: "var(--photon-builder-border)",
-					background: "var(--photon-builder-panel-muted)",
+					background: "var(--photon-builder-panel-solid)",
 				}}
 			>
 				<div
@@ -231,9 +228,8 @@ export const InspectorTriggerTab = ({
 								actionInstanceId: event.currentTarget.value || undefined,
 							})
 						}
-						className="h-6 min-w-0 flex-1 rounded-sm border bg-[color:var(--photon-builder-field)] px-1.5 text-[11px] outline-none focus:border-[color:var(--photon-builder-border-strong)]"
+						className="h-6 min-w-0 flex-1 rounded-sm bg-[color:var(--photon-builder-field)] px-1.5 text-[11px] outline-none ring-1 ring-transparent transition-[box-shadow] focus:ring-[color:var(--photon-builder-border-strong)]"
 						style={{
-							borderColor: "var(--photon-builder-border)",
 							color: "var(--photon-builder-text)",
 						}}
 					>
@@ -251,9 +247,8 @@ export const InspectorTriggerTab = ({
 
 			{policiesForAction.length ? (
 				<details
-					className="rounded-md border px-1.5 py-1"
+					className="rounded-sm px-1.5 py-1"
 					style={{
-						borderColor: "var(--photon-builder-border)",
 						background: "var(--photon-builder-panel-solid)",
 					}}
 					data-testid="photon-trigger-policy-debug"
