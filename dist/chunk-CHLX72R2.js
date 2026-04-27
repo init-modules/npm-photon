@@ -2233,7 +2233,11 @@ var NonInlineFieldShell = ({
           {
             className: "flex w-full items-center gap-1.5 px-2 py-1",
             style: {
-              background: "var(--photon-builder-field)",
+              // Same darker mix as PhotonInspectorSection — keeps the
+              // header unmistakably distinct from the input bg (which is
+              // `field` directly), so a section header above a single-row
+              // input no longer visually merges.
+              background: "color-mix(in srgb, var(--photon-builder-field), #000 32%)",
               boxShadow: isExpanded ? "inset 0 -1px 0 0 color-mix(in srgb, var(--photon-builder-border) 60%, transparent)" : void 0
             },
             children: [
@@ -9595,7 +9599,7 @@ var PhotonInspectorSection = ({
   const toggle = useCallback3(() => setCollapsed((current) => !current), []);
   const isExpanded = nonCollapsible || !collapsed;
   const isGroup = variant === "group";
-  const headerBackground = isGroup ? "var(--photon-builder-shell-strong)" : "var(--photon-builder-field)";
+  const headerBackground = isGroup ? "var(--photon-builder-shell-strong)" : "color-mix(in srgb, var(--photon-builder-field), #000 32%)";
   return /* @__PURE__ */ jsxs37(
     "section",
     {
@@ -10874,7 +10878,7 @@ var InspectorPanelComponent = ({
         /* @__PURE__ */ jsxs42(
           "div",
           {
-            className: "photon-inspector-scroll flex-1 space-y-1.5 overflow-y-auto px-1.5 py-1.5",
+            className: "photon-inspector-scroll flex-1 space-y-2.5 overflow-y-auto px-1.5 py-1.5",
             style: { background: "var(--photon-builder-shell-muted)" },
             children: [
               activeTab === "block" && !selectedBlock && inspectorDefinition ? /* @__PURE__ */ jsxs42(Fragment12, { children: [
@@ -11179,7 +11183,7 @@ var InspectorPanelComponent = ({
                       children: /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "space-y-0.5",
+                          className: "flex flex-col gap-1",
                           "data-testid": `photon-inspector-group-panel-${groupKey}`,
                           children: groupFields.map((field) => /* @__PURE__ */ jsx52(
                             FieldEditor,

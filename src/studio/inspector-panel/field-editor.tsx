@@ -879,7 +879,12 @@ const NonInlineFieldShell = ({
 			<div
 				className="flex w-full items-center gap-1.5 px-2 py-1"
 				style={{
-					background: "var(--photon-builder-field)",
+					// Same darker mix as PhotonInspectorSection — keeps the
+					// header unmistakably distinct from the input bg (which is
+					// `field` directly), so a section header above a single-row
+					// input no longer visually merges.
+					background:
+						"color-mix(in srgb, var(--photon-builder-field), #000 32%)",
 					boxShadow: isExpanded
 						? "inset 0 -1px 0 0 color-mix(in srgb, var(--photon-builder-border) 60%, transparent)"
 						: undefined,

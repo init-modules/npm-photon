@@ -56,11 +56,14 @@ export const PhotonInspectorSection = ({
 	const isGroup = variant === "group";
 
 	// Header tone: groups use `shell-strong` (a soft band) so they read
-	// as a wrapping label; sections use `field` (the deepest tone) so
-	// each enclosed block of fields gets a Unreal-style strong band.
+	// as a wrapping label; sections use a custom darker mix (field +
+	// black 32%) so the section header is unmistakably distinct from
+	// the input chamber tone (which is `field` itself). Without this
+	// extra step the section header and a single-row input visually
+	// merge in dark themes.
 	const headerBackground = isGroup
 		? "var(--photon-builder-shell-strong)"
-		: "var(--photon-builder-field)";
+		: "color-mix(in srgb, var(--photon-builder-field), #000 32%)";
 
 	return (
 		<section

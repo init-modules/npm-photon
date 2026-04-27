@@ -299,7 +299,7 @@ const InspectorPanelComponent = ({
 			</div>
 
 			<div
-				className="photon-inspector-scroll flex-1 space-y-1.5 overflow-y-auto px-1.5 py-1.5"
+				className="photon-inspector-scroll flex-1 space-y-2.5 overflow-y-auto px-1.5 py-1.5"
 				style={{ background: "var(--photon-builder-shell-muted)" }}
 			>
 				{activeTab === "block" && !selectedBlock && inspectorDefinition ? (
@@ -594,7 +594,7 @@ const InspectorPanelComponent = ({
 									}
 								>
 									<div
-										className="space-y-0.5"
+										className="flex flex-col gap-1"
 										data-testid={`photon-inspector-group-panel-${groupKey}`}
 									>
 										{groupFields.map((field) => (
