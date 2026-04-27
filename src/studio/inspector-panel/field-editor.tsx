@@ -817,17 +817,13 @@ const FieldEditorImpl = ({
 		);
 	}
 
-	const isCollapsibleNested =
-		field.kind === "object" || field.kind === "repeater";
-
 	return (
 		<NonInlineFieldShell
 			path={path}
 			hidePathLabel={hidePathLabel}
-			labelNode={labelNode}
+			label={labelText}
 			bindingPill={bindingPill}
 			description={description}
-			collapsible={isCollapsibleNested}
 			onPathClick={() => onFocus(path)}
 		>
 			{path && !fieldBinding ? (
@@ -847,60 +843,75 @@ const FieldEditorImpl = ({
 type NonInlineFieldShellProps = {
 	path: string;
 	hidePathLabel: boolean;
-	labelNode: ReactNode;
+	label: string;
 	bindingPill: ReactNode;
 	description: ReactNode;
-	collapsible: boolean;
 	onPathClick: () => void;
 	children: ReactNode;
 };
 
 /**
- * Block-style (non-inline) field wrapper. When `collapsible` is true,
- * the label becomes a caret-folding header that gates the body — used
- * by `object` and `repeater` fields so deep nested config can be
- * folded away the way Unreal's Details panel folds groups.
+ * Every non-inline field renders as a caret-folding **section** with the
+ * darker header band — Unreal Details-panel style. Repeater, object,
+ * image, gallery, json, rich-text, textarea, form-fields all share this
+ * shell so each composite control reads as its own chamber inside the
+ * parent group, never as a free-floating block.
  */
 const NonInlineFieldShell = ({
 	path,
 	hidePathLabel,
-	labelNode,
+	label,
 	bindingPill,
 	description,
-	collapsible,
 	onPathClick,
 	children,
 }: NonInlineFieldShellProps) => {
+	const { tokens } = usePhotonInspectorDensity();
 	const [collapsed, setCollapsed] = useState(false);
-	const isExpanded = !collapsible || !collapsed;
+	const isExpanded = !collapsed;
 	return (
-		<div data-photon-density-row className="px-1 py-1">
-			<div className="mb-1 flex items-center justify-between gap-2">
+		<section
+			data-photon-density-row
+			className={clsx("overflow-hidden", tokens.sectionRadius)}
+			style={{ background: "var(--photon-builder-panel-solid)" }}
+			data-collapsed={!isExpanded}
+		>
+			<div
+				className="flex w-full items-center gap-1.5 px-2 py-1"
+				style={{
+					background: "var(--photon-builder-field)",
+					boxShadow: isExpanded
+						? "inset 0 -1px 0 0 color-mix(in srgb, var(--photon-builder-border) 60%, transparent)"
+						: undefined,
+				}}
+			>
 				<button
 					type="button"
-					onClick={
-						collapsible ? () => setCollapsed((prev) => !prev) : undefined
-					}
-					className={clsx(
-						"flex min-w-0 flex-1 items-center gap-1 text-left",
-						collapsible ? "cursor-pointer" : "cursor-default",
-					)}
-					aria-expanded={collapsible ? isExpanded : undefined}
+					onClick={() => setCollapsed((prev) => !prev)}
+					className="flex min-w-0 flex-1 cursor-pointer items-center gap-1 text-left"
+					aria-expanded={isExpanded}
 				>
-					{collapsible ? (
-						isExpanded ? (
-							<ChevronDown
-								className="h-3 w-3 shrink-0"
-								style={{ color: "var(--photon-builder-text-soft)" }}
-							/>
-						) : (
-							<ChevronRight
-								className="h-3 w-3 shrink-0"
-								style={{ color: "var(--photon-builder-text-soft)" }}
-							/>
-						)
-					) : null}
-					{labelNode}
+					{isExpanded ? (
+						<ChevronDown
+							className="h-3 w-3 shrink-0"
+							style={{ color: "var(--photon-builder-text-soft)" }}
+						/>
+					) : (
+						<ChevronRight
+							className="h-3 w-3 shrink-0"
+							style={{ color: "var(--photon-builder-text-soft)" }}
+						/>
+					)}
+					<span
+						className={clsx(
+							tokens.sectionHeaderClass,
+							"min-w-0 flex-1 truncate",
+						)}
+						style={{ color: "var(--photon-builder-text-soft)" }}
+						title={label}
+					>
+						{label}
+					</span>
 					{bindingPill}
 				</button>
 				{path && !hidePathLabel ? (
@@ -919,12 +930,12 @@ const NonInlineFieldShell = ({
 				) : null}
 			</div>
 			{isExpanded ? (
-				<>
+				<div className={clsx(tokens.sectionPadding, "pt-1")}>
 					{description ? <div className="mb-1">{description}</div> : null}
 					{children}
-				</>
+				</div>
 			) : null}
-		</div>
+		</section>
 	);
 };
 

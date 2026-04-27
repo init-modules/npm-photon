@@ -360,6 +360,7 @@ const InspectorPanelComponent = ({
 							<PhotonInspectorSection
 								key={groupKey}
 								id={`palette-group-${groupKey}`}
+								variant="group"
 								title={translate(
 									FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
 									translatePhotonFieldGroup(groupKey, translate),
@@ -578,6 +579,7 @@ const InspectorPanelComponent = ({
 								<PhotonInspectorSection
 									key={groupKey}
 									id={`block-group-${groupKey}`}
+									variant="group"
 									title={label}
 									trailing={
 										<span

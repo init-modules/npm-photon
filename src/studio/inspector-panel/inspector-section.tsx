@@ -10,6 +10,16 @@ type PhotonInspectorSectionProps = {
 	id: string;
 	/** Top-line label shown in the caret header. */
 	title: ReactNode;
+	/**
+	 * `"group"` — top-level container that holds many sections (e.g.
+	 * Контент, Стиль, Layout). Renders with a softer header tone so
+	 * sections inside are the visually dominant unit.
+	 *
+	 * `"section"` (default) — a single chambered section with the
+	 * pronounced darker header band, the way Unreal's Details panel
+	 * renders a sub-section.
+	 */
+	variant?: "group" | "section";
 	/** Optional right-aligned chip in the caret header (e.g. count badge). */
 	trailing?: ReactNode;
 	/** Optional small text under the title. */
@@ -32,6 +42,7 @@ type PhotonInspectorSectionProps = {
 export const PhotonInspectorSection = ({
 	id,
 	title,
+	variant = "section",
 	trailing,
 	subtitle,
 	defaultCollapsed = false,
@@ -42,20 +53,26 @@ export const PhotonInspectorSection = ({
 	const [collapsed, setCollapsed] = useState(defaultCollapsed);
 	const toggle = useCallback(() => setCollapsed((current) => !current), []);
 	const isExpanded = nonCollapsible || !collapsed;
+	const isGroup = variant === "group";
+
+	// Header tone: groups use `shell-strong` (a soft band) so they read
+	// as a wrapping label; sections use `field` (the deepest tone) so
+	// each enclosed block of fields gets a Unreal-style strong band.
+	const headerBackground = isGroup
+		? "var(--photon-builder-shell-strong)"
+		: "var(--photon-builder-field)";
 
 	return (
 		<section
 			className={clsx("overflow-hidden", tokens.sectionRadius)}
 			style={{
-				// The body has no chamber bg of its own — section identity comes
-				// from the header band alone, exactly the way Unreal's Details
-				// panel does it. The body sits on the panel's own tone via the
-				// panel-solid wrap so consecutive sections still read as
-				// chambered, but the visual weight is carried by the header.
+				// Body sits on `panel-solid` so sections inside a group still
+				// register as chambered sub-units against the inspector bg.
 				background: "var(--photon-builder-panel-solid)",
 			}}
-			data-testid={`photon-inspector-section-${id}`}
+			data-testid={`photon-inspector-${variant}-${id}`}
 			data-collapsed={!isExpanded}
+			data-variant={variant}
 		>
 			<button
 				type="button"
@@ -65,13 +82,9 @@ export const PhotonInspectorSection = ({
 					nonCollapsible ? "cursor-default" : "cursor-pointer",
 				)}
 				aria-expanded={isExpanded}
-				data-testid={`photon-inspector-section-header-${id}`}
+				data-testid={`photon-inspector-${variant}-header-${id}`}
 				style={{
-					// Pronounced darker band — `field` is the deepest standard
-					// inspector tone and matches Unreal's section-header strip.
-					// `box-shadow` paints a hairline separator under the header
-					// when expanded so the band reads as "above" the body.
-					background: "var(--photon-builder-field)",
+					background: headerBackground,
 					boxShadow: isExpanded
 						? "inset 0 -1px 0 0 color-mix(in srgb, var(--photon-builder-border) 60%, transparent)"
 						: undefined,
@@ -90,7 +103,11 @@ export const PhotonInspectorSection = ({
 				)}
 				<div
 					className={clsx(tokens.sectionHeaderClass, "min-w-0 flex-1 truncate")}
-					style={{ color: "var(--photon-builder-text-soft)" }}
+					style={{
+						color: isGroup
+							? "var(--photon-builder-text)"
+							: "var(--photon-builder-text-soft)",
+					}}
 				>
 					{title}
 				</div>
