@@ -1,7 +1,7 @@
 "use client";
 import {
   PhotonStudio
-} from "./chunk-WMCJ4NZN.js";
+} from "./chunk-SQLFPFDQ.js";
 import "./chunk-E57AFWQL.js";
 import {
   PhotonSurfaceLayoutProvider,

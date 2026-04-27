@@ -115,16 +115,26 @@ type InspectorRunChunk =
 			fields: PhotonField[];
 	  };
 
+// Field kinds that always claim their own section (composite or
+// recursive). Other non-inline kinds — image, gallery, textarea, json,
+// rich-text, form-fields — can sit inside an auto-section as a single
+// row, the way Logo image visually belongs with the Brand label/href
+// run rather than starting a new section.
+const PHOTON_FIELD_RUN_BREAK_KINDS = new Set<
+	PhotonField["kind"] | string
+>(["repeater", "object"]);
+
 /**
- * Slices a group's field list so block-style fields (image, repeater,
- * object…) stay as their own sections while consecutive inline rows
- * (text/url/select/etc.) collapse into a named auto-section. Without
- * this every loose run of inline rows reads as "free fields outside a
- * section" — exactly what the user flagged.
+ * Slices a group's field list so big composite controls (repeater,
+ * object) stay as their own sections while everything else — inline
+ * rows plus single-value block fields like image/textarea/json — flows
+ * into a named auto-section.
  *
- * Auto-section title comes from the longest common camelCase / dot
- * prefix in the run; if the run is heterogeneous (no shared prefix)
- * the section gets a translated fallback title.
+ * Auto-section title is derived from the inline fields' first words
+ * (camelCase or dot prefix). Block fields in the run do not vote on
+ * the title, so e.g. `brandLabel + brandHref + logoImage` still
+ * resolves to `"Brand"`. If the inline portion is heterogeneous (or
+ * absent), the section uses a translated fallback title.
  */
 const chunkInspectorGroupFields = (
 	fields: PhotonField[],
@@ -133,16 +143,29 @@ const chunkInspectorGroupFields = (
 	const chunks: InspectorRunChunk[] = [];
 	let runStartIndex = 0;
 	let pending: PhotonField[] = [];
+	let pendingInlineWords: string[] = [];
 
 	const flushRun = () => {
 		if (pending.length === 0) {
 			return;
 		}
-		const firstWords = pending.map((field) =>
-			photonFieldPathFirstWord(field.path),
-		);
-		const sharedPrefix = firstWords.every((word) => word === firstWords[0])
-			? firstWords[0]
+
+		// Pure-block runs (no inline rows at all) shouldn't be wrapped:
+		// each block field already renders as its own section via
+		// NonInlineFieldShell, so wrapping them in an auto-section
+		// without an inline anchor would just create nested chrome.
+		if (pendingInlineWords.length === 0) {
+			for (const blockField of pending) {
+				chunks.push({ kind: "block", field: blockField });
+			}
+			pending = [];
+			return;
+		}
+
+		const sharedPrefix = pendingInlineWords.every(
+			(word) => word === pendingInlineWords[0],
+		)
+			? pendingInlineWords[0]
 			: null;
 		const title =
 			sharedPrefix && sharedPrefix.length > 0
@@ -155,18 +178,22 @@ const chunkInspectorGroupFields = (
 			fields: pending,
 		});
 		pending = [];
+		pendingInlineWords = [];
 	};
 
 	fields.forEach((field, index) => {
-		if (INLINE_FIELD_KINDS.has(field.kind)) {
-			if (pending.length === 0) {
-				runStartIndex = index;
-			}
-			pending.push(field);
+		if (PHOTON_FIELD_RUN_BREAK_KINDS.has(field.kind)) {
+			flushRun();
+			chunks.push({ kind: "block", field });
 			return;
 		}
-		flushRun();
-		chunks.push({ kind: "block", field });
+		if (pending.length === 0) {
+			runStartIndex = index;
+		}
+		pending.push(field);
+		if (INLINE_FIELD_KINDS.has(field.kind)) {
+			pendingInlineWords.push(photonFieldPathFirstWord(field.path));
+		}
 	});
 
 	flushRun();
@@ -606,19 +633,6 @@ const InspectorPanelComponent = ({
 									key={chunk.id}
 									id={`layout-${chunk.id}`}
 									title={chunk.title}
-									trailing={
-										chunk.fields.length > 1 ? (
-											<span
-												className="rounded-sm px-1 font-mono text-[9px] tabular-nums"
-												style={{
-													background: "var(--photon-builder-field)",
-													color: "var(--photon-builder-text-soft)",
-												}}
-											>
-												{chunk.fields.length}
-											</span>
-										) : null
-									}
 								>
 									<div className="flex flex-col gap-0.5">
 										{chunk.fields.map((field) => (
@@ -775,21 +789,6 @@ const InspectorPanelComponent = ({
 													key={chunk.id}
 													id={`group-${groupKey}-${chunk.id}`}
 													title={chunk.title}
-													trailing={
-														chunk.fields.length > 1 ? (
-															<span
-																className="rounded-sm px-1 font-mono text-[9px] tabular-nums"
-																style={{
-																	background:
-																		"var(--photon-builder-field)",
-																	color:
-																		"var(--photon-builder-text-soft)",
-																}}
-															>
-																{chunk.fields.length}
-															</span>
-														) : null
-													}
 												>
 													<div className="flex flex-col gap-0.5">
 														{chunk.fields.map((field) => (

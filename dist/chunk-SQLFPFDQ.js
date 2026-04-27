@@ -10713,18 +10713,26 @@ var photonFieldPathFirstWord = (path) => {
   return camelMatch ? camelMatch[0] : head.toLowerCase();
 };
 var capitalize = (value) => value ? value[0].toUpperCase() + value.slice(1) : value;
+var PHOTON_FIELD_RUN_BREAK_KINDS = /* @__PURE__ */ new Set(["repeater", "object"]);
 var chunkInspectorGroupFields = (fields, fallbackTitle) => {
   const chunks = [];
   let runStartIndex = 0;
   let pending = [];
+  let pendingInlineWords = [];
   const flushRun = () => {
     if (pending.length === 0) {
       return;
     }
-    const firstWords = pending.map(
-      (field) => photonFieldPathFirstWord(field.path)
-    );
-    const sharedPrefix = firstWords.every((word) => word === firstWords[0]) ? firstWords[0] : null;
+    if (pendingInlineWords.length === 0) {
+      for (const blockField of pending) {
+        chunks.push({ kind: "block", field: blockField });
+      }
+      pending = [];
+      return;
+    }
+    const sharedPrefix = pendingInlineWords.every(
+      (word) => word === pendingInlineWords[0]
+    ) ? pendingInlineWords[0] : null;
     const title = sharedPrefix && sharedPrefix.length > 0 ? capitalize(sharedPrefix) : fallbackTitle;
     chunks.push({
       kind: "inline-run",
@@ -10733,17 +10741,21 @@ var chunkInspectorGroupFields = (fields, fallbackTitle) => {
       fields: pending
     });
     pending = [];
+    pendingInlineWords = [];
   };
   fields.forEach((field, index) => {
-    if (INLINE_FIELD_KINDS.has(field.kind)) {
-      if (pending.length === 0) {
-        runStartIndex = index;
-      }
-      pending.push(field);
+    if (PHOTON_FIELD_RUN_BREAK_KINDS.has(field.kind)) {
+      flushRun();
+      chunks.push({ kind: "block", field });
       return;
     }
-    flushRun();
-    chunks.push({ kind: "block", field });
+    if (pending.length === 0) {
+      runStartIndex = index;
+    }
+    pending.push(field);
+    if (INLINE_FIELD_KINDS.has(field.kind)) {
+      pendingInlineWords.push(photonFieldPathFirstWord(field.path));
+    }
   });
   flushRun();
   return chunks;
@@ -11148,17 +11160,6 @@ var InspectorPanelComponent = ({
                       {
                         id: `layout-${chunk.id}`,
                         title: chunk.title,
-                        trailing: chunk.fields.length > 1 ? /* @__PURE__ */ jsx52(
-                          "span",
-                          {
-                            className: "rounded-sm px-1 font-mono text-[9px] tabular-nums",
-                            style: {
-                              background: "var(--photon-builder-field)",
-                              color: "var(--photon-builder-text-soft)"
-                            },
-                            children: chunk.fields.length
-                          }
-                        ) : null,
                         children: /* @__PURE__ */ jsx52("div", { className: "flex flex-col gap-0.5", children: chunk.fields.map((field) => /* @__PURE__ */ jsx52(
                           FieldEditor,
                           {
@@ -11308,17 +11309,6 @@ var InspectorPanelComponent = ({
                               {
                                 id: `group-${groupKey}-${chunk.id}`,
                                 title: chunk.title,
-                                trailing: chunk.fields.length > 1 ? /* @__PURE__ */ jsx52(
-                                  "span",
-                                  {
-                                    className: "rounded-sm px-1 font-mono text-[9px] tabular-nums",
-                                    style: {
-                                      background: "var(--photon-builder-field)",
-                                      color: "var(--photon-builder-text-soft)"
-                                    },
-                                    children: chunk.fields.length
-                                  }
-                                ) : null,
                                 children: /* @__PURE__ */ jsx52("div", { className: "flex flex-col gap-0.5", children: chunk.fields.map((field) => /* @__PURE__ */ jsx52(
                                   FieldEditor,
                                   {
