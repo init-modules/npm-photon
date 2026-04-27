@@ -10703,6 +10703,51 @@ var orderInspectorGroupKeys = (groups, options = {}) => {
 };
 var LAYOUT_GROUP_KEY = "layout";
 var BLOCK_TAB_EXCLUDED_GROUPS = /* @__PURE__ */ new Set([LAYOUT_GROUP_KEY]);
+var photonFieldPathFirstWord = (path) => {
+  if (!path) {
+    return "";
+  }
+  const dotIndex = path.indexOf(".");
+  const head = dotIndex >= 0 ? path.slice(0, dotIndex) : path;
+  const camelMatch = head.match(/^[a-z]+/);
+  return camelMatch ? camelMatch[0] : head.toLowerCase();
+};
+var capitalize = (value) => value ? value[0].toUpperCase() + value.slice(1) : value;
+var chunkInspectorGroupFields = (fields, fallbackTitle) => {
+  const chunks = [];
+  let runStartIndex = 0;
+  let pending = [];
+  const flushRun = () => {
+    if (pending.length === 0) {
+      return;
+    }
+    const firstWords = pending.map(
+      (field) => photonFieldPathFirstWord(field.path)
+    );
+    const sharedPrefix = firstWords.every((word) => word === firstWords[0]) ? firstWords[0] : null;
+    const title = sharedPrefix && sharedPrefix.length > 0 ? capitalize(sharedPrefix) : fallbackTitle;
+    chunks.push({
+      kind: "inline-run",
+      id: `run-${runStartIndex}`,
+      title,
+      fields: pending
+    });
+    pending = [];
+  };
+  fields.forEach((field, index) => {
+    if (INLINE_FIELD_KINDS.has(field.kind)) {
+      if (pending.length === 0) {
+        runStartIndex = index;
+      }
+      pending.push(field);
+      return;
+    }
+    flushRun();
+    chunks.push({ kind: "block", field });
+  });
+  flushRun();
+  return chunks;
+};
 var InspectorPanelComponent = ({
   definitionFields,
   inspectorGroups,
@@ -11075,19 +11120,64 @@ var InspectorPanelComponent = ({
               activeTab === "layout" && selectedBlock && hasLayoutFields ? /* @__PURE__ */ jsx52(
                 "div",
                 {
-                  className: "space-y-1",
+                  className: "flex flex-col gap-1",
                   "data-testid": "photon-inspector-layout-panel",
-                  children: layoutFields.map((field) => /* @__PURE__ */ jsx52(
-                    FieldEditor,
-                    {
-                      field,
-                      blockId: selectedBlock.id,
-                      value: getFieldValue(selectedBlock.id, field.path),
-                      onFocus: (path) => selectField(selectedBlock.id, path ?? field.path),
-                      onChange: (value) => updateFieldValue(selectedBlock.id, field.path, value)
-                    },
-                    field.path
-                  ))
+                  children: chunkInspectorGroupFields(
+                    layoutFields,
+                    translate(
+                      "photon.studio.inspector.miscRunFallback",
+                      "Settings"
+                    )
+                  ).map(
+                    (chunk) => chunk.kind === "block" ? /* @__PURE__ */ jsx52(
+                      FieldEditor,
+                      {
+                        field: chunk.field,
+                        blockId: selectedBlock.id,
+                        value: getFieldValue(selectedBlock.id, chunk.field.path),
+                        onFocus: (path) => selectField(selectedBlock.id, path ?? chunk.field.path),
+                        onChange: (value) => updateFieldValue(
+                          selectedBlock.id,
+                          chunk.field.path,
+                          value
+                        )
+                      },
+                      chunk.field.path
+                    ) : /* @__PURE__ */ jsx52(
+                      PhotonInspectorSection,
+                      {
+                        id: `layout-${chunk.id}`,
+                        title: chunk.title,
+                        trailing: chunk.fields.length > 1 ? /* @__PURE__ */ jsx52(
+                          "span",
+                          {
+                            className: "rounded-sm px-1 font-mono text-[9px] tabular-nums",
+                            style: {
+                              background: "var(--photon-builder-field)",
+                              color: "var(--photon-builder-text-soft)"
+                            },
+                            children: chunk.fields.length
+                          }
+                        ) : null,
+                        children: /* @__PURE__ */ jsx52("div", { className: "flex flex-col gap-0.5", children: chunk.fields.map((field) => /* @__PURE__ */ jsx52(
+                          FieldEditor,
+                          {
+                            field,
+                            blockId: selectedBlock.id,
+                            value: getFieldValue(selectedBlock.id, field.path),
+                            onFocus: (path) => selectField(selectedBlock.id, path ?? field.path),
+                            onChange: (value) => updateFieldValue(
+                              selectedBlock.id,
+                              field.path,
+                              value
+                            )
+                          },
+                          field.path
+                        )) })
+                      },
+                      chunk.id
+                    )
+                  )
                 }
               ) : null,
               activeTab === "block" && selectedBlock ? /* @__PURE__ */ jsxs42(Fragment12, { children: [
@@ -11186,24 +11276,74 @@ var InspectorPanelComponent = ({
                         {
                           className: "flex flex-col gap-1",
                           "data-testid": `photon-inspector-group-panel-${groupKey}`,
-                          children: groupFields.map((field) => /* @__PURE__ */ jsx52(
-                            FieldEditor,
-                            {
-                              field,
-                              blockId: selectedBlock.id,
-                              value: getFieldValue(selectedBlock.id, field.path),
-                              onFocus: (path) => selectField(
-                                selectedBlock.id,
-                                path ?? field.path
-                              ),
-                              onChange: (value) => updateFieldValue(
-                                selectedBlock.id,
-                                field.path,
-                                value
-                              )
-                            },
-                            field.path
-                          ))
+                          children: chunkInspectorGroupFields(
+                            groupFields,
+                            translate(
+                              "photon.studio.inspector.miscRunFallback",
+                              "Settings"
+                            )
+                          ).map(
+                            (chunk) => chunk.kind === "block" ? /* @__PURE__ */ jsx52(
+                              FieldEditor,
+                              {
+                                field: chunk.field,
+                                blockId: selectedBlock.id,
+                                value: getFieldValue(
+                                  selectedBlock.id,
+                                  chunk.field.path
+                                ),
+                                onFocus: (path) => selectField(
+                                  selectedBlock.id,
+                                  path ?? chunk.field.path
+                                ),
+                                onChange: (value) => updateFieldValue(
+                                  selectedBlock.id,
+                                  chunk.field.path,
+                                  value
+                                )
+                              },
+                              chunk.field.path
+                            ) : /* @__PURE__ */ jsx52(
+                              PhotonInspectorSection,
+                              {
+                                id: `group-${groupKey}-${chunk.id}`,
+                                title: chunk.title,
+                                trailing: chunk.fields.length > 1 ? /* @__PURE__ */ jsx52(
+                                  "span",
+                                  {
+                                    className: "rounded-sm px-1 font-mono text-[9px] tabular-nums",
+                                    style: {
+                                      background: "var(--photon-builder-field)",
+                                      color: "var(--photon-builder-text-soft)"
+                                    },
+                                    children: chunk.fields.length
+                                  }
+                                ) : null,
+                                children: /* @__PURE__ */ jsx52("div", { className: "flex flex-col gap-0.5", children: chunk.fields.map((field) => /* @__PURE__ */ jsx52(
+                                  FieldEditor,
+                                  {
+                                    field,
+                                    blockId: selectedBlock.id,
+                                    value: getFieldValue(
+                                      selectedBlock.id,
+                                      field.path
+                                    ),
+                                    onFocus: (path) => selectField(
+                                      selectedBlock.id,
+                                      path ?? field.path
+                                    ),
+                                    onChange: (value) => updateFieldValue(
+                                      selectedBlock.id,
+                                      field.path,
+                                      value
+                                    )
+                                  },
+                                  field.path
+                                )) })
+                              },
+                              chunk.id
+                            )
+                          )
                         }
                       )
                     },

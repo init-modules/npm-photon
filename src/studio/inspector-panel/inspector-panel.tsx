@@ -18,7 +18,7 @@ import type {
 import { FIELD_GROUP_LABELS } from "../shared";
 import type { InspectorDefinitionMeta, InspectorGroups } from "../types";
 import { BlockPreviewScenariosPicker } from "./block-preview-scenarios-picker";
-import { FieldEditor } from "./field-editor";
+import { FieldEditor, INLINE_FIELD_KINDS } from "./field-editor";
 import {
 	PhotonInspectorDensityProvider,
 	usePhotonInspectorDensity,
@@ -82,6 +82,97 @@ const orderInspectorGroupKeys = (
 
 const LAYOUT_GROUP_KEY = "layout";
 const BLOCK_TAB_EXCLUDED_GROUPS = new Set<string>([LAYOUT_GROUP_KEY]);
+
+/**
+ * First "word" of a field path — the prefix used to detect natural
+ * sub-groupings inside a field-group. Handles `dotted.paths` (first
+ * segment) and `camelCase` (lowercase prefix).
+ *
+ *   `brand.label`    → "brand"
+ *   `brandLabel`     → "brand"
+ *   `primaryCtaHref` → "primary"
+ *   `login`          → "login"
+ */
+const photonFieldPathFirstWord = (path: string): string => {
+	if (!path) {
+		return "";
+	}
+	const dotIndex = path.indexOf(".");
+	const head = dotIndex >= 0 ? path.slice(0, dotIndex) : path;
+	const camelMatch = head.match(/^[a-z]+/);
+	return camelMatch ? camelMatch[0] : head.toLowerCase();
+};
+
+const capitalize = (value: string) =>
+	value ? value[0].toUpperCase() + value.slice(1) : value;
+
+type InspectorRunChunk =
+	| { kind: "block"; field: PhotonField }
+	| {
+			kind: "inline-run";
+			id: string;
+			title: string;
+			fields: PhotonField[];
+	  };
+
+/**
+ * Slices a group's field list so block-style fields (image, repeater,
+ * object…) stay as their own sections while consecutive inline rows
+ * (text/url/select/etc.) collapse into a named auto-section. Without
+ * this every loose run of inline rows reads as "free fields outside a
+ * section" — exactly what the user flagged.
+ *
+ * Auto-section title comes from the longest common camelCase / dot
+ * prefix in the run; if the run is heterogeneous (no shared prefix)
+ * the section gets a translated fallback title.
+ */
+const chunkInspectorGroupFields = (
+	fields: PhotonField[],
+	fallbackTitle: string,
+): InspectorRunChunk[] => {
+	const chunks: InspectorRunChunk[] = [];
+	let runStartIndex = 0;
+	let pending: PhotonField[] = [];
+
+	const flushRun = () => {
+		if (pending.length === 0) {
+			return;
+		}
+		const firstWords = pending.map((field) =>
+			photonFieldPathFirstWord(field.path),
+		);
+		const sharedPrefix = firstWords.every((word) => word === firstWords[0])
+			? firstWords[0]
+			: null;
+		const title =
+			sharedPrefix && sharedPrefix.length > 0
+				? capitalize(sharedPrefix)
+				: fallbackTitle;
+		chunks.push({
+			kind: "inline-run",
+			id: `run-${runStartIndex}`,
+			title,
+			fields: pending,
+		});
+		pending = [];
+	};
+
+	fields.forEach((field, index) => {
+		if (INLINE_FIELD_KINDS.has(field.kind)) {
+			if (pending.length === 0) {
+				runStartIndex = index;
+			}
+			pending.push(field);
+			return;
+		}
+		flushRun();
+		chunks.push({ kind: "block", field });
+	});
+
+	flushRun();
+
+	return chunks;
+};
 
 const InspectorPanelComponent = ({
 	definitionFields,
@@ -483,23 +574,75 @@ const InspectorPanelComponent = ({
 
 				{activeTab === "layout" && selectedBlock && hasLayoutFields ? (
 					<div
-						className="space-y-1"
+						className="flex flex-col gap-1"
 						data-testid="photon-inspector-layout-panel"
 					>
-						{layoutFields.map((field) => (
-							<FieldEditor
-								key={field.path}
-								field={field}
-								blockId={selectedBlock.id}
-								value={getFieldValue(selectedBlock.id, field.path)}
-								onFocus={(path) =>
-									selectField(selectedBlock.id, path ?? field.path)
-								}
-								onChange={(value) =>
-									updateFieldValue(selectedBlock.id, field.path, value)
-								}
-							/>
-						))}
+						{chunkInspectorGroupFields(
+							layoutFields,
+							translate(
+								"photon.studio.inspector.miscRunFallback",
+								"Settings",
+							),
+						).map((chunk) =>
+							chunk.kind === "block" ? (
+								<FieldEditor
+									key={chunk.field.path}
+									field={chunk.field}
+									blockId={selectedBlock.id}
+									value={getFieldValue(selectedBlock.id, chunk.field.path)}
+									onFocus={(path) =>
+										selectField(selectedBlock.id, path ?? chunk.field.path)
+									}
+									onChange={(value) =>
+										updateFieldValue(
+											selectedBlock.id,
+											chunk.field.path,
+											value,
+										)
+									}
+								/>
+							) : (
+								<PhotonInspectorSection
+									key={chunk.id}
+									id={`layout-${chunk.id}`}
+									title={chunk.title}
+									trailing={
+										chunk.fields.length > 1 ? (
+											<span
+												className="rounded-sm px-1 font-mono text-[9px] tabular-nums"
+												style={{
+													background: "var(--photon-builder-field)",
+													color: "var(--photon-builder-text-soft)",
+												}}
+											>
+												{chunk.fields.length}
+											</span>
+										) : null
+									}
+								>
+									<div className="flex flex-col gap-0.5">
+										{chunk.fields.map((field) => (
+											<FieldEditor
+												key={field.path}
+												field={field}
+												blockId={selectedBlock.id}
+												value={getFieldValue(selectedBlock.id, field.path)}
+												onFocus={(path) =>
+													selectField(selectedBlock.id, path ?? field.path)
+												}
+												onChange={(value) =>
+													updateFieldValue(
+														selectedBlock.id,
+														field.path,
+														value,
+													)
+												}
+											/>
+										))}
+									</div>
+								</PhotonInspectorSection>
+							),
+						)}
 					</div>
 				) : null}
 
@@ -597,27 +740,86 @@ const InspectorPanelComponent = ({
 										className="flex flex-col gap-1"
 										data-testid={`photon-inspector-group-panel-${groupKey}`}
 									>
-										{groupFields.map((field) => (
-											<FieldEditor
-												key={field.path}
-												field={field}
-												blockId={selectedBlock.id}
-												value={getFieldValue(selectedBlock.id, field.path)}
-												onFocus={(path) =>
-													selectField(
+										{chunkInspectorGroupFields(
+											groupFields,
+											translate(
+												"photon.studio.inspector.miscRunFallback",
+												"Settings",
+											),
+										).map((chunk) =>
+											chunk.kind === "block" ? (
+												<FieldEditor
+													key={chunk.field.path}
+													field={chunk.field}
+													blockId={selectedBlock.id}
+													value={getFieldValue(
 														selectedBlock.id,
-														path ?? field.path,
-													)
-												}
-												onChange={(value) =>
-													updateFieldValue(
-														selectedBlock.id,
-														field.path,
-														value,
-													)
-												}
-											/>
-										))}
+														chunk.field.path,
+													)}
+													onFocus={(path) =>
+														selectField(
+															selectedBlock.id,
+															path ?? chunk.field.path,
+														)
+													}
+													onChange={(value) =>
+														updateFieldValue(
+															selectedBlock.id,
+															chunk.field.path,
+															value,
+														)
+													}
+												/>
+											) : (
+												<PhotonInspectorSection
+													key={chunk.id}
+													id={`group-${groupKey}-${chunk.id}`}
+													title={chunk.title}
+													trailing={
+														chunk.fields.length > 1 ? (
+															<span
+																className="rounded-sm px-1 font-mono text-[9px] tabular-nums"
+																style={{
+																	background:
+																		"var(--photon-builder-field)",
+																	color:
+																		"var(--photon-builder-text-soft)",
+																}}
+															>
+																{chunk.fields.length}
+															</span>
+														) : null
+													}
+												>
+													<div className="flex flex-col gap-0.5">
+														{chunk.fields.map((field) => (
+															<FieldEditor
+																key={field.path}
+																field={field}
+																blockId={selectedBlock.id}
+																value={getFieldValue(
+																	selectedBlock.id,
+																	field.path,
+																)}
+																onFocus={(path) =>
+																	selectField(
+																		selectedBlock.id,
+																		path ?? field.path,
+																	)
+																}
+																onChange={(value) =>
+																	updateFieldValue(
+																		selectedBlock.id,
+																		field.path,
+																		value,
+																	)
+																}
+															/>
+														))}
+													</div>
+												</PhotonInspectorSection>
+											),
+										)}
 									</div>
 								</PhotonInspectorSection>
 							);

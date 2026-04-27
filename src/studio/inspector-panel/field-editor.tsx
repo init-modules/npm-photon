@@ -479,7 +479,9 @@ const RepeaterFieldEditor = ({
  * control occupying the row below — they would not fit a single line
  * cleanly.
  */
-const INLINE_FIELD_KINDS = new Set<PhotonField["kind"] | PhotonNestedField["kind"]>([
+export const INLINE_FIELD_KINDS = new Set<
+	PhotonField["kind"] | PhotonNestedField["kind"]
+>([
 	"text",
 	"url",
 	"color",
