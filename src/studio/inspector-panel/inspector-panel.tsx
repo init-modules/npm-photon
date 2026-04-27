@@ -12,7 +12,6 @@ import {
 } from "../../i18n/photon-labels";
 import type {
 	PhotonField,
-	PhotonNestedField,
 	PhotonPageCatalogItem,
 	PhotonPageSettings,
 } from "../../types";
@@ -24,6 +23,7 @@ import {
 	PhotonInspectorDensityProvider,
 	usePhotonInspectorDensity,
 } from "./inspector-density-context";
+import { PhotonInspectorSection } from "./inspector-section";
 import { RouteFamilyEditor } from "./route-family-editor";
 import {
 	InspectorTriggerTab,
@@ -50,59 +50,38 @@ const readString = (
 	return typeof value === "string" && value.trim() !== "" ? value : undefined;
 };
 
-const fieldSupportsLocalization = (
-	field: PhotonField | PhotonNestedField,
-	inheritedLocalization?: "localized" | "shared",
-): boolean => {
-	const effectiveLocalization = field.localization ?? inheritedLocalization;
+// Block-tab groups: Стиль first (the group "feel" of the block), then
+// Контент (what the block displays), then any extra groups packages may
+// register. `layout` is now its own top-level inspector tab and is
+// excluded from the block flow.
+const BLOCK_GROUP_ORDER = ["style", "content", "data", "misc"] as const;
 
-	if (
-		effectiveLocalization === "localized" &&
-		field.kind !== "object" &&
-		field.kind !== "repeater"
-	) {
-		return true;
-	}
-
-	if (field.kind === "object") {
-		return (field.fields ?? []).some((nestedField) =>
-			fieldSupportsLocalization(nestedField, effectiveLocalization),
-		);
-	}
-
-	if (field.kind === "repeater") {
-		return (
-			(field.itemField
-				? fieldSupportsLocalization(field.itemField, effectiveLocalization)
-				: false) ||
-			(field.fields ?? []).some((nestedField) =>
-				fieldSupportsLocalization(nestedField, effectiveLocalization),
-			)
-		);
-	}
-
-	return false;
-};
-
-const GROUP_ORDER = ["content", "style", "layout", "data", "misc"] as const;
-
-const orderInspectorGroupKeys = (groups: InspectorGroups): string[] => {
-	const keys = Object.keys(groups);
+const orderInspectorGroupKeys = (
+	groups: InspectorGroups,
+	options: { exclude?: ReadonlySet<string> } = {},
+): string[] => {
+	const exclude = options.exclude ?? new Set<string>();
+	const keys = Object.keys(groups).filter((key) => !exclude.has(key));
 	return keys.sort((left, right) => {
-		const leftIndex = GROUP_ORDER.indexOf(
-			left as (typeof GROUP_ORDER)[number],
+		const leftIndex = BLOCK_GROUP_ORDER.indexOf(
+			left as (typeof BLOCK_GROUP_ORDER)[number],
 		);
-		const rightIndex = GROUP_ORDER.indexOf(
-			right as (typeof GROUP_ORDER)[number],
+		const rightIndex = BLOCK_GROUP_ORDER.indexOf(
+			right as (typeof BLOCK_GROUP_ORDER)[number],
 		);
-		const leftRank = leftIndex === -1 ? GROUP_ORDER.length : leftIndex;
-		const rightRank = rightIndex === -1 ? GROUP_ORDER.length : rightIndex;
+		const leftRank =
+			leftIndex === -1 ? BLOCK_GROUP_ORDER.length : leftIndex;
+		const rightRank =
+			rightIndex === -1 ? BLOCK_GROUP_ORDER.length : rightIndex;
 		if (leftRank !== rightRank) {
 			return leftRank - rightRank;
 		}
 		return left.localeCompare(right);
 	});
 };
+
+const LAYOUT_GROUP_KEY = "layout";
+const BLOCK_TAB_EXCLUDED_GROUPS = new Set<string>([LAYOUT_GROUP_KEY]);
 
 const InspectorPanelComponent = ({
 	definitionFields,
@@ -111,11 +90,10 @@ const InspectorPanelComponent = ({
 	inspectorDefinition,
 	pageSettings,
 	currentPage,
-	onContentLocaleChange,
 	onCollapse,
 }: InspectorPanelProps) => {
 	const document = usePhotonStore((state) => state.document);
-	const { contentLocale, editableLocales, translate } = usePhotonI18n();
+	const { translate } = usePhotonI18n();
 	const { tokens } = usePhotonInspectorDensity();
 	const selectedBlock = usePhotonStore((state) =>
 		getPhotonSelectedBlock(state),
@@ -131,29 +109,36 @@ const InspectorPanelComponent = ({
 	const selectInspectorTrigger = usePhotonStore(
 		(state) => state.selectInspectorTrigger,
 	);
-	const [activeTab, setActiveTab] = useState<"block" | "page">("block");
 	const triggerSlots = useInspectorTriggerSlots(selectedBlock);
 	const activeTriggerSlot =
 		selectedInspectorTriggerId && triggerSlots.length
 			? triggerSlots.find((slot) => slot.id === selectedInspectorTriggerId) ??
 				null
 			: null;
-	const isTriggerTabActive = Boolean(activeTriggerSlot);
+	const layoutFields = inspectorGroups[LAYOUT_GROUP_KEY] ?? [];
+	const hasLayoutFields = layoutFields.length > 0;
+	const hasSurfaces = triggerSlots.length > 0;
+	type InspectorTopTab = "block" | "surfaces" | "layout" | "page";
+	const [activeTab, setActiveTab] = useState<InspectorTopTab>("block");
+	// If the user lands on a tab that is no longer available (block lost
+	// its triggers / layout fields), bounce back to "block" silently.
+	useEffect(() => {
+		if (activeTab === "surfaces" && !hasSurfaces) {
+			setActiveTab("block");
+		}
+		if (activeTab === "layout" && !hasLayoutFields) {
+			setActiveTab("block");
+		}
+	}, [activeTab, hasSurfaces, hasLayoutFields]);
 	const [showBlockJson, setShowBlockJson] = useState(false);
 	const [showDocumentJson, setShowDocumentJson] = useState(false);
-	const orderedGroupKeys = useMemo(
-		() => orderInspectorGroupKeys(inspectorGroups),
+	const blockGroupKeys = useMemo(
+		() =>
+			orderInspectorGroupKeys(inspectorGroups, {
+				exclude: BLOCK_TAB_EXCLUDED_GROUPS,
+			}),
 		[inspectorGroups],
 	);
-	const [selectedGroupKey, setSelectedGroupKey] = useState<string | null>(
-		null,
-	);
-	const activeGroupKey = useMemo(() => {
-		if (selectedGroupKey && orderedGroupKeys.includes(selectedGroupKey)) {
-			return selectedGroupKey;
-		}
-		return orderedGroupKeys[0] ?? null;
-	}, [orderedGroupKeys, selectedGroupKey]);
 	const hasBlockContext =
 		selectedBlock !== null || inspectorDefinition !== null;
 	const pageTabLabel = currentPage?.isDynamic
@@ -233,70 +218,74 @@ const InspectorPanelComponent = ({
 				}}
 			>
 				<div className="flex min-w-0 items-center gap-1">
-					<button
-						type="button"
-						onClick={() => {
-							selectInspectorTrigger(null);
-							setActiveTab("block");
-						}}
-						className={tokens.tabClass}
-						style={
-							activeTab === "block" && !isTriggerTabActive
-								? {
-										background: "var(--photon-builder-accent-soft)",
-										color: "var(--photon-builder-accent-text)",
+					{(
+						[
+							{
+								key: "block" as const,
+								label: translate(
+									"photon.studio.inspector.blockTab",
+									"Block",
+								),
+								enabled: true,
+							},
+							{
+								key: "surfaces" as const,
+								label: translate(
+									"photon.studio.inspector.surfacesTab",
+									"Surfaces",
+								),
+								enabled: hasSurfaces,
+							},
+							{
+								key: "layout" as const,
+								label: translate(
+									"photon.studio.inspector.layoutTab",
+									"Layout",
+								),
+								enabled: hasLayoutFields,
+							},
+							{
+								key: "page" as const,
+								label: pageTabLabel,
+								enabled: true,
+							},
+						] satisfies Array<{
+							key: InspectorTopTab;
+							label: string;
+							enabled: boolean;
+						}>
+					)
+						.filter((tab) => tab.enabled)
+						.map((tab) => {
+							const isActive = activeTab === tab.key;
+							return (
+								<button
+									key={tab.key}
+									type="button"
+									role="tab"
+									aria-selected={isActive}
+									onClick={() => {
+										if (tab.key !== "surfaces") {
+											selectInspectorTrigger(null);
+										}
+										setActiveTab(tab.key);
+									}}
+									className={tokens.tabClass}
+									style={
+										isActive
+											? {
+													background:
+														"var(--photon-builder-accent-soft)",
+													color: "var(--photon-builder-accent-text)",
+												}
+											: { color: "var(--photon-builder-text-muted)" }
 									}
-								: { color: "var(--photon-builder-text-muted)" }
-						}
-					>
-						{translate("photon.studio.inspector.blockTab", "Block")}
-					</button>
-					{triggerSlots.map((slot) => {
-						const isActive =
-							isTriggerTabActive &&
-							activeTriggerSlot?.id === slot.id;
-						return (
-							<button
-								key={slot.id}
-								type="button"
-								onClick={() => {
-									selectInspectorTrigger(slot.id);
-									setActiveTab("block");
-								}}
-								className={tokens.tabClass}
-								style={
-									isActive
-										? {
-												background:
-													"var(--photon-builder-accent-soft)",
-												color: "var(--photon-builder-accent-text)",
-											}
-										: { color: "var(--photon-builder-text-muted)" }
-								}
-								data-testid={`photon-inspector-trigger-tab-${slot.id}`}
-							>
-								{slot.label}
-							</button>
-						);
-					})}
-					<button
-						type="button"
-						onClick={() => {
-							selectInspectorTrigger(null);
-							setActiveTab("page");
-						}}
-						className={tokens.tabClass}
-						style={
-							activeTab === "page"
-								? {
-										background: "var(--photon-builder-accent-soft)",
-										color: "var(--photon-builder-accent-text)",
-									}
-								: { color: "var(--photon-builder-text-muted)" }
-						}
-					>
-						{pageTabLabel}
-					</button>
+									data-testid={`photon-inspector-tab-${tab.key}`}
+								>
+									{tab.label}
+								</button>
+							);
+						})}
 				</div>
 				{onCollapse ? (
 					<button
@@ -449,11 +438,85 @@ const InspectorPanelComponent = ({
 					</>
 				) : null}
 
-				{activeTab === "block" && selectedBlock && isTriggerTabActive && activeTriggerSlot ? (
-					<InspectorTriggerTab block={selectedBlock} slot={activeTriggerSlot} />
+				{activeTab === "surfaces" && selectedBlock && hasSurfaces ? (
+					<>
+						<div
+							className="flex flex-wrap gap-1"
+							role="tablist"
+							aria-label="Surfaces"
+							data-testid="photon-inspector-surfaces-tabstrip"
+						>
+							{triggerSlots.map((slot) => {
+								const isActive = activeTriggerSlot?.id === slot.id;
+								return (
+									<button
+										key={slot.id}
+										type="button"
+										role="tab"
+										aria-selected={isActive}
+										onClick={() => selectInspectorTrigger(slot.id)}
+										className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.16em]"
+										style={
+											isActive
+												? {
+														background:
+															"var(--photon-builder-accent-soft)",
+														color: "var(--photon-builder-accent-text)",
+													}
+												: {
+														background: "var(--photon-builder-panel-solid)",
+														color: "var(--photon-builder-text-soft)",
+													}
+										}
+										data-testid={`photon-inspector-surfaces-tab-${slot.id}`}
+									>
+										{slot.label}
+									</button>
+								);
+							})}
+						</div>
+						{activeTriggerSlot ? (
+							<InspectorTriggerTab
+								block={selectedBlock}
+								slot={activeTriggerSlot}
+							/>
+						) : (
+							<div
+								className="rounded-sm px-2 py-2 text-[11px] leading-snug"
+								style={{
+									background: "var(--photon-builder-panel-solid)",
+									color: "var(--photon-builder-text-muted)",
+								}}
+							>
+								Pick a surface above to inspect its trigger bindings.
+							</div>
+						)}
+					</>
 				) : null}
 
-				{activeTab === "block" && selectedBlock && !isTriggerTabActive ? (
+				{activeTab === "layout" && selectedBlock && hasLayoutFields ? (
+					<div
+						className="space-y-1"
+						data-testid="photon-inspector-layout-panel"
+					>
+						{layoutFields.map((field) => (
+							<FieldEditor
+								key={field.path}
+								field={field}
+								blockId={selectedBlock.id}
+								value={getFieldValue(selectedBlock.id, field.path)}
+								onFocus={(path) =>
+									selectField(selectedBlock.id, path ?? field.path)
+								}
+								onChange={(value) =>
+									updateFieldValue(selectedBlock.id, field.path, value)
+								}
+							/>
+						))}
+					</div>
+				) : null}
+
+				{activeTab === "block" && selectedBlock ? (
 					<>
 						<section
 							className="rounded-[3px] px-2 py-1.5"
@@ -521,134 +584,61 @@ const InspectorPanelComponent = ({
 
 						<RouteFamilyEditor />
 
-						{orderedGroupKeys.length > 0 ? (
-							<section
-								className="rounded-[3px] px-2 py-1.5"
-								style={{
-									background: "var(--photon-builder-panel-solid)",
-								}}
-								data-testid="photon-inspector-group-tabs"
-							>
-								<div
-									className="mb-1.5 flex flex-wrap gap-1"
-									role="tablist"
-									aria-label="Field groups"
+						{blockGroupKeys.map((groupKey) => {
+							const groupFields = inspectorGroups[groupKey] ?? [];
+							if (groupFields.length === 0) {
+								return null;
+							}
+							const label = translate(
+								FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
+								translatePhotonFieldGroup(groupKey, translate),
+							);
+							return (
+								<PhotonInspectorSection
+									key={groupKey}
+									id={`block-group-${groupKey}`}
+									title={label}
+									trailing={
+										<span
+											className="rounded-sm px-1 font-mono text-[9px] tabular-nums"
+											style={{
+												background: "var(--photon-builder-field)",
+												color: "var(--photon-builder-text-soft)",
+											}}
+										>
+											{groupFields.length}
+										</span>
+									}
 								>
-									{orderedGroupKeys.map((groupKey) => {
-										const isActive = groupKey === activeGroupKey;
-										const groupFields = inspectorGroups[groupKey] ?? [];
-										const label = translate(
-											FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
-											translatePhotonFieldGroup(groupKey, translate),
-										);
-										return (
-											<button
-												key={groupKey}
-												type="button"
-												role="tab"
-												aria-selected={isActive}
-												onClick={() => setSelectedGroupKey(groupKey)}
-												className="inline-flex cursor-pointer items-center gap-1 rounded-sm px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.16em]"
-												style={
-													isActive
-														? {
-																background:
-																	"var(--photon-builder-accent-soft)",
-																color: "var(--photon-builder-accent-text)",
-															}
-														: {
-																background: "transparent",
-																color: "var(--photon-builder-text-soft)",
-															}
+									<div
+										className="space-y-0.5"
+										data-testid={`photon-inspector-group-panel-${groupKey}`}
+									>
+										{groupFields.map((field) => (
+											<FieldEditor
+												key={field.path}
+												field={field}
+												blockId={selectedBlock.id}
+												value={getFieldValue(selectedBlock.id, field.path)}
+												onFocus={(path) =>
+													selectField(
+														selectedBlock.id,
+														path ?? field.path,
+													)
 												}
-												data-testid={`photon-inspector-group-tab-${groupKey}`}
-											>
-												<span>{label}</span>
-												<span
-													className="rounded-sm px-1 py-0 text-[9.5px] tracking-normal opacity-70"
-												>
-													{groupFields.length}
-												</span>
-											</button>
-										);
-									})}
-								</div>
-								{(() => {
-									const activeKey = activeGroupKey ?? orderedGroupKeys[0];
-									const fields = activeKey
-										? (inspectorGroups[activeKey] ?? [])
-										: [];
-									const showLocaleSwitch =
-										activeKey === "content" &&
-										editableLocales.length > 1 &&
-										fields.some((field) => fieldSupportsLocalization(field));
-									return (
-										<>
-											{showLocaleSwitch ? (
-												<div
-													className="mb-1.5 inline-flex flex-wrap rounded-sm p-0.5"
-													style={{
-														background: "var(--photon-builder-field)",
-													}}
-												>
-													{editableLocales.map((locale) => (
-														<button
-															key={locale.code}
-															type="button"
-															onClick={() =>
-																onContentLocaleChange?.(locale.code)
-															}
-															className="cursor-pointer rounded-sm px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] transition"
-															style={
-																locale.code === contentLocale
-																	? {
-																			background:
-																				"var(--photon-builder-accent-soft)",
-																			color:
-																				"var(--photon-builder-accent-text)",
-																		}
-																	: {
-																			color:
-																				"var(--photon-builder-text-muted)",
-																		}
-															}
-														>
-															{locale.code}
-														</button>
-													))}
-												</div>
-											) : null}
-											<div
-												className="space-y-1"
-												data-testid={`photon-inspector-group-panel-${activeKey ?? "empty"}`}
-											>
-												{fields.map((field) => (
-													<FieldEditor
-														key={field.path}
-														field={field}
-														blockId={selectedBlock.id}
-														value={getFieldValue(selectedBlock.id, field.path)}
-														onFocus={(path) =>
-															selectField(
-																selectedBlock.id,
-																path ?? field.path,
-															)
-														}
-														onChange={(value) =>
-															updateFieldValue(
-																selectedBlock.id,
-																field.path,
-																value,
-															)
-														}
-													/>
-												))}
-											</div>
-										</>
-									);
-								})()}
-							</section>
-						) : null}
+												onChange={(value) =>
+													updateFieldValue(
+														selectedBlock.id,
+														field.path,
+														value,
+													)
+												}
+											/>
+										))}
+									</div>
+								</PhotonInspectorSection>
+							);
+						})}
 
 						<section
 							className="rounded-[3px] px-2 py-1.5"

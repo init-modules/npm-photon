@@ -115,7 +115,14 @@ var PhotonBlockRenderer = ({
 
 // src/studio/inspector-panel/field-editor.tsx
 import clsx4 from "clsx";
-import { ArrowDown as ArrowDown2, ArrowUp as ArrowUp2, ChevronDown, Plus as Plus2, Trash2 as Trash22 } from "lucide-react";
+import {
+  ArrowDown as ArrowDown2,
+  ArrowUp as ArrowUp2,
+  ChevronDown,
+  ChevronRight,
+  Plus as Plus2,
+  Trash2 as Trash22
+} from "lucide-react";
 import { memo, useEffect as useEffect2, useState as useState6 } from "react";
 
 // src/components/ui/dropdown-menu/index.ts
@@ -1494,7 +1501,7 @@ var SiteDataBindingPicker = (props) => {
 };
 
 // src/studio/inspector-panel/field-editor.tsx
-import { jsx as jsx13, jsxs as jsxs8 } from "react/jsx-runtime";
+import { Fragment, jsx as jsx13, jsxs as jsxs8 } from "react/jsx-runtime";
 var joinFieldPath = (parentPath, childPath) => {
   if (!childPath) {
     return parentPath;
@@ -1603,14 +1610,13 @@ var ObjectFieldEditor = ({
   hidePathLabel
 }) => {
   const objectValue = normalizeObjectValue(value);
-  return /* @__PURE__ */ jsx13("div", { className: "space-y-1 rounded-sm bg-[color:var(--photon-builder-field)] p-1.5", children: (field.fields ?? []).map((childField, index) => {
+  return /* @__PURE__ */ jsx13("div", { className: "space-y-0.5 rounded-sm bg-[color:var(--photon-builder-field)] p-1", children: (field.fields ?? []).map((childField, index) => {
     const childPath = childField.path ?? "";
     const childAbsolutePath = joinFieldPath(absolutePath ?? "", childPath);
     const childValue = childPath ? getValueAtPath(objectValue, childPath) : objectValue;
     return /* @__PURE__ */ jsx13(
       "div",
       {
-        className: "rounded-sm px-1.5 py-1",
         children: /* @__PURE__ */ jsx13(
           FieldEditor,
           {
@@ -1633,6 +1639,96 @@ var ObjectFieldEditor = ({
       childAbsolutePath || `${field.label ?? field.path}-${index}`
     );
   }) });
+};
+var RepeaterItem = ({
+  itemAbsolutePath,
+  itemLabel,
+  canMoveUp,
+  canMoveDown,
+  onMoveUp,
+  onMoveDown,
+  onRemove,
+  children
+}) => {
+  const [collapsed, setCollapsed] = useState6(false);
+  return /* @__PURE__ */ jsxs8(
+    "div",
+    {
+      className: "rounded-sm bg-[color:var(--photon-builder-panel-solid)] px-1.5 py-1",
+      children: [
+        /* @__PURE__ */ jsxs8("div", { className: "flex items-center justify-between gap-2", children: [
+          /* @__PURE__ */ jsxs8(
+            "button",
+            {
+              type: "button",
+              onClick: () => setCollapsed((prev) => !prev),
+              className: "flex min-w-0 flex-1 cursor-pointer items-center gap-1 text-left",
+              "aria-expanded": !collapsed,
+              children: [
+                collapsed ? /* @__PURE__ */ jsx13(
+                  ChevronRight,
+                  {
+                    className: "h-3 w-3 shrink-0",
+                    style: { color: "var(--photon-builder-text-soft)" }
+                  }
+                ) : /* @__PURE__ */ jsx13(
+                  ChevronDown,
+                  {
+                    className: "h-3 w-3 shrink-0",
+                    style: { color: "var(--photon-builder-text-soft)" }
+                  }
+                ),
+                /* @__PURE__ */ jsx13(
+                  "span",
+                  {
+                    className: "truncate text-[11px] font-semibold leading-tight",
+                    style: { color: "var(--photon-builder-text)" },
+                    children: itemLabel
+                  }
+                )
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxs8("div", { className: "flex shrink-0 items-center gap-0.5", children: [
+            /* @__PURE__ */ jsx13(
+              "button",
+              {
+                type: "button",
+                disabled: !canMoveUp,
+                onClick: onMoveUp,
+                className: "inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
+                "aria-label": `Move ${itemLabel} up`,
+                children: /* @__PURE__ */ jsx13(ArrowUp2, { className: "h-3 w-3" })
+              }
+            ),
+            /* @__PURE__ */ jsx13(
+              "button",
+              {
+                type: "button",
+                disabled: !canMoveDown,
+                onClick: onMoveDown,
+                className: "inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
+                "aria-label": `Move ${itemLabel} down`,
+                children: /* @__PURE__ */ jsx13(ArrowDown2, { className: "h-3 w-3" })
+              }
+            ),
+            /* @__PURE__ */ jsx13(
+              "button",
+              {
+                type: "button",
+                onClick: onRemove,
+                className: "inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)]",
+                "aria-label": `Remove ${itemLabel}`,
+                children: /* @__PURE__ */ jsx13(Trash22, { className: "h-3 w-3" })
+              }
+            )
+          ] })
+        ] }),
+        collapsed ? null : /* @__PURE__ */ jsx13("div", { className: "mt-1", children })
+      ]
+    },
+    itemAbsolutePath
+  );
 };
 var RepeaterFieldEditor = ({
   field,
@@ -1669,123 +1765,83 @@ var RepeaterFieldEditor = ({
         field.itemLabelKey ?? field.itemLabel ?? "Item",
         field.itemLabel ?? "Item"
       );
-      return /* @__PURE__ */ jsxs8(
-        "div",
+      return /* @__PURE__ */ jsx13(
+        RepeaterItem,
         {
-          className: "rounded-sm bg-[color:var(--photon-builder-panel-solid)] px-1.5 py-1",
-          children: [
-            /* @__PURE__ */ jsxs8("div", { className: "mb-1 flex items-center justify-between gap-2", children: [
-              /* @__PURE__ */ jsx13("div", { className: "min-w-0", children: /* @__PURE__ */ jsx13(
-                "div",
-                {
-                  className: "truncate text-[11px] font-semibold leading-tight",
-                  style: { color: "var(--photon-builder-text)" },
-                  children: itemLabel
-                }
-              ) }),
-              /* @__PURE__ */ jsxs8("div", { className: "flex shrink-0 items-center gap-0.5", children: [
-                /* @__PURE__ */ jsx13(
-                  "button",
-                  {
-                    type: "button",
-                    disabled: index === 0,
-                    onClick: () => updateItems(
-                      movePhotonArrayItem(items, index, index - 1)
-                    ),
-                    className: "inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
-                    "aria-label": `Move ${itemLabel} up`,
-                    children: /* @__PURE__ */ jsx13(ArrowUp2, { className: "h-3 w-3" })
-                  }
-                ),
-                /* @__PURE__ */ jsx13(
-                  "button",
-                  {
-                    type: "button",
-                    disabled: index === items.length - 1,
-                    onClick: () => updateItems(
-                      movePhotonArrayItem(items, index, index + 1)
-                    ),
-                    className: "inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40",
-                    "aria-label": `Move ${itemLabel} down`,
-                    children: /* @__PURE__ */ jsx13(ArrowDown2, { className: "h-3 w-3" })
-                  }
-                ),
-                /* @__PURE__ */ jsx13(
-                  "button",
-                  {
-                    type: "button",
-                    onClick: () => updateItems(
-                      items.filter((_, itemIndex) => itemIndex !== index)
-                    ),
-                    className: "inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)]",
-                    "aria-label": `Remove ${itemLabel}`,
-                    children: /* @__PURE__ */ jsx13(Trash22, { className: "h-3 w-3" })
-                  }
+          item,
+          itemAbsolutePath,
+          itemLabel,
+          canMoveUp: index > 0,
+          canMoveDown: index < items.length - 1,
+          onMoveUp: () => updateItems(
+            movePhotonArrayItem(items, index, index - 1)
+          ),
+          onMoveDown: () => updateItems(
+            movePhotonArrayItem(items, index, index + 1)
+          ),
+          onRemove: () => updateItems(
+            items.filter((_, itemIndex) => itemIndex !== index)
+          ),
+          children: itemField ? /* @__PURE__ */ jsx13(
+            FieldEditor,
+            {
+              field: itemField,
+              blockId,
+              value: item,
+              absolutePath: itemAbsolutePath,
+              hidePathLabel: true,
+              onFocus,
+              onChange: (nextValue) => updateItems(
+                items.map(
+                  (currentItem, itemIndex) => itemIndex === index ? nextValue : currentItem
                 )
-              ] })
-            ] }),
-            itemField ? /* @__PURE__ */ jsx13(
-              FieldEditor,
+              )
+            }
+          ) : /* @__PURE__ */ jsx13("div", { className: "space-y-0.5", children: (field.fields ?? []).map((childField, childIndex) => {
+            const itemObject = normalizeObjectValue(item);
+            const childPath = childField.path ?? "";
+            const childAbsolutePath = joinFieldPath(
+              itemAbsolutePath,
+              childPath
+            );
+            const childValue = childPath ? getValueAtPath(itemObject, childPath) : itemObject;
+            return /* @__PURE__ */ jsx13(
+              "div",
               {
-                field: itemField,
-                blockId,
-                value: item,
-                absolutePath: itemAbsolutePath,
-                hidePathLabel: true,
-                onFocus,
-                onChange: (nextValue) => updateItems(
-                  items.map(
-                    (currentItem, itemIndex) => itemIndex === index ? nextValue : currentItem
-                  )
-                )
-              }
-            ) : /* @__PURE__ */ jsx13("div", { className: "space-y-3", children: (field.fields ?? []).map((childField, childIndex) => {
-              const itemObject = normalizeObjectValue(item);
-              const childPath = childField.path ?? "";
-              const childAbsolutePath = joinFieldPath(
-                itemAbsolutePath,
-                childPath
-              );
-              const childValue = childPath ? getValueAtPath(itemObject, childPath) : itemObject;
-              return /* @__PURE__ */ jsx13(
-                "div",
-                {
-                  className: "rounded-sm px-1.5 py-1",
-                  children: /* @__PURE__ */ jsx13(
-                    FieldEditor,
-                    {
-                      field: childField,
-                      blockId,
-                      value: childValue,
-                      absolutePath: childAbsolutePath,
-                      hidePathLabel: true,
-                      onFocus,
-                      onChange: (nextValue) => {
-                        if (!childPath) {
-                          updateItems(
-                            items.map(
-                              (currentItem, itemIndex) => itemIndex === index ? nextValue : currentItem
-                            )
-                          );
-                          return;
-                        }
+                children: /* @__PURE__ */ jsx13(
+                  FieldEditor,
+                  {
+                    field: childField,
+                    blockId,
+                    value: childValue,
+                    absolutePath: childAbsolutePath,
+                    hidePathLabel: true,
+                    onFocus,
+                    onChange: (nextValue) => {
+                      if (!childPath) {
                         updateItems(
                           items.map(
-                            (currentItem, itemIndex) => itemIndex === index ? setValueAtPath(
-                              itemObject,
-                              childPath,
-                              nextValue
-                            ) : currentItem
+                            (currentItem, itemIndex) => itemIndex === index ? nextValue : currentItem
                           )
                         );
+                        return;
                       }
+                      updateItems(
+                        items.map(
+                          (currentItem, itemIndex) => itemIndex === index ? setValueAtPath(
+                            itemObject,
+                            childPath,
+                            nextValue
+                          ) : currentItem
+                        )
+                      );
                     }
-                  )
-                },
-                childAbsolutePath || `${itemAbsolutePath}-${childIndex}`
-              );
-            }) })
-          ]
+                  }
+                )
+              },
+              childAbsolutePath || `${itemAbsolutePath}-${childIndex}`
+            );
+          }) })
         },
         itemAbsolutePath
       );
@@ -2089,10 +2145,18 @@ var FieldEditorImpl = ({
         "data-photon-density-row": true,
         className: clsx4(
           tokens.rowMinHeight,
-          "flex items-center gap-2 px-1"
+          "flex items-center gap-1.5 px-1"
         ),
         children: [
           labelNode,
+          /* @__PURE__ */ jsx13(
+            "div",
+            {
+              "aria-hidden": "true",
+              className: "w-px self-stretch opacity-40",
+              style: { background: "var(--photon-builder-border)" }
+            }
+          ),
           /* @__PURE__ */ jsxs8("div", { className: "flex min-w-0 flex-1 items-center gap-1", children: [
             renderControl(),
             bindingPill,
@@ -2121,17 +2185,82 @@ var FieldEditorImpl = ({
       }
     );
   }
+  const isCollapsibleNested = field.kind === "object" || field.kind === "repeater";
+  return /* @__PURE__ */ jsxs8(
+    NonInlineFieldShell,
+    {
+      path,
+      hidePathLabel,
+      labelNode,
+      bindingPill,
+      description,
+      collapsible: isCollapsibleNested,
+      onPathClick: () => onFocus(path),
+      children: [
+        path && !fieldBinding ? /* @__PURE__ */ jsx13("div", { className: "mb-1", children: /* @__PURE__ */ jsx13(
+          SiteDataBindingPicker,
+          {
+            mode: "field",
+            label: "Bind field",
+            onPick: (binding) => setFieldBinding(blockId, path, binding)
+          }
+        ) }) : null,
+        renderControl()
+      ]
+    }
+  );
+};
+var NonInlineFieldShell = ({
+  path,
+  hidePathLabel,
+  labelNode,
+  bindingPill,
+  description,
+  collapsible,
+  onPathClick,
+  children
+}) => {
+  const [collapsed, setCollapsed] = useState6(false);
+  const isExpanded = !collapsible || !collapsed;
   return /* @__PURE__ */ jsxs8("div", { "data-photon-density-row": true, className: "px-1 py-1", children: [
     /* @__PURE__ */ jsxs8("div", { className: "mb-1 flex items-center justify-between gap-2", children: [
-      /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-1.5", children: [
-        labelNode,
-        bindingPill
-      ] }),
+      /* @__PURE__ */ jsxs8(
+        "button",
+        {
+          type: "button",
+          onClick: collapsible ? () => setCollapsed((prev) => !prev) : void 0,
+          className: clsx4(
+            "flex min-w-0 flex-1 items-center gap-1 text-left",
+            collapsible ? "cursor-pointer" : "cursor-default"
+          ),
+          "aria-expanded": collapsible ? isExpanded : void 0,
+          children: [
+            collapsible ? isExpanded ? /* @__PURE__ */ jsx13(
+              ChevronDown,
+              {
+                className: "h-3 w-3 shrink-0",
+                style: { color: "var(--photon-builder-text-soft)" }
+              }
+            ) : /* @__PURE__ */ jsx13(
+              ChevronRight,
+              {
+                className: "h-3 w-3 shrink-0",
+                style: { color: "var(--photon-builder-text-soft)" }
+              }
+            ) : null,
+            labelNode,
+            bindingPill
+          ]
+        }
+      ),
       path && !hidePathLabel ? /* @__PURE__ */ jsx13(
         "button",
         {
           type: "button",
-          onClick: () => onFocus(path),
+          onClick: (event) => {
+            event.stopPropagation();
+            onPathClick();
+          },
           className: "shrink-0 cursor-pointer font-mono text-[9px] uppercase tracking-[0.16em] transition",
           style: { color: "var(--photon-builder-text-ghost)" },
           title: path,
@@ -2139,16 +2268,10 @@ var FieldEditorImpl = ({
         }
       ) : null
     ] }),
-    description ? /* @__PURE__ */ jsx13("div", { className: "mb-1", children: description }) : null,
-    path && !fieldBinding ? /* @__PURE__ */ jsx13("div", { className: "mb-1", children: /* @__PURE__ */ jsx13(
-      SiteDataBindingPicker,
-      {
-        mode: "field",
-        label: "Bind field",
-        onPick: (binding) => setFieldBinding(blockId, path, binding)
-      }
-    ) }) : null,
-    renderControl()
+    isExpanded ? /* @__PURE__ */ jsxs8(Fragment, { children: [
+      description ? /* @__PURE__ */ jsx13("div", { className: "mb-1", children: description }) : null,
+      children
+    ] }) : null
   ] });
 };
 var FieldEditor = memo(FieldEditorImpl, (prev, next) => {
@@ -2237,7 +2360,7 @@ var BlockOverlayCard = ({ block }) => {
 };
 
 // src/studio/canvas/canvas-block-item.tsx
-import { Fragment as Fragment2, memo as memo3 } from "react";
+import { Fragment as Fragment3, memo as memo3 } from "react";
 
 // src/studio/canvas/canvas-block-shell.tsx
 import { useDraggable } from "@dnd-kit/core";
@@ -2250,7 +2373,7 @@ import {
   Trash2 as Trash23
 } from "lucide-react";
 import { memo as memo2, useEffect as useEffect3, useState as useState7 } from "react";
-import { Fragment, jsx as jsx16, jsxs as jsxs10 } from "react/jsx-runtime";
+import { Fragment as Fragment2, jsx as jsx16, jsxs as jsxs10 } from "react/jsx-runtime";
 var CanvasBlockShellComponent = ({
   block,
   blockLabel,
@@ -2285,7 +2408,7 @@ var CanvasBlockShellComponent = ({
     "border transition",
     isSelected ? "border-[color:var(--photon-builder-border-strong)] shadow-[0_0_0_1px_var(--photon-builder-accent-strong)]" : "border-[color:var(--photon-builder-border)] group-hover:border-[color:var(--photon-builder-border-strong)]"
   );
-  const chromeBadges = builderEnabled ? /* @__PURE__ */ jsxs10(Fragment, { children: [
+  const chromeBadges = builderEnabled ? /* @__PURE__ */ jsxs10(Fragment2, { children: [
     /* @__PURE__ */ jsx16(
       "div",
       {
@@ -2311,7 +2434,7 @@ var CanvasBlockShellComponent = ({
       }
     )
   ] }) : null;
-  const chromeControls = chromeEnabled ? /* @__PURE__ */ jsxs10(Fragment, { children: [
+  const chromeControls = chromeEnabled ? /* @__PURE__ */ jsxs10(Fragment2, { children: [
     /* @__PURE__ */ jsx16(
       "button",
       {
@@ -2329,7 +2452,7 @@ var CanvasBlockShellComponent = ({
         children: isCollapsed ? /* @__PURE__ */ jsx16(ChevronDown2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx16(ChevronUp, { className: "h-4 w-4" })
       }
     ),
-    builderEnabled ? /* @__PURE__ */ jsxs10(Fragment, { children: [
+    builderEnabled ? /* @__PURE__ */ jsxs10(Fragment2, { children: [
       /* @__PURE__ */ jsx16(
         "button",
         {
@@ -3253,7 +3376,7 @@ var TriggerOverlay = ({ block }) => {
 };
 
 // src/studio/canvas/canvas-block-item.tsx
-import { Fragment as Fragment3, jsx as jsx22, jsxs as jsxs16 } from "react/jsx-runtime";
+import { Fragment as Fragment4, jsx as jsx22, jsxs as jsxs16 } from "react/jsx-runtime";
 var CanvasBlockItemComponent = ({
   block,
   index,
@@ -3285,7 +3408,7 @@ var CanvasBlockItemComponent = ({
   );
   const definition = registry.getDefinition(block.module, block.type);
   const chromeStyle = definition?.category === "Site Frame" ? "edge-to-edge" : "default";
-  return /* @__PURE__ */ jsxs16(Fragment2, { children: [
+  return /* @__PURE__ */ jsxs16(Fragment3, { children: [
     /* @__PURE__ */ jsxs16(
       CanvasBlockShell,
       {
@@ -3325,7 +3448,7 @@ var CanvasBlockItemComponent = ({
               ) })
             }
           ),
-          builderEnabled && isSelected ? /* @__PURE__ */ jsxs16(Fragment3, { children: [
+          builderEnabled && isSelected ? /* @__PURE__ */ jsxs16(Fragment4, { children: [
             /* @__PURE__ */ jsx22(CanvasBlockStateOverlay, { block }),
             /* @__PURE__ */ jsx22(TriggerOverlay, { block }),
             /* @__PURE__ */ jsx22(CanvasTriggerStage, { block })
@@ -3762,7 +3885,7 @@ var translatePhotonFieldGroup = (group, translate) => translate(FIELD_GROUP_KEYS
 var translatePhotonPageGroup = (group, translate) => translate(PAGE_GROUP_KEYS[group] ?? group, group);
 
 // src/studio/editor-dock/editor-page-browser.tsx
-import { Fragment as Fragment4, jsx as jsx28, jsxs as jsxs22 } from "react/jsx-runtime";
+import { Fragment as Fragment5, jsx as jsx28, jsxs as jsxs22 } from "react/jsx-runtime";
 var EditorPageBrowser = ({
   activeMode,
   currentPage,
@@ -3821,7 +3944,7 @@ var EditorPageBrowser = ({
     }
     window.requestAnimationFrame(() => pageMenu.focusList());
   }, [menuOpen]);
-  return /* @__PURE__ */ jsxs22(Fragment4, { children: [
+  return /* @__PURE__ */ jsxs22(Fragment5, { children: [
     /* @__PURE__ */ jsxs22(Root2, { open: menuOpen, onOpenChange: setMenuOpen, modal: false, children: [
       /* @__PURE__ */ jsx28(Trigger, { asChild: true, children: /* @__PURE__ */ jsxs22(
         "button",
@@ -4159,7 +4282,7 @@ var EditorPageBrowser = ({
 
 // src/studio/editor-dock/editor-save-button.tsx
 import clsx9 from "clsx";
-import { ChevronRight, History, LoaderCircle, Save } from "lucide-react";
+import { ChevronRight as ChevronRight2, History, LoaderCircle, Save } from "lucide-react";
 import { useState as useState13 } from "react";
 
 // src/components/ui/context-menu/index.ts
@@ -4343,7 +4466,7 @@ var getSaveButtonMeta = ({
 };
 
 // src/studio/editor-dock/editor-save-button.tsx
-import { Fragment as Fragment5, jsx as jsx34, jsxs as jsxs25 } from "react/jsx-runtime";
+import { Fragment as Fragment6, jsx as jsx34, jsxs as jsxs25 } from "react/jsx-runtime";
 var EditorSaveButton = ({
   activeMode,
   hasUnsavedChanges,
@@ -4360,7 +4483,7 @@ var EditorSaveButton = ({
     hasUnsavedChanges,
     saveState
   });
-  return /* @__PURE__ */ jsxs25(Fragment5, { children: [
+  return /* @__PURE__ */ jsxs25(Fragment6, { children: [
     /* @__PURE__ */ jsxs25(Root3, { children: [
       /* @__PURE__ */ jsx34(Trigger2, { asChild: true, children: /* @__PURE__ */ jsxs25(
         "button",
@@ -4404,7 +4527,7 @@ var EditorSaveButton = ({
         ),
         /* @__PURE__ */ jsx34(ContextMenuSeparator, {}),
         activeMode === "preview" && collapsedBlockCount > 0 ? /* @__PURE__ */ jsxs25(ContextMenuItem, { onSelect: onPreviewCollapsedChange, children: [
-          /* @__PURE__ */ jsx34(ChevronRight, { className: "mr-3 h-4 w-4 rotate-90 text-[color:var(--photon-builder-text-soft)]" }),
+          /* @__PURE__ */ jsx34(ChevronRight2, { className: "mr-3 h-4 w-4 rotate-90 text-[color:var(--photon-builder-text-soft)]" }),
           showCollapsedInPreview ? "Show full layout" : "Show collapsed blocks"
         ] }) : null
       ] })
@@ -4424,7 +4547,7 @@ var EditorSaveButton = ({
 };
 
 // src/studio/editor-dock/editor-dock.tsx
-import { Fragment as Fragment6, jsx as jsx35, jsxs as jsxs26 } from "react/jsx-runtime";
+import { Fragment as Fragment7, jsx as jsx35, jsxs as jsxs26 } from "react/jsx-runtime";
 var PHOTON_EDITOR_DOCK_FALLBACK_HEIGHT = 80;
 var EditorDock = ({
   activeMode,
@@ -4520,7 +4643,7 @@ var EditorDock = ({
                       "flex-wrap lg:flex-nowrap",
                       canManage ? "xl:justify-end" : "lg:justify-end"
                     ),
-                    children: canManage ? /* @__PURE__ */ jsxs26(Fragment6, { children: [
+                    children: canManage ? /* @__PURE__ */ jsxs26(Fragment7, { children: [
                       /* @__PURE__ */ jsx35(
                         EditorPageBrowser,
                         {
@@ -4661,7 +4784,7 @@ var PaletteOverlayCard = ({
 import {
   ChevronDown as ChevronDown6,
   ChevronLeft,
-  ChevronRight as ChevronRight2,
+  ChevronRight as ChevronRight3,
   Copy as Copy2,
   Library,
   Search,
@@ -4746,7 +4869,7 @@ var PaletteCard = ({
 };
 
 // src/studio/palette-panel/palette-panel.tsx
-import { Fragment as Fragment7, jsx as jsx38, jsxs as jsxs29 } from "react/jsx-runtime";
+import { Fragment as Fragment8, jsx as jsx38, jsxs as jsxs29 } from "react/jsx-runtime";
 var normalizeLibraryUsageSource = (source) => {
   if (source === "current") {
     return "currentDocument";
@@ -4930,7 +5053,7 @@ var PalettePanelComponent = ({
   const pendingDeleteWorkspaceUsageCount = pendingDeleteUsages.filter(
     (usage) => isWorkspaceLibraryUsage(usage)
   ).length;
-  return /* @__PURE__ */ jsxs29(Fragment7, { children: [
+  return /* @__PURE__ */ jsxs29(Fragment8, { children: [
     /* @__PURE__ */ jsxs29("div", { className: "flex h-full flex-col", children: [
       /* @__PURE__ */ jsxs29(
         "div",
@@ -5420,7 +5543,7 @@ var PalettePanelComponent = ({
                   0
                 ) })
               ] }),
-              /* @__PURE__ */ jsx38("div", { style: { color: "var(--photon-builder-text-ghost)" }, children: collapsedFamilies.includes(familyGroup.family) ? /* @__PURE__ */ jsx38(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx38(ChevronDown6, { className: "h-4 w-4" }) })
+              /* @__PURE__ */ jsx38("div", { style: { color: "var(--photon-builder-text-ghost)" }, children: collapsedFamilies.includes(familyGroup.family) ? /* @__PURE__ */ jsx38(ChevronRight3, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx38(ChevronDown6, { className: "h-4 w-4" }) })
             ]
           }
         ),
@@ -5454,7 +5577,7 @@ var PalettePanelComponent = ({
                     "div",
                     {
                       style: { color: "var(--photon-builder-text-ghost)" },
-                      children: collapsed ? /* @__PURE__ */ jsx38(ChevronRight2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx38(ChevronDown6, { className: "h-4 w-4" })
+                      children: collapsed ? /* @__PURE__ */ jsx38(ChevronRight3, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx38(ChevronDown6, { className: "h-4 w-4" })
                     }
                   )
                 ]
@@ -7269,7 +7392,7 @@ var ActionChain = ({
 };
 
 // src/studio/interaction-surfaces-surface/policies-panel.tsx
-import { Fragment as Fragment8, jsx as jsx43, jsxs as jsxs33 } from "react/jsx-runtime";
+import { Fragment as Fragment9, jsx as jsx43, jsxs as jsxs33 } from "react/jsx-runtime";
 var interactionPath = (suffix) => `${PHOTON_INTERACTIONS_SITE_SETTING_KEY}.${suffix}`;
 var instanceCopyFields = [
   {
@@ -7427,7 +7550,7 @@ var PoliciesPanel = ({
                     }
                   ) : null
                 ] }),
-                /* @__PURE__ */ jsx43("div", { className: "flex flex-wrap items-center gap-2", children: hasSiteOverride ? /* @__PURE__ */ jsxs33(Fragment8, { children: [
+                /* @__PURE__ */ jsx43("div", { className: "flex flex-wrap items-center gap-2", children: hasSiteOverride ? /* @__PURE__ */ jsxs33(Fragment9, { children: [
                   /* @__PURE__ */ jsx43(
                     "span",
                     {
@@ -7476,7 +7599,7 @@ var PoliciesPanel = ({
               "data-testid": "photon-policy-runs-section",
               children: [
                 /* @__PURE__ */ jsx43("div", { className: "text-xs uppercase tracking-wide", style: subtleStyle2, children: "Runs" }),
-                runInstance ? /* @__PURE__ */ jsxs33(Fragment8, { children: [
+                runInstance ? /* @__PURE__ */ jsxs33(Fragment9, { children: [
                   /* @__PURE__ */ jsxs33("div", { className: "text-sm", children: [
                     "Action instance: ",
                     /* @__PURE__ */ jsx43("code", { children: selectedPolicy.run })
@@ -7534,7 +7657,7 @@ var PoliciesPanel = ({
 };
 
 // src/studio/interaction-surfaces-surface/interaction-surfaces-surface.tsx
-import { Fragment as Fragment9, jsx as jsx44, jsxs as jsxs34 } from "react/jsx-runtime";
+import { Fragment as Fragment10, jsx as jsx44, jsxs as jsxs34 } from "react/jsx-runtime";
 var shellStyle = {
   borderColor: "var(--photon-builder-border)",
   background: "linear-gradient(180deg, var(--photon-builder-panel-solid), var(--photon-builder-panel))",
@@ -8108,7 +8231,7 @@ var InteractionSurfacesSurface = ({
             }
           ) })
         ] }) : null,
-        activeTab === "surfaces" ? /* @__PURE__ */ jsxs34(Fragment9, { children: [
+        activeTab === "surfaces" ? /* @__PURE__ */ jsxs34(Fragment10, { children: [
           /* @__PURE__ */ jsxs34("div", { className: "grid gap-5 lg:grid-cols-[minmax(16rem,0.34fr)_minmax(0,0.66fr)]", children: [
             /* @__PURE__ */ jsxs34("section", { className: "rounded-[28px] border p-4", style: cardStyle3, children: [
               /* @__PURE__ */ jsx44(
@@ -8507,7 +8630,7 @@ var InteractionSurfacesSurface = ({
 // src/studio/page-settings-surface/page-settings-surface.tsx
 import clsx15 from "clsx";
 import { useEffect as useEffect15, useMemo as useMemo13, useState as useState21 } from "react";
-import { Fragment as Fragment10, jsx as jsx45, jsxs as jsxs35 } from "react/jsx-runtime";
+import { Fragment as Fragment11, jsx as jsx45, jsxs as jsxs35 } from "react/jsx-runtime";
 var scopeOrder = [
   "page",
   "template",
@@ -8814,7 +8937,7 @@ var PageSettingsSurface = ({
                 }
               )
             ] }),
-            activeTab === "page" && availableScopes.length > 0 ? /* @__PURE__ */ jsxs35(Fragment10, { children: [
+            activeTab === "page" && availableScopes.length > 0 ? /* @__PURE__ */ jsxs35(Fragment11, { children: [
               /* @__PURE__ */ jsx45(
                 "div",
                 {
@@ -9096,7 +9219,7 @@ var PageSettingsSurface = ({
                 );
               })
             ] }) : null,
-            activeTab === "site" ? /* @__PURE__ */ jsxs35(Fragment10, { children: [
+            activeTab === "site" ? /* @__PURE__ */ jsxs35(Fragment11, { children: [
               /* @__PURE__ */ jsx45(
                 SettingsCard,
                 {
@@ -9424,12 +9547,12 @@ var SiteDataSurface = ({
 
 // src/studio/inspector-panel/inspector-panel.tsx
 import clsx17 from "clsx";
-import { ChevronDown as ChevronDown9, ChevronRight as ChevronRight5 } from "lucide-react";
+import { ChevronDown as ChevronDown9, ChevronRight as ChevronRight6 } from "lucide-react";
 import { memo as memo6, useEffect as useEffect16, useMemo as useMemo17, useState as useState26 } from "react";
 
 // src/studio/inspector-panel/inspector-section.tsx
 import clsx16 from "clsx";
-import { ChevronDown as ChevronDown8, ChevronRight as ChevronRight3 } from "lucide-react";
+import { ChevronDown as ChevronDown8, ChevronRight as ChevronRight4 } from "lucide-react";
 import { useCallback as useCallback3, useState as useState22 } from "react";
 import { jsx as jsx47, jsxs as jsxs37 } from "react/jsx-runtime";
 var PhotonInspectorSection = ({
@@ -9474,7 +9597,7 @@ var PhotonInspectorSection = ({
                   style: { color: "var(--photon-builder-text-soft)" }
                 }
               ) : /* @__PURE__ */ jsx47(
-                ChevronRight3,
+                ChevronRight4,
                 {
                   className: "h-3 w-3 shrink-0",
                   style: { color: "var(--photon-builder-text-soft)" }
@@ -9770,9 +9893,9 @@ var RouteFamilyEditor = () => {
 import { useMemo as useMemo16, useState as useState25 } from "react";
 
 // src/studio/inspector-panel/trigger-action-flow.tsx
-import { ChevronRight as ChevronRight4, Pencil as Pencil2 } from "lucide-react";
+import { ChevronRight as ChevronRight5, Pencil as Pencil2 } from "lucide-react";
 import { useMemo as useMemo15, useState as useState24 } from "react";
-import { Fragment as Fragment11, jsx as jsx50, jsxs as jsxs40 } from "react/jsx-runtime";
+import { Fragment as Fragment12, jsx as jsx50, jsxs as jsxs40 } from "react/jsx-runtime";
 var cardStyle4 = {
   borderColor: "var(--photon-builder-border)",
   background: "var(--photon-builder-panel-solid)"
@@ -9858,7 +9981,7 @@ var InstanceRow = ({
             className: "flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left",
             children: [
               /* @__PURE__ */ jsx50(
-                ChevronRight4,
+                ChevronRight5,
                 {
                   size: 14,
                   style: {
@@ -9979,7 +10102,7 @@ var InstanceRow = ({
                       "instance: ",
                       instance?.id ?? policy?.run ?? "\u2014"
                     ] }),
-                    policy ? /* @__PURE__ */ jsxs40(Fragment11, { children: [
+                    policy ? /* @__PURE__ */ jsxs40(Fragment12, { children: [
                       /* @__PURE__ */ jsxs40("div", { children: [
                         "policy: ",
                         policy.id
@@ -10513,46 +10636,32 @@ var useInspectorTriggerSlots = (block) => {
 };
 
 // src/studio/inspector-panel/inspector-panel.tsx
-import { Fragment as Fragment12, jsx as jsx52, jsxs as jsxs42 } from "react/jsx-runtime";
+import { Fragment as Fragment13, jsx as jsx52, jsxs as jsxs42 } from "react/jsx-runtime";
 var readString2 = (settings, key) => {
   const value = settings[key];
   return typeof value === "string" && value.trim() !== "" ? value : void 0;
 };
-var fieldSupportsLocalization = (field, inheritedLocalization) => {
-  const effectiveLocalization = field.localization ?? inheritedLocalization;
-  if (effectiveLocalization === "localized" && field.kind !== "object" && field.kind !== "repeater") {
-    return true;
-  }
-  if (field.kind === "object") {
-    return (field.fields ?? []).some(
-      (nestedField) => fieldSupportsLocalization(nestedField, effectiveLocalization)
-    );
-  }
-  if (field.kind === "repeater") {
-    return (field.itemField ? fieldSupportsLocalization(field.itemField, effectiveLocalization) : false) || (field.fields ?? []).some(
-      (nestedField) => fieldSupportsLocalization(nestedField, effectiveLocalization)
-    );
-  }
-  return false;
-};
-var GROUP_ORDER = ["content", "style", "layout", "data", "misc"];
-var orderInspectorGroupKeys = (groups) => {
-  const keys = Object.keys(groups);
+var BLOCK_GROUP_ORDER = ["style", "content", "data", "misc"];
+var orderInspectorGroupKeys = (groups, options = {}) => {
+  const exclude = options.exclude ?? /* @__PURE__ */ new Set();
+  const keys = Object.keys(groups).filter((key) => !exclude.has(key));
   return keys.sort((left, right) => {
-    const leftIndex = GROUP_ORDER.indexOf(
+    const leftIndex = BLOCK_GROUP_ORDER.indexOf(
       left
     );
-    const rightIndex = GROUP_ORDER.indexOf(
+    const rightIndex = BLOCK_GROUP_ORDER.indexOf(
       right
     );
-    const leftRank = leftIndex === -1 ? GROUP_ORDER.length : leftIndex;
-    const rightRank = rightIndex === -1 ? GROUP_ORDER.length : rightIndex;
+    const leftRank = leftIndex === -1 ? BLOCK_GROUP_ORDER.length : leftIndex;
+    const rightRank = rightIndex === -1 ? BLOCK_GROUP_ORDER.length : rightIndex;
     if (leftRank !== rightRank) {
       return leftRank - rightRank;
     }
     return left.localeCompare(right);
   });
 };
+var LAYOUT_GROUP_KEY = "layout";
+var BLOCK_TAB_EXCLUDED_GROUPS = /* @__PURE__ */ new Set([LAYOUT_GROUP_KEY]);
 var InspectorPanelComponent = ({
   definitionFields,
   inspectorGroups,
@@ -10560,11 +10669,10 @@ var InspectorPanelComponent = ({
   inspectorDefinition,
   pageSettings,
   currentPage,
-  onContentLocaleChange,
   onCollapse
 }) => {
   const document2 = usePhotonStore((state) => state.document);
-  const { contentLocale, editableLocales, translate } = usePhotonI18n();
+  const { translate } = usePhotonI18n();
   const { tokens } = usePhotonInspectorDensity();
   const selectedBlock = usePhotonStore(
     (state) => getPhotonSelectedBlock(state)
@@ -10580,25 +10688,28 @@ var InspectorPanelComponent = ({
   const selectInspectorTrigger = usePhotonStore(
     (state) => state.selectInspectorTrigger
   );
-  const [activeTab, setActiveTab] = useState26("block");
   const triggerSlots = useInspectorTriggerSlots(selectedBlock);
   const activeTriggerSlot = selectedInspectorTriggerId && triggerSlots.length ? triggerSlots.find((slot) => slot.id === selectedInspectorTriggerId) ?? null : null;
-  const isTriggerTabActive = Boolean(activeTriggerSlot);
+  const layoutFields = inspectorGroups[LAYOUT_GROUP_KEY] ?? [];
+  const hasLayoutFields = layoutFields.length > 0;
+  const hasSurfaces = triggerSlots.length > 0;
+  const [activeTab, setActiveTab] = useState26("block");
+  useEffect16(() => {
+    if (activeTab === "surfaces" && !hasSurfaces) {
+      setActiveTab("block");
+    }
+    if (activeTab === "layout" && !hasLayoutFields) {
+      setActiveTab("block");
+    }
+  }, [activeTab, hasSurfaces, hasLayoutFields]);
   const [showBlockJson, setShowBlockJson] = useState26(false);
   const [showDocumentJson, setShowDocumentJson] = useState26(false);
-  const orderedGroupKeys = useMemo17(
-    () => orderInspectorGroupKeys(inspectorGroups),
+  const blockGroupKeys = useMemo17(
+    () => orderInspectorGroupKeys(inspectorGroups, {
+      exclude: BLOCK_TAB_EXCLUDED_GROUPS
+    }),
     [inspectorGroups]
   );
-  const [selectedGroupKey, setSelectedGroupKey] = useState26(
-    null
-  );
-  const activeGroupKey = useMemo17(() => {
-    if (selectedGroupKey && orderedGroupKeys.includes(selectedGroupKey)) {
-      return selectedGroupKey;
-    }
-    return orderedGroupKeys[0] ?? null;
-  }, [orderedGroupKeys, selectedGroupKey]);
   const hasBlockContext = selectedBlock !== null || inspectorDefinition !== null;
   const pageTabLabel = currentPage?.isDynamic ? translate("photon.studio.inspector.templateTab", "Template") : translate("photon.studio.inspector.pageTab", "Page");
   const templateSettings = typeof pageSettings.template === "object" && pageSettings.template !== null ? pageSettings.template : {};
@@ -10654,61 +10765,61 @@ var InspectorPanelComponent = ({
               background: "var(--photon-builder-shell-strong)"
             },
             children: [
-              /* @__PURE__ */ jsxs42("div", { className: "flex min-w-0 items-center gap-1", children: [
-                /* @__PURE__ */ jsx52(
+              /* @__PURE__ */ jsx52("div", { className: "flex min-w-0 items-center gap-1", children: [
+                {
+                  key: "block",
+                  label: translate(
+                    "photon.studio.inspector.blockTab",
+                    "Block"
+                  ),
+                  enabled: true
+                },
+                {
+                  key: "surfaces",
+                  label: translate(
+                    "photon.studio.inspector.surfacesTab",
+                    "Surfaces"
+                  ),
+                  enabled: hasSurfaces
+                },
+                {
+                  key: "layout",
+                  label: translate(
+                    "photon.studio.inspector.layoutTab",
+                    "Layout"
+                  ),
+                  enabled: hasLayoutFields
+                },
+                {
+                  key: "page",
+                  label: pageTabLabel,
+                  enabled: true
+                }
+              ].filter((tab) => tab.enabled).map((tab) => {
+                const isActive = activeTab === tab.key;
+                return /* @__PURE__ */ jsx52(
                   "button",
                   {
                     type: "button",
+                    role: "tab",
+                    "aria-selected": isActive,
                     onClick: () => {
-                      selectInspectorTrigger(null);
-                      setActiveTab("block");
+                      if (tab.key !== "surfaces") {
+                        selectInspectorTrigger(null);
+                      }
+                      setActiveTab(tab.key);
                     },
                     className: tokens.tabClass,
-                    style: activeTab === "block" && !isTriggerTabActive ? {
+                    style: isActive ? {
                       background: "var(--photon-builder-accent-soft)",
                       color: "var(--photon-builder-accent-text)"
                     } : { color: "var(--photon-builder-text-muted)" },
-                    children: translate("photon.studio.inspector.blockTab", "Block")
-                  }
-                ),
-                triggerSlots.map((slot) => {
-                  const isActive = isTriggerTabActive && activeTriggerSlot?.id === slot.id;
-                  return /* @__PURE__ */ jsx52(
-                    "button",
-                    {
-                      type: "button",
-                      onClick: () => {
-                        selectInspectorTrigger(slot.id);
-                        setActiveTab("block");
-                      },
-                      className: tokens.tabClass,
-                      style: isActive ? {
-                        background: "var(--photon-builder-accent-soft)",
-                        color: "var(--photon-builder-accent-text)"
-                      } : { color: "var(--photon-builder-text-muted)" },
-                      "data-testid": `photon-inspector-trigger-tab-${slot.id}`,
-                      children: slot.label
-                    },
-                    slot.id
-                  );
-                }),
-                /* @__PURE__ */ jsx52(
-                  "button",
-                  {
-                    type: "button",
-                    onClick: () => {
-                      selectInspectorTrigger(null);
-                      setActiveTab("page");
-                    },
-                    className: tokens.tabClass,
-                    style: activeTab === "page" ? {
-                      background: "var(--photon-builder-accent-soft)",
-                      color: "var(--photon-builder-accent-text)"
-                    } : { color: "var(--photon-builder-text-muted)" },
-                    children: pageTabLabel
-                  }
-                )
-              ] }),
+                    "data-testid": `photon-inspector-tab-${tab.key}`,
+                    children: tab.label
+                  },
+                  tab.key
+                );
+              }) }),
               onCollapse ? /* @__PURE__ */ jsx52(
                 "button",
                 {
@@ -10719,7 +10830,7 @@ var InspectorPanelComponent = ({
                     color: "var(--photon-builder-text-soft)"
                   },
                   "aria-label": "Collapse inspector",
-                  children: /* @__PURE__ */ jsx52(ChevronRight5, { className: "h-3.5 w-3.5" })
+                  children: /* @__PURE__ */ jsx52(ChevronRight6, { className: "h-3.5 w-3.5" })
                 }
               ) : null
             ]
@@ -10731,7 +10842,7 @@ var InspectorPanelComponent = ({
             className: "photon-inspector-scroll flex-1 space-y-1.5 overflow-y-auto px-1.5 py-1.5",
             style: { background: "var(--photon-builder-shell-muted)" },
             children: [
-              activeTab === "block" && !selectedBlock && inspectorDefinition ? /* @__PURE__ */ jsxs42(Fragment12, { children: [
+              activeTab === "block" && !selectedBlock && inspectorDefinition ? /* @__PURE__ */ jsxs42(Fragment13, { children: [
                 /* @__PURE__ */ jsxs42(
                   "section",
                   {
@@ -10890,8 +11001,76 @@ var InspectorPanelComponent = ({
                   groupKey
                 ))
               ] }) : null,
-              activeTab === "block" && selectedBlock && isTriggerTabActive && activeTriggerSlot ? /* @__PURE__ */ jsx52(InspectorTriggerTab, { block: selectedBlock, slot: activeTriggerSlot }) : null,
-              activeTab === "block" && selectedBlock && !isTriggerTabActive ? /* @__PURE__ */ jsxs42(Fragment12, { children: [
+              activeTab === "surfaces" && selectedBlock && hasSurfaces ? /* @__PURE__ */ jsxs42(Fragment13, { children: [
+                /* @__PURE__ */ jsx52(
+                  "div",
+                  {
+                    className: "flex flex-wrap gap-1",
+                    role: "tablist",
+                    "aria-label": "Surfaces",
+                    "data-testid": "photon-inspector-surfaces-tabstrip",
+                    children: triggerSlots.map((slot) => {
+                      const isActive = activeTriggerSlot?.id === slot.id;
+                      return /* @__PURE__ */ jsx52(
+                        "button",
+                        {
+                          type: "button",
+                          role: "tab",
+                          "aria-selected": isActive,
+                          onClick: () => selectInspectorTrigger(slot.id),
+                          className: "inline-flex cursor-pointer items-center gap-1 rounded-sm px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.16em]",
+                          style: isActive ? {
+                            background: "var(--photon-builder-accent-soft)",
+                            color: "var(--photon-builder-accent-text)"
+                          } : {
+                            background: "var(--photon-builder-panel-solid)",
+                            color: "var(--photon-builder-text-soft)"
+                          },
+                          "data-testid": `photon-inspector-surfaces-tab-${slot.id}`,
+                          children: slot.label
+                        },
+                        slot.id
+                      );
+                    })
+                  }
+                ),
+                activeTriggerSlot ? /* @__PURE__ */ jsx52(
+                  InspectorTriggerTab,
+                  {
+                    block: selectedBlock,
+                    slot: activeTriggerSlot
+                  }
+                ) : /* @__PURE__ */ jsx52(
+                  "div",
+                  {
+                    className: "rounded-sm px-2 py-2 text-[11px] leading-snug",
+                    style: {
+                      background: "var(--photon-builder-panel-solid)",
+                      color: "var(--photon-builder-text-muted)"
+                    },
+                    children: "Pick a surface above to inspect its trigger bindings."
+                  }
+                )
+              ] }) : null,
+              activeTab === "layout" && selectedBlock && hasLayoutFields ? /* @__PURE__ */ jsx52(
+                "div",
+                {
+                  className: "space-y-1",
+                  "data-testid": "photon-inspector-layout-panel",
+                  children: layoutFields.map((field) => /* @__PURE__ */ jsx52(
+                    FieldEditor,
+                    {
+                      field,
+                      blockId: selectedBlock.id,
+                      value: getFieldValue(selectedBlock.id, field.path),
+                      onFocus: (path) => selectField(selectedBlock.id, path ?? field.path),
+                      onChange: (value) => updateFieldValue(selectedBlock.id, field.path, value)
+                    },
+                    field.path
+                  ))
+                }
+              ) : null,
+              activeTab === "block" && selectedBlock ? /* @__PURE__ */ jsxs42(Fragment13, { children: [
                 /* @__PURE__ */ jsxs42(
                   "section",
                   {
@@ -10968,120 +11147,60 @@ var InspectorPanelComponent = ({
                 ),
                 /* @__PURE__ */ jsx52(BlockPreviewScenariosPicker, { block: selectedBlock }),
                 /* @__PURE__ */ jsx52(RouteFamilyEditor, {}),
-                orderedGroupKeys.length > 0 ? /* @__PURE__ */ jsxs42(
-                  "section",
-                  {
-                    className: "rounded-[3px] px-2 py-1.5",
-                    style: {
-                      background: "var(--photon-builder-panel-solid)"
-                    },
-                    "data-testid": "photon-inspector-group-tabs",
-                    children: [
-                      /* @__PURE__ */ jsx52(
-                        "div",
+                blockGroupKeys.map((groupKey) => {
+                  const groupFields = inspectorGroups[groupKey] ?? [];
+                  if (groupFields.length === 0) {
+                    return null;
+                  }
+                  const label = translate(
+                    FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
+                    translatePhotonFieldGroup(groupKey, translate)
+                  );
+                  return /* @__PURE__ */ jsx52(
+                    PhotonInspectorSection,
+                    {
+                      id: `block-group-${groupKey}`,
+                      title: label,
+                      trailing: /* @__PURE__ */ jsx52(
+                        "span",
                         {
-                          className: "mb-1.5 flex flex-wrap gap-1",
-                          role: "tablist",
-                          "aria-label": "Field groups",
-                          children: orderedGroupKeys.map((groupKey) => {
-                            const isActive = groupKey === activeGroupKey;
-                            const groupFields = inspectorGroups[groupKey] ?? [];
-                            const label = translate(
-                              FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
-                              translatePhotonFieldGroup(groupKey, translate)
-                            );
-                            return /* @__PURE__ */ jsxs42(
-                              "button",
-                              {
-                                type: "button",
-                                role: "tab",
-                                "aria-selected": isActive,
-                                onClick: () => setSelectedGroupKey(groupKey),
-                                className: "inline-flex cursor-pointer items-center gap-1 rounded-sm px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.16em]",
-                                style: isActive ? {
-                                  background: "var(--photon-builder-accent-soft)",
-                                  color: "var(--photon-builder-accent-text)"
-                                } : {
-                                  background: "transparent",
-                                  color: "var(--photon-builder-text-soft)"
-                                },
-                                "data-testid": `photon-inspector-group-tab-${groupKey}`,
-                                children: [
-                                  /* @__PURE__ */ jsx52("span", { children: label }),
-                                  /* @__PURE__ */ jsx52(
-                                    "span",
-                                    {
-                                      className: "rounded-sm px-1 py-0 text-[9.5px] tracking-normal opacity-70",
-                                      children: groupFields.length
-                                    }
-                                  )
-                                ]
-                              },
-                              groupKey
-                            );
-                          })
+                          className: "rounded-sm px-1 font-mono text-[9px] tabular-nums",
+                          style: {
+                            background: "var(--photon-builder-field)",
+                            color: "var(--photon-builder-text-soft)"
+                          },
+                          children: groupFields.length
                         }
                       ),
-                      (() => {
-                        const activeKey = activeGroupKey ?? orderedGroupKeys[0];
-                        const fields = activeKey ? inspectorGroups[activeKey] ?? [] : [];
-                        const showLocaleSwitch = activeKey === "content" && editableLocales.length > 1 && fields.some((field) => fieldSupportsLocalization(field));
-                        return /* @__PURE__ */ jsxs42(Fragment12, { children: [
-                          showLocaleSwitch ? /* @__PURE__ */ jsx52(
-                            "div",
+                      children: /* @__PURE__ */ jsx52(
+                        "div",
+                        {
+                          className: "space-y-0.5",
+                          "data-testid": `photon-inspector-group-panel-${groupKey}`,
+                          children: groupFields.map((field) => /* @__PURE__ */ jsx52(
+                            FieldEditor,
                             {
-                              className: "mb-1.5 inline-flex flex-wrap rounded-sm p-0.5",
-                              style: {
-                                background: "var(--photon-builder-field)"
-                              },
-                              children: editableLocales.map((locale) => /* @__PURE__ */ jsx52(
-                                "button",
-                                {
-                                  type: "button",
-                                  onClick: () => onContentLocaleChange?.(locale.code),
-                                  className: "cursor-pointer rounded-sm px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] transition",
-                                  style: locale.code === contentLocale ? {
-                                    background: "var(--photon-builder-accent-soft)",
-                                    color: "var(--photon-builder-accent-text)"
-                                  } : {
-                                    color: "var(--photon-builder-text-muted)"
-                                  },
-                                  children: locale.code
-                                },
-                                locale.code
-                              ))
-                            }
-                          ) : null,
-                          /* @__PURE__ */ jsx52(
-                            "div",
-                            {
-                              className: "space-y-1",
-                              "data-testid": `photon-inspector-group-panel-${activeKey ?? "empty"}`,
-                              children: fields.map((field) => /* @__PURE__ */ jsx52(
-                                FieldEditor,
-                                {
-                                  field,
-                                  blockId: selectedBlock.id,
-                                  value: getFieldValue(selectedBlock.id, field.path),
-                                  onFocus: (path) => selectField(
-                                    selectedBlock.id,
-                                    path ?? field.path
-                                  ),
-                                  onChange: (value) => updateFieldValue(
-                                    selectedBlock.id,
-                                    field.path,
-                                    value
-                                  )
-                                },
-                                field.path
-                              ))
-                            }
-                          )
-                        ] });
-                      })()
-                    ]
-                  }
-                ) : null,
+                              field,
+                              blockId: selectedBlock.id,
+                              value: getFieldValue(selectedBlock.id, field.path),
+                              onFocus: (path) => selectField(
+                                selectedBlock.id,
+                                path ?? field.path
+                              ),
+                              onChange: (value) => updateFieldValue(
+                                selectedBlock.id,
+                                field.path,
+                                value
+                              )
+                            },
+                            field.path
+                          ))
+                        }
+                      )
+                    },
+                    groupKey
+                  );
+                }),
                 /* @__PURE__ */ jsxs42(
                   "section",
                   {
@@ -11112,7 +11231,7 @@ var InspectorPanelComponent = ({
                                 style: { color: "var(--photon-builder-text-soft)" }
                               }
                             ) : /* @__PURE__ */ jsx52(
-                              ChevronRight5,
+                              ChevronRight6,
                               {
                                 className: "h-4 w-4",
                                 style: { color: "var(--photon-builder-text-soft)" }
@@ -11136,7 +11255,7 @@ var InspectorPanelComponent = ({
                   }
                 )
               ] }) : null,
-              activeTab === "block" ? /* @__PURE__ */ jsxs42(Fragment12, { children: [
+              activeTab === "block" ? /* @__PURE__ */ jsxs42(Fragment13, { children: [
                 /* @__PURE__ */ jsxs42(
                   "section",
                   {
@@ -11167,7 +11286,7 @@ var InspectorPanelComponent = ({
                                 style: { color: "var(--photon-builder-text-soft)" }
                               }
                             ) : /* @__PURE__ */ jsx52(
-                              ChevronRight5,
+                              ChevronRight6,
                               {
                                 className: "h-4 w-4",
                                 style: { color: "var(--photon-builder-text-soft)" }
@@ -11202,7 +11321,7 @@ var InspectorPanelComponent = ({
                   }
                 ) : null
               ] }) : null,
-              activeTab === "page" ? /* @__PURE__ */ jsxs42(Fragment12, { children: [
+              activeTab === "page" ? /* @__PURE__ */ jsxs42(Fragment13, { children: [
                 /* @__PURE__ */ jsxs42(
                   "section",
                   {
@@ -11466,7 +11585,7 @@ import {
 
 // src/studio/photon-studio/builder-sidebar-edge-toggle.tsx
 import clsx18 from "clsx";
-import { ChevronLeft as ChevronLeft2, ChevronRight as ChevronRight6 } from "lucide-react";
+import { ChevronLeft as ChevronLeft2, ChevronRight as ChevronRight7 } from "lucide-react";
 import { jsx as jsx54 } from "react/jsx-runtime";
 var BuilderSidebarEdgeToggle = ({
   side,
@@ -11498,7 +11617,7 @@ var BuilderSidebarEdgeToggle = ({
             background: "var(--photon-builder-panel-solid)",
             color: "var(--photon-builder-text-muted)"
           },
-          children: side === "left" ? /* @__PURE__ */ jsx54(ChevronRight6, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx54(ChevronLeft2, { className: "h-4 w-4" })
+          children: side === "left" ? /* @__PURE__ */ jsx54(ChevronRight7, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx54(ChevronLeft2, { className: "h-4 w-4" })
         }
       ) })
     }
@@ -11531,7 +11650,7 @@ var BuilderSidebarResizeHandle = ({
 };
 
 // src/studio/photon-studio/builder-sidebars.tsx
-import { Fragment as Fragment13, jsx as jsx56, jsxs as jsxs45 } from "react/jsx-runtime";
+import { Fragment as Fragment14, jsx as jsx56, jsxs as jsxs45 } from "react/jsx-runtime";
 var BuilderSidebars = ({
   sidebarsVisible,
   dockHeight,
@@ -11584,7 +11703,7 @@ var BuilderSidebars = ({
     }, 0);
     return () => window.clearTimeout(timeoutId);
   }, []);
-  return /* @__PURE__ */ jsxs45(Fragment13, { children: [
+  return /* @__PURE__ */ jsxs45(Fragment14, { children: [
     transitionsEnabled && sidebarsVisible && leftCollapsed ? /* @__PURE__ */ jsx56(
       BuilderSidebarEdgeToggle,
       {

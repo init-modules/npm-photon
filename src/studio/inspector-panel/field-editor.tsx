@@ -1,8 +1,15 @@
 "use client";
 
 import clsx from "clsx";
-import { ArrowDown, ArrowUp, ChevronDown, Plus, Trash2 } from "lucide-react";
-import { memo, useEffect, useState } from "react";
+import {
+	ArrowDown,
+	ArrowUp,
+	ChevronDown,
+	ChevronRight,
+	Plus,
+	Trash2,
+} from "lucide-react";
+import { memo, type ReactNode, useEffect, useState } from "react";
 import { PhotonRichTextEditor } from "../../components/rich-text-editor";
 import {
 	DropdownMenu,
@@ -174,7 +181,7 @@ const ObjectFieldEditor = ({
 	const objectValue = normalizeObjectValue(value);
 
 	return (
-		<div className="space-y-1 rounded-sm bg-[color:var(--photon-builder-field)] p-1.5">
+		<div className="space-y-0.5 rounded-sm bg-[color:var(--photon-builder-field)] p-1">
 			{(field.fields ?? []).map((childField, index) => {
 				const childPath = childField.path ?? "";
 				const childAbsolutePath = joinFieldPath(absolutePath ?? "", childPath);
@@ -185,7 +192,6 @@ const ObjectFieldEditor = ({
 				return (
 					<div
 						key={childAbsolutePath || `${field.label ?? field.path}-${index}`}
-						className="rounded-sm px-1.5 py-1"
 					>
 						<FieldEditor
 							field={childField}
@@ -206,6 +212,93 @@ const ObjectFieldEditor = ({
 					</div>
 				);
 			})}
+		</div>
+	);
+};
+
+type RepeaterItemProps = {
+	item: unknown;
+	itemAbsolutePath: string;
+	itemLabel: string;
+	canMoveUp: boolean;
+	canMoveDown: boolean;
+	onMoveUp: () => void;
+	onMoveDown: () => void;
+	onRemove: () => void;
+	children: ReactNode;
+};
+
+const RepeaterItem = ({
+	itemAbsolutePath,
+	itemLabel,
+	canMoveUp,
+	canMoveDown,
+	onMoveUp,
+	onMoveDown,
+	onRemove,
+	children,
+}: RepeaterItemProps) => {
+	const [collapsed, setCollapsed] = useState(false);
+	return (
+		<div
+			key={itemAbsolutePath}
+			className="rounded-sm bg-[color:var(--photon-builder-panel-solid)] px-1.5 py-1"
+		>
+			<div className="flex items-center justify-between gap-2">
+				<button
+					type="button"
+					onClick={() => setCollapsed((prev) => !prev)}
+					className="flex min-w-0 flex-1 cursor-pointer items-center gap-1 text-left"
+					aria-expanded={!collapsed}
+				>
+					{collapsed ? (
+						<ChevronRight
+							className="h-3 w-3 shrink-0"
+							style={{ color: "var(--photon-builder-text-soft)" }}
+						/>
+					) : (
+						<ChevronDown
+							className="h-3 w-3 shrink-0"
+							style={{ color: "var(--photon-builder-text-soft)" }}
+						/>
+					)}
+					<span
+						className="truncate text-[11px] font-semibold leading-tight"
+						style={{ color: "var(--photon-builder-text)" }}
+					>
+						{itemLabel}
+					</span>
+				</button>
+				<div className="flex shrink-0 items-center gap-0.5">
+					<button
+						type="button"
+						disabled={!canMoveUp}
+						onClick={onMoveUp}
+						className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40"
+						aria-label={`Move ${itemLabel} up`}
+					>
+						<ArrowUp className="h-3 w-3" />
+					</button>
+					<button
+						type="button"
+						disabled={!canMoveDown}
+						onClick={onMoveDown}
+						className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40"
+						aria-label={`Move ${itemLabel} down`}
+					>
+						<ArrowDown className="h-3 w-3" />
+					</button>
+					<button
+						type="button"
+						onClick={onRemove}
+						className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)]"
+						aria-label={`Remove ${itemLabel}`}
+					>
+						<Trash2 className="h-3 w-3" />
+					</button>
+				</div>
+			</div>
+			{collapsed ? null : <div className="mt-1">{children}</div>}
 		</div>
 	);
 };
@@ -264,61 +357,29 @@ const RepeaterFieldEditor = ({
 								);
 
 					return (
-						<div
+						<RepeaterItem
 							key={itemAbsolutePath}
-							className="rounded-sm bg-[color:var(--photon-builder-panel-solid)] px-1.5 py-1"
+							item={item}
+							itemAbsolutePath={itemAbsolutePath}
+							itemLabel={itemLabel}
+							canMoveUp={index > 0}
+							canMoveDown={index < items.length - 1}
+							onMoveUp={() =>
+								updateItems(
+									movePhotonArrayItem(items, index, index - 1),
+								)
+							}
+							onMoveDown={() =>
+								updateItems(
+									movePhotonArrayItem(items, index, index + 1),
+								)
+							}
+							onRemove={() =>
+								updateItems(
+									items.filter((_, itemIndex) => itemIndex !== index),
+								)
+							}
 						>
-							<div className="mb-1 flex items-center justify-between gap-2">
-								<div className="min-w-0">
-									<div
-										className="truncate text-[11px] font-semibold leading-tight"
-										style={{ color: "var(--photon-builder-text)" }}
-									>
-										{itemLabel}
-									</div>
-								</div>
-								<div className="flex shrink-0 items-center gap-0.5">
-									<button
-										type="button"
-										disabled={index === 0}
-										onClick={() =>
-											updateItems(
-												movePhotonArrayItem(items, index, index - 1),
-											)
-										}
-										className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40"
-										aria-label={`Move ${itemLabel} up`}
-									>
-										<ArrowUp className="h-3 w-3" />
-									</button>
-									<button
-										type="button"
-										disabled={index === items.length - 1}
-										onClick={() =>
-											updateItems(
-												movePhotonArrayItem(items, index, index + 1),
-											)
-										}
-										className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)] disabled:cursor-not-allowed disabled:opacity-40"
-										aria-label={`Move ${itemLabel} down`}
-									>
-										<ArrowDown className="h-3 w-3" />
-									</button>
-									<button
-										type="button"
-										onClick={() =>
-											updateItems(
-												items.filter((_, itemIndex) => itemIndex !== index),
-											)
-										}
-										className="inline-flex h-5 w-5 cursor-pointer items-center justify-center rounded-sm text-[color:var(--photon-builder-text-soft)] transition hover:bg-[color:var(--photon-builder-field)] hover:text-[color:var(--photon-builder-text)]"
-										aria-label={`Remove ${itemLabel}`}
-									>
-										<Trash2 className="h-3 w-3" />
-									</button>
-								</div>
-							</div>
-
 							{itemField ? (
 								<FieldEditor
 									field={itemField}
@@ -336,7 +397,7 @@ const RepeaterFieldEditor = ({
 									}
 								/>
 							) : (
-								<div className="space-y-3">
+								<div className="space-y-0.5">
 									{(field.fields ?? []).map((childField, childIndex) => {
 										const itemObject = normalizeObjectValue(item);
 										const childPath = childField.path ?? "";
@@ -354,7 +415,6 @@ const RepeaterFieldEditor = ({
 													childAbsolutePath ||
 													`${itemAbsolutePath}-${childIndex}`
 												}
-												className="rounded-sm px-1.5 py-1"
 											>
 												<FieldEditor
 													field={childField}
@@ -391,7 +451,7 @@ const RepeaterFieldEditor = ({
 									})}
 								</div>
 							)}
-						</div>
+						</RepeaterItem>
 					);
 				})}
 			</div>
@@ -716,10 +776,18 @@ const FieldEditorImpl = ({
 				data-photon-density-row
 				className={clsx(
 					tokens.rowMinHeight,
-					"flex items-center gap-2 px-1",
+					"flex items-center gap-1.5 px-1",
 				)}
 			>
 				{labelNode}
+				{/* 1px divider between label gutter and value column — Unreal
+				    Details-panel style. Self-stretch so its height tracks the
+				    row, opacity-40 keeps it subtle. */}
+				<div
+					aria-hidden="true"
+					className="w-px self-stretch opacity-40"
+					style={{ background: "var(--photon-builder-border)" }}
+				/>
 				<div className="flex min-w-0 flex-1 items-center gap-1">
 					{renderControl()}
 					{bindingPill}
@@ -749,26 +817,19 @@ const FieldEditorImpl = ({
 		);
 	}
 
+	const isCollapsibleNested =
+		field.kind === "object" || field.kind === "repeater";
+
 	return (
-		<div data-photon-density-row className="px-1 py-1">
-			<div className="mb-1 flex items-center justify-between gap-2">
-				<div className="flex items-center gap-1.5">
-					{labelNode}
-					{bindingPill}
-				</div>
-				{path && !hidePathLabel ? (
-					<button
-						type="button"
-						onClick={() => onFocus(path)}
-						className="shrink-0 cursor-pointer font-mono text-[9px] uppercase tracking-[0.16em] transition"
-						style={{ color: "var(--photon-builder-text-ghost)" }}
-						title={path}
-					>
-						{path}
-					</button>
-				) : null}
-			</div>
-			{description ? <div className="mb-1">{description}</div> : null}
+		<NonInlineFieldShell
+			path={path}
+			hidePathLabel={hidePathLabel}
+			labelNode={labelNode}
+			bindingPill={bindingPill}
+			description={description}
+			collapsible={isCollapsibleNested}
+			onPathClick={() => onFocus(path)}
+		>
 			{path && !fieldBinding ? (
 				<div className="mb-1">
 					<SiteDataBindingPicker
@@ -779,6 +840,90 @@ const FieldEditorImpl = ({
 				</div>
 			) : null}
 			{renderControl()}
+		</NonInlineFieldShell>
+	);
+};
+
+type NonInlineFieldShellProps = {
+	path: string;
+	hidePathLabel: boolean;
+	labelNode: ReactNode;
+	bindingPill: ReactNode;
+	description: ReactNode;
+	collapsible: boolean;
+	onPathClick: () => void;
+	children: ReactNode;
+};
+
+/**
+ * Block-style (non-inline) field wrapper. When `collapsible` is true,
+ * the label becomes a caret-folding header that gates the body — used
+ * by `object` and `repeater` fields so deep nested config can be
+ * folded away the way Unreal's Details panel folds groups.
+ */
+const NonInlineFieldShell = ({
+	path,
+	hidePathLabel,
+	labelNode,
+	bindingPill,
+	description,
+	collapsible,
+	onPathClick,
+	children,
+}: NonInlineFieldShellProps) => {
+	const [collapsed, setCollapsed] = useState(false);
+	const isExpanded = !collapsible || !collapsed;
+	return (
+		<div data-photon-density-row className="px-1 py-1">
+			<div className="mb-1 flex items-center justify-between gap-2">
+				<button
+					type="button"
+					onClick={
+						collapsible ? () => setCollapsed((prev) => !prev) : undefined
+					}
+					className={clsx(
+						"flex min-w-0 flex-1 items-center gap-1 text-left",
+						collapsible ? "cursor-pointer" : "cursor-default",
+					)}
+					aria-expanded={collapsible ? isExpanded : undefined}
+				>
+					{collapsible ? (
+						isExpanded ? (
+							<ChevronDown
+								className="h-3 w-3 shrink-0"
+								style={{ color: "var(--photon-builder-text-soft)" }}
+							/>
+						) : (
+							<ChevronRight
+								className="h-3 w-3 shrink-0"
+								style={{ color: "var(--photon-builder-text-soft)" }}
+							/>
+						)
+					) : null}
+					{labelNode}
+					{bindingPill}
+				</button>
+				{path && !hidePathLabel ? (
+					<button
+						type="button"
+						onClick={(event) => {
+							event.stopPropagation();
+							onPathClick();
+						}}
+						className="shrink-0 cursor-pointer font-mono text-[9px] uppercase tracking-[0.16em] transition"
+						style={{ color: "var(--photon-builder-text-ghost)" }}
+						title={path}
+					>
+						{path}
+					</button>
+				) : null}
+			</div>
+			{isExpanded ? (
+				<>
+					{description ? <div className="mb-1">{description}</div> : null}
+					{children}
+				</>
+			) : null}
 		</div>
 	);
 };
