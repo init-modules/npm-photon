@@ -306,6 +306,7 @@ const InspectorPanelComponent = ({
 					<>
 						<PhotonInspectorSection
 							id="palette-block-summary"
+							variant="group"
 							nonCollapsible
 							title={
 								<span
@@ -506,6 +507,7 @@ const InspectorPanelComponent = ({
 					<>
 						<PhotonInspectorSection
 							id="selected-block"
+							variant="group"
 							nonCollapsible
 							title={
 								<span
@@ -564,8 +566,6 @@ const InspectorPanelComponent = ({
 
 						<BlockPreviewScenariosPicker block={selectedBlock} />
 
-						<RouteFamilyEditor />
-
 						{blockGroupKeys.map((groupKey) => {
 							const groupFields = inspectorGroups[groupKey] ?? [];
 							if (groupFields.length === 0) {
@@ -623,40 +623,59 @@ const InspectorPanelComponent = ({
 							);
 						})}
 
-						<PhotonInspectorSection
-							id="raw-block-manifest"
-							title="Raw block manifest"
-							defaultCollapsed
-						>
-							<pre
-								className="h-[280px] overflow-x-auto rounded-sm p-2 text-[10.5px] leading-5"
-								style={{
-									background: "var(--photon-builder-field)",
-									color: "var(--photon-builder-text-muted)",
-								}}
-							>
-								{selectedBlockJson}
-							</pre>
-						</PhotonInspectorSection>
 					</>
 				) : null}
 
 				{activeTab === "block" ? (
 					<>
+						{/* Debug viewers — collapsed away by default. Wrapping
+						    them in an `Advanced` group keeps the Block tab's
+						    top level a list of groups; sections never sit at
+						    root next to groups. */}
 						<PhotonInspectorSection
-							id="document-json"
-							title="Document JSON"
+							id="block-advanced"
+							variant="group"
+							title={translate(
+								"photon.studio.inspector.advancedGroup",
+								"Advanced",
+							)}
 							defaultCollapsed
 						>
-							<pre
-								className="max-h-[280px] overflow-auto rounded-sm p-2 text-[10.5px] leading-5"
-								style={{
-									background: "var(--photon-builder-field)",
-									color: "var(--photon-builder-text-muted)",
-								}}
-							>
-								{documentJson}
-							</pre>
+							<div className="flex flex-col gap-1">
+								{selectedBlock ? (
+									<PhotonInspectorSection
+										id="raw-block-manifest"
+										title="Raw block manifest"
+										defaultCollapsed
+									>
+										<pre
+											className="h-[280px] overflow-x-auto rounded-sm p-2 text-[10.5px] leading-5"
+											style={{
+												background: "var(--photon-builder-field)",
+												color: "var(--photon-builder-text-muted)",
+											}}
+										>
+											{selectedBlockJson}
+										</pre>
+									</PhotonInspectorSection>
+								) : null}
+
+								<PhotonInspectorSection
+									id="document-json"
+									title="Document JSON"
+									defaultCollapsed
+								>
+									<pre
+										className="max-h-[280px] overflow-auto rounded-sm p-2 text-[10.5px] leading-5"
+										style={{
+											background: "var(--photon-builder-field)",
+											color: "var(--photon-builder-text-muted)",
+										}}
+									>
+										{documentJson}
+									</pre>
+								</PhotonInspectorSection>
+							</div>
 						</PhotonInspectorSection>
 
 						{!definitionFields.length && !hasBlockContext ? (
@@ -679,6 +698,7 @@ const InspectorPanelComponent = ({
 					<>
 						<PhotonInspectorSection
 							id="page-summary"
+							variant="group"
 							nonCollapsible
 							title={
 								<span
@@ -789,6 +809,11 @@ const InspectorPanelComponent = ({
 								) : null}
 							</div>
 						</PhotonInspectorSection>
+
+						{/* Route family is a document-level concern (which URL
+						    patterns this template serves), so it lives next to
+						    the page identity — not inside the Block tab. */}
+						<RouteFamilyEditor />
 					</>
 				) : null}
 			</div>

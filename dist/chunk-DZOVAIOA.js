@@ -10886,6 +10886,7 @@ var InspectorPanelComponent = ({
                   PhotonInspectorSection,
                   {
                     id: "palette-block-summary",
+                    variant: "group",
                     nonCollapsible: true,
                     title: /* @__PURE__ */ jsx52(
                       "span",
@@ -11094,6 +11095,7 @@ var InspectorPanelComponent = ({
                   PhotonInspectorSection,
                   {
                     id: "selected-block",
+                    variant: "group",
                     nonCollapsible: true,
                     title: /* @__PURE__ */ jsx52(
                       "span",
@@ -11153,7 +11155,6 @@ var InspectorPanelComponent = ({
                   }
                 ),
                 /* @__PURE__ */ jsx52(BlockPreviewScenariosPicker, { block: selectedBlock }),
-                /* @__PURE__ */ jsx52(RouteFamilyEditor, {}),
                 blockGroupKeys.map((groupKey) => {
                   const groupFields = inspectorGroups[groupKey] ?? [];
                   if (groupFields.length === 0) {
@@ -11208,45 +11209,59 @@ var InspectorPanelComponent = ({
                     },
                     groupKey
                   );
-                }),
-                /* @__PURE__ */ jsx52(
-                  PhotonInspectorSection,
-                  {
-                    id: "raw-block-manifest",
-                    title: "Raw block manifest",
-                    defaultCollapsed: true,
-                    children: /* @__PURE__ */ jsx52(
-                      "pre",
-                      {
-                        className: "h-[280px] overflow-x-auto rounded-sm p-2 text-[10.5px] leading-5",
-                        style: {
-                          background: "var(--photon-builder-field)",
-                          color: "var(--photon-builder-text-muted)"
-                        },
-                        children: selectedBlockJson
-                      }
-                    )
-                  }
-                )
+                })
               ] }) : null,
               activeTab === "block" ? /* @__PURE__ */ jsxs42(Fragment12, { children: [
                 /* @__PURE__ */ jsx52(
                   PhotonInspectorSection,
                   {
-                    id: "document-json",
-                    title: "Document JSON",
+                    id: "block-advanced",
+                    variant: "group",
+                    title: translate(
+                      "photon.studio.inspector.advancedGroup",
+                      "Advanced"
+                    ),
                     defaultCollapsed: true,
-                    children: /* @__PURE__ */ jsx52(
-                      "pre",
-                      {
-                        className: "max-h-[280px] overflow-auto rounded-sm p-2 text-[10.5px] leading-5",
-                        style: {
-                          background: "var(--photon-builder-field)",
-                          color: "var(--photon-builder-text-muted)"
-                        },
-                        children: documentJson
-                      }
-                    )
+                    children: /* @__PURE__ */ jsxs42("div", { className: "flex flex-col gap-1", children: [
+                      selectedBlock ? /* @__PURE__ */ jsx52(
+                        PhotonInspectorSection,
+                        {
+                          id: "raw-block-manifest",
+                          title: "Raw block manifest",
+                          defaultCollapsed: true,
+                          children: /* @__PURE__ */ jsx52(
+                            "pre",
+                            {
+                              className: "h-[280px] overflow-x-auto rounded-sm p-2 text-[10.5px] leading-5",
+                              style: {
+                                background: "var(--photon-builder-field)",
+                                color: "var(--photon-builder-text-muted)"
+                              },
+                              children: selectedBlockJson
+                            }
+                          )
+                        }
+                      ) : null,
+                      /* @__PURE__ */ jsx52(
+                        PhotonInspectorSection,
+                        {
+                          id: "document-json",
+                          title: "Document JSON",
+                          defaultCollapsed: true,
+                          children: /* @__PURE__ */ jsx52(
+                            "pre",
+                            {
+                              className: "max-h-[280px] overflow-auto rounded-sm p-2 text-[10.5px] leading-5",
+                              style: {
+                                background: "var(--photon-builder-field)",
+                                color: "var(--photon-builder-text-muted)"
+                              },
+                              children: documentJson
+                            }
+                          )
+                        }
+                      )
+                    ] })
                   }
                 ),
                 !definitionFields.length && !hasBlockContext ? /* @__PURE__ */ jsx52(
@@ -11266,6 +11281,7 @@ var InspectorPanelComponent = ({
                   PhotonInspectorSection,
                   {
                     id: "page-summary",
+                    variant: "group",
                     nonCollapsible: true,
                     title: /* @__PURE__ */ jsx52(
                       "span",
@@ -11401,7 +11417,8 @@ var InspectorPanelComponent = ({
                       ) : null
                     ] })
                   }
-                )
+                ),
+                /* @__PURE__ */ jsx52(RouteFamilyEditor, {})
               ] }) : null
             ]
           }
