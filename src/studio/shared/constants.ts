@@ -242,8 +242,12 @@ export const matchesTarget = (
 	index: number,
 ) => target?.listId === listId && target.index === index;
 
+// Compact UE-flat input — bg-only chamber, no permanent border, focus
+// adds a 1px ring (box-shadow) so the row height does not shift. Height
+// settles around 24px from padding alone, but multi-line callers can
+// override with `min-h-[…]` because there is no fixed `h-` baked in.
 export const inputClassName = clsx(
-	"w-full rounded-[20px] border px-4 py-3",
-	"text-sm outline-none transition placeholder:text-[color:var(--photon-builder-text-ghost)]",
-	"border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] text-[color:var(--photon-builder-text)] focus:border-[color:var(--photon-builder-border-strong)]",
+	"w-full rounded-sm px-1.5 py-1",
+	"text-[11px] leading-tight outline-none ring-1 ring-transparent transition-[box-shadow] placeholder:text-[color:var(--photon-builder-text-ghost)]",
+	"bg-[color:var(--photon-builder-field)] text-[color:var(--photon-builder-text)] focus:ring-[color:var(--photon-builder-border-strong)]",
 );

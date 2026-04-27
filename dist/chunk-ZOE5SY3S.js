@@ -404,9 +404,9 @@ var resolveInsertTarget = (event) => {
 };
 var matchesTarget = (target, listId, index) => target?.listId === listId && target.index === index;
 var inputClassName = clsx(
-  "w-full rounded-[20px] border px-4 py-3",
-  "text-sm outline-none transition placeholder:text-[color:var(--photon-builder-text-ghost)]",
-  "border-[color:var(--photon-builder-border)] bg-[color:var(--photon-builder-field)] text-[color:var(--photon-builder-text)] focus:border-[color:var(--photon-builder-border-strong)]"
+  "w-full rounded-sm px-1.5 py-1",
+  "text-[11px] leading-tight outline-none ring-1 ring-transparent transition-[box-shadow] placeholder:text-[color:var(--photon-builder-text-ghost)]",
+  "bg-[color:var(--photon-builder-field)] text-[color:var(--photon-builder-text)] focus:ring-[color:var(--photon-builder-border-strong)]"
 );
 
 // src/studio/shared/status-chip.tsx
@@ -1098,15 +1098,13 @@ var ImageFieldEditor = ({
   const [isUploading, setIsUploading] = useState3(false);
   const source = resolvePhotonMediaPreviewUrl(value);
   const mediaValue = isPhotonMediaValue(value) ? value : null;
-  return /* @__PURE__ */ jsxs5("div", { className: "space-y-3", children: [
+  return /* @__PURE__ */ jsxs5("div", { className: "space-y-1", children: [
     /* @__PURE__ */ jsx10(
       "div",
       {
-        className: "overflow-hidden rounded-[24px] border",
+        className: "overflow-hidden rounded-sm",
         style: {
-          borderColor: "var(--photon-builder-border)",
-          background: "linear-gradient(180deg, var(--photon-builder-panel-solid), var(--photon-builder-panel))",
-          boxShadow: "var(--photon-builder-card-shadow)"
+          background: "var(--photon-builder-field)"
         },
         "data-testid": `photon-image-field-editor-preview-${path}`,
         children: source ? /* @__PURE__ */ jsx10(
@@ -1114,25 +1112,24 @@ var ImageFieldEditor = ({
           {
             src: source,
             alt: "Inspector media preview",
-            className: "aspect-[4/3] w-full object-cover"
+            className: "max-h-32 w-full object-contain"
           }
         ) : /* @__PURE__ */ jsx10(
           "div",
           {
-            className: "flex aspect-[4/3] items-center justify-center px-6 text-center text-sm",
-            style: { color: "var(--photon-builder-text-muted)" },
-            children: "Upload an image or paste a remote source URL."
+            className: "flex h-16 items-center justify-center px-2 text-center text-[10.5px]",
+            style: { color: "var(--photon-builder-text-soft)" },
+            children: "No image. Upload or paste a remote URL."
           }
         )
       }
     ),
-    /* @__PURE__ */ jsxs5("div", { className: "flex flex-wrap gap-2", children: [
+    mediaValue?.temporaryUploadId || mediaValue?.fileName || mediaValue?.size ? /* @__PURE__ */ jsxs5("div", { className: "flex flex-wrap gap-1", children: [
       mediaValue?.temporaryUploadId ? /* @__PURE__ */ jsx10(
         "div",
         {
-          className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
+          className: "rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]",
           style: {
-            borderColor: "var(--photon-builder-border-strong)",
             background: "var(--photon-builder-accent-strong)",
             color: "var(--photon-builder-accent)"
           },
@@ -1142,10 +1139,9 @@ var ImageFieldEditor = ({
       mediaValue?.fileName ? /* @__PURE__ */ jsx10(
         "div",
         {
-          className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
+          className: "rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]",
           style: {
-            borderColor: "var(--photon-builder-border)",
-            background: "var(--photon-builder-field)",
+            background: "var(--photon-builder-panel-solid)",
             color: "var(--photon-builder-text-soft)"
           },
           children: mediaValue.fileName
@@ -1154,21 +1150,21 @@ var ImageFieldEditor = ({
       mediaValue?.size ? /* @__PURE__ */ jsx10(
         "div",
         {
-          className: "rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
+          className: "rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]",
           style: {
-            borderColor: "var(--photon-builder-border)",
-            background: "var(--photon-builder-field)",
+            background: "var(--photon-builder-panel-solid)",
             color: "var(--photon-builder-text-soft)"
           },
           children: formatMediaFileSize(mediaValue.size) ?? "remote"
         }
       ) : null
-    ] }),
+    ] }) : null,
     /* @__PURE__ */ jsx10(
       "input",
       {
         type: "text",
         value: resolvePhotonMediaUrl(value),
+        placeholder: "https://\u2026 or paste URL",
         onFocus,
         onChange: (event) => onApply(
           updatePhotonMediaUrl(value, event.currentTarget.value)
@@ -1176,18 +1172,17 @@ var ImageFieldEditor = ({
         className: inputClassName
       }
     ),
-    /* @__PURE__ */ jsxs5("div", { className: "flex flex-wrap items-center gap-2", children: [
+    /* @__PURE__ */ jsxs5("div", { className: "flex items-center gap-1", children: [
       /* @__PURE__ */ jsxs5(
         "label",
         {
-          className: "inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition",
+          className: "inline-flex h-6 cursor-pointer items-center gap-1 rounded-sm px-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] transition",
           style: {
-            borderColor: "var(--photon-builder-border-strong)",
-            background: "var(--photon-builder-accent-strong)",
-            color: "var(--photon-builder-accent)"
+            background: "var(--photon-builder-accent-soft)",
+            color: "var(--photon-builder-accent-text)"
           },
           children: [
-            /* @__PURE__ */ jsx10("span", { children: isUploading ? "Uploading..." : source ? "Replace media" : "Upload media" }),
+            /* @__PURE__ */ jsx10("span", { children: isUploading ? "Uploading\u2026" : source ? "Replace" : "Upload" }),
             /* @__PURE__ */ jsx10(
               "input",
               {
@@ -1225,10 +1220,8 @@ var ImageFieldEditor = ({
         {
           type: "button",
           onClick: () => onApply(""),
-          className: "rounded-full border px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.24em] transition",
+          className: "inline-flex h-6 cursor-pointer items-center rounded-sm px-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] transition hover:bg-[color:var(--photon-builder-field)]",
           style: {
-            borderColor: "var(--photon-builder-border)",
-            background: "var(--photon-builder-field)",
             color: "var(--photon-builder-text-soft)"
           },
           children: "Clear"
@@ -1896,11 +1889,11 @@ var FieldEditorImpl = ({
         /* @__PURE__ */ jsx13(
           "textarea",
           {
-            rows: 4,
+            rows: 3,
             value: String(value ?? ""),
             onFocus: () => onFocus(path),
             onChange: (event) => onChange(event.currentTarget.value),
-            className: inputClassName
+            className: clsx4(inputClassName, "resize-y leading-snug")
           }
         ),
         /* @__PURE__ */ jsx13(

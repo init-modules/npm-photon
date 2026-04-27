@@ -36,14 +36,11 @@ export const ImageFieldEditor = ({
 	const mediaValue = isPhotonMediaValue(value) ? value : null;
 
 	return (
-		<div className="space-y-3">
+		<div className="space-y-1">
 			<div
-				className="overflow-hidden rounded-[24px] border"
+				className="overflow-hidden rounded-sm"
 				style={{
-					borderColor: "var(--photon-builder-border)",
-					background:
-						"linear-gradient(180deg, var(--photon-builder-panel-solid), var(--photon-builder-panel))",
-					boxShadow: "var(--photon-builder-card-shadow)",
+					background: "var(--photon-builder-field)",
 				}}
 				data-testid={`photon-image-field-editor-preview-${path}`}
 			>
@@ -51,58 +48,60 @@ export const ImageFieldEditor = ({
 					<img
 						src={source}
 						alt="Inspector media preview"
-						className="aspect-[4/3] w-full object-cover"
+						className="max-h-32 w-full object-contain"
 					/>
 				) : (
 					<div
-						className="flex aspect-[4/3] items-center justify-center px-6 text-center text-sm"
-						style={{ color: "var(--photon-builder-text-muted)" }}
+						className="flex h-16 items-center justify-center px-2 text-center text-[10.5px]"
+						style={{ color: "var(--photon-builder-text-soft)" }}
 					>
-						Upload an image or paste a remote source URL.
+						No image. Upload or paste a remote URL.
 					</div>
 				)}
 			</div>
-			<div className="flex flex-wrap gap-2">
-				{mediaValue?.temporaryUploadId ? (
-					<div
-						className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]"
-						style={{
-							borderColor: "var(--photon-builder-border-strong)",
-							background: "var(--photon-builder-accent-strong)",
-							color: "var(--photon-builder-accent)",
-						}}
-					>
-						staged upload
-					</div>
-				) : null}
-				{mediaValue?.fileName ? (
-					<div
-						className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]"
-						style={{
-							borderColor: "var(--photon-builder-border)",
-							background: "var(--photon-builder-field)",
-							color: "var(--photon-builder-text-soft)",
-						}}
-					>
-						{mediaValue.fileName}
-					</div>
-				) : null}
-				{mediaValue?.size ? (
-					<div
-						className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]"
-						style={{
-							borderColor: "var(--photon-builder-border)",
-							background: "var(--photon-builder-field)",
-							color: "var(--photon-builder-text-soft)",
-						}}
-					>
-						{formatMediaFileSize(mediaValue.size) ?? "remote"}
-					</div>
-				) : null}
-			</div>
+			{mediaValue?.temporaryUploadId ||
+			mediaValue?.fileName ||
+			mediaValue?.size ? (
+				<div className="flex flex-wrap gap-1">
+					{mediaValue?.temporaryUploadId ? (
+						<div
+							className="rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]"
+							style={{
+								background: "var(--photon-builder-accent-strong)",
+								color: "var(--photon-builder-accent)",
+							}}
+						>
+							staged upload
+						</div>
+					) : null}
+					{mediaValue?.fileName ? (
+						<div
+							className="rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]"
+							style={{
+								background: "var(--photon-builder-panel-solid)",
+								color: "var(--photon-builder-text-soft)",
+							}}
+						>
+							{mediaValue.fileName}
+						</div>
+					) : null}
+					{mediaValue?.size ? (
+						<div
+							className="rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]"
+							style={{
+								background: "var(--photon-builder-panel-solid)",
+								color: "var(--photon-builder-text-soft)",
+							}}
+						>
+							{formatMediaFileSize(mediaValue.size) ?? "remote"}
+						</div>
+					) : null}
+				</div>
+			) : null}
 			<input
 				type="text"
 				value={resolvePhotonMediaUrl(value)}
+				placeholder="https://… or paste URL"
 				onFocus={onFocus}
 				onChange={(event) =>
 					onApply(
@@ -111,21 +110,20 @@ export const ImageFieldEditor = ({
 				}
 				className={inputClassName}
 			/>
-			<div className="flex flex-wrap items-center gap-2">
+			<div className="flex items-center gap-1">
 				<label
-					className="inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition"
+					className="inline-flex h-6 cursor-pointer items-center gap-1 rounded-sm px-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] transition"
 					style={{
-						borderColor: "var(--photon-builder-border-strong)",
-						background: "var(--photon-builder-accent-strong)",
-						color: "var(--photon-builder-accent)",
+						background: "var(--photon-builder-accent-soft)",
+						color: "var(--photon-builder-accent-text)",
 					}}
 				>
 					<span>
 						{isUploading
-							? "Uploading..."
+							? "Uploading…"
 							: source
-								? "Replace media"
-								: "Upload media"}
+								? "Replace"
+								: "Upload"}
 					</span>
 					<input
 						type="file"
@@ -165,10 +163,8 @@ export const ImageFieldEditor = ({
 				<button
 					type="button"
 					onClick={() => onApply("")}
-					className="rounded-full border px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.24em] transition"
+					className="inline-flex h-6 cursor-pointer items-center rounded-sm px-2 text-[10.5px] font-semibold uppercase tracking-[0.14em] transition hover:bg-[color:var(--photon-builder-field)]"
 					style={{
-						borderColor: "var(--photon-builder-border)",
-						background: "var(--photon-builder-field)",
 						color: "var(--photon-builder-text-soft)",
 					}}
 				>

@@ -498,11 +498,11 @@ const FieldEditorImpl = ({
 			return (
 				<div className="flex flex-col gap-1">
 					<textarea
-						rows={4}
+						rows={3}
 						value={String(value ?? "")}
 						onFocus={() => onFocus(path)}
 						onChange={(event) => onChange(event.currentTarget.value)}
-						className={inputClassName}
+						className={clsx(inputClassName, "resize-y leading-snug")}
 					/>
 					<SiteDataBindingPicker
 						onPick={(binding) =>
