@@ -1,5 +1,5 @@
-export { c as collectPhotonFooterExtensionItems, a as collectPhotonHeaderExtensionItems, b as createPhotonAccountTabExtension, d as createPhotonSiteFrameExtension, r as resolvePhotonAccountTabs, e as resolvePhotonSiteFrameExtensions } from './site-frame-extensions-EvFuCLX5.js';
-import './types-1-bZpAzJ.js';
+export { c as collectPhotonFooterExtensionItems, a as collectPhotonHeaderExtensionItems, b as createPhotonAccountTabExtension, d as createPhotonSiteFrameExtension, r as resolvePhotonAccountTabs, e as resolvePhotonSiteFrameExtensions } from './site-frame-extensions-CeQZC1eT.js';
+import './types-C1q0pf4n.js';
 import 'react';
 
 type PhotonAccessAuthStateLike = {

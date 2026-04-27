@@ -2,8 +2,9 @@
 
 import clsx from "clsx";
 import { LayoutPanelLeft, LayoutPanelTop, LogIn, LogOut } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { usePhotonI18n } from "../../i18n/photon-i18n-context";
+import { usePhotonTranslationCompleteness } from "../../i18n/use-photon-translation-completeness";
 import type {
 	PhotonMode,
 	PhotonPageCatalogItem,
@@ -80,14 +81,25 @@ export const EditorDock = ({
 	const {
 		contentLocale,
 		editableLocales,
+		defaultLocale,
 		interfaceLocale,
 		interfaceLocales,
 		translate,
 	} = usePhotonI18n();
 	const compact = true;
+	const editableLocaleCodes = useMemo(
+		() => editableLocales.map((locale) => locale.code),
+		[editableLocales],
+	);
+	const completeness = usePhotonTranslationCompleteness({
+		locales: editableLocaleCodes,
+		referenceLocale: defaultLocale,
+	});
 	const contentLocaleOptions = editableLocales.map((locale) => ({
 		code: locale.code,
 		label: locale.label,
+		status: locale.status,
+		completeness: completeness.results[locale.code]?.percentage,
 	}));
 	const WorkspaceIcon = workspaceControl?.isOpen
 		? LayoutPanelTop

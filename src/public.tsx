@@ -537,6 +537,7 @@ export type {
 	PhotonInteractionSurfaceIntentBinding,
 	PhotonInteractionSurfaceKind,
 	PhotonInteractionSurfaceOpenHandler,
+	PhotonInteractionSurfaceEditableFieldRenderer,
 	PhotonInteractionSurfaceRenderer,
 	PhotonInteractionSurfaceRendererMap,
 	PhotonInteractionSurfaceRendererProps,

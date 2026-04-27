@@ -1,4 +1,23 @@
 import {
+  copyPhotonBlockLocaleContent,
+  copyPhotonLocaleContent,
+  resolvePhotonFallbackLocaleCode,
+  resolvePhotonLocalizedValue
+} from "./chunk-JUC3ASUY.js";
+import {
+  buildPhotonBlockSchemaMapForBlocks,
+  clearPhotonBlockFieldLocalization,
+  computePhotonTranslationCompleteness,
+  computePhotonTranslationCompletenessForLocales,
+  computePhotonTranslationCompletenessFromRegistry,
+  findPhotonFieldMissingLocales,
+  isPhotonBlockFieldLocalizationOverridden,
+  readLocalizedFieldValue,
+  resolveDefaultPhotonFieldLocalization,
+  resolvePhotonBlockFieldLocalization,
+  togglePhotonBlockFieldLocalization
+} from "./chunk-MLBMYMZ5.js";
+import {
   createPhotonRuntime
 } from "./chunk-2E3YDDEL.js";
 import {
@@ -174,8 +193,10 @@ export {
   PHOTON_SITE_DESIGN_FALLBACK_DEFAULTS,
   applyPhotonSiteColorScheme,
   applyPhotonSiteDesignPreset,
+  buildPhotonBlockSchemaMapForBlocks,
   canEditPhotonWorkspace,
   canSavePhotonWorkspace,
+  clearPhotonBlockFieldLocalization,
   clonePhotonBlockTreeWithNewIds,
   clonePhotonComponentLibraryBlocksForCopy,
   clonePhotonComponentSourceBlockWithNewIds,
@@ -198,6 +219,11 @@ export {
   collectPhotonSiteDataSchemas,
   collectPhotonSiteFrameExtensions,
   composePhotonSurfaceDocument,
+  computePhotonTranslationCompleteness,
+  computePhotonTranslationCompletenessForLocales,
+  computePhotonTranslationCompletenessFromRegistry,
+  copyPhotonBlockLocaleContent,
+  copyPhotonLocaleContent,
   createPhotonAccountTabExtension,
   createPhotonActionValue,
   createPhotonAreaListId,
@@ -227,6 +253,7 @@ export {
   executePhotonInteractionActionPresentation,
   executePhotonInteractionTriggerSlot,
   findPhotonBlock,
+  findPhotonFieldMissingLocales,
   getFirstPhotonBlockId,
   getFirstPhotonSurfaceEditableBlockId,
   getPhotonComponentLibraryItems,
@@ -242,6 +269,7 @@ export {
   hasPhotonSiteDesignPresetCustomization,
   insertPhotonBlockInDocument,
   insertPhotonBlocksInDocument,
+  isPhotonBlockFieldLocalizationOverridden,
   isPhotonComponentReferenceBlock,
   isPhotonFramelessPreset,
   isPhotonFramelessSiteDesign,
@@ -264,21 +292,26 @@ export {
   photonSiteColorSchemes,
   photonSiteDesignPresets,
   planPhotonInteractionTriggerSlot,
+  readLocalizedFieldValue,
   readPhotonComponentLibrarySettings,
   readPhotonInteractionSettings,
   readPhotonInteractionSurfaceSettings,
   remapPhotonComponentLibraryBlock,
   removePhotonBlockFromDocument,
   replacePhotonBlockWithBlocksInDocument,
+  resolveDefaultPhotonFieldLocalization,
   resolvePhotonAccountTabs,
+  resolvePhotonBlockFieldLocalization,
   resolvePhotonBlockInteractionSlots,
   resolvePhotonComponentReferenceBlocks,
+  resolvePhotonFallbackLocaleCode,
   resolvePhotonInteractionActionCatalog,
   resolvePhotonInteractionSlotAction,
   resolvePhotonInteractionSlotGuards,
   resolvePhotonInteractionSurfaceCatalog,
   resolvePhotonInteractionSurfaceRequest,
   resolvePhotonInteractionToastTemplate,
+  resolvePhotonLocalizedValue,
   resolvePhotonModules,
   resolvePhotonSiteDesignSettings,
   resolvePhotonSiteFrameExtensions,
@@ -287,6 +320,7 @@ export {
   resolvePhotonSurfaceRegionForListId,
   resolveRouteContext,
   setValueAtPath,
+  togglePhotonBlockFieldLocalization,
   updatePhotonBlockInDocument,
   writePhotonStudioUrlState
 };

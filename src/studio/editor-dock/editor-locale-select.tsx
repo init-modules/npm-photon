@@ -10,12 +10,27 @@ import {
 	DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
 
+export type EditorLocaleSelectOption = {
+	code: string;
+	label: string;
+	/** Locale lifecycle status. "draft" renders a badge in the dropdown. */
+	status?: "active" | "draft" | "inactive";
+	/**
+	 * Translation completeness percentage 0..100. When provided, shown as a
+	 * subtle grey hint next to each option. Per LOCALE_V1 §4.3, the top-panel
+	 * switcher uses no traffic-light coloring — just gray text.
+	 */
+	completeness?: number;
+};
+
 type EditorLocaleSelectProps = {
 	label: string;
 	value: string;
-	options: Array<{ code: string; label: string }>;
+	options: Array<EditorLocaleSelectOption>;
 	onChange?: (locale: string) => void;
 };
+
+const formatCompleteness = (percentage: number): string => `${percentage}%`;
 
 export const EditorLocaleSelect = ({
 	label,
@@ -47,6 +62,14 @@ export const EditorLocaleSelect = ({
 					{label}
 				</span>
 				<span className="truncate uppercase">{activeOption.label}</span>
+				{activeOption.status === "draft" ? (
+					<span
+						className="rounded-full border border-[color:var(--photon-builder-border)] px-1.5 py-px text-[9px] font-semibold uppercase tracking-[0.2em] text-[color:var(--photon-builder-text-ghost)]"
+						aria-label="draft"
+					>
+						draft
+					</span>
+				) : null}
 			</span>
 			<ChevronDown className="h-4 w-4 shrink-0 text-[color:var(--photon-builder-text-soft)] transition-transform duration-200 ease-out" />
 		</button>
@@ -66,11 +89,24 @@ export const EditorLocaleSelect = ({
 				>
 					{options.map((option) => (
 						<DropdownMenuRadioItem key={option.code} value={option.code}>
-							<span className="flex items-center gap-2.5">
+							<span className="flex w-full items-center gap-2.5">
 								<span className="text-[10px] uppercase tracking-[0.24em] text-[color:var(--photon-builder-text-soft)]">
 									{label}
 								</span>
 								<span className="uppercase">{option.label}</span>
+								{option.status === "draft" ? (
+									<span className="rounded-full border border-[color:var(--photon-builder-border)] px-1.5 py-px text-[9px] font-semibold uppercase tracking-[0.2em] text-[color:var(--photon-builder-text-ghost)]">
+										draft
+									</span>
+								) : null}
+								{typeof option.completeness === "number" ? (
+									<span
+										className="ml-auto text-[10px] tabular-nums text-[color:var(--photon-builder-text-ghost)]"
+										aria-label={`${option.completeness}% translated`}
+									>
+										{formatCompleteness(option.completeness)}
+									</span>
+								) : null}
 							</span>
 						</DropdownMenuRadioItem>
 					))}

@@ -231,6 +231,17 @@ export type PhotonStoreState = {
 		path: string,
 		binding: PhotonFieldBinding | null,
 	) => void;
+	/**
+	 * Set or clear a per-field localization override on a block instance.
+	 * `target = null` removes the override (revert to schema/kind default).
+	 * Mirrors `setFieldBinding`. See
+	 * `resolvePhotonBlockFieldLocalization` for resolution priority.
+	 */
+	setBlockFieldLocalization: (
+		blockId: string,
+		path: string,
+		target: "localized" | "shared" | null,
+	) => void;
 	updatePageSettingValue: (path: string, value: unknown) => void;
 	getPageSettingValue: (path: string) => unknown;
 	updateSiteSettingValue: (path: string, value: unknown) => void;
@@ -1107,6 +1118,42 @@ export const createPhotonStore = ({
 								...currentBindings,
 								[path]: binding,
 							},
+						};
+					},
+				);
+				return {
+					document: {
+						...nextDocument,
+						updatedAt: new Date().toISOString(),
+					},
+					contentRevision: bumpContentRevision(currentState),
+				};
+			});
+		},
+		setBlockFieldLocalization: (blockId, path, target) => {
+			const state = get();
+			if (!canMutatePhotonState(state)) {
+				return;
+			}
+			set((currentState) => {
+				const nextDocument = updatePhotonBlockInDocument(
+					currentState.document,
+					blockId,
+					(block) => {
+						const current = block.localization ?? {};
+						if (target === null) {
+							if (!(path in current)) return block;
+							const { [path]: _removed, ...rest } = current;
+							return {
+								...block,
+								localization:
+									Object.keys(rest).length > 0 ? rest : undefined,
+							};
+						}
+						if (current[path] === target) return block;
+						return {
+							...block,
+							localization: { ...current, [path]: target },
 						};
 					},
 				);

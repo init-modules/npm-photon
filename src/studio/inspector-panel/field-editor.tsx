@@ -27,12 +27,18 @@ import {
 	getValueAtPath,
 	setValueAtPath,
 } from "../../helpers/path";
+import { togglePhotonBlockFieldLocalization } from "../../i18n/block-localization";
+import { findPhotonFieldMissingLocales } from "../../i18n/missing-translation";
 import { usePhotonI18n } from "../../i18n/photon-i18n-context";
 import type {
+	PhotonBlock,
+	PhotonBlockLocalizationSchema,
 	PhotonField,
+	PhotonFieldLocalization,
 	PhotonNestedField,
 } from "../../types";
 import { inputClassName } from "../shared";
+import { FieldLabelLocalizationMenu } from "./field-label-localization-menu";
 import { GalleryFieldEditor } from "./gallery-field-editor";
 import { ImageFieldEditor } from "./image-field-editor";
 import { JsonFieldEditor } from "./json-field-editor";
@@ -46,6 +52,23 @@ type FieldEditorProps = {
 	onFocus: (path?: string) => void;
 	absolutePath?: string;
 	hidePathLabel?: boolean;
+	/**
+	 * Block instance, used to render a translatability marker on the field
+	 * label and to power the right-click localization menu. When omitted,
+	 * neither marker nor menu is rendered (the editor still functions).
+	 */
+	block?: PhotonBlock;
+	/**
+	 * Block-type schema with `localized` / `shared` field paths. Plays the
+	 * "second priority" role between instance overrides and kind defaults
+	 * when resolving translatability.
+	 */
+	blockLocalizationSchema?: PhotonBlockLocalizationSchema;
+	/**
+	 * Persists a new `block.localization` map after a context-menu action.
+	 * When omitted, the menu is read-only (toggle is hidden).
+	 */
+	onUpdateBlock?: (next: PhotonBlock) => void;
 };
 
 const joinFieldPath = (parentPath: string, childPath?: string) => {
@@ -498,6 +521,9 @@ const FieldEditorImpl = ({
 	onFocus,
 	absolutePath,
 	hidePathLabel = false,
+	block,
+	blockLocalizationSchema,
+	onUpdateBlock,
 }: FieldEditorProps) => {
 	const documentId = usePhotonStore((state) => state.document.id);
 	const uploadMedia = usePhotonStore((state) => state.uploadMedia);
@@ -505,7 +531,8 @@ const FieldEditorImpl = ({
 	const fieldBinding = usePhotonStore((state) =>
 		state.getFieldBinding(blockId, absolutePath ?? field.path ?? ""),
 	);
-	const { translate } = usePhotonI18n();
+	const i18nContext = usePhotonI18n();
+	const { translate } = i18nContext;
 	const { tokens } = usePhotonInspectorDensity();
 	const path = absolutePath ?? field.path ?? "";
 	const isInline = INLINE_FIELD_KINDS.has(field.kind);
@@ -514,7 +541,36 @@ const FieldEditorImpl = ({
 		field.label ?? "Field",
 	);
 
-	const labelNode = (
+	const setBlockFieldLocalization = usePhotonStore(
+		(state) => state.setBlockFieldLocalization,
+	);
+
+	const handleToggleLocalization = () => {
+		if (!block) return;
+		const next = togglePhotonBlockFieldLocalization(
+			block,
+			path,
+			field.kind,
+			blockLocalizationSchema,
+		);
+		const target = next.localization?.[path] ?? null;
+		setBlockFieldLocalization(block.id, path, target);
+		if (onUpdateBlock) onUpdateBlock(next);
+	};
+
+	const handleSetLocalization = (target: PhotonFieldLocalization) => {
+		if (!block) return;
+		setBlockFieldLocalization(block.id, path, target);
+		if (onUpdateBlock) {
+			const next = {
+				...block,
+				localization: { ...(block.localization ?? {}), [path]: target },
+			};
+			onUpdateBlock(next);
+		}
+	};
+
+	const baseLabel = (
 		<div
 			className={clsx(
 				tokens.fieldLabelClass,
@@ -525,6 +581,43 @@ const FieldEditorImpl = ({
 		>
 			{labelText}
 		</div>
+	);
+	const editableLocaleCodes = i18nContext.editableLocales.map((l) => l.code);
+	const localeLabelLookup = (code: string): string | undefined =>
+		i18nContext.editableLocales.find((l) => l.code === code)?.label;
+	const missingIndicatorsDisabled = usePhotonStore((state) => {
+		const localesSettings = (state.site.settings as Record<string, unknown>)?.locales as
+			| { disableMissingTranslationIndicators?: boolean }
+			| undefined;
+		return Boolean(localesSettings?.disableMissingTranslationIndicators);
+	});
+	const missingLocales =
+		block && editableLocaleCodes.length > 1 && !missingIndicatorsDisabled
+			? findPhotonFieldMissingLocales({
+					block,
+					schema: blockLocalizationSchema,
+					fieldPath: path,
+					fieldKind: field.kind,
+					locales: editableLocaleCodes,
+					referenceLocale: i18nContext.defaultLocale,
+				})
+			: [];
+
+	const labelNode = block ? (
+		<FieldLabelLocalizationMenu
+			block={block}
+			schema={blockLocalizationSchema}
+			fieldPath={path}
+			fieldKind={field.kind}
+			onToggle={handleToggleLocalization}
+			onSetLocalization={handleSetLocalization}
+			missingLocales={missingLocales}
+			getLocaleLabel={localeLabelLookup}
+		>
+			{baseLabel}
+		</FieldLabelLocalizationMenu>
+	) : (
+		baseLabel
 	);
 
 	const bindingPill =

@@ -616,6 +616,7 @@ const InspectorPanelComponent = ({
 									key={chunk.field.path}
 									field={chunk.field}
 									blockId={selectedBlock.id}
+									block={selectedBlock}
 									value={getFieldValue(selectedBlock.id, chunk.field.path)}
 									onFocus={(path) =>
 										selectField(selectedBlock.id, path ?? chunk.field.path)
@@ -640,6 +641,7 @@ const InspectorPanelComponent = ({
 												key={field.path}
 												field={field}
 												blockId={selectedBlock.id}
+												block={selectedBlock}
 												value={getFieldValue(selectedBlock.id, field.path)}
 												onFocus={(path) =>
 													selectField(selectedBlock.id, path ?? field.path)
@@ -766,6 +768,7 @@ const InspectorPanelComponent = ({
 													key={chunk.field.path}
 													field={chunk.field}
 													blockId={selectedBlock.id}
+													block={selectedBlock}
 													value={getFieldValue(
 														selectedBlock.id,
 														chunk.field.path,
@@ -796,6 +799,7 @@ const InspectorPanelComponent = ({
 																key={field.path}
 																field={field}
 																blockId={selectedBlock.id}
+																block={selectedBlock}
 																value={getFieldValue(
 																	selectedBlock.id,
 																	field.path,

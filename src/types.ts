@@ -790,6 +790,14 @@ export type PhotonBlock<Props extends PhotonBlockProps = PhotonBlockProps> = {
 	props: Props;
 	bindings?: Record<string, PhotonFieldBinding>;
 	areas?: PhotonArea[];
+	/**
+	 * Per-field localization overrides for this specific block instance.
+	 * Keys are field paths (matching `PhotonField.path`). Values override
+	 * both the kind-default ("text" → localized, "image" → shared) and the
+	 * block schema's `PhotonBlockLocalizationSchema`. Resolved through
+	 * `resolvePhotonBlockFieldLocalization`.
+	 */
+	localization?: Record<string, PhotonFieldLocalization>;
 };
 
 export type PhotonDocument = {

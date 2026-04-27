@@ -1,22 +1,23 @@
 import * as react from 'react';
 import { ComponentType, ReactNode, ElementType, HTMLAttributes, CSSProperties, KeyboardEvent } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import { i as PhotonBlock, h as PhotonArea, al as PhotonSurfaceMode, ao as PhotonField, w as PhotonDocument, a4 as PhotonResources, a1 as PhotonPageSettings, a7 as PhotonSite, aA as PhotonRegistry, af as PhotonWorkspaceDescriptor, ae as PhotonWorkspaceCapabilities, aE as PhotonMode, aF as PhotonMediaUploadHandler, aG as PhotonSearchHandler, C as PhotonInteractionActionPresentation, O as PhotonInteractionSurfaceDefinition, z as PhotonInteractionActionDefinition, F as PhotonInteractionGuardDefinition, J as PhotonInteractionGuardEvaluatorMap, d as PhotonActionPolicy, q as PhotonConditionDefinition, t as PhotonConditionEvaluatorMap, ab as PhotonSiteDataSchema, aW as PhotonRouteContextField, aq as PhotonFormSchemaDescriptor, aL as PhotonInteractionSurfaceRendererMap, U as PhotonInteractionToastTemplate, aH as PhotonNavigateHandler, aI as PhotonPrefetchHandler, aJ as PhotonLinkComponent, aK as PhotonLinkFactory, bg as PhotonNavigationConfig, ag as PhotonSiteFrameExtension, ak as PhotonAccountTabExtension, m as PhotonComponentLibrarySourceSelection, bI as PhotonSelectedField, W as PhotonInteractionTriggerSlot, bh as PhotonInteractionSurfaceOpenHandler, bi as PhotonInteractionToastHandler, D as PhotonInteractionExecutionResult, M as PhotonInteractionPreviewScenario, y as PhotonFieldBinding, k as PhotonComponentLibraryItem, be as PhotonLinkComponentProps, aM as PhotonI18nValue, a3 as PhotonResolvedSiteData, bm as PhotonBindingAdapter, _ as PhotonMediaValue, aX as PhotonInstallableKit, aS as PhotonModule, a6 as PhotonSearchResult, a5 as PhotonSearchHighlight } from './types-1-bZpAzJ.js';
-export { bJ as PhotonAccountTabMatch, P as PhotonActionPlan, a as PhotonActionPlanExecutionStatus, b as PhotonActionPlanResult, c as PhotonActionPlanStep, e as PhotonActionPolicyEnforcement, f as PhotonActionPolicyScope, g as PhotonActionStateDefinition, b4 as PhotonActionValue, bK as PhotonActorSummary, aZ as PhotonAnyBlockDefinition, bl as PhotonAuthPageRenderInput, bf as PhotonAuthPageRenderer, bL as PhotonBindingMode, bM as PhotonBlockComponent, bn as PhotonBlockComponentProps, bN as PhotonBlockDefaults, aP as PhotonBlockDefinition, ba as PhotonBlockInteractionSlotContext, aR as PhotonBlockLocalizationSchema, aV as PhotonBlockProps, aC as PhotonBranchPolicyState, j as PhotonComponentLibraryEditorSelection, l as PhotonComponentLibrarySettings, n as PhotonComponentLibraryUsage, o as PhotonComponentLibraryUsageProvider, p as PhotonComponentReferenceProps, r as PhotonConditionEvaluationContext, s as PhotonConditionEvaluator, u as PhotonConditionExpression, v as PhotonConditionResolution, bO as PhotonDefaultable, x as PhotonDocumentsMap, bP as PhotonFieldKind, bQ as PhotonFieldLocalization, bo as PhotonFieldOption, ap as PhotonFormDefinition, am as PhotonFormFieldDefinition, av as PhotonFormFieldOption, an as PhotonFormFieldType, aw as PhotonFormFieldValidation, ax as PhotonFormFieldWidth, ay as PhotonFormMode, az as PhotonFormPolicy, ar as PhotonFormValues, A as PhotonInteractionActionExecutionHandlers, B as PhotonInteractionActionInstance, bR as PhotonInteractionExecutionPlanMeta, E as PhotonInteractionExecutionStatus, G as PhotonInteractionGuardEvaluationContext, H as PhotonInteractionGuardEvaluationResult, I as PhotonInteractionGuardEvaluator, K as PhotonInteractionGuardInstance, L as PhotonInteractionGuardMissingEvaluatorPolicy, N as PhotonInteractionSettings, bS as PhotonInteractionSurfaceEditableFieldInput, bT as PhotonInteractionSurfaceEditableFieldKind, bU as PhotonInteractionSurfaceEditableFieldOption, a_ as PhotonInteractionSurfaceEditableFieldRenderer, Q as PhotonInteractionSurfaceInstance, R as PhotonInteractionSurfaceIntentBinding, bp as PhotonInteractionSurfaceKind, bq as PhotonInteractionSurfaceRenderer, a$ as PhotonInteractionSurfaceRendererProps, S as PhotonInteractionSurfaceSettings, T as PhotonInteractionSurfaceTrigger, br as PhotonInteractionSurfaceVariant, b7 as PhotonInteractionToastInput, bs as PhotonInteractionToastStatus, V as PhotonInteractionTriggerBinding, bV as PhotonInterfaceLocaleOption, bt as PhotonLinkFactoryOptions, X as PhotonLocaleDescriptor, Y as PhotonLocaleStatus, aT as PhotonLocalizedDefaultValue, Z as PhotonMediaUploadInput, bW as PhotonMergeConflict, bX as PhotonMergeDiffItem, aD as PhotonMergePreview, bY as PhotonMergeResolutionStrategy, bu as PhotonNavigateOptions, bZ as PhotonNavigationQueryKeys, aQ as PhotonNestedField, $ as PhotonPageCatalogItem, a0 as PhotonPageRuntimeData, aN as PhotonPageSettingsPanelDefinition, b_ as PhotonPageSettingsPanelProps, bv as PhotonPageSettingsScope, aU as PhotonRegistryEntry, as as PhotonResolvedFormField, b9 as PhotonResolvedInteractionActionCatalog, b5 as PhotonResolvedInteractionSurfaceCatalog, b6 as PhotonResolvedInteractionSurfaceRequest, a2 as PhotonResolvedPage, b8 as PhotonResolvedRouteContext, b1 as PhotonResolvedSiteDesignSettings, b$ as PhotonRevisionChangeSummaryItem, aB as PhotonRevisionDescriptor, c0 as PhotonRouteContextFieldKind, aY as PhotonRuntime, c1 as PhotonSearchInput, c2 as PhotonSearchRuntimeState, c3 as PhotonSiteColorSchemeDefinition, b2 as PhotonSiteComponentVariants, a8 as PhotonSiteDataBinding, a9 as PhotonSiteDataField, aa as PhotonSiteDataFieldKind, c4 as PhotonSiteDesignAppearance, c5 as PhotonSiteDesignColorTokens, c6 as PhotonSiteDesignPresetDefinition, b0 as PhotonSiteDesignSettings, c7 as PhotonSiteDesignValue, bw as PhotonSiteFrameActionComponentProps, bx as PhotonSiteFrameActionItem, c8 as PhotonSiteFrameActionKind, ah as PhotonSiteFrameExtensionContext, by as PhotonSiteFrameFloatingControls, bz as PhotonSiteFrameFooterSlot, bA as PhotonSiteFrameFooterSlotItems, ai as PhotonSiteFrameFooterSlots, bB as PhotonSiteFrameHeaderSlot, bC as PhotonSiteFrameHeaderSlotItems, aj as PhotonSiteFrameHeaderSlots, bD as PhotonSiteFrameLinkItem, bE as PhotonSiteFrameMobileBottomMenuControls, bj as PhotonSiteFrameMobileControls, bF as PhotonSiteFrameMobileMenuControls, bk as PhotonSiteFrameMobileMenuTriggerPlacement, bG as PhotonSiteFrameMobileMenuType, bH as PhotonSiteFrameNavigationColumn, ac as PhotonSiteRegion, ad as PhotonSiteSettings, aO as PhotonSiteSettingsPanelDefinition, c9 as PhotonSiteSettingsPanelProps, ca as PhotonStudioInteractionTab, cb as PhotonStudioPaletteTab, bc as PhotonStudioSurfaceMode, bd as PhotonStudioUrlState, bb as PhotonStudioUrlStatePatch, b3 as PhotonWorkspaceRef } from './types-1-bZpAzJ.js';
-import { P as PhotonBlockActiveStateResolution } from './photon-site-search-BX8xiYuj.js';
-export { i as PhotonI18nProvider, j as PhotonRenderDepthProvider, c as PhotonSiteSearch, d as PhotonSiteSearchSurfaceRenderer, k as resolvePhotonText, u as usePhotonI18n, h as usePhotonRenderDepth } from './photon-site-search-BX8xiYuj.js';
+import { i as PhotonBlock, h as PhotonArea, al as PhotonSurfaceMode, ao as PhotonField, aR as PhotonBlockLocalizationSchema, bI as PhotonFieldKind, w as PhotonDocument, a4 as PhotonResources, a1 as PhotonPageSettings, a7 as PhotonSite, aA as PhotonRegistry, af as PhotonWorkspaceDescriptor, ae as PhotonWorkspaceCapabilities, aE as PhotonMode, aF as PhotonMediaUploadHandler, aG as PhotonSearchHandler, C as PhotonInteractionActionPresentation, O as PhotonInteractionSurfaceDefinition, z as PhotonInteractionActionDefinition, F as PhotonInteractionGuardDefinition, J as PhotonInteractionGuardEvaluatorMap, d as PhotonActionPolicy, q as PhotonConditionDefinition, t as PhotonConditionEvaluatorMap, ab as PhotonSiteDataSchema, aW as PhotonRouteContextField, aq as PhotonFormSchemaDescriptor, aL as PhotonInteractionSurfaceRendererMap, U as PhotonInteractionToastTemplate, aH as PhotonNavigateHandler, aI as PhotonPrefetchHandler, aJ as PhotonLinkComponent, aK as PhotonLinkFactory, bg as PhotonNavigationConfig, ag as PhotonSiteFrameExtension, ak as PhotonAccountTabExtension, m as PhotonComponentLibrarySourceSelection, bJ as PhotonSelectedField, W as PhotonInteractionTriggerSlot, bh as PhotonInteractionSurfaceOpenHandler, bi as PhotonInteractionToastHandler, D as PhotonInteractionExecutionResult, M as PhotonInteractionPreviewScenario, y as PhotonFieldBinding, k as PhotonComponentLibraryItem, be as PhotonLinkComponentProps, aM as PhotonI18nValue, a3 as PhotonResolvedSiteData, bm as PhotonBindingAdapter, _ as PhotonMediaValue, X as PhotonLocaleDescriptor, aX as PhotonInstallableKit, aS as PhotonModule, a6 as PhotonSearchResult, a5 as PhotonSearchHighlight } from './types-C1q0pf4n.js';
+export { bK as PhotonAccountTabMatch, P as PhotonActionPlan, a as PhotonActionPlanExecutionStatus, b as PhotonActionPlanResult, c as PhotonActionPlanStep, e as PhotonActionPolicyEnforcement, f as PhotonActionPolicyScope, g as PhotonActionStateDefinition, b4 as PhotonActionValue, bL as PhotonActorSummary, aZ as PhotonAnyBlockDefinition, bl as PhotonAuthPageRenderInput, bf as PhotonAuthPageRenderer, bM as PhotonBindingMode, bN as PhotonBlockComponent, bn as PhotonBlockComponentProps, bO as PhotonBlockDefaults, aP as PhotonBlockDefinition, ba as PhotonBlockInteractionSlotContext, aV as PhotonBlockProps, aC as PhotonBranchPolicyState, j as PhotonComponentLibraryEditorSelection, l as PhotonComponentLibrarySettings, n as PhotonComponentLibraryUsage, o as PhotonComponentLibraryUsageProvider, p as PhotonComponentReferenceProps, r as PhotonConditionEvaluationContext, s as PhotonConditionEvaluator, u as PhotonConditionExpression, v as PhotonConditionResolution, bP as PhotonDefaultable, x as PhotonDocumentsMap, bQ as PhotonFieldLocalization, bo as PhotonFieldOption, ap as PhotonFormDefinition, am as PhotonFormFieldDefinition, av as PhotonFormFieldOption, an as PhotonFormFieldType, aw as PhotonFormFieldValidation, ax as PhotonFormFieldWidth, ay as PhotonFormMode, az as PhotonFormPolicy, ar as PhotonFormValues, A as PhotonInteractionActionExecutionHandlers, B as PhotonInteractionActionInstance, bR as PhotonInteractionExecutionPlanMeta, E as PhotonInteractionExecutionStatus, G as PhotonInteractionGuardEvaluationContext, H as PhotonInteractionGuardEvaluationResult, I as PhotonInteractionGuardEvaluator, K as PhotonInteractionGuardInstance, L as PhotonInteractionGuardMissingEvaluatorPolicy, N as PhotonInteractionSettings, bS as PhotonInteractionSurfaceEditableFieldInput, bT as PhotonInteractionSurfaceEditableFieldKind, bU as PhotonInteractionSurfaceEditableFieldOption, a_ as PhotonInteractionSurfaceEditableFieldRenderer, Q as PhotonInteractionSurfaceInstance, R as PhotonInteractionSurfaceIntentBinding, bp as PhotonInteractionSurfaceKind, bq as PhotonInteractionSurfaceRenderer, a$ as PhotonInteractionSurfaceRendererProps, S as PhotonInteractionSurfaceSettings, T as PhotonInteractionSurfaceTrigger, br as PhotonInteractionSurfaceVariant, b7 as PhotonInteractionToastInput, bs as PhotonInteractionToastStatus, V as PhotonInteractionTriggerBinding, bV as PhotonInterfaceLocaleOption, bt as PhotonLinkFactoryOptions, Y as PhotonLocaleStatus, aT as PhotonLocalizedDefaultValue, Z as PhotonMediaUploadInput, bW as PhotonMergeConflict, bX as PhotonMergeDiffItem, aD as PhotonMergePreview, bY as PhotonMergeResolutionStrategy, bu as PhotonNavigateOptions, bZ as PhotonNavigationQueryKeys, aQ as PhotonNestedField, $ as PhotonPageCatalogItem, a0 as PhotonPageRuntimeData, aN as PhotonPageSettingsPanelDefinition, b_ as PhotonPageSettingsPanelProps, bv as PhotonPageSettingsScope, aU as PhotonRegistryEntry, as as PhotonResolvedFormField, b9 as PhotonResolvedInteractionActionCatalog, b5 as PhotonResolvedInteractionSurfaceCatalog, b6 as PhotonResolvedInteractionSurfaceRequest, a2 as PhotonResolvedPage, b8 as PhotonResolvedRouteContext, b1 as PhotonResolvedSiteDesignSettings, b$ as PhotonRevisionChangeSummaryItem, aB as PhotonRevisionDescriptor, c0 as PhotonRouteContextFieldKind, aY as PhotonRuntime, c1 as PhotonSearchInput, c2 as PhotonSearchRuntimeState, c3 as PhotonSiteColorSchemeDefinition, b2 as PhotonSiteComponentVariants, a8 as PhotonSiteDataBinding, a9 as PhotonSiteDataField, aa as PhotonSiteDataFieldKind, c4 as PhotonSiteDesignAppearance, c5 as PhotonSiteDesignColorTokens, c6 as PhotonSiteDesignPresetDefinition, b0 as PhotonSiteDesignSettings, c7 as PhotonSiteDesignValue, bw as PhotonSiteFrameActionComponentProps, bx as PhotonSiteFrameActionItem, c8 as PhotonSiteFrameActionKind, ah as PhotonSiteFrameExtensionContext, by as PhotonSiteFrameFloatingControls, bz as PhotonSiteFrameFooterSlot, bA as PhotonSiteFrameFooterSlotItems, ai as PhotonSiteFrameFooterSlots, bB as PhotonSiteFrameHeaderSlot, bC as PhotonSiteFrameHeaderSlotItems, aj as PhotonSiteFrameHeaderSlots, bD as PhotonSiteFrameLinkItem, bE as PhotonSiteFrameMobileBottomMenuControls, bj as PhotonSiteFrameMobileControls, bF as PhotonSiteFrameMobileMenuControls, bk as PhotonSiteFrameMobileMenuTriggerPlacement, bG as PhotonSiteFrameMobileMenuType, bH as PhotonSiteFrameNavigationColumn, ac as PhotonSiteRegion, ad as PhotonSiteSettings, aO as PhotonSiteSettingsPanelDefinition, c9 as PhotonSiteSettingsPanelProps, ca as PhotonStudioInteractionTab, cb as PhotonStudioPaletteTab, bc as PhotonStudioSurfaceMode, bd as PhotonStudioUrlState, bb as PhotonStudioUrlStatePatch, b3 as PhotonWorkspaceRef } from './types-C1q0pf4n.js';
+import { P as PhotonBlockActiveStateResolution } from './photon-site-search-GsgHaRfO.js';
+export { i as PhotonI18nProvider, j as PhotonRenderDepthProvider, c as PhotonSiteSearch, d as PhotonSiteSearchSurfaceRenderer, k as resolvePhotonText, u as usePhotonI18n, h as usePhotonRenderDepth } from './photon-site-search-GsgHaRfO.js';
 import { StoreApi } from 'zustand/vanilla';
-import { V as resolvePhotonInteractionSurfaceRequest } from './constants-tXsWK43T.js';
-export { P as PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY, a as PHOTON_COMPONENT_REFERENCE_AREA_ID, b as PHOTON_COMPONENT_REFERENCE_MAX_DEPTH, c as PHOTON_COMPONENT_REFERENCE_MODULE, d as PHOTON_COMPONENT_REFERENCE_TYPE, e as PHOTON_INTERACTIONS_SITE_SETTING_KEY, f as PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY, g as PHOTON_ROUTE_CONTEXT_SCOPE, h as PHOTON_SEARCH_OCCURRENCE_PARAM, i as PHOTON_SEARCH_QUERY_PARAM, j as PHOTON_SEARCH_TARGET_PARAM, k as clonePhotonComponentLibraryBlocksForCopy, l as clonePhotonComponentSourceBlockWithNewIds, m as collectPhotonComponentLibraryUsages, n as createPhotonActionValue, o as createPhotonComponentLibraryBlockId, p as createPhotonComponentLibraryItemFromBlock, q as createPhotonComponentReferenceBlock, r as createPhotonInteractionActionDefinition, s as createPhotonInteractionExecutionResult, t as createPhotonInteractionGuardDefinition, u as createPhotonInteractionSurfaceDefinition, v as createPhotonInteractionTriggerSlot, w as duplicatePhotonComponentLibraryItem, x as evaluatePhotonInteractionGuards, y as executePhotonInteractionActionPresentation, z as executePhotonInteractionTriggerSlot, A as getPhotonComponentLibraryItems, B as isPhotonComponentReferenceBlock, C as matchRoutePattern, D as mergePhotonStudioUrlState, E as normalizePhotonStudioSurfaceMode, F as parsePhotonComponentLibraryBlockId, G as parsePhotonStudioUrlState, H as parseRoutePattern, I as photonInteractionExecutionSucceeded, J as planPhotonInteractionTriggerSlot, K as readPhotonComponentLibrarySettings, L as readPhotonInteractionSettings, M as readPhotonInteractionSurfaceSettings, N as remapPhotonComponentLibraryBlock, O as resolvePhotonBlockInteractionSlots, Q as resolvePhotonComponentReferenceBlocks, R as resolvePhotonInteractionActionCatalog, S as resolvePhotonInteractionSlotAction, T as resolvePhotonInteractionSlotGuards, U as resolvePhotonInteractionSurfaceCatalog, W as resolvePhotonInteractionToastTemplate, X as resolveRouteContext, Y as writePhotonStudioUrlState } from './constants-tXsWK43T.js';
-export { P as PHOTON_CASCADE_SCOPE_ORDER, a as PHOTON_SITE_DATA_BY_LOCALE_SETTING_KEY, b as PHOTON_SITE_DATA_SETTING_KEY, c as PhotonCascadable, d as PhotonCascadeConflict, e as buildActionPlan, f as comparePhotonCascadable, g as createSitePolicyOverride, h as dedupePhotonCascadeBy, i as dedupePoliciesById, j as detectPhotonCascadeConflicts, k as evaluateConditionExpression, l as extractPhotonSiteDataBindings, m as isSitePolicyOverride, n as localeSitePath, o as mapGuardsToActionPolicies, p as parsePhotonSiteDataBindingExpression, r as resolvePhotonSiteData, q as resolvePhotonSiteDataBinding, s as resolvePolicyCascade, t as sitePath, u as sitePolicyPath, v as sortPhotonCascade } from './site-data-poNcwQ6e.js';
-export { f as collectPhotonAccountTabs, g as collectPhotonConditionDefinitions, h as collectPhotonConditionEvaluators, i as collectPhotonDocuments, j as collectPhotonFormSchemas, k as collectPhotonInteractionActions, l as collectPhotonInteractionGuardEvaluators, m as collectPhotonInteractionGuards, n as collectPhotonInteractionPolicies, o as collectPhotonInteractionSurfaces, p as collectPhotonRouteContextFields, q as collectPhotonSiteDataSchemas, r as collectPhotonSiteFrameExtensions, s as createPhotonBlock, c as createPhotonBlockLocalizationSchema, a as createPhotonKit, t as createPhotonLocalizationManifest, b as createPhotonLocalizedDefault, u as createPhotonRegistry, d as createPhotonRuntime, e as definePhotonBlockDefinition, v as getPhotonDefinitionKey, w as getPhotonDocumentFingerprint, x as isPhotonInstallableKit, y as movePhotonArrayItem, z as resolvePhotonModules } from './runtime-CNj8WQEr.js';
+import { V as resolvePhotonInteractionSurfaceRequest } from './constants-TYBrBXkU.js';
+export { P as PHOTON_COMPONENT_LIBRARY_SITE_SETTING_KEY, a as PHOTON_COMPONENT_REFERENCE_AREA_ID, b as PHOTON_COMPONENT_REFERENCE_MAX_DEPTH, c as PHOTON_COMPONENT_REFERENCE_MODULE, d as PHOTON_COMPONENT_REFERENCE_TYPE, e as PHOTON_INTERACTIONS_SITE_SETTING_KEY, f as PHOTON_INTERACTION_SURFACES_SITE_SETTING_KEY, g as PHOTON_ROUTE_CONTEXT_SCOPE, h as PHOTON_SEARCH_OCCURRENCE_PARAM, i as PHOTON_SEARCH_QUERY_PARAM, j as PHOTON_SEARCH_TARGET_PARAM, k as clonePhotonComponentLibraryBlocksForCopy, l as clonePhotonComponentSourceBlockWithNewIds, m as collectPhotonComponentLibraryUsages, n as createPhotonActionValue, o as createPhotonComponentLibraryBlockId, p as createPhotonComponentLibraryItemFromBlock, q as createPhotonComponentReferenceBlock, r as createPhotonInteractionActionDefinition, s as createPhotonInteractionExecutionResult, t as createPhotonInteractionGuardDefinition, u as createPhotonInteractionSurfaceDefinition, v as createPhotonInteractionTriggerSlot, w as duplicatePhotonComponentLibraryItem, x as evaluatePhotonInteractionGuards, y as executePhotonInteractionActionPresentation, z as executePhotonInteractionTriggerSlot, A as getPhotonComponentLibraryItems, B as isPhotonComponentReferenceBlock, C as matchRoutePattern, D as mergePhotonStudioUrlState, E as normalizePhotonStudioSurfaceMode, F as parsePhotonComponentLibraryBlockId, G as parsePhotonStudioUrlState, H as parseRoutePattern, I as photonInteractionExecutionSucceeded, J as planPhotonInteractionTriggerSlot, K as readPhotonComponentLibrarySettings, L as readPhotonInteractionSettings, M as readPhotonInteractionSurfaceSettings, N as remapPhotonComponentLibraryBlock, O as resolvePhotonBlockInteractionSlots, Q as resolvePhotonComponentReferenceBlocks, R as resolvePhotonInteractionActionCatalog, S as resolvePhotonInteractionSlotAction, T as resolvePhotonInteractionSlotGuards, U as resolvePhotonInteractionSurfaceCatalog, W as resolvePhotonInteractionToastTemplate, X as resolveRouteContext, Y as writePhotonStudioUrlState } from './constants-TYBrBXkU.js';
+export { P as PHOTON_CASCADE_SCOPE_ORDER, a as PHOTON_SITE_DATA_BY_LOCALE_SETTING_KEY, b as PHOTON_SITE_DATA_SETTING_KEY, c as PhotonCascadable, d as PhotonCascadeConflict, e as buildActionPlan, f as comparePhotonCascadable, g as createSitePolicyOverride, h as dedupePhotonCascadeBy, i as dedupePoliciesById, j as detectPhotonCascadeConflicts, k as evaluateConditionExpression, l as extractPhotonSiteDataBindings, m as isSitePolicyOverride, n as localeSitePath, o as mapGuardsToActionPolicies, p as parsePhotonSiteDataBindingExpression, r as resolvePhotonSiteData, q as resolvePhotonSiteDataBinding, s as resolvePolicyCascade, t as sitePath, u as sitePolicyPath, v as sortPhotonCascade } from './site-data-gOU8unc8.js';
+export { f as collectPhotonAccountTabs, g as collectPhotonConditionDefinitions, h as collectPhotonConditionEvaluators, i as collectPhotonDocuments, j as collectPhotonFormSchemas, k as collectPhotonInteractionActions, l as collectPhotonInteractionGuardEvaluators, m as collectPhotonInteractionGuards, n as collectPhotonInteractionPolicies, o as collectPhotonInteractionSurfaces, p as collectPhotonRouteContextFields, q as collectPhotonSiteDataSchemas, r as collectPhotonSiteFrameExtensions, s as createPhotonBlock, c as createPhotonBlockLocalizationSchema, a as createPhotonKit, t as createPhotonLocalizationManifest, b as createPhotonLocalizedDefault, u as createPhotonRegistry, d as createPhotonRuntime, e as definePhotonBlockDefinition, v as getPhotonDefinitionKey, w as getPhotonDocumentFingerprint, x as isPhotonInstallableKit, y as movePhotonArrayItem, z as resolvePhotonModules } from './runtime-BCdcmpTw.js';
 export { d as decodePhotonHtmlEntities, g as getPhotonAnchorRel, n as normalizePhotonUrlForProtocolCheck, s as sanitizePhotonLinkHref } from './link-url-XwgBLvA0.js';
-export { D as DEFAULT_PHOTON_WORKSPACE_CAPABILITIES, a as DEFAULT_PHOTON_WORKSPACE_REF, I as PHOTON_EMPTY_TEXT, P as PHOTON_ROOT_LIST_ID, b as PHOTON_SITE_DESIGN_DEFAULTS, c as PHOTON_SITE_DESIGN_FALLBACK_DEFAULTS, d as applyPhotonSiteColorScheme, e as applyPhotonSiteDesignPreset, f as canEditPhotonWorkspace, g as canSavePhotonWorkspace, h as clonePhotonBlockTreeWithNewIds, i as clonePhotonValue, j as collectBlockIds, k as createPhotonAreaListId, l as createPhotonNodeId, m as createPhotonSiteDesignSettings, n as duplicatePhotonBlockInDocument, o as findPhotonBlock, p as getFirstPhotonBlockId, q as getPhotonWorkspaceIdentityKey, r as getPhotonWorkspaceKey, J as getValueAtPath, s as hasPhotonSiteDesignPresetCustomization, t as insertPhotonBlockInDocument, u as insertPhotonBlocksInDocument, v as isPhotonFramelessPreset, w as isPhotonFramelessSiteDesign, x as isPhotonSiteDesignPresetApplied, y as isPhotonWorkspaceReadonly, K as isRecord, z as movePhotonBlockInDocument, A as normalizePhotonWorkspaceCapabilities, B as normalizePhotonWorkspaceDescriptor, C as normalizePhotonWorkspaceRef, E as removePhotonBlockFromDocument, F as replacePhotonBlockWithBlocksInDocument, G as resolvePhotonSiteDesignSettings, L as setValueAtPath, H as updatePhotonBlockInDocument } from './workspace-CXPqFLaH.js';
-export { PHOTON_DEFAULT_SITE_DESIGN_PRESET_ID, PHOTON_PAGE_SURFACE_REGION_KEY, composePhotonSurfaceDocument, decomposePhotonSurfaceDocument, getFirstPhotonSurfaceEditableBlockId, getPhotonSiteColorScheme, getPhotonSiteDesignPreset, getPhotonSurfaceRegionBlocks, getPhotonSurfaceRegionListId, photonSiteColorSchemes, photonSiteDesignPresets, resolvePhotonSurfaceRegionDescriptors, resolvePhotonSurfaceRegionForBlockId, resolvePhotonSurfaceRegionForListId } from './server.js';
-export { c as collectPhotonFooterExtensionItems, a as collectPhotonHeaderExtensionItems, b as createPhotonAccountTabExtension, d as createPhotonSiteFrameExtension, r as resolvePhotonAccountTabs, e as resolvePhotonSiteFrameExtensions } from './site-frame-extensions-EvFuCLX5.js';
-export { g as getPhotonSurfaceModeStyle } from './surface-layout-C7tcEvSp.js';
+export { D as DEFAULT_PHOTON_WORKSPACE_CAPABILITIES, a as DEFAULT_PHOTON_WORKSPACE_REF, I as PHOTON_EMPTY_TEXT, P as PHOTON_ROOT_LIST_ID, b as PHOTON_SITE_DESIGN_DEFAULTS, c as PHOTON_SITE_DESIGN_FALLBACK_DEFAULTS, d as applyPhotonSiteColorScheme, e as applyPhotonSiteDesignPreset, f as canEditPhotonWorkspace, g as canSavePhotonWorkspace, h as clonePhotonBlockTreeWithNewIds, i as clonePhotonValue, j as collectBlockIds, k as createPhotonAreaListId, l as createPhotonNodeId, m as createPhotonSiteDesignSettings, n as duplicatePhotonBlockInDocument, o as findPhotonBlock, p as getFirstPhotonBlockId, q as getPhotonWorkspaceIdentityKey, r as getPhotonWorkspaceKey, J as getValueAtPath, s as hasPhotonSiteDesignPresetCustomization, t as insertPhotonBlockInDocument, u as insertPhotonBlocksInDocument, v as isPhotonFramelessPreset, w as isPhotonFramelessSiteDesign, x as isPhotonSiteDesignPresetApplied, y as isPhotonWorkspaceReadonly, K as isRecord, z as movePhotonBlockInDocument, A as normalizePhotonWorkspaceCapabilities, B as normalizePhotonWorkspaceDescriptor, C as normalizePhotonWorkspaceRef, E as removePhotonBlockFromDocument, F as replacePhotonBlockWithBlocksInDocument, G as resolvePhotonSiteDesignSettings, L as setValueAtPath, H as updatePhotonBlockInDocument } from './workspace-Bmivb4oA.js';
+import { PhotonTranslationCompletenessResult } from './server.js';
+export { ComputePhotonTranslationCompletenessFromRegistryInput, ComputePhotonTranslationCompletenessInput, CopyPhotonLocaleContentInput, FindPhotonFieldMissingLocalesInput, PHOTON_DEFAULT_SITE_DESIGN_PRESET_ID, PHOTON_PAGE_SURFACE_REGION_KEY, PhotonBlockSchemaMap, PhotonLocaleFallbackSettings, ResolvePhotonBlockFieldLocalizationInput, ResolvePhotonLocaleFallbackInput, ResolvePhotonLocalizedValueInput, buildPhotonBlockSchemaMapForBlocks, clearPhotonBlockFieldLocalization, composePhotonSurfaceDocument, computePhotonTranslationCompleteness, computePhotonTranslationCompletenessForLocales, computePhotonTranslationCompletenessFromRegistry, copyPhotonBlockLocaleContent, copyPhotonLocaleContent, decomposePhotonSurfaceDocument, findPhotonFieldMissingLocales, getFirstPhotonSurfaceEditableBlockId, getPhotonSiteColorScheme, getPhotonSiteDesignPreset, getPhotonSurfaceRegionBlocks, getPhotonSurfaceRegionListId, isPhotonBlockFieldLocalizationOverridden, photonSiteColorSchemes, photonSiteDesignPresets, readLocalizedFieldValue, resolveDefaultPhotonFieldLocalization, resolvePhotonBlockFieldLocalization, resolvePhotonFallbackLocaleCode, resolvePhotonLocalizedValue, resolvePhotonSurfaceRegionDescriptors, resolvePhotonSurfaceRegionForBlockId, resolvePhotonSurfaceRegionForListId, togglePhotonBlockFieldLocalization } from './server.js';
+export { c as collectPhotonFooterExtensionItems, a as collectPhotonHeaderExtensionItems, b as createPhotonAccountTabExtension, d as createPhotonSiteFrameExtension, r as resolvePhotonAccountTabs, e as resolvePhotonSiteFrameExtensions } from './site-frame-extensions-CeQZC1eT.js';
+export { g as getPhotonSurfaceModeStyle } from './surface-layout-Dv4KKqe3.js';
 export { PhotonAccessAuthStateLike, PhotonModeLike, PhotonWorkspaceSelectionLike, normalizePhotonSelectionForMode, resolvePhotonAccess, resolvePhotonMode, resolvePhotonRequestHeaders, resolvePhotonWorkspaceParams } from './sdk.js';
-export { I as InsertTarget, a as InspectorDefinitionMeta, b as InspectorGroups, c as PageSettingsPanelDefinition, d as PaletteDefinition, e as PaletteFamilyGroup, P as PhotonStudio, f as PhotonStudioProps, g as PhotonStudioSavePayload, h as PhotonStudioSaveReason, i as PhotonStudioSiteSettingChangeContext, S as SiteSettingsPanelDefinition, j as SiteSettingsSubtabDefinition } from './photon-studio-CFXoMCmR.js';
+export { I as InsertTarget, a as InspectorDefinitionMeta, b as InspectorGroups, c as PageSettingsPanelDefinition, d as PaletteDefinition, e as PaletteFamilyGroup, P as PhotonStudio, f as PhotonStudioProps, g as PhotonStudioSavePayload, h as PhotonStudioSaveReason, i as PhotonStudioSiteSettingChangeContext, S as SiteSettingsPanelDefinition, j as SiteSettingsSubtabDefinition } from './photon-studio-coPx_k_P.js';
 
 type PhotonEditableEditorLoaderKey = "gallery" | "image" | "richText" | "text" | "textarea";
 type PhotonEditableEditorLoaders = Partial<Record<PhotonEditableEditorLoaderKey, () => Promise<ComponentType<any>>>>;
@@ -188,6 +189,30 @@ type PhotonFieldEditorListProps = {
 };
 declare const PhotonFieldEditorList: ({ fields, subjectId, getValue, onChange, onFocus, }: PhotonFieldEditorListProps) => react_jsx_runtime.JSX.Element;
 
+type PhotonFieldLocalizationMarkerProps = {
+    block: Pick<PhotonBlock, "localization" | "props">;
+    schema?: PhotonBlockLocalizationSchema;
+    fieldPath: string;
+    fieldKind: PhotonFieldKind;
+    /**
+     * Locales currently missing this field's value. When non-empty, the
+     * marker switches to a warn variant and the tooltip lists them.
+     */
+    missingLocales?: readonly string[];
+    /**
+     * Resolve a display label for a locale code (so the tooltip can show
+     * "EN / RU / DE" instead of raw codes). Falls back to uppercase code.
+     */
+    getLocaleLabel?: (code: string) => string | undefined;
+};
+/**
+ * Subtle inline marker that indicates the field is treated as translatable.
+ * Renders nothing for "shared" fields. Highlighted slightly when the
+ * localization is an explicit instance-level override (i.e., differs from
+ * the schema/kind baseline).
+ */
+declare const PhotonFieldLocalizationMarker: ({ block, schema, fieldPath, fieldKind, missingLocales, getLocaleLabel, }: PhotonFieldLocalizationMarkerProps) => react_jsx_runtime.JSX.Element | null;
+
 type InsertBlockInput = {
     module: string;
     type: string;
@@ -306,6 +331,13 @@ type PhotonStoreState = {
      * directly so non-string fields can also reference shared data.
      */
     setFieldBinding: (blockId: string, path: string, binding: PhotonFieldBinding | null) => void;
+    /**
+     * Set or clear a per-field localization override on a block instance.
+     * `target = null` removes the override (revert to schema/kind default).
+     * Mirrors `setFieldBinding`. See
+     * `resolvePhotonBlockFieldLocalization` for resolution priority.
+     */
+    setBlockFieldLocalization: (blockId: string, path: string, target: "localized" | "shared" | null) => void;
     updatePageSettingValue: (path: string, value: unknown) => void;
     getPageSettingValue: (path: string) => unknown;
     updateSiteSettingValue: (path: string, value: unknown) => void;
@@ -464,6 +496,127 @@ declare const resolvePhotonMediaUrl: (value: unknown) => string;
 declare const resolvePhotonMediaPreviewUrl: (value: unknown) => string;
 declare const updatePhotonMediaUrl: (currentValue: unknown, url: string) => string | PhotonMediaValue;
 
+/**
+ * Provider-agnostic analytics emit for locale-related events.
+ *
+ * Photon never picks a vendor. The host app wires `setPhotonLocaleAnalyticsEmitter`
+ * once at boot to whatever it uses (Google Analytics gtag, PostHog,
+ * Plausible, Umami, an internal HTTP collector, etc.). Photon then calls
+ * `emitPhotonLocaleAnalyticsEvent(...)` whenever a locale-related thing
+ * happens. If no emitter is registered the calls are silent no-ops, so
+ * registration is opt-in per app.
+ */
+type PhotonLocaleAnalyticsEventName = "page_view" | "locale_switch" | "interface_locale_switch";
+interface PhotonLocaleAnalyticsEvent {
+    name: PhotonLocaleAnalyticsEventName;
+    /** The locale most relevant to the event. */
+    locale: string;
+    /** When the user just switched, this is the locale they came from. */
+    previousLocale?: string;
+    /** Free-form additional context — pathname, page key, etc. */
+    context?: Record<string, unknown>;
+}
+type PhotonLocaleAnalyticsEmitter = (event: PhotonLocaleAnalyticsEvent) => void;
+declare const setPhotonLocaleAnalyticsEmitter: (next: PhotonLocaleAnalyticsEmitter | null) => void;
+declare const getPhotonLocaleAnalyticsEmitter: () => PhotonLocaleAnalyticsEmitter | null;
+declare const emitPhotonLocaleAnalyticsEvent: (event: PhotonLocaleAnalyticsEvent) => void;
+
+interface PhotonLocaleSwitcherViewModelInput {
+    locales: readonly PhotonLocaleDescriptor[];
+    recentCodes?: readonly string[];
+    searchQuery?: string;
+    /**
+     * When the number of locales is at or above this threshold, the UI is
+     * expected to surface a search input. Default 8 (LOCALE_V1 §9.1).
+     */
+    searchThreshold?: number;
+    /**
+     * How many recent locales to surface at the top. Default 3 (§9.3).
+     */
+    maxRecents?: number;
+}
+interface PhotonLocaleSwitcherViewModel {
+    /**
+     * Whether the consumer should display a search input. True when there
+     * are enough locales to warrant filtering.
+     */
+    showSearch: boolean;
+    /**
+     * Recent locales (up to `maxRecents`), in usage order. Already filtered
+     * down to locales that still exist in the input list.
+     */
+    recents: PhotonLocaleDescriptor[];
+    /**
+     * The flattened, alphabetically sorted list, after applying the search
+     * query. No region grouping per §9.2.
+     */
+    results: PhotonLocaleDescriptor[];
+}
+declare const buildPhotonLocaleSwitcherViewModel: ({ locales, recentCodes, searchQuery, searchThreshold, maxRecents, }: PhotonLocaleSwitcherViewModelInput) => PhotonLocaleSwitcherViewModel;
+/**
+ * Read recent locale codes (most recent first) from localStorage. Safe on
+ * server: returns `[]` when localStorage is not available.
+ */
+declare const readPhotonRecentLocaleCodes: (maxRecents?: number) => string[];
+/**
+ * Record a locale as most-recently-used. Trims to `maxRecents` entries and
+ * preserves uniqueness. Safe on server (no-op).
+ */
+declare const recordPhotonRecentLocaleUsage: (code: string, maxRecents?: number) => string[];
+
+interface PhotonMobileLocaleSwitcherProps {
+    locales: readonly PhotonLocaleDescriptor[];
+    value: string;
+    onChange: (code: string) => void;
+    /** Search threshold (default 8 per §9.1). */
+    searchThreshold?: number;
+    /** Max recent codes (default 3 per §9.3). */
+    maxRecents?: number;
+    /** Optional translator for static labels. */
+    translate?: (key: string, fallback: string) => string;
+    /** Optional className passthrough for the root element. */
+    className?: string;
+}
+/**
+ * Mobile-friendly content-locale switcher built on top of
+ * `buildPhotonLocaleSwitcherViewModel`. Designed for vertical lists with
+ * touch targets, alphabetical ordering (no region grouping per §9.2), a
+ * search input that appears at `searchThreshold` (default 8), and a
+ * "Recently used" section sourced from localStorage via
+ * `readPhotonRecentLocaleCodes`.
+ *
+ * Selecting a locale invokes `onChange(code)` and records the choice via
+ * `recordPhotonRecentLocaleUsage`. Status pills (draft) appear inline.
+ */
+declare const PhotonMobileLocaleSwitcher: ({ locales, value, onChange, searchThreshold, maxRecents, translate, className, }: PhotonMobileLocaleSwitcherProps) => react_jsx_runtime.JSX.Element;
+
+interface UsePhotonTranslationCompletenessInput {
+    /** Editable locales to compute %; usually `editableLocales.map(l => l.code)`. */
+    locales: readonly string[];
+    /** Locale to compare against for "copied-untranslated" detection. */
+    referenceLocale?: string;
+    /** Defaults to true. */
+    treatCopiedAsMissing?: boolean;
+}
+interface UsePhotonTranslationCompletenessResult {
+    /** Per-locale completeness result. */
+    results: Record<string, PhotonTranslationCompletenessResult>;
+    /** Force a recomputation right now (admin-triggered). */
+    recompute: () => void;
+}
+/**
+ * Compute translation completeness for the current document, per locale.
+ *
+ * Memoized by:
+ *  - `contentRevision` — every edit invalidates (live updates)
+ *  - `locales` join, `referenceLocale`, `treatCopiedAsMissing`
+ *
+ * Plus an explicit `recomputeToken` that the consumer bumps via the
+ * returned `recompute` callback. This is admin-only — do NOT call this hook
+ * from the public bundle (the calculator walks the entire document).
+ */
+declare const usePhotonTranslationCompleteness: ({ locales, referenceLocale, treatCopiedAsMissing, }: UsePhotonTranslationCompletenessInput) => UsePhotonTranslationCompletenessResult;
+
 declare const photonSystemModule: PhotonModule;
 declare const photonSystemKit: PhotonInstallableKit;
 
@@ -495,4 +648,4 @@ type PhotonSearchHighlightEffectProps = {
 };
 declare const PhotonSearchHighlightEffect: ({ activeHighlight, }: PhotonSearchHighlightEffectProps) => null;
 
-export { EditableGallery, EditableImage, EditableRepeaterValue, EditableRichText, EditableText, EditableTextarea, type KeyboardMenuController, KeyboardMenuList, type KeyboardMenuSection, PhotonAccountTabExtension, PhotonActionPolicy, PhotonArea, PhotonBindingAdapter, PhotonBlock, PhotonBlockRenderer, PhotonComponentLibraryItem, PhotonComponentLibrarySourceSelection, PhotonConditionDefinition, PhotonConditionEvaluatorMap, PhotonDocument, PhotonField, PhotonFieldBinding, PhotonFieldEditorList, PhotonFormSchemaDescriptor, PhotonI18nValue, PhotonInstallableKit, PhotonInteractionActionDefinition, PhotonInteractionActionPresentation, PhotonInteractionExecutionResult, PhotonInteractionGuardDefinition, PhotonInteractionGuardEvaluatorMap, PhotonInteractionPreviewScenario, PhotonInteractionSurfaceDefinition, PhotonInteractionSurfaceOpenHandler, PhotonInteractionSurfaceRendererMap, PhotonInteractionToastHandler, PhotonInteractionToastTemplate, PhotonInteractionTriggerSlot, PhotonLink, PhotonLinkComponent, PhotonLinkComponentProps, PhotonLinkFactory, PhotonMediaUploadHandler, PhotonMediaValue, PhotonMode, PhotonModule, PhotonNavigateHandler, PhotonNavigationConfig, PhotonPageSettings, PhotonPrefetchHandler, PhotonProvider, PhotonRegistry, PhotonResolvedSiteData, PhotonResources, PhotonRichTextEditor, PhotonRouteContextField, PhotonSearchHandler, PhotonSearchHighlight, PhotonSearchHighlightEffect, PhotonSearchResult, PhotonSelectedField, PhotonSite, PhotonSiteDataSchema, PhotonSiteFrameExtension, PhotonSurfaceMode, PhotonSurfaceSection, PhotonWorkspaceCapabilities, PhotonWorkspaceDescriptor, buildPhotonSearchResultHref, buildPhotonSearchTargetId, createPhotonTiptapJsonBindingAdapter, isPhotonMediaValue, photonRichTextContentClassName, photonSystemKit, photonSystemModule, renderPhotonRichTextHtml, resolvePhotonInteractionSurfaceRequest, resolvePhotonMediaPreviewUrl, resolvePhotonMediaUrl, resolvePhotonNavigationConfig, updatePhotonMediaUrl, useKeyboardMenuController, usePhoton, usePhotonBlockActiveState, usePhotonCanEdit, usePhotonFieldValue, usePhotonPersistedState, usePhotonRouteContext, usePhotonSiteData, usePhotonStore, usePhotonStoreApi, usePhotonValueAtPath };
+export { EditableGallery, EditableImage, EditableRepeaterValue, EditableRichText, EditableText, EditableTextarea, type KeyboardMenuController, KeyboardMenuList, type KeyboardMenuSection, PhotonAccountTabExtension, PhotonActionPolicy, PhotonArea, PhotonBindingAdapter, PhotonBlock, PhotonBlockLocalizationSchema, PhotonBlockRenderer, PhotonComponentLibraryItem, PhotonComponentLibrarySourceSelection, PhotonConditionDefinition, PhotonConditionEvaluatorMap, PhotonDocument, PhotonField, PhotonFieldBinding, PhotonFieldEditorList, PhotonFieldKind, PhotonFieldLocalizationMarker, PhotonFormSchemaDescriptor, PhotonI18nValue, PhotonInstallableKit, PhotonInteractionActionDefinition, PhotonInteractionActionPresentation, PhotonInteractionExecutionResult, PhotonInteractionGuardDefinition, PhotonInteractionGuardEvaluatorMap, PhotonInteractionPreviewScenario, PhotonInteractionSurfaceDefinition, PhotonInteractionSurfaceOpenHandler, PhotonInteractionSurfaceRendererMap, PhotonInteractionToastHandler, PhotonInteractionToastTemplate, PhotonInteractionTriggerSlot, PhotonLink, PhotonLinkComponent, PhotonLinkComponentProps, PhotonLinkFactory, type PhotonLocaleAnalyticsEmitter, type PhotonLocaleAnalyticsEvent, type PhotonLocaleAnalyticsEventName, PhotonLocaleDescriptor, type PhotonLocaleSwitcherViewModel, type PhotonLocaleSwitcherViewModelInput, PhotonMediaUploadHandler, PhotonMediaValue, PhotonMobileLocaleSwitcher, type PhotonMobileLocaleSwitcherProps, PhotonMode, PhotonModule, PhotonNavigateHandler, PhotonNavigationConfig, PhotonPageSettings, PhotonPrefetchHandler, PhotonProvider, PhotonRegistry, PhotonResolvedSiteData, PhotonResources, PhotonRichTextEditor, PhotonRouteContextField, PhotonSearchHandler, PhotonSearchHighlight, PhotonSearchHighlightEffect, PhotonSearchResult, PhotonSelectedField, PhotonSite, PhotonSiteDataSchema, PhotonSiteFrameExtension, PhotonSurfaceMode, PhotonSurfaceSection, PhotonTranslationCompletenessResult, PhotonWorkspaceCapabilities, PhotonWorkspaceDescriptor, type UsePhotonTranslationCompletenessInput, type UsePhotonTranslationCompletenessResult, buildPhotonLocaleSwitcherViewModel, buildPhotonSearchResultHref, buildPhotonSearchTargetId, createPhotonTiptapJsonBindingAdapter, emitPhotonLocaleAnalyticsEvent, getPhotonLocaleAnalyticsEmitter, isPhotonMediaValue, photonRichTextContentClassName, photonSystemKit, photonSystemModule, readPhotonRecentLocaleCodes, recordPhotonRecentLocaleUsage, renderPhotonRichTextHtml, resolvePhotonInteractionSurfaceRequest, resolvePhotonMediaPreviewUrl, resolvePhotonMediaUrl, resolvePhotonNavigationConfig, setPhotonLocaleAnalyticsEmitter, updatePhotonMediaUrl, useKeyboardMenuController, usePhoton, usePhotonBlockActiveState, usePhotonCanEdit, usePhotonFieldValue, usePhotonPersistedState, usePhotonRouteContext, usePhotonSiteData, usePhotonStore, usePhotonStoreApi, usePhotonTranslationCompleteness, usePhotonValueAtPath };

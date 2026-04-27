@@ -1,20 +1,22 @@
 import {
   EditableImage
-} from "./chunk-7AWG3N73.js";
+} from "./chunk-ILRHBSZP.js";
 import {
   EditableRichText
-} from "./chunk-X4SJQMFS.js";
+} from "./chunk-SRAQB3DR.js";
 import {
   EditableText as EditableText2
-} from "./chunk-ZP7TWSF4.js";
+} from "./chunk-5SBME2MU.js";
 import {
   EditableTextarea
-} from "./chunk-DTLADGP3.js";
+} from "./chunk-LHG6KI2Y.js";
 import {
   PhotonBlockRenderer,
   PhotonFieldEditorList,
-  PhotonStudio
-} from "./chunk-TXPWOERA.js";
+  PhotonFieldLocalizationMarker,
+  PhotonStudio,
+  usePhotonTranslationCompleteness
+} from "./chunk-5WLYOXO2.js";
 import {
   PhotonRichTextEditor,
   photonRichTextContentClassName,
@@ -68,6 +70,25 @@ import {
   resolvePhotonWorkspaceParams
 } from "./chunk-LOTB3E2O.js";
 import {
+  copyPhotonBlockLocaleContent,
+  copyPhotonLocaleContent,
+  resolvePhotonFallbackLocaleCode,
+  resolvePhotonLocalizedValue
+} from "./chunk-JUC3ASUY.js";
+import {
+  buildPhotonBlockSchemaMapForBlocks,
+  clearPhotonBlockFieldLocalization,
+  computePhotonTranslationCompleteness,
+  computePhotonTranslationCompletenessForLocales,
+  computePhotonTranslationCompletenessFromRegistry,
+  findPhotonFieldMissingLocales,
+  isPhotonBlockFieldLocalizationOverridden,
+  readLocalizedFieldValue,
+  resolveDefaultPhotonFieldLocalization,
+  resolvePhotonBlockFieldLocalization,
+  togglePhotonBlockFieldLocalization
+} from "./chunk-MLBMYMZ5.js";
+import {
   createPhotonRuntime
 } from "./chunk-2E3YDDEL.js";
 import {
@@ -116,9 +137,9 @@ import {
 } from "./chunk-CZ47CC3D.js";
 import {
   EditableGallery
-} from "./chunk-MZS2O4LG.js";
+} from "./chunk-ITKT2LJE.js";
 import "./chunk-RLJXTXGN.js";
-import "./chunk-PS3NOI6Q.js";
+import "./chunk-H2EDHN4T.js";
 import {
   PhotonLink,
   PhotonProvider,
@@ -131,7 +152,7 @@ import {
   usePhotonSiteData,
   usePhotonStore,
   usePhotonStoreApi
-} from "./chunk-YD42FZ4X.js";
+} from "./chunk-2C3AD7D4.js";
 import {
   isPhotonMediaValue,
   resolvePhotonMediaPreviewUrl,
@@ -294,31 +315,31 @@ var registerLoader = (key, loader) => {
 };
 registerLoader(
   "gallery",
-  () => import("./editable-gallery-NUVMGSCR.js").then(
+  () => import("./editable-gallery-VAPIPY2F.js").then(
     (module) => module.EditableGallery
   )
 );
 registerLoader(
   "image",
-  () => import("./editable-image-6S4V2E3R.js").then(
+  () => import("./editable-image-YDNFOCN3.js").then(
     (module) => module.EditableImage
   )
 );
 registerLoader(
   "richText",
-  () => import("./editable-rich-text-BK6YGLZO.js").then(
+  () => import("./editable-rich-text-M7DNB4Y2.js").then(
     (module) => module.EditableRichText
   )
 );
 registerLoader(
   "text",
-  () => import("./editable-text-6UDZVDEC.js").then(
+  () => import("./editable-text-E5VC5VK6.js").then(
     (module) => module.EditableText
   )
 );
 registerLoader(
   "textarea",
-  () => import("./editable-textarea-IUJ4GBEJ.js").then(
+  () => import("./editable-textarea-7ONG3DWJ.js").then(
     (module) => module.EditableTextarea
   )
 );
@@ -416,11 +437,252 @@ var createPhotonTiptapJsonBindingAdapter = (key) => ({
   }
 });
 
+// src/i18n/analytics.ts
+var emitter = null;
+var setPhotonLocaleAnalyticsEmitter = (next) => {
+  emitter = next;
+};
+var getPhotonLocaleAnalyticsEmitter = () => emitter;
+var emitPhotonLocaleAnalyticsEvent = (event) => {
+  if (!emitter) return;
+  try {
+    emitter(event);
+  } catch {
+  }
+};
+
+// src/i18n/locale-switcher-view-model.ts
+var matchesQuery = (locale, query) => {
+  if (!query) return true;
+  const q = query.trim().toLowerCase();
+  return locale.code.toLowerCase().includes(q) || locale.label.toLowerCase().includes(q);
+};
+var sortAlphabetically = (list) => list.slice().sort((left, right) => left.label.localeCompare(right.label));
+var buildPhotonLocaleSwitcherViewModel = ({
+  locales,
+  recentCodes = [],
+  searchQuery = "",
+  searchThreshold = 8,
+  maxRecents = 3
+}) => {
+  const trimmedQuery = searchQuery.trim();
+  const showSearch = locales.length >= searchThreshold;
+  const localesByCode = new Map(locales.map((l) => [l.code, l]));
+  const recents = [];
+  const seenRecentCodes = /* @__PURE__ */ new Set();
+  for (const code of recentCodes) {
+    if (recents.length >= maxRecents) break;
+    const locale = localesByCode.get(code);
+    if (locale && !seenRecentCodes.has(code) && matchesQuery(locale, trimmedQuery)) {
+      recents.push(locale);
+      seenRecentCodes.add(code);
+    }
+  }
+  const filteredAll = locales.filter(
+    (locale) => matchesQuery(locale, trimmedQuery)
+  );
+  const results = sortAlphabetically(filteredAll);
+  return {
+    showSearch,
+    recents,
+    results
+  };
+};
+var STORAGE_KEY = "photon:i18n:recent-locales";
+var isBrowser = () => typeof globalThis !== "undefined" && typeof globalThis.localStorage !== "undefined";
+var readPhotonRecentLocaleCodes = (maxRecents = 3) => {
+  if (!isBrowser()) return [];
+  try {
+    const raw = globalThis.localStorage.getItem(
+      STORAGE_KEY
+    );
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((value) => typeof value === "string").slice(0, maxRecents);
+  } catch {
+    return [];
+  }
+};
+var recordPhotonRecentLocaleUsage = (code, maxRecents = 3) => {
+  if (!isBrowser()) return [];
+  try {
+    const current = readPhotonRecentLocaleCodes(maxRecents * 2);
+    const next = [code, ...current.filter((entry) => entry !== code)].slice(
+      0,
+      maxRecents
+    );
+    globalThis.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(next)
+    );
+    return next;
+  } catch {
+    return [];
+  }
+};
+
+// src/i18n/photon-mobile-locale-switcher.tsx
+import { ChevronRight, Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { jsx as jsx2, jsxs } from "react/jsx-runtime";
+var headerLabelStyle = {
+  color: "var(--photon-builder-text-soft)"
+};
+var itemRowStyle = {
+  borderColor: "var(--photon-builder-border)",
+  background: "var(--photon-builder-panel-muted)",
+  color: "var(--photon-builder-text)"
+};
+var activeRowStyle = {
+  borderColor: "var(--photon-builder-border-strong)",
+  background: "var(--photon-builder-accent-soft)",
+  color: "var(--photon-builder-accent-text)"
+};
+var inputStyle = {
+  borderColor: "var(--photon-builder-border)",
+  background: "var(--photon-builder-field)",
+  color: "var(--photon-builder-text)"
+};
+var PhotonMobileLocaleSwitcher = ({
+  locales,
+  value,
+  onChange,
+  searchThreshold = 8,
+  maxRecents = 3,
+  translate,
+  className
+}) => {
+  const [query, setQuery] = useState("");
+  const [recentCodes, setRecentCodes] = useState([]);
+  useEffect(() => {
+    setRecentCodes(readPhotonRecentLocaleCodes(maxRecents));
+  }, [maxRecents]);
+  const viewModel = useMemo(
+    () => buildPhotonLocaleSwitcherViewModel({
+      locales,
+      recentCodes,
+      searchQuery: query,
+      searchThreshold,
+      maxRecents
+    }),
+    [locales, recentCodes, query, searchThreshold, maxRecents]
+  );
+  const handleSelect = (code) => {
+    onChange(code);
+    const next = recordPhotonRecentLocaleUsage(code, maxRecents);
+    setRecentCodes(next);
+  };
+  const t = (key, fallback) => translate ? translate(key, fallback) : fallback;
+  const renderItem = (locale) => {
+    const isActive = locale.code === value;
+    return /* @__PURE__ */ jsxs(
+      "button",
+      {
+        type: "button",
+        onClick: () => handleSelect(locale.code),
+        "aria-current": isActive ? "true" : void 0,
+        className: "flex w-full items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-medium transition",
+        style: isActive ? activeRowStyle : itemRowStyle,
+        children: [
+          /* @__PURE__ */ jsxs("span", { className: "flex min-w-0 items-center gap-2.5", children: [
+            /* @__PURE__ */ jsx2("span", { className: "truncate", children: locale.label }),
+            /* @__PURE__ */ jsx2(
+              "span",
+              {
+                className: "text-[10px] uppercase tracking-[0.22em]",
+                style: { color: "var(--photon-builder-text-ghost)" },
+                children: locale.code
+              }
+            ),
+            locale.status === "draft" ? /* @__PURE__ */ jsx2(
+              "span",
+              {
+                className: "rounded-full border px-1.5 py-px text-[9px] font-semibold uppercase tracking-[0.2em]",
+                style: {
+                  borderColor: "var(--photon-builder-border)",
+                  color: "var(--photon-builder-text-ghost)"
+                },
+                children: t("photon.locale.draft.badge", "draft")
+              }
+            ) : null
+          ] }),
+          /* @__PURE__ */ jsx2(
+            ChevronRight,
+            {
+              className: "h-4 w-4 shrink-0",
+              style: { color: "var(--photon-builder-text-ghost)" }
+            }
+          )
+        ]
+      },
+      locale.code
+    );
+  };
+  return /* @__PURE__ */ jsxs("div", { className: className ?? "flex flex-col gap-3", children: [
+    viewModel.showSearch ? /* @__PURE__ */ jsxs("label", { className: "relative flex items-center", children: [
+      /* @__PURE__ */ jsx2(
+        Search,
+        {
+          className: "pointer-events-none absolute left-3 h-4 w-4",
+          style: { color: "var(--photon-builder-text-ghost)" }
+        }
+      ),
+      /* @__PURE__ */ jsx2(
+        "input",
+        {
+          type: "search",
+          value: query,
+          onChange: (event) => setQuery(event.currentTarget.value),
+          placeholder: t(
+            "photon.locale.search.placeholder",
+            "Search locales"
+          ),
+          className: "w-full rounded-2xl border py-3 pl-9 pr-3 text-sm outline-none",
+          style: inputStyle
+        }
+      )
+    ] }) : null,
+    viewModel.recents.length > 0 && !query ? /* @__PURE__ */ jsxs("section", { className: "flex flex-col gap-2", children: [
+      /* @__PURE__ */ jsx2(
+        "div",
+        {
+          className: "px-1 text-[10px] uppercase tracking-[0.22em]",
+          style: headerLabelStyle,
+          children: t("photon.locale.recents.label", "Recently used")
+        }
+      ),
+      viewModel.recents.map((locale) => renderItem(locale))
+    ] }) : null,
+    /* @__PURE__ */ jsxs("section", { className: "flex flex-col gap-2", children: [
+      /* @__PURE__ */ jsx2(
+        "div",
+        {
+          className: "px-1 text-[10px] uppercase tracking-[0.22em]",
+          style: headerLabelStyle,
+          children: viewModel.recents.length > 0 && !query ? t("photon.locale.all.label", "All locales") : t("photon.locale.list.label", "Locales")
+        }
+      ),
+      viewModel.results.length === 0 ? /* @__PURE__ */ jsx2(
+        "div",
+        {
+          className: "rounded-2xl border px-4 py-3 text-sm",
+          style: itemRowStyle,
+          children: t(
+            "photon.locale.search.empty",
+            "No locales match your search."
+          )
+        }
+      ) : viewModel.results.map((locale) => renderItem(locale))
+    ] })
+  ] });
+};
+
 // src/modules/system.tsx
 import clsx3 from "clsx";
 
 // src/modules/system/site/site-design-settings-panel.tsx
-import { jsx as jsx2, jsxs } from "react/jsx-runtime";
+import { jsx as jsx3, jsxs as jsxs2 } from "react/jsx-runtime";
 var designFields = [
   {
     path: "bodyFontFamily",
@@ -556,7 +818,7 @@ var tokenPreviewItems = [
     label: "Border"
   }
 ];
-var DetailBadge = ({ label }) => /* @__PURE__ */ jsx2(
+var DetailBadge = ({ label }) => /* @__PURE__ */ jsx3(
   "span",
   {
     className: "inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em]",
@@ -581,9 +843,9 @@ var SiteDesignSettingsPanelBody = ({
     (candidate) => candidate.id === resolvedSettings.colorSchemeId
   ) ?? null : null;
   if (isAdvancedView) {
-    return /* @__PURE__ */ jsxs("section", { className: "space-y-4", "data-testid": "photon-design-manual-tokens", children: [
-      /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
-        /* @__PURE__ */ jsx2(
+    return /* @__PURE__ */ jsxs2("section", { className: "space-y-4", "data-testid": "photon-design-manual-tokens", children: [
+      /* @__PURE__ */ jsxs2("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsx3(
           "div",
           {
             className: "text-sm font-semibold",
@@ -594,7 +856,7 @@ var SiteDesignSettingsPanelBody = ({
             )
           }
         ),
-        /* @__PURE__ */ jsx2(
+        /* @__PURE__ */ jsx3(
           "div",
           {
             className: "text-sm leading-6",
@@ -606,7 +868,7 @@ var SiteDesignSettingsPanelBody = ({
           }
         )
       ] }),
-      /* @__PURE__ */ jsx2(
+      /* @__PURE__ */ jsx3(
         PhotonFieldEditorList,
         {
           fields: designFields,
@@ -618,15 +880,15 @@ var SiteDesignSettingsPanelBody = ({
       )
     ] });
   }
-  return /* @__PURE__ */ jsxs("div", { className: "space-y-6", "data-testid": "photon-design-profile-source-summary", children: [
-    /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxs2("div", { className: "space-y-6", "data-testid": "photon-design-profile-source-summary", children: [
+    /* @__PURE__ */ jsxs2(
       "section",
       {
         className: "rounded-[24px] border p-4 sm:p-5",
         style: highlightCardStyle,
         children: [
-          /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsx2(
+          /* @__PURE__ */ jsxs2("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsx3(
               "div",
               {
                 className: "text-sm font-semibold",
@@ -637,7 +899,7 @@ var SiteDesignSettingsPanelBody = ({
                 )
               }
             ),
-            /* @__PURE__ */ jsx2(
+            /* @__PURE__ */ jsx3(
               "div",
               {
                 className: "text-sm leading-6",
@@ -649,15 +911,15 @@ var SiteDesignSettingsPanelBody = ({
               }
             )
           ] }),
-          /* @__PURE__ */ jsxs("div", { className: "mt-4 grid gap-3 lg:grid-cols-2", children: [
-            /* @__PURE__ */ jsxs(
+          /* @__PURE__ */ jsxs2("div", { className: "mt-4 grid gap-3 lg:grid-cols-2", children: [
+            /* @__PURE__ */ jsxs2(
               "div",
               {
                 className: "rounded-[22px] border p-4",
                 style: summaryCardStyle,
                 "data-testid": "photon-design-source-preset",
                 children: [
-                  /* @__PURE__ */ jsx2(
+                  /* @__PURE__ */ jsx3(
                     "div",
                     {
                       className: "text-[11px] uppercase tracking-[0.28em]",
@@ -668,7 +930,7 @@ var SiteDesignSettingsPanelBody = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx2(
+                  /* @__PURE__ */ jsx3(
                     "div",
                     {
                       className: "mt-3 text-lg font-semibold",
@@ -679,7 +941,7 @@ var SiteDesignSettingsPanelBody = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx2(
+                  /* @__PURE__ */ jsx3(
                     "div",
                     {
                       className: "mt-2 text-sm leading-6",
@@ -690,8 +952,8 @@ var SiteDesignSettingsPanelBody = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsxs("div", { className: "mt-3 flex flex-wrap gap-2", children: [
-                    /* @__PURE__ */ jsx2(
+                  /* @__PURE__ */ jsxs2("div", { className: "mt-3 flex flex-wrap gap-2", children: [
+                    /* @__PURE__ */ jsx3(
                       DetailBadge,
                       {
                         label: activePreset?.appearance === "dark" ? translate(
@@ -706,20 +968,20 @@ var SiteDesignSettingsPanelBody = ({
                         )
                       }
                     ),
-                    /* @__PURE__ */ jsx2(DetailBadge, { label: resolvedSettings.siteMaxWidth }),
-                    /* @__PURE__ */ jsx2(DetailBadge, { label: resolvedSettings.sectionGap })
+                    /* @__PURE__ */ jsx3(DetailBadge, { label: resolvedSettings.siteMaxWidth }),
+                    /* @__PURE__ */ jsx3(DetailBadge, { label: resolvedSettings.sectionGap })
                   ] })
                 ]
               }
             ),
-            /* @__PURE__ */ jsxs(
+            /* @__PURE__ */ jsxs2(
               "div",
               {
                 className: "rounded-[22px] border p-4",
                 style: summaryCardStyle,
                 "data-testid": "photon-design-source-color-scheme",
                 children: [
-                  /* @__PURE__ */ jsx2(
+                  /* @__PURE__ */ jsx3(
                     "div",
                     {
                       className: "text-[11px] uppercase tracking-[0.28em]",
@@ -730,7 +992,7 @@ var SiteDesignSettingsPanelBody = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx2(
+                  /* @__PURE__ */ jsx3(
                     "div",
                     {
                       className: "mt-3 text-lg font-semibold",
@@ -741,7 +1003,7 @@ var SiteDesignSettingsPanelBody = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx2(
+                  /* @__PURE__ */ jsx3(
                     "div",
                     {
                       className: "mt-2 text-sm leading-6",
@@ -752,18 +1014,18 @@ var SiteDesignSettingsPanelBody = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx2(
+                  /* @__PURE__ */ jsx3(
                     "div",
                     {
                       className: "mt-4 flex flex-wrap gap-2",
                       "data-testid": "photon-design-runtime-palette",
-                      children: tokenPreviewItems.map(({ key, label }) => /* @__PURE__ */ jsxs(
+                      children: tokenPreviewItems.map(({ key, label }) => /* @__PURE__ */ jsxs2(
                         "span",
                         {
                           className: "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs",
                           style: badgeStyle,
                           children: [
-                            /* @__PURE__ */ jsx2(
+                            /* @__PURE__ */ jsx3(
                               "span",
                               {
                                 className: "h-3 w-3 rounded-full border",
@@ -787,14 +1049,14 @@ var SiteDesignSettingsPanelBody = ({
         ]
       }
     ),
-    /* @__PURE__ */ jsxs(
+    /* @__PURE__ */ jsxs2(
       "section",
       {
         className: "rounded-[24px] border p-4 sm:p-5",
         style: summaryCardStyle,
         "data-testid": "photon-design-workspace-guidance",
         children: [
-          /* @__PURE__ */ jsx2(
+          /* @__PURE__ */ jsx3(
             "div",
             {
               className: "text-sm font-semibold",
@@ -805,7 +1067,7 @@ var SiteDesignSettingsPanelBody = ({
               )
             }
           ),
-          /* @__PURE__ */ jsx2(
+          /* @__PURE__ */ jsx3(
             "div",
             {
               className: "mt-2 text-sm leading-6",
@@ -828,13 +1090,13 @@ var siteDesignSettingsPanel = {
   description: "Profile source metadata and stored runtime design tokens for the current branch.",
   descriptionKey: "photon.system.design.panel.description",
   order: 10,
-  component: (props) => /* @__PURE__ */ jsx2(SiteDesignSettingsPanelBody, { ...props })
+  component: (props) => /* @__PURE__ */ jsx3(SiteDesignSettingsPanelBody, { ...props })
 };
 
 // src/modules/system/site/site-footer-shell-definition.tsx
 import clsx from "clsx";
 import { ArrowRight, Send } from "lucide-react";
-import { jsx as jsx3, jsxs as jsxs2 } from "react/jsx-runtime";
+import { jsx as jsx4, jsxs as jsxs3 } from "react/jsx-runtime";
 var siteFooterFields = [
   {
     path: "variant",
@@ -1048,24 +1310,24 @@ var SiteFooterShell = ({
     footerExtensionItems.slots.legal.links
   );
   const contactItems = normalizePhotonSiteStringItems(block.props.contactItems);
-  return /* @__PURE__ */ jsx3(
+  return /* @__PURE__ */ jsx4(
     "footer",
     {
       className: clsx(
         "w-full transition-colors duration-300",
         (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).shell
       ),
-      children: /* @__PURE__ */ jsxs2("div", { className: "mx-auto flex w-full max-w-[var(--photon-site-max-width,1280px)] flex-col gap-5 px-[var(--photon-site-gutter,24px)] py-8 pb-12 sm:py-10 sm:pb-14", children: [
-        /* @__PURE__ */ jsxs2("div", { className: "grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]", children: [
-          /* @__PURE__ */ jsx3(
+      children: /* @__PURE__ */ jsxs3("div", { className: "mx-auto flex w-full max-w-[var(--photon-site-max-width,1280px)] flex-col gap-5 px-[var(--photon-site-gutter,24px)] py-8 pb-12 sm:py-10 sm:pb-14", children: [
+        /* @__PURE__ */ jsxs3("div", { className: "grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]", children: [
+          /* @__PURE__ */ jsx4(
             "div",
             {
               className: clsx(
                 footerVariant === "minimal-air" ? "rounded-none border-0 border-b border-[var(--photon-site-border)] px-0 pb-6 pt-0 sm:px-0" : "rounded-[calc(var(--photon-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
                 (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).card
               ),
-              children: /* @__PURE__ */ jsxs2("div", { className: "grid gap-5 lg:grid-cols-[auto_minmax(0,1fr)]", children: [
-                /* @__PURE__ */ jsx3("div", { className: "relative h-24 w-24 overflow-hidden rounded-[28px] border border-[var(--photon-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.16),rgba(15,118,110,0.04))]", children: block.props.logoImage ? /* @__PURE__ */ jsx3(
+              children: /* @__PURE__ */ jsxs3("div", { className: "grid gap-5 lg:grid-cols-[auto_minmax(0,1fr)]", children: [
+                /* @__PURE__ */ jsx4("div", { className: "relative h-24 w-24 overflow-hidden rounded-[28px] border border-[var(--photon-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.16),rgba(15,118,110,0.04))]", children: block.props.logoImage ? /* @__PURE__ */ jsx4(
                   EditableImage2,
                   {
                     blockId: block.id,
@@ -1074,7 +1336,7 @@ var SiteFooterShell = ({
                     imageClassName: "h-full w-full object-contain p-3",
                     fallbackAlt: block.props.brandTitle
                   }
-                ) : /* @__PURE__ */ jsx3("div", { className: "flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--photon-site-accent)]", children: /* @__PURE__ */ jsx3(
+                ) : /* @__PURE__ */ jsx4("div", { className: "flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--photon-site-accent)]", children: /* @__PURE__ */ jsx4(
                   EditableText,
                   {
                     blockId: block.id,
@@ -1082,8 +1344,8 @@ var SiteFooterShell = ({
                     className: "text-[var(--photon-site-accent)]"
                   }
                 ) }) }),
-                /* @__PURE__ */ jsxs2("div", { className: "min-w-0", children: [
-                  /* @__PURE__ */ jsx3(
+                /* @__PURE__ */ jsxs3("div", { className: "min-w-0", children: [
+                  /* @__PURE__ */ jsx4(
                     EditableText,
                     {
                       blockId: block.id,
@@ -1095,7 +1357,7 @@ var SiteFooterShell = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsx3(
+                  /* @__PURE__ */ jsx4(
                     EditableTextarea2,
                     {
                       blockId: block.id,
@@ -1107,7 +1369,7 @@ var SiteFooterShell = ({
               ] })
             }
           ),
-          /* @__PURE__ */ jsxs2(
+          /* @__PURE__ */ jsxs3(
             "div",
             {
               className: clsx(
@@ -1115,8 +1377,8 @@ var SiteFooterShell = ({
                 block.props.variant === "soft-cards" && !framelessSite ? "border-transparent bg-[linear-gradient(135deg,var(--photon-site-accent),color-mix(in srgb,var(--photon-site-accent) 72%, white))] text-white shadow-[0_28px_60px_rgba(15,118,110,0.24)]" : (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).card
               ),
               children: [
-                /* @__PURE__ */ jsxs2("div", { className: "max-w-xl", children: [
-                  /* @__PURE__ */ jsx3(
+                /* @__PURE__ */ jsxs3("div", { className: "max-w-xl", children: [
+                  /* @__PURE__ */ jsx4(
                     EditableText,
                     {
                       blockId: block.id,
@@ -1125,7 +1387,7 @@ var SiteFooterShell = ({
                       className: "[font-family:var(--photon-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
                     }
                   ),
-                  /* @__PURE__ */ jsx3(
+                  /* @__PURE__ */ jsx4(
                     EditableTextarea2,
                     {
                       blockId: block.id,
@@ -1137,15 +1399,15 @@ var SiteFooterShell = ({
                     }
                   )
                 ] }),
-                /* @__PURE__ */ jsxs2("div", { className: "mt-5 flex flex-col gap-3 sm:flex-row", children: [
-                  /* @__PURE__ */ jsx3(
+                /* @__PURE__ */ jsxs3("div", { className: "mt-5 flex flex-col gap-3 sm:flex-row", children: [
+                  /* @__PURE__ */ jsx4(
                     "div",
                     {
                       className: clsx(
                         "flex min-h-14 flex-1 items-center px-4",
                         footerVariant === "minimal-air" ? "rounded-full border border-[var(--photon-site-border)] bg-white/72" : "rounded-full border border-white/20 bg-white/10 backdrop-blur-sm"
                       ),
-                      children: /* @__PURE__ */ jsx3(
+                      children: /* @__PURE__ */ jsx4(
                         EditableText,
                         {
                           blockId: block.id,
@@ -1158,7 +1420,7 @@ var SiteFooterShell = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsxs2(
+                  /* @__PURE__ */ jsxs3(
                     "button",
                     {
                       type: "button",
@@ -1167,8 +1429,8 @@ var SiteFooterShell = ({
                         isSoftCardsVariant ? "bg-white text-[var(--photon-site-accent)]" : "bg-[var(--photon-site-accent)] text-white"
                       ),
                       children: [
-                        /* @__PURE__ */ jsx3(Send, { className: "h-4 w-4" }),
-                        /* @__PURE__ */ jsx3(
+                        /* @__PURE__ */ jsx4(Send, { className: "h-4 w-4" }),
+                        /* @__PURE__ */ jsx4(
                           EditableText,
                           {
                             blockId: block.id,
@@ -1186,17 +1448,17 @@ var SiteFooterShell = ({
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs2("div", { className: "grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]", children: [
-          /* @__PURE__ */ jsx3(
+        /* @__PURE__ */ jsxs3("div", { className: "grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]", children: [
+          /* @__PURE__ */ jsx4(
             "div",
             {
               className: clsx(
                 footerVariant === "minimal-air" ? "rounded-none border-0 border-b border-[var(--photon-site-border)] px-0 pb-6 pt-0 sm:px-0" : "rounded-[calc(var(--photon-site-radius,24px)-4px)] border px-5 py-5 sm:px-6",
                 (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).card
               ),
-              children: /* @__PURE__ */ jsx3("div", { className: "grid gap-6 md:grid-cols-2", children: navigationColumns.map((column) => /* @__PURE__ */ jsxs2("div", { className: "space-y-3", children: [
-                /* @__PURE__ */ jsx3("div", { className: clsx("text-sm font-semibold", variant.text), children: column.title }),
-                /* @__PURE__ */ jsx3("div", { className: "space-y-2", children: column.links.map((link) => /* @__PURE__ */ jsx3(
+              children: /* @__PURE__ */ jsx4("div", { className: "grid gap-6 md:grid-cols-2", children: navigationColumns.map((column) => /* @__PURE__ */ jsxs3("div", { className: "space-y-3", children: [
+                /* @__PURE__ */ jsx4("div", { className: clsx("text-sm font-semibold", variant.text), children: column.title }),
+                /* @__PURE__ */ jsx4("div", { className: "space-y-2", children: column.links.map((link) => /* @__PURE__ */ jsx4(
                   PhotonLink,
                   {
                     href: link.href,
@@ -1211,7 +1473,7 @@ var SiteFooterShell = ({
               ] }, column.title)) })
             }
           ),
-          /* @__PURE__ */ jsxs2(
+          /* @__PURE__ */ jsxs3(
             "div",
             {
               className: clsx(
@@ -1219,8 +1481,8 @@ var SiteFooterShell = ({
                 (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).card
               ),
               children: [
-                /* @__PURE__ */ jsx3("div", { className: clsx("text-sm font-semibold", variant.text), children: "Contacts" }),
-                /* @__PURE__ */ jsx3("div", { className: "mt-4 space-y-3", children: contactItems.map((item) => /* @__PURE__ */ jsx3(
+                /* @__PURE__ */ jsx4("div", { className: clsx("text-sm font-semibold", variant.text), children: "Contacts" }),
+                /* @__PURE__ */ jsx4("div", { className: "mt-4 space-y-3", children: contactItems.map((item) => /* @__PURE__ */ jsx4(
                   "div",
                   {
                     className: clsx("text-sm leading-7", variant.muted),
@@ -1232,7 +1494,7 @@ var SiteFooterShell = ({
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs2(
+        /* @__PURE__ */ jsxs3(
           "div",
           {
             className: clsx(
@@ -1240,7 +1502,7 @@ var SiteFooterShell = ({
               footerVariant === "classic-dark" ? "border-white/10" : "border-[var(--photon-site-border)]"
             ),
             children: [
-              /* @__PURE__ */ jsx3(
+              /* @__PURE__ */ jsx4(
                 EditableText,
                 {
                   blockId: block.id,
@@ -1248,8 +1510,8 @@ var SiteFooterShell = ({
                   className: (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).muted
                 }
               ),
-              /* @__PURE__ */ jsxs2("div", { className: "flex flex-wrap items-center gap-4", children: [
-                /* @__PURE__ */ jsxs2(
+              /* @__PURE__ */ jsxs3("div", { className: "flex flex-wrap items-center gap-4", children: [
+                /* @__PURE__ */ jsxs3(
                   PhotonLink,
                   {
                     href: block.props.legalHref,
@@ -1258,12 +1520,12 @@ var SiteFooterShell = ({
                       (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).muted
                     ),
                     children: [
-                      /* @__PURE__ */ jsx3(EditableText, { blockId: block.id, path: "legalLabel" }),
-                      /* @__PURE__ */ jsx3(ArrowRight, { className: "h-4 w-4" })
+                      /* @__PURE__ */ jsx4(EditableText, { blockId: block.id, path: "legalLabel" }),
+                      /* @__PURE__ */ jsx4(ArrowRight, { className: "h-4 w-4" })
                     ]
                   }
                 ),
-                legalLinks.map((link) => /* @__PURE__ */ jsxs2(
+                legalLinks.map((link) => /* @__PURE__ */ jsxs3(
                   PhotonLink,
                   {
                     href: link.href,
@@ -1275,12 +1537,12 @@ var SiteFooterShell = ({
                     ),
                     children: [
                       link.label,
-                      /* @__PURE__ */ jsx3(ArrowRight, { className: "h-4 w-4" })
+                      /* @__PURE__ */ jsx4(ArrowRight, { className: "h-4 w-4" })
                     ]
                   },
                   `${link.label}:${link.href}`
                 )),
-                /* @__PURE__ */ jsx3(
+                /* @__PURE__ */ jsx4(
                   PhotonLink,
                   {
                     href: block.props.developerHref,
@@ -1288,7 +1550,7 @@ var SiteFooterShell = ({
                       "font-semibold transition hover:text-[var(--photon-site-accent)]",
                       (footerVariantStyles[footerVariant] ?? footerVariantStyles["classic-dark"]).text
                     ),
-                    children: /* @__PURE__ */ jsx3(EditableText, { blockId: block.id, path: "developerLabel" })
+                    children: /* @__PURE__ */ jsx4(EditableText, { blockId: block.id, path: "developerLabel" })
                   }
                 )
               ] })
@@ -1408,8 +1670,8 @@ var siteFooterShellDefinition = definePhotonBlockDefinition({
 // src/modules/system/site/site-header-shell-definition.tsx
 import clsx2 from "clsx";
 import { ArrowRight as ArrowRight2, Menu, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { jsx as jsx4, jsxs as jsxs3 } from "react/jsx-runtime";
+import { useEffect as useEffect2, useRef, useState as useState2 } from "react";
+import { jsx as jsx5, jsxs as jsxs4 } from "react/jsx-runtime";
 var resolveSiteHeaderInteractionSlots = ({
   block,
   document,
@@ -1740,8 +2002,8 @@ var SiteHeaderShell = ({
     (state) => state.siteFrameExtensions
   );
   const { locale, publicLocales, translate } = usePhotonI18n();
-  const [isCompact, setIsCompact] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isCompact, setIsCompact] = useState2(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState2(false);
   const headerRef = useRef(null);
   const disabledExtensionIds = normalizePhotonSiteStringItems(
     block.props.disabledExtensionIds
@@ -1819,7 +2081,7 @@ var SiteHeaderShell = ({
     /* @__PURE__ */ new Set([...prominentLinkKeys, ...categoryLinkKeys])
   );
   const renderSmartLink = (link, className, key, onClick) => {
-    return /* @__PURE__ */ jsx4(
+    return /* @__PURE__ */ jsx5(
       PhotonLink,
       {
         href: link.href,
@@ -1848,7 +2110,7 @@ var SiteHeaderShell = ({
           action: action.triggerSlot.action ?? action.action
         }
       } : action;
-      return /* @__PURE__ */ jsx4(
+      return /* @__PURE__ */ jsx5(
         ActionComponent,
         {
           action: componentAction,
@@ -1874,7 +2136,7 @@ var SiteHeaderShell = ({
         id: `${block.id}.${action.triggerSlot.id}`,
         action: interaction
       } : null;
-      return /* @__PURE__ */ jsx4(
+      return /* @__PURE__ */ jsx5(
         "button",
         {
           type: "button",
@@ -1890,13 +2152,13 @@ var SiteHeaderShell = ({
             }
           },
           className: clsx2(className, "cursor-pointer"),
-          children: /* @__PURE__ */ jsx4("span", { children: action.label })
+          children: /* @__PURE__ */ jsx5("span", { children: action.label })
         },
         `${action.id ?? `${action.label}:${action.href}`}${keySuffix}`
       );
     }
     if (actionPresentation?.type === "toast") {
-      return /* @__PURE__ */ jsx4(
+      return /* @__PURE__ */ jsx5(
         "button",
         {
           type: "button",
@@ -1905,7 +2167,7 @@ var SiteHeaderShell = ({
             executeInteractionAction(actionPresentation);
           },
           className: clsx2(className, "cursor-pointer"),
-          children: /* @__PURE__ */ jsx4("span", { children: action.label })
+          children: /* @__PURE__ */ jsx5("span", { children: action.label })
         },
         `${action.id ?? `${action.label}:${action.href}`}${keySuffix}`
       );
@@ -1969,15 +2231,15 @@ var SiteHeaderShell = ({
     mobileBottomMenuFloating ? "bottom-[calc(env(safe-area-inset-bottom)+0.75rem)] left-3 right-auto w-[calc(100dvw-1.5rem)] rounded-[26px] py-2" : "bottom-0 left-0 right-auto w-[100dvw] rounded-none border-x-0 border-b-0 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2",
     mobileControls.bottomMenu.floating && mobileControls.bottomMenu.disableFloatingOnSmallScreens && "max-[420px]:bottom-0 max-[420px]:left-0 max-[420px]:right-auto max-[420px]:w-[100dvw] max-[420px]:rounded-none max-[420px]:border-x-0 max-[420px]:border-b-0 max-[420px]:pb-[calc(env(safe-area-inset-bottom)+0.5rem)] max-[420px]:pt-2"
   );
-  const renderMobileMenuContent = (keySuffix = "") => /* @__PURE__ */ jsxs3("div", { className: "flex flex-col gap-4", children: [
-    /* @__PURE__ */ jsx4(
+  const renderMobileMenuContent = (keySuffix = "") => /* @__PURE__ */ jsxs4("div", { className: "flex flex-col gap-4", children: [
+    /* @__PURE__ */ jsx5(
       PhotonSiteSearch,
       {
         blockId: block.id,
         placeholderPath: "searchPlaceholder"
       }
     ),
-    /* @__PURE__ */ jsxs3("div", { className: "grid gap-1", children: [
+    /* @__PURE__ */ jsxs4("div", { className: "grid gap-1", children: [
       prominentCategoryLink ? renderSmartLink(
         prominentCategoryLink,
         mobileLinkClassName,
@@ -2001,14 +2263,14 @@ var SiteHeaderShell = ({
         )
       )
     ] }),
-    localeSwitcherVisible ? /* @__PURE__ */ jsxs3(
+    localeSwitcherVisible ? /* @__PURE__ */ jsxs4(
       "div",
       {
         "data-photon-locale-switcher": "true",
         className: "flex flex-wrap items-center gap-2 rounded-2xl border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-2 py-2",
         children: [
-          /* @__PURE__ */ jsx4("div", { className: "px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--photon-site-muted)]", children: translate("photon.localeSwitcher.label", "Language") }),
-          publicLocales.map((item) => /* @__PURE__ */ jsx4(
+          /* @__PURE__ */ jsx5("div", { className: "px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--photon-site-muted)]", children: translate("photon.localeSwitcher.label", "Language") }),
+          publicLocales.map((item) => /* @__PURE__ */ jsx5(
             PhotonLink,
             {
               href: currentRoute,
@@ -2026,14 +2288,14 @@ var SiteHeaderShell = ({
         ]
       }
     ) : null,
-    /* @__PURE__ */ jsxs3("div", { className: "grid gap-2", children: [
-      shouldRenderSecondaryCta ? /* @__PURE__ */ jsx4(
+    /* @__PURE__ */ jsxs4("div", { className: "grid gap-2", children: [
+      shouldRenderSecondaryCta ? /* @__PURE__ */ jsx5(
         PhotonLink,
         {
           href: block.props.secondaryCtaHref,
           onClick: closeMobileMenu,
           className: mobileActionClassName,
-          children: /* @__PURE__ */ jsx4(
+          children: /* @__PURE__ */ jsx5(
             EditableText,
             {
               blockId: block.id,
@@ -2043,14 +2305,14 @@ var SiteHeaderShell = ({
           )
         }
       ) : null,
-      shouldRenderPrimaryCta ? /* @__PURE__ */ jsxs3(
+      shouldRenderPrimaryCta ? /* @__PURE__ */ jsxs4(
         PhotonLink,
         {
           href: block.props.primaryCtaHref,
           onClick: closeMobileMenu,
           className: "inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--photon-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.24)] transition hover:translate-y-[-1px]",
           children: [
-            /* @__PURE__ */ jsx4(
+            /* @__PURE__ */ jsx5(
               EditableText,
               {
                 blockId: block.id,
@@ -2058,7 +2320,7 @@ var SiteHeaderShell = ({
                 className: "font-semibold text-white"
               }
             ),
-            /* @__PURE__ */ jsx4(ArrowRight2, { className: "h-4 w-4" })
+            /* @__PURE__ */ jsx5(ArrowRight2, { className: "h-4 w-4" })
           ]
         }
       ) : null,
@@ -2071,8 +2333,8 @@ var SiteHeaderShell = ({
         )
       )
     ] }),
-    /* @__PURE__ */ jsxs3("div", { className: "grid gap-1 text-sm", children: [
-      /* @__PURE__ */ jsx4(
+    /* @__PURE__ */ jsxs4("div", { className: "grid gap-1 text-sm", children: [
+      /* @__PURE__ */ jsx5(
         EditableText,
         {
           blockId: block.id,
@@ -2080,7 +2342,7 @@ var SiteHeaderShell = ({
           className: "text-[var(--photon-site-muted)]"
         }
       ),
-      /* @__PURE__ */ jsx4(
+      /* @__PURE__ */ jsx5(
         EditableText,
         {
           blockId: block.id,
@@ -2093,7 +2355,7 @@ var SiteHeaderShell = ({
   usePhotonSiteFrameScrollLock(
     mobileMenuOpen && mobileControls.menu.scrollLock
   );
-  useEffect(() => {
+  useEffect2(() => {
     if (typeof window === "undefined" || !block.props.compactOnScroll || !liveSurfaceMode) {
       setIsCompact(false);
       return;
@@ -2103,7 +2365,7 @@ var SiteHeaderShell = ({
     window.addEventListener("scroll", sync, { passive: true });
     return () => window.removeEventListener("scroll", sync);
   }, [block.props.compactOnScroll, liveSurfaceMode]);
-  useEffect(() => {
+  useEffect2(() => {
     if (typeof window === "undefined") {
       return;
     }
@@ -2132,7 +2394,7 @@ var SiteHeaderShell = ({
       root.style.setProperty("--photon-site-header-height", "0px");
     };
   }, [block.props.sticky, liveSurfaceMode, compact, localeSwitcherVisible]);
-  return /* @__PURE__ */ jsxs3(
+  return /* @__PURE__ */ jsxs4(
     "header",
     {
       ref: headerRef,
@@ -2142,7 +2404,7 @@ var SiteHeaderShell = ({
         isShowcaseCard ? "pt-[var(--photon-site-gutter,24px)]" : "pt-0"
       ),
       children: [
-        mobileFixedTriggerVisible && !mobileMenuOpen ? /* @__PURE__ */ jsx4(
+        mobileFixedTriggerVisible && !mobileMenuOpen ? /* @__PURE__ */ jsx5(
           "button",
           {
             type: "button",
@@ -2153,10 +2415,10 @@ var SiteHeaderShell = ({
             style: {
               top: "calc(var(--photon-dock-offset, 0px) + env(safe-area-inset-top) + 0.75rem)"
             },
-            children: /* @__PURE__ */ jsx4(Menu, { className: "h-5 w-5 transition-transform duration-300 ease-in-out" })
+            children: /* @__PURE__ */ jsx5(Menu, { className: "h-5 w-5 transition-transform duration-300 ease-in-out" })
           }
         ) : null,
-        /* @__PURE__ */ jsxs3(
+        /* @__PURE__ */ jsxs4(
           "div",
           {
             className: clsx2(
@@ -2170,7 +2432,7 @@ var SiteHeaderShell = ({
               )
             ),
             children: [
-              /* @__PURE__ */ jsxs3(
+              /* @__PURE__ */ jsxs4(
                 "div",
                 {
                   className: clsx2(
@@ -2178,7 +2440,7 @@ var SiteHeaderShell = ({
                     framelessSite ? compact ? "px-[var(--photon-site-gutter,24px)] py-3" : "px-[var(--photon-site-gutter,24px)] py-4" : isShowcaseCard ? compact ? "px-4 py-3" : "px-5 py-4 sm:px-6" : compact ? "px-[var(--photon-site-gutter,24px)] py-3" : "px-[var(--photon-site-gutter,24px)] py-4"
                   ),
                   children: [
-                    /* @__PURE__ */ jsxs3(
+                    /* @__PURE__ */ jsxs4(
                       "div",
                       {
                         className: clsx2(
@@ -2186,14 +2448,14 @@ var SiteHeaderShell = ({
                           mobileFixedTriggerVisible && "pr-14"
                         ),
                         children: [
-                          /* @__PURE__ */ jsxs3(
+                          /* @__PURE__ */ jsxs4(
                             PhotonLink,
                             {
                               href: block.props.brandHref,
                               className: "flex min-w-0 items-center gap-3",
                               onClick: closeMobileMenu,
                               children: [
-                                /* @__PURE__ */ jsx4("div", { className: "relative h-11 w-11 shrink-0 overflow-hidden rounded-2xl border border-[var(--photon-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]", children: block.props.logoImage ? /* @__PURE__ */ jsx4(
+                                /* @__PURE__ */ jsx5("div", { className: "relative h-11 w-11 shrink-0 overflow-hidden rounded-2xl border border-[var(--photon-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]", children: block.props.logoImage ? /* @__PURE__ */ jsx5(
                                   EditableImage2,
                                   {
                                     blockId: block.id,
@@ -2202,7 +2464,7 @@ var SiteHeaderShell = ({
                                     imageClassName: "h-full w-full object-contain p-1.5",
                                     fallbackAlt: block.props.brandLabel
                                   }
-                                ) : /* @__PURE__ */ jsx4("div", { className: "flex h-full items-center justify-center px-2 text-center text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--photon-site-accent)]", children: /* @__PURE__ */ jsx4(
+                                ) : /* @__PURE__ */ jsx5("div", { className: "flex h-full items-center justify-center px-2 text-center text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--photon-site-accent)]", children: /* @__PURE__ */ jsx5(
                                   EditableText,
                                   {
                                     blockId: block.id,
@@ -2210,7 +2472,7 @@ var SiteHeaderShell = ({
                                     className: "text-[var(--photon-site-accent)]"
                                   }
                                 ) }) }),
-                                /* @__PURE__ */ jsx4(
+                                /* @__PURE__ */ jsx5(
                                   EditableText,
                                   {
                                     blockId: block.id,
@@ -2222,7 +2484,7 @@ var SiteHeaderShell = ({
                               ]
                             }
                           ),
-                          mobileInlineTriggerVisible ? /* @__PURE__ */ jsx4(
+                          mobileInlineTriggerVisible ? /* @__PURE__ */ jsx5(
                             "button",
                             {
                               type: "button",
@@ -2230,30 +2492,30 @@ var SiteHeaderShell = ({
                               "aria-expanded": mobileMenuOpen,
                               onClick: () => setMobileMenuOpen((value) => !value),
                               className: "inline-flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-2xl border border-[var(--photon-site-border)] bg-[var(--photon-site-surface)] text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
-                              children: mobileMenuOpen ? /* @__PURE__ */ jsx4(X, { className: "h-5 w-5" }) : /* @__PURE__ */ jsx4(Menu, { className: "h-5 w-5" })
+                              children: mobileMenuOpen ? /* @__PURE__ */ jsx5(X, { className: "h-5 w-5" }) : /* @__PURE__ */ jsx5(Menu, { className: "h-5 w-5" })
                             }
                           ) : null
                         ]
                       }
                     ),
-                    /* @__PURE__ */ jsxs3("div", { className: "hidden flex-col gap-4 md:flex", children: [
-                      /* @__PURE__ */ jsxs3("div", { className: "flex flex-col gap-3 md:flex-row md:items-center md:justify-between", children: [
-                        /* @__PURE__ */ jsx4("div", { className: "flex flex-wrap items-center gap-3 text-sm text-[var(--photon-site-muted)]", children: utilityLinks.map(
+                    /* @__PURE__ */ jsxs4("div", { className: "hidden flex-col gap-4 md:flex", children: [
+                      /* @__PURE__ */ jsxs4("div", { className: "flex flex-col gap-3 md:flex-row md:items-center md:justify-between", children: [
+                        /* @__PURE__ */ jsx5("div", { className: "flex flex-wrap items-center gap-3 text-sm text-[var(--photon-site-muted)]", children: utilityLinks.map(
                           (link) => renderSmartLink(
                             link,
                             "transition hover:text-[var(--photon-site-text)]",
                             `${link.label}:${link.href}`
                           )
                         ) }),
-                        /* @__PURE__ */ jsxs3("div", { className: "flex flex-wrap items-center gap-3 text-sm", children: [
-                          localeSwitcherVisible ? /* @__PURE__ */ jsxs3(
+                        /* @__PURE__ */ jsxs4("div", { className: "flex flex-wrap items-center gap-3 text-sm", children: [
+                          localeSwitcherVisible ? /* @__PURE__ */ jsxs4(
                             "div",
                             {
                               "data-photon-locale-switcher": "true",
                               className: "flex flex-wrap items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-2 py-2",
                               children: [
-                                /* @__PURE__ */ jsx4("div", { className: "px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--photon-site-muted)]", children: translate("photon.localeSwitcher.label", "Language") }),
-                                publicLocales.map((item) => /* @__PURE__ */ jsx4(
+                                /* @__PURE__ */ jsx5("div", { className: "px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--photon-site-muted)]", children: translate("photon.localeSwitcher.label", "Language") }),
+                                publicLocales.map((item) => /* @__PURE__ */ jsx5(
                                   PhotonLink,
                                   {
                                     href: currentRoute,
@@ -2270,7 +2532,7 @@ var SiteHeaderShell = ({
                               ]
                             }
                           ) : null,
-                          /* @__PURE__ */ jsx4(
+                          /* @__PURE__ */ jsx5(
                             EditableText,
                             {
                               blockId: block.id,
@@ -2278,7 +2540,7 @@ var SiteHeaderShell = ({
                               className: "text-[var(--photon-site-muted)]"
                             }
                           ),
-                          /* @__PURE__ */ jsx4(
+                          /* @__PURE__ */ jsx5(
                             EditableText,
                             {
                               blockId: block.id,
@@ -2288,7 +2550,7 @@ var SiteHeaderShell = ({
                           )
                         ] })
                       ] }),
-                      /* @__PURE__ */ jsxs3(
+                      /* @__PURE__ */ jsxs4(
                         "div",
                         {
                           className: clsx2(
@@ -2296,13 +2558,13 @@ var SiteHeaderShell = ({
                             prominentCategoryLink ? "md:grid-cols-[auto_auto_minmax(280px,1fr)_auto]" : "md:grid-cols-[auto_minmax(280px,1fr)_auto]"
                           ),
                           children: [
-                            /* @__PURE__ */ jsxs3(
+                            /* @__PURE__ */ jsxs4(
                               PhotonLink,
                               {
                                 href: block.props.brandHref,
                                 className: "flex min-w-0 items-center gap-3",
                                 children: [
-                                  /* @__PURE__ */ jsx4("div", { className: "relative h-16 w-16 overflow-hidden rounded-[22px] border border-[var(--photon-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]", children: block.props.logoImage ? /* @__PURE__ */ jsx4(
+                                  /* @__PURE__ */ jsx5("div", { className: "relative h-16 w-16 overflow-hidden rounded-[22px] border border-[var(--photon-site-border)] bg-[linear-gradient(180deg,rgba(15,118,110,0.14),rgba(15,118,110,0.03))]", children: block.props.logoImage ? /* @__PURE__ */ jsx5(
                                     EditableImage2,
                                     {
                                       blockId: block.id,
@@ -2311,7 +2573,7 @@ var SiteHeaderShell = ({
                                       imageClassName: "h-full w-full object-contain p-2",
                                       fallbackAlt: block.props.brandLabel
                                     }
-                                  ) : /* @__PURE__ */ jsx4("div", { className: "flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--photon-site-accent)]", children: /* @__PURE__ */ jsx4(
+                                  ) : /* @__PURE__ */ jsx5("div", { className: "flex h-full items-center justify-center px-3 text-center text-[11px] font-semibold uppercase tracking-[0.26em] text-[var(--photon-site-accent)]", children: /* @__PURE__ */ jsx5(
                                     EditableText,
                                     {
                                       blockId: block.id,
@@ -2319,8 +2581,8 @@ var SiteHeaderShell = ({
                                       className: "text-[var(--photon-site-accent)]"
                                     }
                                   ) }) }),
-                                  /* @__PURE__ */ jsxs3("div", { className: "min-w-0", children: [
-                                    /* @__PURE__ */ jsx4(
+                                  /* @__PURE__ */ jsxs4("div", { className: "min-w-0", children: [
+                                    /* @__PURE__ */ jsx5(
                                       EditableText,
                                       {
                                         blockId: block.id,
@@ -2329,12 +2591,12 @@ var SiteHeaderShell = ({
                                         className: "[font-family:var(--photon-site-heading-font)] text-2xl font-semibold tracking-[-0.04em]"
                                       }
                                     ),
-                                    isShowcaseCard ? /* @__PURE__ */ jsx4("div", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--photon-site-muted)]", children: "Live site frame" }) : null
+                                    isShowcaseCard ? /* @__PURE__ */ jsx5("div", { className: "mt-1 text-xs uppercase tracking-[0.24em] text-[var(--photon-site-muted)]", children: "Live site frame" }) : null
                                   ] })
                                 ]
                               }
                             ),
-                            prominentCategoryLink ? /* @__PURE__ */ jsxs3(
+                            prominentCategoryLink ? /* @__PURE__ */ jsxs4(
                               PhotonLink,
                               {
                                 href: prominentCategoryLink.href,
@@ -2342,25 +2604,25 @@ var SiteHeaderShell = ({
                                 rel: prominentCategoryLink.rel,
                                 className: "inline-flex items-center gap-2 rounded-full border border-[var(--photon-site-border)] bg-[var(--photon-site-background)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
                                 children: [
-                                  /* @__PURE__ */ jsx4("div", { className: "h-2.5 w-2.5 rounded-full bg-[var(--photon-site-accent)]" }),
-                                  /* @__PURE__ */ jsx4("span", { className: "font-semibold", children: prominentCategoryLink.label })
+                                  /* @__PURE__ */ jsx5("div", { className: "h-2.5 w-2.5 rounded-full bg-[var(--photon-site-accent)]" }),
+                                  /* @__PURE__ */ jsx5("span", { className: "font-semibold", children: prominentCategoryLink.label })
                                 ]
                               }
                             ) : null,
-                            /* @__PURE__ */ jsx4(
+                            /* @__PURE__ */ jsx5(
                               PhotonSiteSearch,
                               {
                                 blockId: block.id,
                                 placeholderPath: "searchPlaceholder"
                               }
                             ),
-                            /* @__PURE__ */ jsxs3("div", { className: "flex flex-wrap items-center justify-start gap-2 md:justify-end", children: [
-                              shouldRenderSecondaryCta ? /* @__PURE__ */ jsx4(
+                            /* @__PURE__ */ jsxs4("div", { className: "flex flex-wrap items-center justify-start gap-2 md:justify-end", children: [
+                              shouldRenderSecondaryCta ? /* @__PURE__ */ jsx5(
                                 PhotonLink,
                                 {
                                   href: block.props.secondaryCtaHref,
                                   className: "inline-flex items-center gap-2 rounded-full border border-[var(--photon-site-border)] px-4 py-3 text-sm font-semibold text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
-                                  children: /* @__PURE__ */ jsx4(
+                                  children: /* @__PURE__ */ jsx5(
                                     EditableText,
                                     {
                                       blockId: block.id,
@@ -2370,13 +2632,13 @@ var SiteHeaderShell = ({
                                   )
                                 }
                               ) : null,
-                              shouldRenderPrimaryCta ? /* @__PURE__ */ jsxs3(
+                              shouldRenderPrimaryCta ? /* @__PURE__ */ jsxs4(
                                 PhotonLink,
                                 {
                                   href: block.props.primaryCtaHref,
                                   className: "inline-flex items-center gap-2 rounded-full bg-[var(--photon-site-accent)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_34px_rgba(15,118,110,0.28)] transition hover:translate-y-[-1px]",
                                   children: [
-                                    /* @__PURE__ */ jsx4(
+                                    /* @__PURE__ */ jsx5(
                                       EditableText,
                                       {
                                         blockId: block.id,
@@ -2384,7 +2646,7 @@ var SiteHeaderShell = ({
                                         className: "font-semibold text-white"
                                       }
                                     ),
-                                    /* @__PURE__ */ jsx4(ArrowRight2, { className: "h-4 w-4" })
+                                    /* @__PURE__ */ jsx5(ArrowRight2, { className: "h-4 w-4" })
                                   ]
                                 }
                               ) : null,
@@ -2399,14 +2661,14 @@ var SiteHeaderShell = ({
                   ]
                 }
               ),
-              categoryLinks.length > 0 ? /* @__PURE__ */ jsx4(
+              categoryLinks.length > 0 ? /* @__PURE__ */ jsx5(
                 "div",
                 {
                   className: clsx2(
                     "hidden border-t border-[var(--photon-site-border)] md:block",
                     framelessSite && "bg-transparent"
                   ),
-                  children: /* @__PURE__ */ jsx4("div", { className: "mx-auto w-full max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] px-[var(--photon-site-gutter,24px)] py-4", children: /* @__PURE__ */ jsx4("div", { className: "flex flex-wrap gap-2", children: categoryLinks.map(
+                  children: /* @__PURE__ */ jsx5("div", { className: "mx-auto w-full max-w-[calc(var(--photon-site-max-width,1280px)+var(--photon-site-gutter,24px)*2)] px-[var(--photon-site-gutter,24px)] py-4", children: /* @__PURE__ */ jsx5("div", { className: "flex flex-wrap gap-2", children: categoryLinks.map(
                     (link) => renderSmartLink(
                       link,
                       clsx2(
@@ -2421,7 +2683,7 @@ var SiteHeaderShell = ({
             ]
           }
         ),
-        /* @__PURE__ */ jsxs3(
+        /* @__PURE__ */ jsxs4(
           "div",
           {
             className: clsx2(
@@ -2429,7 +2691,7 @@ var SiteHeaderShell = ({
               mobileMenuOpen ? "visible" : "invisible"
             ),
             children: [
-              mobileMenuType === "inline" ? null : /* @__PURE__ */ jsx4(
+              mobileMenuType === "inline" ? null : /* @__PURE__ */ jsx5(
                 "button",
                 {
                   type: "button",
@@ -2441,9 +2703,9 @@ var SiteHeaderShell = ({
                   onClick: closeMobileMenu
                 }
               ),
-              /* @__PURE__ */ jsxs3("div", { className: mobileMenuPanelClassName, children: [
-                /* @__PURE__ */ jsxs3("div", { className: "mb-4 flex items-center justify-between gap-3", children: [
-                  /* @__PURE__ */ jsx4(
+              /* @__PURE__ */ jsxs4("div", { className: mobileMenuPanelClassName, children: [
+                /* @__PURE__ */ jsxs4("div", { className: "mb-4 flex items-center justify-between gap-3", children: [
+                  /* @__PURE__ */ jsx5(
                     EditableText,
                     {
                       blockId: block.id,
@@ -2452,14 +2714,14 @@ var SiteHeaderShell = ({
                       className: "[font-family:var(--photon-site-heading-font)] text-xl font-semibold tracking-[-0.02em]"
                     }
                   ),
-                  /* @__PURE__ */ jsx4(
+                  /* @__PURE__ */ jsx5(
                     "button",
                     {
                       type: "button",
                       "aria-label": "Close menu",
                       onClick: closeMobileMenu,
                       className: "inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-2xl border border-[var(--photon-site-border)] text-[var(--photon-site-text)] transition hover:border-[var(--photon-site-accent)] hover:text-[var(--photon-site-accent)]",
-                      children: /* @__PURE__ */ jsx4(X, { className: "h-5 w-5" })
+                      children: /* @__PURE__ */ jsx5(X, { className: "h-5 w-5" })
                     }
                   )
                 ] }),
@@ -2468,12 +2730,12 @@ var SiteHeaderShell = ({
             ]
           }
         ),
-        mobileBottomMenuVisible && !mobileMenuOpen ? /* @__PURE__ */ jsx4(
+        mobileBottomMenuVisible && !mobileMenuOpen ? /* @__PURE__ */ jsx5(
           "nav",
           {
             "aria-label": "Mobile bottom navigation",
             className: mobileBottomMenuClassName,
-            children: /* @__PURE__ */ jsxs3("div", { className: "flex items-center justify-around gap-1", children: [
+            children: /* @__PURE__ */ jsxs4("div", { className: "flex items-center justify-around gap-1", children: [
               mobileBottomLinks.map(
                 (link) => renderSmartLink(
                   link,
@@ -2482,7 +2744,7 @@ var SiteHeaderShell = ({
                   closeMobileMenu
                 )
               ),
-              mobileControls.bottomMenu.showBurger ? /* @__PURE__ */ jsx4(
+              mobileControls.bottomMenu.showBurger ? /* @__PURE__ */ jsx5(
                 "button",
                 {
                   type: "button",
@@ -2490,7 +2752,7 @@ var SiteHeaderShell = ({
                   "aria-expanded": mobileMenuOpen,
                   onClick: () => setMobileMenuOpen((value) => !value),
                   className: "inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-2xl bg-[var(--photon-site-accent)] text-white shadow-[0_14px_30px_rgba(15,118,110,0.24)]",
-                  children: mobileMenuOpen ? /* @__PURE__ */ jsx4(X, { className: "h-5 w-5" }) : /* @__PURE__ */ jsx4(Menu, { className: "h-5 w-5" })
+                  children: mobileMenuOpen ? /* @__PURE__ */ jsx5(X, { className: "h-5 w-5" }) : /* @__PURE__ */ jsx5(Menu, { className: "h-5 w-5" })
                 }
               ) : null
             ] })
@@ -2823,7 +3085,7 @@ var photonSystemFormSchemas = [
 ];
 
 // src/modules/system.tsx
-import { jsx as jsx5, jsxs as jsxs4 } from "react/jsx-runtime";
+import { jsx as jsx6, jsxs as jsxs5 } from "react/jsx-runtime";
 var surfaceStyles = {
   glass: "border-white/10 bg-[linear-gradient(180deg,rgba(7,17,31,0.85),rgba(8,21,38,0.7))] text-white",
   bright: "border-slate-200 bg-[linear-gradient(180deg,#f7f9fc_0%,#eef3fb_100%)] text-slate-950",
@@ -2849,7 +3111,7 @@ var SplitLayout = ({
   const surface = surfaceStyles[block.props.surface] ?? surfaceStyles.glass;
   const framelessSurface = isPhotonFramelessSiteDesign(siteDesign);
   const stickyPreviewEnabled = mode !== "builder";
-  return /* @__PURE__ */ jsxs4(
+  return /* @__PURE__ */ jsxs5(
     "section",
     {
       className: clsx3(
@@ -2859,8 +3121,8 @@ var SplitLayout = ({
       ),
       style: framelessSurface ? getPhotonSurfaceModeStyle("bleed") : void 0,
       children: [
-        /* @__PURE__ */ jsxs4("div", { className: "max-w-3xl", children: [
-          /* @__PURE__ */ jsx5(
+        /* @__PURE__ */ jsxs5("div", { className: "max-w-3xl", children: [
+          /* @__PURE__ */ jsx6(
             EditableText2,
             {
               blockId: block.id,
@@ -2871,7 +3133,7 @@ var SplitLayout = ({
               )
             }
           ),
-          /* @__PURE__ */ jsx5(
+          /* @__PURE__ */ jsx6(
             EditableText2,
             {
               blockId: block.id,
@@ -2883,7 +3145,7 @@ var SplitLayout = ({
               )
             }
           ),
-          /* @__PURE__ */ jsx5(
+          /* @__PURE__ */ jsx6(
             EditableTextarea,
             {
               blockId: block.id,
@@ -2895,7 +3157,7 @@ var SplitLayout = ({
             }
           )
         ] }),
-        /* @__PURE__ */ jsx5(
+        /* @__PURE__ */ jsx6(
           "div",
           {
             className: "mt-8 grid grid-cols-1 items-start gap-[var(--photon-layout-gap)] lg:[grid-template-columns:var(--photon-layout-columns)]",
@@ -2905,7 +3167,7 @@ var SplitLayout = ({
             },
             children: areas.map((area, index) => {
               const column = getColumnConfig(columns, area, index);
-              return /* @__PURE__ */ jsx5(
+              return /* @__PURE__ */ jsx6(
                 "div",
                 {
                   className: clsx3(
@@ -2915,7 +3177,7 @@ var SplitLayout = ({
                   style: column.sticky && stickyPreviewEnabled ? {
                     top: "calc(var(--photon-dock-offset, 0px) + var(--photon-site-header-offset, 0px) + var(--photon-site-header-height, 0px) + 0.75rem)"
                   } : void 0,
-                  children: /* @__PURE__ */ jsxs4(
+                  children: /* @__PURE__ */ jsxs5(
                     "div",
                     {
                       className: clsx3(
@@ -2923,7 +3185,7 @@ var SplitLayout = ({
                         framelessSurface ? "rounded-none border-0 bg-transparent shadow-none" : block.props.surface === "bright" ? "border-0 bg-transparent shadow-none" : "border-0 bg-transparent shadow-none"
                       ),
                       children: [
-                        column.label?.trim() ? /* @__PURE__ */ jsx5(
+                        column.label?.trim() ? /* @__PURE__ */ jsx6(
                           "div",
                           {
                             className: clsx3(
@@ -3061,9 +3323,9 @@ var ComponentReferenceBlock = ({
     stack: componentLibraryStack
   });
   if (!blocks.length) {
-    return /* @__PURE__ */ jsx5("section", { className: "rounded-[28px] border border-dashed border-[var(--photon-site-border)] px-6 py-8 text-sm text-[var(--photon-site-muted)]", children: "Reusable component is unavailable." });
+    return /* @__PURE__ */ jsx6("section", { className: "rounded-[28px] border border-dashed border-[var(--photon-site-border)] px-6 py-8 text-sm text-[var(--photon-site-muted)]", children: "Reusable component is unavailable." });
   }
-  return /* @__PURE__ */ jsx5("section", { "data-photon-component-reference": block.props.itemId, children: /* @__PURE__ */ jsx5(
+  return /* @__PURE__ */ jsx6("section", { "data-photon-component-reference": block.props.itemId, children: /* @__PURE__ */ jsx6(
     PhotonComponentLibraryStackContext.Provider,
     {
       value: [...componentLibraryStack, block.props.itemId],
@@ -3218,8 +3480,10 @@ export {
   PHOTON_SITE_DESIGN_FALLBACK_DEFAULTS,
   PhotonBlockRenderer,
   PhotonFieldEditorList,
+  PhotonFieldLocalizationMarker,
   PhotonI18nProvider,
   PhotonLink,
+  PhotonMobileLocaleSwitcher,
   PhotonProvider,
   PhotonRenderDepthProvider,
   PhotonRichTextEditor,
@@ -3231,10 +3495,13 @@ export {
   applyPhotonSiteColorScheme,
   applyPhotonSiteDesignPreset,
   buildActionPlan,
+  buildPhotonBlockSchemaMapForBlocks,
+  buildPhotonLocaleSwitcherViewModel,
   buildPhotonSearchResultHref,
   buildPhotonSearchTargetId,
   canEditPhotonWorkspace,
   canSavePhotonWorkspace,
+  clearPhotonBlockFieldLocalization,
   clonePhotonBlockTreeWithNewIds,
   clonePhotonComponentLibraryBlocksForCopy,
   clonePhotonComponentSourceBlockWithNewIds,
@@ -3258,6 +3525,11 @@ export {
   collectPhotonSiteFrameExtensions,
   comparePhotonCascadable,
   composePhotonSurfaceDocument,
+  computePhotonTranslationCompleteness,
+  computePhotonTranslationCompletenessForLocales,
+  computePhotonTranslationCompletenessFromRegistry,
+  copyPhotonBlockLocaleContent,
+  copyPhotonLocaleContent,
   createPhotonAccountTabExtension,
   createPhotonActionValue,
   createPhotonAreaListId,
@@ -3289,18 +3561,21 @@ export {
   detectPhotonCascadeConflicts,
   duplicatePhotonBlockInDocument,
   duplicatePhotonComponentLibraryItem,
+  emitPhotonLocaleAnalyticsEvent,
   evaluateConditionExpression,
   evaluatePhotonInteractionGuards,
   executePhotonInteractionActionPresentation,
   executePhotonInteractionTriggerSlot,
   extractPhotonSiteDataBindings,
   findPhotonBlock,
+  findPhotonFieldMissingLocales,
   getFirstPhotonBlockId,
   getFirstPhotonSurfaceEditableBlockId,
   getPhotonAnchorRel,
   getPhotonComponentLibraryItems,
   getPhotonDefinitionKey,
   getPhotonDocumentFingerprint,
+  getPhotonLocaleAnalyticsEmitter,
   getPhotonSiteColorScheme,
   getPhotonSiteDesignPreset,
   getPhotonSurfaceModeStyle,
@@ -3312,6 +3587,7 @@ export {
   hasPhotonSiteDesignPresetCustomization,
   insertPhotonBlockInDocument,
   insertPhotonBlocksInDocument,
+  isPhotonBlockFieldLocalizationOverridden,
   isPhotonComponentReferenceBlock,
   isPhotonFramelessPreset,
   isPhotonFramelessSiteDesign,
@@ -3344,23 +3620,30 @@ export {
   photonSystemKit,
   photonSystemModule,
   planPhotonInteractionTriggerSlot,
+  readLocalizedFieldValue,
   readPhotonComponentLibrarySettings,
   readPhotonInteractionSettings,
   readPhotonInteractionSurfaceSettings,
+  readPhotonRecentLocaleCodes,
+  recordPhotonRecentLocaleUsage,
   remapPhotonComponentLibraryBlock,
   removePhotonBlockFromDocument,
   renderPhotonRichTextHtml,
   replacePhotonBlockWithBlocksInDocument,
+  resolveDefaultPhotonFieldLocalization,
   resolvePhotonAccess,
   resolvePhotonAccountTabs,
+  resolvePhotonBlockFieldLocalization,
   resolvePhotonBlockInteractionSlots,
   resolvePhotonComponentReferenceBlocks,
+  resolvePhotonFallbackLocaleCode,
   resolvePhotonInteractionActionCatalog,
   resolvePhotonInteractionSlotAction,
   resolvePhotonInteractionSlotGuards,
   resolvePhotonInteractionSurfaceCatalog,
   resolvePhotonInteractionSurfaceRequest,
   resolvePhotonInteractionToastTemplate,
+  resolvePhotonLocalizedValue,
   resolvePhotonMediaPreviewUrl,
   resolvePhotonMediaUrl,
   resolvePhotonMode,
@@ -3379,10 +3662,12 @@ export {
   resolvePolicyCascade,
   resolveRouteContext,
   sanitizePhotonLinkHref,
+  setPhotonLocaleAnalyticsEmitter,
   setValueAtPath,
   sitePath,
   sitePolicyPath,
   sortPhotonCascade,
+  togglePhotonBlockFieldLocalization,
   updatePhotonBlockInDocument,
   updatePhotonMediaUrl,
   useKeyboardMenuController,
@@ -3397,6 +3682,7 @@ export {
   usePhotonSiteData,
   usePhotonStore,
   usePhotonStoreApi,
+  usePhotonTranslationCompleteness,
   usePhotonValueAtPath,
   writePhotonStudioUrlState
 };
