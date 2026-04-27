@@ -9547,7 +9547,7 @@ var SiteDataSurface = ({
 
 // src/studio/inspector-panel/inspector-panel.tsx
 import clsx17 from "clsx";
-import { ChevronDown as ChevronDown9, ChevronRight as ChevronRight6 } from "lucide-react";
+import { ChevronRight as ChevronRight6 } from "lucide-react";
 import { memo as memo6, useEffect as useEffect16, useMemo as useMemo17, useState as useState26 } from "react";
 
 // src/studio/inspector-panel/inspector-section.tsx
@@ -9571,7 +9571,7 @@ var PhotonInspectorSection = ({
   return /* @__PURE__ */ jsxs37(
     "section",
     {
-      className: tokens.sectionRadius,
+      className: clsx16("overflow-hidden", tokens.sectionRadius),
       style: {
         background: "var(--photon-builder-panel-solid)"
       },
@@ -9584,11 +9584,20 @@ var PhotonInspectorSection = ({
             type: "button",
             onClick: nonCollapsible ? void 0 : toggle,
             className: clsx16(
-              "flex w-full items-center gap-1.5 px-2 py-1.5 text-left",
+              "flex w-full items-center gap-1.5 px-2 py-1 text-left",
               nonCollapsible ? "cursor-default" : "cursor-pointer"
             ),
             "aria-expanded": isExpanded,
             "data-testid": `photon-inspector-section-header-${id}`,
+            style: {
+              // Darker tone band on the header — Unreal Details panel uses
+              // the same trick to make sections immediately readable: the
+              // header sits a step deeper than the body, then a 1px hairline
+              // separates the two so the body content reads as "inside" the
+              // chamber.
+              background: "var(--photon-builder-shell-strong)",
+              boxShadow: isExpanded ? "inset 0 -1px 0 0 color-mix(in srgb, var(--photon-builder-border) 50%, transparent)" : void 0
+            },
             children: [
               nonCollapsible ? null : isExpanded ? /* @__PURE__ */ jsx47(
                 ChevronDown8,
@@ -9615,15 +9624,15 @@ var PhotonInspectorSection = ({
             ]
           }
         ),
-        subtitle ? /* @__PURE__ */ jsx47(
+        subtitle && isExpanded ? /* @__PURE__ */ jsx47(
           "div",
           {
-            className: "px-2 pb-1 text-[10.5px] leading-snug",
+            className: "px-2 pt-1 text-[10.5px] leading-snug",
             style: { color: "var(--photon-builder-text-soft)" },
             children: subtitle
           }
         ) : null,
-        isExpanded ? /* @__PURE__ */ jsx47("div", { className: clsx16(tokens.sectionPadding, "pt-0"), children }) : null
+        isExpanded ? /* @__PURE__ */ jsx47("div", { className: clsx16(tokens.sectionPadding, "pt-1"), children }) : null
       ]
     }
   );
@@ -10702,8 +10711,6 @@ var InspectorPanelComponent = ({
       setActiveTab("block");
     }
   }, [activeTab, hasSurfaces, hasLayoutFields]);
-  const [showBlockJson, setShowBlockJson] = useState26(false);
-  const [showDocumentJson, setShowDocumentJson] = useState26(false);
   const blockGroupKeys = useMemo17(
     () => orderInspectorGroupKeys(inspectorGroups, {
       exclude: BLOCK_TAB_EXCLUDED_GROUPS
@@ -10719,11 +10726,11 @@ var InspectorPanelComponent = ({
   const summaryRoute = (currentPage?.isDynamic ? readString2(summarySettings, "pathPattern") : readString2(summarySettings, "path")) ?? currentPage?.routePattern ?? currentPage?.route ?? document2.route;
   const currentRoute = readString2(summarySettings, "currentPath") ?? currentPage?.route;
   const selectedBlockJson = useMemo17(
-    () => showBlockJson && selectedBlock ? JSON.stringify(selectedBlock, null, 2) : "",
-    [showBlockJson, selectedBlock]
+    () => selectedBlock ? JSON.stringify(selectedBlock, null, 2) : "",
+    [selectedBlock]
   );
   const documentJson = useMemo17(
-    () => showDocumentJson ? JSON.stringify(
+    () => JSON.stringify(
       {
         id: document2.id,
         route: document2.route,
@@ -10737,8 +10744,8 @@ var InspectorPanelComponent = ({
       },
       null,
       2
-    ) : "",
-    [document2, showDocumentJson]
+    ),
+    [document2]
   );
   useEffect16(() => {
     if (selectedBlock) {
@@ -10844,32 +10851,22 @@ var InspectorPanelComponent = ({
             children: [
               activeTab === "block" && !selectedBlock && inspectorDefinition ? /* @__PURE__ */ jsxs42(Fragment13, { children: [
                 /* @__PURE__ */ jsxs42(
-                  "section",
+                  PhotonInspectorSection,
                   {
-                    className: "rounded-[3px] px-2 py-1.5",
-                    style: {
-                      background: "var(--photon-builder-panel-solid)"
-                    },
+                    id: "palette-block-summary",
+                    nonCollapsible: true,
+                    title: /* @__PURE__ */ jsx52(
+                      "span",
+                      {
+                        className: clsx17(tokens.subtitleClass),
+                        style: { color: "var(--photon-builder-text)" },
+                        children: inspectorDefinition.label
+                      }
+                    ),
                     children: [
-                      /* @__PURE__ */ jsx52(
-                        "div",
-                        {
-                          className: tokens.sectionHeaderClass,
-                          style: { color: "var(--photon-builder-text-soft)" },
-                          children: "Palette block"
-                        }
-                      ),
-                      /* @__PURE__ */ jsx52(
-                        "div",
-                        {
-                          className: clsx17("mt-1", tokens.subtitleClass),
-                          style: { color: "var(--photon-builder-text)" },
-                          children: inspectorDefinition.label
-                        }
-                      ),
-                      /* @__PURE__ */ jsxs42("div", { className: "mt-1 flex flex-wrap items-center gap-1", children: [
+                      /* @__PURE__ */ jsxs42("div", { className: "flex flex-wrap items-center gap-1", children: [
                         /* @__PURE__ */ jsx52(
-                          "div",
+                          "span",
                           {
                             className: "rounded-sm px-1.5 py-0 font-mono text-[10px] uppercase tracking-[0.14em]",
                             style: {
@@ -10880,7 +10877,7 @@ var InspectorPanelComponent = ({
                           }
                         ),
                         /* @__PURE__ */ jsx52(
-                          "div",
+                          "span",
                           {
                             className: "rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]",
                             style: {
@@ -10894,7 +10891,7 @@ var InspectorPanelComponent = ({
                           }
                         ),
                         /* @__PURE__ */ jsxs42(
-                          "div",
+                          "span",
                           {
                             className: "rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]",
                             style: {
@@ -10911,7 +10908,7 @@ var InspectorPanelComponent = ({
                       /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "mt-1.5 text-[11.5px] leading-snug",
+                          className: "mt-1 text-[11px] leading-snug",
                           style: { color: "var(--photon-builder-text-muted)" },
                           children: inspectorDefinition.description
                         }
@@ -10919,84 +10916,73 @@ var InspectorPanelComponent = ({
                     ]
                   }
                 ),
-                Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsxs42(
-                  "section",
+                Object.entries(inspectorGroups).map(([groupKey, fields]) => /* @__PURE__ */ jsx52(
+                  PhotonInspectorSection,
                   {
-                    className: "rounded-[3px] px-2 py-1.5",
-                    style: {
-                      background: "var(--photon-builder-panel-solid)"
-                    },
-                    children: [
-                      /* @__PURE__ */ jsxs42("div", { className: "mb-4 flex items-center justify-between gap-3", children: [
-                        /* @__PURE__ */ jsx52(
-                          "div",
-                          {
-                            className: tokens.sectionHeaderClass,
-                            style: { color: "var(--photon-builder-text-soft)" },
-                            children: translate(
-                              FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
-                              translatePhotonFieldGroup(groupKey, translate)
-                            )
-                          }
-                        ),
-                        /* @__PURE__ */ jsx52(
-                          "div",
-                          {
-                            className: "font-mono text-[10px] uppercase tracking-[0.24em]",
-                            style: { color: "var(--photon-builder-text-ghost)" },
-                            children: fields.length
-                          }
-                        )
-                      ] }),
-                      /* @__PURE__ */ jsx52("div", { className: "space-y-3", children: fields.map((field) => /* @__PURE__ */ jsxs42(
-                        "div",
-                        {
-                          className: "rounded-sm px-2 py-1.5",
-                          style: {
-                            background: "var(--photon-builder-field)"
-                          },
-                          children: [
-                            /* @__PURE__ */ jsxs42("div", { className: "flex items-center justify-between gap-2", children: [
-                              /* @__PURE__ */ jsx52(
-                                "div",
-                                {
-                                  className: "text-[12px] font-semibold leading-tight",
-                                  style: { color: "var(--photon-builder-text)" },
-                                  children: field.label
-                                }
-                              ),
-                              /* @__PURE__ */ jsx52(
-                                "div",
-                                {
-                                  className: "rounded-sm px-1.5 py-0.5 text-[9.5px] uppercase tracking-[0.16em]",
-                                  style: {
-                                    color: "var(--photon-builder-text-soft)"
-                                  },
-                                  children: field.kind
-                                }
-                              )
-                            ] }),
+                    id: `palette-group-${groupKey}`,
+                    title: translate(
+                      FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
+                      translatePhotonFieldGroup(groupKey, translate)
+                    ),
+                    trailing: /* @__PURE__ */ jsx52(
+                      "span",
+                      {
+                        className: "rounded-sm px-1 font-mono text-[9px] tabular-nums",
+                        style: {
+                          background: "var(--photon-builder-field)",
+                          color: "var(--photon-builder-text-soft)"
+                        },
+                        children: fields.length
+                      }
+                    ),
+                    children: /* @__PURE__ */ jsx52("div", { className: "space-y-1", children: fields.map((field) => /* @__PURE__ */ jsxs42(
+                      "div",
+                      {
+                        className: "rounded-sm px-2 py-1.5",
+                        style: {
+                          background: "var(--photon-builder-field)"
+                        },
+                        children: [
+                          /* @__PURE__ */ jsxs42("div", { className: "flex items-center justify-between gap-2", children: [
                             /* @__PURE__ */ jsx52(
                               "div",
                               {
-                                className: "mt-0.5 font-mono text-[10px] uppercase tracking-[0.18em]",
-                                style: { color: "var(--photon-builder-text-ghost)" },
-                                children: field.path
+                                className: "text-[12px] font-semibold leading-tight",
+                                style: { color: "var(--photon-builder-text)" },
+                                children: field.label
                               }
                             ),
-                            field.description ? /* @__PURE__ */ jsx52(
+                            /* @__PURE__ */ jsx52(
                               "div",
                               {
-                                className: "mt-0.5 text-[11px] leading-snug",
-                                style: { color: "var(--photon-builder-text-soft)" },
-                                children: field.description
+                                className: "rounded-sm px-1.5 py-0.5 text-[9.5px] uppercase tracking-[0.16em]",
+                                style: {
+                                  color: "var(--photon-builder-text-soft)"
+                                },
+                                children: field.kind
                               }
-                            ) : null
-                          ]
-                        },
-                        field.path
-                      )) })
-                    ]
+                            )
+                          ] }),
+                          /* @__PURE__ */ jsx52(
+                            "div",
+                            {
+                              className: "mt-0.5 font-mono text-[10px] uppercase tracking-[0.18em]",
+                              style: { color: "var(--photon-builder-text-ghost)" },
+                              children: field.path
+                            }
+                          ),
+                          field.description ? /* @__PURE__ */ jsx52(
+                            "div",
+                            {
+                              className: "mt-0.5 text-[11px] leading-snug",
+                              style: { color: "var(--photon-builder-text-soft)" },
+                              children: field.description
+                            }
+                          ) : null
+                        ]
+                      },
+                      field.path
+                    )) })
                   },
                   groupKey
                 ))
@@ -11072,57 +11058,45 @@ var InspectorPanelComponent = ({
               ) : null,
               activeTab === "block" && selectedBlock ? /* @__PURE__ */ jsxs42(Fragment13, { children: [
                 /* @__PURE__ */ jsxs42(
-                  "section",
+                  PhotonInspectorSection,
                   {
-                    className: "rounded-[3px] px-2 py-1.5",
-                    style: {
-                      background: "var(--photon-builder-panel-solid)"
-                    },
+                    id: "selected-block",
+                    nonCollapsible: true,
+                    title: /* @__PURE__ */ jsx52(
+                      "span",
+                      {
+                        className: clsx17(tokens.subtitleClass),
+                        style: { color: "var(--photon-builder-text)" },
+                        children: inspectorDefinition?.label ?? selectedBlock.type
+                      }
+                    ),
+                    trailing: inspectorDefinition ? /* @__PURE__ */ jsx52(
+                      "span",
+                      {
+                        className: "rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]",
+                        style: {
+                          background: "var(--photon-builder-field)",
+                          color: "var(--photon-builder-text-soft)"
+                        },
+                        children: translatePhotonPaletteCategory(
+                          inspectorDefinition.category,
+                          translate
+                        )
+                      }
+                    ) : null,
                     children: [
-                      /* @__PURE__ */ jsx52(
-                        "div",
+                      /* @__PURE__ */ jsx52("div", { className: "flex flex-wrap items-center gap-1", children: /* @__PURE__ */ jsx52(
+                        "span",
                         {
-                          className: tokens.sectionHeaderClass,
-                          style: { color: "var(--photon-builder-text-soft)" },
-                          children: "Selected block"
+                          className: "font-mono text-[10px] uppercase tracking-[0.16em]",
+                          style: { color: "var(--photon-builder-text-ghost)" },
+                          children: selectedBlock.module
                         }
-                      ),
-                      /* @__PURE__ */ jsx52(
-                        "div",
-                        {
-                          className: clsx17("mt-1", tokens.subtitleClass),
-                          style: { color: "var(--photon-builder-text)" },
-                          children: inspectorDefinition?.label ?? selectedBlock.type
-                        }
-                      ),
-                      /* @__PURE__ */ jsxs42("div", { className: "mt-1 flex flex-wrap items-center gap-2", children: [
-                        /* @__PURE__ */ jsx52(
-                          "div",
-                          {
-                            className: "font-mono text-[11px] uppercase tracking-[0.24em]",
-                            style: { color: "var(--photon-builder-text-ghost)" },
-                            children: selectedBlock.module
-                          }
-                        ),
-                        inspectorDefinition ? /* @__PURE__ */ jsx52(
-                          "div",
-                          {
-                            className: "rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]",
-                            style: {
-                              background: "var(--photon-builder-field)",
-                              color: "var(--photon-builder-text-soft)"
-                            },
-                            children: translatePhotonPaletteCategory(
-                              inspectorDefinition.category,
-                              translate
-                            )
-                          }
-                        ) : null
-                      ] }),
+                      ) }),
                       inspectorDefinition?.description ? /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "mt-1.5 text-[11.5px] leading-snug",
+                          className: "mt-1 text-[11px] leading-snug",
                           style: { color: "var(--photon-builder-text-muted)" },
                           children: inspectorDefinition.description
                         }
@@ -11130,7 +11104,7 @@ var InspectorPanelComponent = ({
                       selectedFieldPath ? /* @__PURE__ */ jsxs42(
                         "div",
                         {
-                          className: "mt-1.5 rounded-sm px-2 py-1 text-[11px]",
+                          className: "mt-1 rounded-sm px-2 py-1 text-[11px]",
                           style: {
                             background: "var(--photon-builder-accent-strong)",
                             color: "var(--photon-builder-accent)"
@@ -11201,112 +11175,44 @@ var InspectorPanelComponent = ({
                     groupKey
                   );
                 }),
-                /* @__PURE__ */ jsxs42(
-                  "section",
+                /* @__PURE__ */ jsx52(
+                  PhotonInspectorSection,
                   {
-                    className: "rounded-[3px] px-2 py-1.5",
-                    style: {
-                      background: "var(--photon-builder-panel-solid)"
-                    },
-                    children: [
-                      /* @__PURE__ */ jsxs42(
-                        "button",
-                        {
-                          type: "button",
-                          onClick: () => setShowBlockJson((current) => !current),
-                          className: "flex w-full cursor-pointer items-center justify-between gap-3 text-left",
-                          children: [
-                            /* @__PURE__ */ jsx52(
-                              "div",
-                              {
-                                className: tokens.sectionHeaderClass,
-                                style: { color: "var(--photon-builder-text-soft)" },
-                                children: "Raw block manifest"
-                              }
-                            ),
-                            showBlockJson ? /* @__PURE__ */ jsx52(
-                              ChevronDown9,
-                              {
-                                className: "h-4 w-4",
-                                style: { color: "var(--photon-builder-text-soft)" }
-                              }
-                            ) : /* @__PURE__ */ jsx52(
-                              ChevronRight6,
-                              {
-                                className: "h-4 w-4",
-                                style: { color: "var(--photon-builder-text-soft)" }
-                              }
-                            )
-                          ]
-                        }
-                      ),
-                      showBlockJson ? /* @__PURE__ */ jsx52(
-                        "pre",
-                        {
-                          className: "mt-1.5 h-[280px] overflow-x-auto rounded-sm p-2 text-[10.5px] leading-5",
-                          style: {
-                            background: "var(--photon-builder-field)",
-                            color: "var(--photon-builder-text-muted)"
-                          },
-                          children: selectedBlockJson
-                        }
-                      ) : null
-                    ]
+                    id: "raw-block-manifest",
+                    title: "Raw block manifest",
+                    defaultCollapsed: true,
+                    children: /* @__PURE__ */ jsx52(
+                      "pre",
+                      {
+                        className: "h-[280px] overflow-x-auto rounded-sm p-2 text-[10.5px] leading-5",
+                        style: {
+                          background: "var(--photon-builder-field)",
+                          color: "var(--photon-builder-text-muted)"
+                        },
+                        children: selectedBlockJson
+                      }
+                    )
                   }
                 )
               ] }) : null,
               activeTab === "block" ? /* @__PURE__ */ jsxs42(Fragment13, { children: [
-                /* @__PURE__ */ jsxs42(
-                  "section",
+                /* @__PURE__ */ jsx52(
+                  PhotonInspectorSection,
                   {
-                    className: "rounded-[3px] px-2 py-1.5",
-                    style: {
-                      background: "var(--photon-builder-panel-solid)"
-                    },
-                    children: [
-                      /* @__PURE__ */ jsxs42(
-                        "button",
-                        {
-                          type: "button",
-                          onClick: () => setShowDocumentJson((current) => !current),
-                          className: "flex w-full cursor-pointer items-center justify-between gap-3 text-left",
-                          children: [
-                            /* @__PURE__ */ jsx52(
-                              "div",
-                              {
-                                className: tokens.sectionHeaderClass,
-                                style: { color: "var(--photon-builder-text-soft)" },
-                                children: "Document JSON"
-                              }
-                            ),
-                            showDocumentJson ? /* @__PURE__ */ jsx52(
-                              ChevronDown9,
-                              {
-                                className: "h-4 w-4",
-                                style: { color: "var(--photon-builder-text-soft)" }
-                              }
-                            ) : /* @__PURE__ */ jsx52(
-                              ChevronRight6,
-                              {
-                                className: "h-4 w-4",
-                                style: { color: "var(--photon-builder-text-soft)" }
-                              }
-                            )
-                          ]
-                        }
-                      ),
-                      showDocumentJson ? /* @__PURE__ */ jsx52(
-                        "pre",
-                        {
-                          className: "mt-1.5 max-h-[280px] overflow-auto rounded-sm p-2 text-[10.5px] leading-5",
-                          style: {
-                            background: "var(--photon-builder-field)",
-                            color: "var(--photon-builder-text-muted)"
-                          },
-                          children: documentJson
-                        }
-                      ) : null
-                    ]
+                    id: "document-json",
+                    title: "Document JSON",
+                    defaultCollapsed: true,
+                    children: /* @__PURE__ */ jsx52(
+                      "pre",
+                      {
+                        className: "max-h-[280px] overflow-auto rounded-sm p-2 text-[10.5px] leading-5",
+                        style: {
+                          background: "var(--photon-builder-field)",
+                          color: "var(--photon-builder-text-muted)"
+                        },
+                        children: documentJson
+                      }
+                    )
                   }
                 ),
                 !definitionFields.length && !hasBlockContext ? /* @__PURE__ */ jsx52(
@@ -11323,36 +11229,22 @@ var InspectorPanelComponent = ({
               ] }) : null,
               activeTab === "page" ? /* @__PURE__ */ jsxs42(Fragment13, { children: [
                 /* @__PURE__ */ jsxs42(
-                  "section",
+                  PhotonInspectorSection,
                   {
-                    className: "rounded-sm px-2 py-1.5 text-[11px] leading-snug",
-                    style: {
-                      background: "var(--photon-builder-panel-solid)",
-                      color: "var(--photon-builder-text-muted)"
-                    },
+                    id: "page-summary",
+                    nonCollapsible: true,
+                    title: /* @__PURE__ */ jsx52(
+                      "span",
+                      {
+                        className: clsx17(tokens.subtitleClass),
+                        style: { color: "var(--photon-builder-text)" },
+                        children: summaryName
+                      }
+                    ),
                     children: [
-                      /* @__PURE__ */ jsxs42(
-                        "div",
-                        {
-                          className: tokens.sectionHeaderClass,
-                          style: { color: "var(--photon-builder-text-soft)" },
-                          children: [
-                            pageTabLabel,
-                            " settings"
-                          ]
-                        }
-                      ),
-                      /* @__PURE__ */ jsx52(
-                        "div",
-                        {
-                          className: clsx17("mt-1", tokens.subtitleClass),
-                          style: { color: "var(--photon-builder-text)" },
-                          children: summaryName
-                        }
-                      ),
-                      /* @__PURE__ */ jsxs42("div", { className: "mt-1 flex flex-wrap items-center gap-1", children: [
+                      /* @__PURE__ */ jsxs42("div", { className: "flex flex-wrap items-center gap-1", children: [
                         /* @__PURE__ */ jsx52(
-                          "div",
+                          "span",
                           {
                             className: "rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]",
                             style: {
@@ -11363,7 +11255,7 @@ var InspectorPanelComponent = ({
                           }
                         ),
                         /* @__PURE__ */ jsx52(
-                          "div",
+                          "span",
                           {
                             className: "rounded-sm px-1.5 py-0 font-mono text-[10px] uppercase tracking-[0.14em]",
                             style: {
@@ -11373,12 +11265,12 @@ var InspectorPanelComponent = ({
                             children: currentPage?.route ?? document2.route
                           }
                         ),
-                        currentPage?.isDynamic ? /* @__PURE__ */ jsx52("div", { className: "rounded-sm bg-amber-300/10 px-1.5 py-0 text-[10px] uppercase tracking-[0.14em] text-amber-100/80", children: "Dynamic template" }) : null
+                        currentPage?.isDynamic ? /* @__PURE__ */ jsx52("span", { className: "rounded-sm bg-amber-300/10 px-1.5 py-0 text-[10px] uppercase tracking-[0.14em] text-amber-100/80", children: "Dynamic template" }) : null
                       ] }),
                       /* @__PURE__ */ jsx52(
                         "div",
                         {
-                          className: "mt-1.5 rounded-sm px-2 py-1 text-[11px] leading-snug",
+                          className: "mt-1 rounded-sm px-2 py-1 text-[11px] leading-snug",
                           style: {
                             background: "var(--photon-builder-accent-strong)",
                             color: "var(--photon-builder-accent)"
@@ -11389,106 +11281,91 @@ var InspectorPanelComponent = ({
                     ]
                   }
                 ),
-                /* @__PURE__ */ jsxs42(
-                  "section",
+                /* @__PURE__ */ jsx52(
+                  PhotonInspectorSection,
                   {
-                    className: "rounded-[3px] px-2 py-1.5",
-                    style: {
-                      background: "var(--photon-builder-panel-solid)"
-                    },
-                    children: [
-                      /* @__PURE__ */ jsx52(
+                    id: "page-basics",
+                    title: translate(
+                      "photon.studio.inspector.basicsSection",
+                      "Basics"
+                    ),
+                    children: /* @__PURE__ */ jsxs42("div", { className: "space-y-1", children: [
+                      /* @__PURE__ */ jsxs42(
                         "div",
                         {
-                          className: "mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em]",
-                          style: { color: "var(--photon-builder-text-soft)" },
-                          children: "Basics"
+                          className: "rounded-sm px-2 py-1.5",
+                          style: { background: "var(--photon-builder-field)" },
+                          children: [
+                            /* @__PURE__ */ jsx52(
+                              "div",
+                              {
+                                className: "text-[10px] uppercase tracking-[0.16em]",
+                                style: { color: "var(--photon-builder-text-soft)" },
+                                children: "Name"
+                              }
+                            ),
+                            /* @__PURE__ */ jsx52(
+                              "div",
+                              {
+                                className: "mt-0.5 text-[12px] font-semibold leading-tight",
+                                style: { color: "var(--photon-builder-text)" },
+                                children: summaryName
+                              }
+                            )
+                          ]
                         }
                       ),
-                      /* @__PURE__ */ jsxs42("div", { className: "space-y-1", children: [
-                        /* @__PURE__ */ jsxs42(
-                          "div",
-                          {
-                            className: "rounded-sm px-2 py-1.5",
-                            style: {
-                              background: "var(--photon-builder-field)"
-                            },
-                            children: [
-                              /* @__PURE__ */ jsx52(
-                                "div",
-                                {
-                                  className: "text-[10px] uppercase tracking-[0.16em]",
-                                  style: { color: "var(--photon-builder-text-soft)" },
-                                  children: "Name"
-                                }
-                              ),
-                              /* @__PURE__ */ jsx52(
-                                "div",
-                                {
-                                  className: "mt-0.5 text-[12px] font-semibold leading-tight",
-                                  style: { color: "var(--photon-builder-text)" },
-                                  children: summaryName
-                                }
-                              )
-                            ]
-                          }
-                        ),
-                        /* @__PURE__ */ jsxs42(
-                          "div",
-                          {
-                            className: "rounded-sm px-2 py-1.5",
-                            style: {
-                              background: "var(--photon-builder-field)"
-                            },
-                            children: [
-                              /* @__PURE__ */ jsx52(
-                                "div",
-                                {
-                                  className: "text-[10px] uppercase tracking-[0.16em]",
-                                  style: { color: "var(--photon-builder-text-soft)" },
-                                  children: currentPage?.isDynamic ? "Route pattern" : "Path"
-                                }
-                              ),
-                              /* @__PURE__ */ jsx52(
-                                "div",
-                                {
-                                  className: "mt-0.5 font-mono text-[11px]",
-                                  style: { color: "var(--photon-builder-text-muted)" },
-                                  children: summaryRoute
-                                }
-                              )
-                            ]
-                          }
-                        ),
-                        currentPage?.isDynamic ? /* @__PURE__ */ jsxs42(
-                          "div",
-                          {
-                            className: "rounded-sm px-2 py-1.5",
-                            style: {
-                              background: "var(--photon-builder-field)"
-                            },
-                            children: [
-                              /* @__PURE__ */ jsx52(
-                                "div",
-                                {
-                                  className: "text-[10px] uppercase tracking-[0.16em]",
-                                  style: { color: "var(--photon-builder-text-soft)" },
-                                  children: "Current route"
-                                }
-                              ),
-                              /* @__PURE__ */ jsx52(
-                                "div",
-                                {
-                                  className: "mt-0.5 font-mono text-[11px]",
-                                  style: { color: "var(--photon-builder-text-muted)" },
-                                  children: currentRoute
-                                }
-                              )
-                            ]
-                          }
-                        ) : null
-                      ] })
-                    ]
+                      /* @__PURE__ */ jsxs42(
+                        "div",
+                        {
+                          className: "rounded-sm px-2 py-1.5",
+                          style: { background: "var(--photon-builder-field)" },
+                          children: [
+                            /* @__PURE__ */ jsx52(
+                              "div",
+                              {
+                                className: "text-[10px] uppercase tracking-[0.16em]",
+                                style: { color: "var(--photon-builder-text-soft)" },
+                                children: currentPage?.isDynamic ? "Route pattern" : "Path"
+                              }
+                            ),
+                            /* @__PURE__ */ jsx52(
+                              "div",
+                              {
+                                className: "mt-0.5 font-mono text-[11px]",
+                                style: { color: "var(--photon-builder-text-muted)" },
+                                children: summaryRoute
+                              }
+                            )
+                          ]
+                        }
+                      ),
+                      currentPage?.isDynamic ? /* @__PURE__ */ jsxs42(
+                        "div",
+                        {
+                          className: "rounded-sm px-2 py-1.5",
+                          style: { background: "var(--photon-builder-field)" },
+                          children: [
+                            /* @__PURE__ */ jsx52(
+                              "div",
+                              {
+                                className: "text-[10px] uppercase tracking-[0.16em]",
+                                style: { color: "var(--photon-builder-text-soft)" },
+                                children: "Current route"
+                              }
+                            ),
+                            /* @__PURE__ */ jsx52(
+                              "div",
+                              {
+                                className: "mt-0.5 font-mono text-[11px]",
+                                style: { color: "var(--photon-builder-text-muted)" },
+                                children: currentRoute
+                              }
+                            )
+                          ]
+                        }
+                      ) : null
+                    ] })
                   }
                 )
               ] }) : null

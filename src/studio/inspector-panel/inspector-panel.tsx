@@ -130,8 +130,6 @@ const InspectorPanelComponent = ({
 			setActiveTab("block");
 		}
 	}, [activeTab, hasSurfaces, hasLayoutFields]);
-	const [showBlockJson, setShowBlockJson] = useState(false);
-	const [showDocumentJson, setShowDocumentJson] = useState(false);
 	const blockGroupKeys = useMemo(
 		() =>
 			orderInspectorGroupKeys(inspectorGroups, {
@@ -166,33 +164,31 @@ const InspectorPanelComponent = ({
 		document.route;
 	const currentRoute =
 		readString(summarySettings, "currentPath") ?? currentPage?.route;
+	// JSON viewers are cheap to compute. PhotonInspectorSection unmounts
+	// the body when collapsed (default), so the <pre> is not in the DOM
+	// until the user expands the section.
 	const selectedBlockJson = useMemo(
-		() =>
-			showBlockJson && selectedBlock
-				? JSON.stringify(selectedBlock, null, 2)
-				: "",
-		[showBlockJson, selectedBlock],
+		() => (selectedBlock ? JSON.stringify(selectedBlock, null, 2) : ""),
+		[selectedBlock],
 	);
 	const documentJson = useMemo(
 		() =>
-			showDocumentJson
-				? JSON.stringify(
-						{
-							id: document.id,
-							route: document.route,
-							updatedAt: document.updatedAt,
-							blocks: document.blocks.map((block) => ({
-								id: block.id,
-								module: block.module,
-								type: block.type,
-								areas: block.areas?.length ?? 0,
-							})),
-						},
-						null,
-						2,
-					)
-				: "",
-		[document, showDocumentJson],
+			JSON.stringify(
+				{
+					id: document.id,
+					route: document.route,
+					updatedAt: document.updatedAt,
+					blocks: document.blocks.map((block) => ({
+						id: block.id,
+						module: block.module,
+						type: block.type,
+						areas: block.areas?.length ?? 0,
+					})),
+				},
+				null,
+				2,
+			),
+		[document],
 	);
 	useEffect(() => {
 		if (selectedBlock) {
@@ -308,26 +304,20 @@ const InspectorPanelComponent = ({
 			>
 				{activeTab === "block" && !selectedBlock && inspectorDefinition ? (
 					<>
-						<section
-							className="rounded-[3px] px-2 py-1.5"
-							style={{
-								background: "var(--photon-builder-panel-solid)",
-							}}
+						<PhotonInspectorSection
+							id="palette-block-summary"
+							nonCollapsible
+							title={
+								<span
+									className={clsx(tokens.subtitleClass)}
+									style={{ color: "var(--photon-builder-text)" }}
+								>
+									{inspectorDefinition.label}
+								</span>
+							}
 						>
-							<div
-								className={tokens.sectionHeaderClass}
-								style={{ color: "var(--photon-builder-text-soft)" }}
-							>
-								Palette block
-							</div>
-							<div
-								className={clsx("mt-1", tokens.subtitleClass)}
-								style={{ color: "var(--photon-builder-text)" }}
-							>
-								{inspectorDefinition.label}
-							</div>
-							<div className="mt-1 flex flex-wrap items-center gap-1">
-								<div
+							<div className="flex flex-wrap items-center gap-1">
+								<span
 									className="rounded-sm px-1.5 py-0 font-mono text-[10px] uppercase tracking-[0.14em]"
 									style={{
 										background: "var(--photon-builder-field)",
@@ -335,8 +325,8 @@ const InspectorPanelComponent = ({
 									}}
 								>
 									{inspectorDefinition.module}
-								</div>
-								<div
+								</span>
+								<span
 									className="rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]"
 									style={{
 										background: "var(--photon-builder-field)",
@@ -347,8 +337,8 @@ const InspectorPanelComponent = ({
 										inspectorDefinition.category,
 										translate,
 									)}
-								</div>
-								<div
+								</span>
+								<span
 									className="rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]"
 									style={{
 										background: "var(--photon-builder-accent-strong)",
@@ -356,42 +346,37 @@ const InspectorPanelComponent = ({
 									}}
 								>
 									{inspectorDefinition.fieldCount} settings
-								</div>
+								</span>
 							</div>
 							<div
-								className="mt-1.5 text-[11.5px] leading-snug"
+								className="mt-1 text-[11px] leading-snug"
 								style={{ color: "var(--photon-builder-text-muted)" }}
 							>
 								{inspectorDefinition.description}
 							</div>
-						</section>
+						</PhotonInspectorSection>
 
 						{Object.entries(inspectorGroups).map(([groupKey, fields]) => (
-							<section
+							<PhotonInspectorSection
 								key={groupKey}
-								className="rounded-[3px] px-2 py-1.5"
-								style={{
-									background: "var(--photon-builder-panel-solid)",
-								}}
-							>
-								<div className="mb-4 flex items-center justify-between gap-3">
-									<div
-										className={tokens.sectionHeaderClass}
-										style={{ color: "var(--photon-builder-text-soft)" }}
-									>
-										{translate(
-											FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
-											translatePhotonFieldGroup(groupKey, translate),
-										)}
-									</div>
-									<div
-										className="font-mono text-[10px] uppercase tracking-[0.24em]"
-										style={{ color: "var(--photon-builder-text-ghost)" }}
+								id={`palette-group-${groupKey}`}
+								title={translate(
+									FIELD_GROUP_LABELS[groupKey] ?? FIELD_GROUP_LABELS.misc,
+									translatePhotonFieldGroup(groupKey, translate),
+								)}
+								trailing={
+									<span
+										className="rounded-sm px-1 font-mono text-[9px] tabular-nums"
+										style={{
+											background: "var(--photon-builder-field)",
+											color: "var(--photon-builder-text-soft)",
+										}}
 									>
 										{fields.length}
-									</div>
-								</div>
-								<div className="space-y-3">
+									</span>
+								}
+							>
+								<div className="space-y-1">
 									{fields.map((field) => (
 										<div
 											key={field.path}
@@ -433,7 +418,7 @@ const InspectorPanelComponent = ({
 										</div>
 									))}
 								</div>
-							</section>
+							</PhotonInspectorSection>
 						))}
 					</>
 				) : null}
@@ -518,33 +503,20 @@ const InspectorPanelComponent = ({
 
 				{activeTab === "block" && selectedBlock ? (
 					<>
-						<section
-							className="rounded-[3px] px-2 py-1.5"
-							style={{
-								background: "var(--photon-builder-panel-solid)",
-							}}
-						>
-							<div
-								className={tokens.sectionHeaderClass}
-								style={{ color: "var(--photon-builder-text-soft)" }}
-							>
-								Selected block
-							</div>
-							<div
-								className={clsx("mt-1", tokens.subtitleClass)}
-								style={{ color: "var(--photon-builder-text)" }}
-							>
-								{inspectorDefinition?.label ?? selectedBlock.type}
-							</div>
-							<div className="mt-1 flex flex-wrap items-center gap-2">
-								<div
-									className="font-mono text-[11px] uppercase tracking-[0.24em]"
-									style={{ color: "var(--photon-builder-text-ghost)" }}
+						<PhotonInspectorSection
+							id="selected-block"
+							nonCollapsible
+							title={
+								<span
+									className={clsx(tokens.subtitleClass)}
+									style={{ color: "var(--photon-builder-text)" }}
 								>
-									{selectedBlock.module}
-								</div>
-								{inspectorDefinition ? (
-									<div
+									{inspectorDefinition?.label ?? selectedBlock.type}
+								</span>
+							}
+							trailing={
+								inspectorDefinition ? (
+									<span
 										className="rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]"
 										style={{
 											background: "var(--photon-builder-field)",
@@ -555,12 +527,21 @@ const InspectorPanelComponent = ({
 											inspectorDefinition.category,
 											translate,
 										)}
-									</div>
-								) : null}
+									</span>
+								) : null
+							}
+						>
+							<div className="flex flex-wrap items-center gap-1">
+								<span
+									className="font-mono text-[10px] uppercase tracking-[0.16em]"
+									style={{ color: "var(--photon-builder-text-ghost)" }}
+								>
+									{selectedBlock.module}
+								</span>
 							</div>
 							{inspectorDefinition?.description ? (
 								<div
-									className="mt-1.5 text-[11.5px] leading-snug"
+									className="mt-1 text-[11px] leading-snug"
 									style={{ color: "var(--photon-builder-text-muted)" }}
 								>
 									{inspectorDefinition.description}
@@ -568,7 +549,7 @@ const InspectorPanelComponent = ({
 							) : null}
 							{selectedFieldPath ? (
 								<div
-									className="mt-1.5 rounded-sm px-2 py-1 text-[11px]"
+									className="mt-1 rounded-sm px-2 py-1 text-[11px]"
 									style={{
 										background: "var(--photon-builder-accent-strong)",
 										color: "var(--photon-builder-accent)",
@@ -578,7 +559,7 @@ const InspectorPanelComponent = ({
 									<span className="font-mono">{selectedFieldPath}</span>
 								</div>
 							) : null}
-						</section>
+						</PhotonInspectorSection>
 
 						<BlockPreviewScenariosPicker block={selectedBlock} />
 
@@ -640,93 +621,41 @@ const InspectorPanelComponent = ({
 							);
 						})}
 
-						<section
-							className="rounded-[3px] px-2 py-1.5"
-							style={{
-								background: "var(--photon-builder-panel-solid)",
-							}}
+						<PhotonInspectorSection
+							id="raw-block-manifest"
+							title="Raw block manifest"
+							defaultCollapsed
 						>
-							<button
-								type="button"
-								onClick={() => setShowBlockJson((current) => !current)}
-								className="flex w-full cursor-pointer items-center justify-between gap-3 text-left"
+							<pre
+								className="h-[280px] overflow-x-auto rounded-sm p-2 text-[10.5px] leading-5"
+								style={{
+									background: "var(--photon-builder-field)",
+									color: "var(--photon-builder-text-muted)",
+								}}
 							>
-								<div
-									className={tokens.sectionHeaderClass}
-									style={{ color: "var(--photon-builder-text-soft)" }}
-								>
-									Raw block manifest
-								</div>
-								{showBlockJson ? (
-									<ChevronDown
-										className="h-4 w-4"
-										style={{ color: "var(--photon-builder-text-soft)" }}
-									/>
-								) : (
-									<ChevronRight
-										className="h-4 w-4"
-										style={{ color: "var(--photon-builder-text-soft)" }}
-									/>
-								)}
-							</button>
-							{showBlockJson ? (
-								<pre
-									className="mt-1.5 h-[280px] overflow-x-auto rounded-sm p-2 text-[10.5px] leading-5"
-									style={{
-										background: "var(--photon-builder-field)",
-										color: "var(--photon-builder-text-muted)",
-									}}
-								>
-									{selectedBlockJson}
-								</pre>
-							) : null}
-						</section>
+								{selectedBlockJson}
+							</pre>
+						</PhotonInspectorSection>
 					</>
 				) : null}
 
 				{activeTab === "block" ? (
 					<>
-						<section
-							className="rounded-[3px] px-2 py-1.5"
-							style={{
-								background: "var(--photon-builder-panel-solid)",
-							}}
+						<PhotonInspectorSection
+							id="document-json"
+							title="Document JSON"
+							defaultCollapsed
 						>
-							<button
-								type="button"
-								onClick={() => setShowDocumentJson((current) => !current)}
-								className="flex w-full cursor-pointer items-center justify-between gap-3 text-left"
+							<pre
+								className="max-h-[280px] overflow-auto rounded-sm p-2 text-[10.5px] leading-5"
+								style={{
+									background: "var(--photon-builder-field)",
+									color: "var(--photon-builder-text-muted)",
+								}}
 							>
-								<div
-									className={tokens.sectionHeaderClass}
-									style={{ color: "var(--photon-builder-text-soft)" }}
-								>
-									Document JSON
-								</div>
-								{showDocumentJson ? (
-									<ChevronDown
-										className="h-4 w-4"
-										style={{ color: "var(--photon-builder-text-soft)" }}
-									/>
-								) : (
-									<ChevronRight
-										className="h-4 w-4"
-										style={{ color: "var(--photon-builder-text-soft)" }}
-									/>
-								)}
-							</button>
-							{showDocumentJson ? (
-								<pre
-									className="mt-1.5 max-h-[280px] overflow-auto rounded-sm p-2 text-[10.5px] leading-5"
-									style={{
-										background: "var(--photon-builder-field)",
-										color: "var(--photon-builder-text-muted)",
-									}}
-								>
-									{documentJson}
-								</pre>
-							) : null}
-						</section>
+								{documentJson}
+							</pre>
+						</PhotonInspectorSection>
 
 						{!definitionFields.length && !hasBlockContext ? (
 							<section
@@ -746,27 +675,20 @@ const InspectorPanelComponent = ({
 
 				{activeTab === "page" ? (
 					<>
-						<section
-							className="rounded-sm px-2 py-1.5 text-[11px] leading-snug"
-							style={{
-								background: "var(--photon-builder-panel-solid)",
-								color: "var(--photon-builder-text-muted)",
-							}}
+						<PhotonInspectorSection
+							id="page-summary"
+							nonCollapsible
+							title={
+								<span
+									className={clsx(tokens.subtitleClass)}
+									style={{ color: "var(--photon-builder-text)" }}
+								>
+									{summaryName}
+								</span>
+							}
 						>
-							<div
-								className={tokens.sectionHeaderClass}
-								style={{ color: "var(--photon-builder-text-soft)" }}
-							>
-								{pageTabLabel} settings
-							</div>
-							<div
-								className={clsx("mt-1", tokens.subtitleClass)}
-								style={{ color: "var(--photon-builder-text)" }}
-							>
-								{summaryName}
-							</div>
-							<div className="mt-1 flex flex-wrap items-center gap-1">
-								<div
+							<div className="flex flex-wrap items-center gap-1">
+								<span
 									className="rounded-sm px-1.5 py-0 text-[10px] uppercase tracking-[0.14em]"
 									style={{
 										background: "var(--photon-builder-field)",
@@ -774,8 +696,8 @@ const InspectorPanelComponent = ({
 									}}
 								>
 									{currentPage?.kind ?? "page"}
-								</div>
-								<div
+								</span>
+								<span
 									className="rounded-sm px-1.5 py-0 font-mono text-[10px] uppercase tracking-[0.14em]"
 									style={{
 										background: "var(--photon-builder-field)",
@@ -783,15 +705,15 @@ const InspectorPanelComponent = ({
 									}}
 								>
 									{currentPage?.route ?? document.route}
-								</div>
+								</span>
 								{currentPage?.isDynamic ? (
-									<div className="rounded-sm bg-amber-300/10 px-1.5 py-0 text-[10px] uppercase tracking-[0.14em] text-amber-100/80">
+									<span className="rounded-sm bg-amber-300/10 px-1.5 py-0 text-[10px] uppercase tracking-[0.14em] text-amber-100/80">
 										Dynamic template
-									</div>
+									</span>
 								) : null}
 							</div>
 							<div
-								className="mt-1.5 rounded-sm px-2 py-1 text-[11px] leading-snug"
+								className="mt-1 rounded-sm px-2 py-1 text-[11px] leading-snug"
 								style={{
 									background: "var(--photon-builder-accent-strong)",
 									color: "var(--photon-builder-accent)",
@@ -800,26 +722,19 @@ const InspectorPanelComponent = ({
 								Open Page Settings from the top canvas toolbar to edit route
 								basics and package-registered settings like SEO.
 							</div>
-						</section>
+						</PhotonInspectorSection>
 
-						<section
-							className="rounded-[3px] px-2 py-1.5"
-							style={{
-								background: "var(--photon-builder-panel-solid)",
-							}}
+						<PhotonInspectorSection
+							id="page-basics"
+							title={translate(
+								"photon.studio.inspector.basicsSection",
+								"Basics",
+							)}
 						>
-							<div
-								className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em]"
-								style={{ color: "var(--photon-builder-text-soft)" }}
-							>
-								Basics
-							</div>
 							<div className="space-y-1">
 								<div
 									className="rounded-sm px-2 py-1.5"
-									style={{
-										background: "var(--photon-builder-field)",
-									}}
+									style={{ background: "var(--photon-builder-field)" }}
 								>
 									<div
 										className="text-[10px] uppercase tracking-[0.16em]"
@@ -836,9 +751,7 @@ const InspectorPanelComponent = ({
 								</div>
 								<div
 									className="rounded-sm px-2 py-1.5"
-									style={{
-										background: "var(--photon-builder-field)",
-									}}
+									style={{ background: "var(--photon-builder-field)" }}
 								>
 									<div
 										className="text-[10px] uppercase tracking-[0.16em]"
@@ -856,9 +769,7 @@ const InspectorPanelComponent = ({
 								{currentPage?.isDynamic ? (
 									<div
 										className="rounded-sm px-2 py-1.5"
-										style={{
-											background: "var(--photon-builder-field)",
-										}}
+										style={{ background: "var(--photon-builder-field)" }}
 									>
 										<div
 											className="text-[10px] uppercase tracking-[0.16em]"
@@ -875,7 +786,7 @@ const InspectorPanelComponent = ({
 									</div>
 								) : null}
 							</div>
-						</section>
+						</PhotonInspectorSection>
 					</>
 				) : null}
 			</div>

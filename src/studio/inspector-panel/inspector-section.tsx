@@ -45,7 +45,7 @@ export const PhotonInspectorSection = ({
 
 	return (
 		<section
-			className={tokens.sectionRadius}
+			className={clsx("overflow-hidden", tokens.sectionRadius)}
 			style={{
 				background: "var(--photon-builder-panel-solid)",
 			}}
@@ -56,11 +56,22 @@ export const PhotonInspectorSection = ({
 				type="button"
 				onClick={nonCollapsible ? undefined : toggle}
 				className={clsx(
-					"flex w-full items-center gap-1.5 px-2 py-1.5 text-left",
+					"flex w-full items-center gap-1.5 px-2 py-1 text-left",
 					nonCollapsible ? "cursor-default" : "cursor-pointer",
 				)}
 				aria-expanded={isExpanded}
 				data-testid={`photon-inspector-section-header-${id}`}
+				style={{
+					// Darker tone band on the header — Unreal Details panel uses
+					// the same trick to make sections immediately readable: the
+					// header sits a step deeper than the body, then a 1px hairline
+					// separates the two so the body content reads as "inside" the
+					// chamber.
+					background: "var(--photon-builder-shell-strong)",
+					boxShadow: isExpanded
+						? "inset 0 -1px 0 0 color-mix(in srgb, var(--photon-builder-border) 50%, transparent)"
+						: undefined,
+				}}
 			>
 				{nonCollapsible ? null : isExpanded ? (
 					<ChevronDown
@@ -83,16 +94,16 @@ export const PhotonInspectorSection = ({
 					<div className="shrink-0">{trailing}</div>
 				) : null}
 			</button>
-			{subtitle ? (
+			{subtitle && isExpanded ? (
 				<div
-					className="px-2 pb-1 text-[10.5px] leading-snug"
+					className="px-2 pt-1 text-[10.5px] leading-snug"
 					style={{ color: "var(--photon-builder-text-soft)" }}
 				>
 					{subtitle}
 				</div>
 			) : null}
 			{isExpanded ? (
-				<div className={clsx(tokens.sectionPadding, "pt-0")}>{children}</div>
+				<div className={clsx(tokens.sectionPadding, "pt-1")}>{children}</div>
 			) : null}
 		</section>
 	);
