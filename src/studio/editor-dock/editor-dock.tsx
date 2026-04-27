@@ -22,7 +22,6 @@ type EditorDockProps = {
 	canManage: boolean;
 	hasUnsavedChanges: boolean;
 	collapsedBlockCount: number;
-	autosaveEnabled: boolean;
 	saveState: "idle" | "saving" | "saved" | "error";
 	showCollapsedInPreview: boolean;
 	title: string;
@@ -31,7 +30,6 @@ type EditorDockProps = {
 	pages: PhotonPageCatalogItem[];
 	onHeightChange: (height: number) => void;
 	onAuthOpen: () => void;
-	onAutosaveChange: (value: boolean) => void;
 	onOpenPage?: (page: PhotonPageCatalogItem) => void;
 	onCreatePage?: (input: {
 		name: string;
@@ -58,7 +56,6 @@ export const EditorDock = ({
 	canManage,
 	hasUnsavedChanges,
 	collapsedBlockCount,
-	autosaveEnabled,
 	saveState,
 	showCollapsedInPreview,
 	title,
@@ -67,7 +64,6 @@ export const EditorDock = ({
 	pages,
 	onHeightChange,
 	onAuthOpen,
-	onAutosaveChange,
 	onOpenPage,
 	onCreatePage,
 	onContentLocaleChange,
@@ -207,12 +203,10 @@ export const EditorDock = ({
 								<EditorModeSelect value={activeMode} onChange={onModeChange} />
 								<EditorSaveButton
 									activeMode={activeMode}
-									autosaveEnabled={autosaveEnabled}
 									hasUnsavedChanges={hasUnsavedChanges}
 									collapsedBlockCount={collapsedBlockCount}
 									saveState={saveState}
 									showCollapsedInPreview={showCollapsedInPreview}
-									onAutosaveChange={onAutosaveChange}
 									onPreviewCollapsedChange={onPreviewCollapsedChange}
 									onReset={onReset}
 									onSave={onSave}

@@ -257,7 +257,6 @@ type PhotonStageProps = {
 	canManage: boolean;
 	hasUnsavedChanges: boolean;
 	collapsedBlockCount: number;
-	autosaveEnabled: boolean;
 	saveState: "idle" | "saving" | "saved" | "error";
 	showCollapsedInPreview: boolean;
 	title: string;
@@ -266,7 +265,6 @@ type PhotonStageProps = {
 	pages: PhotonPageCatalogItem[];
 	onHeightChange: (height: number) => void;
 	onAuthOpen: () => void;
-	onAutosaveChange: (value: boolean) => void;
 	onOpenPage?: (page: PhotonPageCatalogItem) => void;
 	onCreatePage?: (input: {
 		name: string;
@@ -386,7 +384,6 @@ export const PhotonStage = ({
 	canManage,
 	hasUnsavedChanges,
 	collapsedBlockCount,
-	autosaveEnabled,
 	saveState,
 	showCollapsedInPreview,
 	title,
@@ -395,7 +392,6 @@ export const PhotonStage = ({
 	pages,
 	onHeightChange,
 	onAuthOpen,
-	onAutosaveChange,
 	onOpenPage,
 	onCreatePage,
 	onContentLocaleChange,
@@ -619,7 +615,6 @@ export const PhotonStage = ({
 					canManage={canManage}
 					hasUnsavedChanges={hasUnsavedChanges}
 					collapsedBlockCount={collapsedBlockCount}
-					autosaveEnabled={autosaveEnabled}
 					saveState={saveState}
 					showCollapsedInPreview={showCollapsedInPreview}
 					title={title}
@@ -628,7 +623,6 @@ export const PhotonStage = ({
 					pages={pages}
 					onHeightChange={onHeightChange}
 					onAuthOpen={onAuthOpen}
-					onAutosaveChange={onAutosaveChange}
 					onOpenPage={onOpenPage}
 					onCreatePage={onCreatePage}
 					onContentLocaleChange={onContentLocaleChange}

@@ -499,23 +499,11 @@ export const useStudioPersistence = ({
 		syncExternalState,
 	]);
 
-	useEffect(() => {
-		if (!canSaveDocument || !autosaveEnabled || !hasUnsavedChanges) {
-			return;
-		}
-
-		const timeoutId = window.setTimeout(() => {
-			void saveDocument("autosave");
-		}, 900);
-
-		return () => window.clearTimeout(timeoutId);
-	}, [
-		autosaveEnabled,
-		canSaveDocument,
-		contentRevision,
-		hasUnsavedChanges,
-		saveDocument,
-	]);
+	// Drafts live entirely in IndexedDB (see the 180ms IDB-write effect above).
+	// The network is only contacted when the user clicks Save, which calls
+	// `saveDocument("manual")` — there is no background autosave-to-server.
+	// `autosaveEnabled` is kept as a UX hint that the local draft is up to date;
+	// it no longer triggers any HTTP traffic.
 
 	useEffect(() => {
 		if (saveState === "idle" || saveState === "saving") {

@@ -5,7 +5,6 @@ import { ChevronRight, History, LoaderCircle, Save } from "lucide-react";
 import { useState } from "react";
 import {
 	ContextMenu,
-	ContextMenuCheckboxItem,
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuSeparator,
@@ -19,12 +18,10 @@ type SaveState = "idle" | "saving" | "saved" | "error";
 
 type EditorSaveButtonProps = {
 	activeMode: PhotonMode;
-	autosaveEnabled: boolean;
 	hasUnsavedChanges: boolean;
 	collapsedBlockCount: number;
 	saveState: SaveState;
 	showCollapsedInPreview: boolean;
-	onAutosaveChange: (value: boolean) => void;
 	onPreviewCollapsedChange: () => void;
 	onReset: () => void;
 	onSave: () => void;
@@ -32,12 +29,10 @@ type EditorSaveButtonProps = {
 
 export const EditorSaveButton = ({
 	activeMode,
-	autosaveEnabled,
 	hasUnsavedChanges,
 	collapsedBlockCount,
 	saveState,
 	showCollapsedInPreview,
-	onAutosaveChange,
 	onPreviewCollapsedChange,
 	onReset,
 	onSave,
@@ -45,7 +40,6 @@ export const EditorSaveButton = ({
 	const [resetDialogOpen, setResetDialogOpen] = useState(false);
 	const meta = getSaveButtonMeta({
 		activeMode,
-		autosaveEnabled,
 		hasUnsavedChanges,
 		saveState,
 	});
@@ -80,13 +74,6 @@ export const EditorSaveButton = ({
 						<Save className="mr-3 h-4 w-4 text-[color:var(--photon-builder-text-soft)]" />
 						Save now
 					</ContextMenuItem>
-
-					<ContextMenuCheckboxItem
-						checked={autosaveEnabled}
-						onCheckedChange={(checked) => onAutosaveChange(checked === true)}
-					>
-						Autosave
-					</ContextMenuCheckboxItem>
 
 					<ContextMenuItem
 						disabled={!hasUnsavedChanges}

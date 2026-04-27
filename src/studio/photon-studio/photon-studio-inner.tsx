@@ -262,8 +262,6 @@ export const PhotonStudioInner = ({
 	});
 
 	const {
-		autosaveEnabled,
-		setAutosaveEnabled,
 		hasUnsavedChanges,
 		restoreLastSavedState,
 		saveState,
@@ -644,14 +642,12 @@ export const PhotonStudioInner = ({
 					canManage={canManage}
 					hasUnsavedChanges={hasUnsavedChanges}
 					collapsedBlockCount={collapsedBlockCount}
-					autosaveEnabled={autosaveEnabled}
 					saveState={saveState}
 					showCollapsedInPreview={showCollapsedInPreview}
 					title={title}
 					description={description}
 					onHeightChange={setDockHeight}
 					onAuthOpen={() => onRequestAuth?.()}
-					onAutosaveChange={setAutosaveEnabled}
 					onCollapseAll={collapseAllBlocks}
 					onExpandAll={expandAllBlocks}
 					onLogout={() => void onLogout?.()}
