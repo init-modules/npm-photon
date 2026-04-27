@@ -2185,6 +2185,44 @@ var FieldEditorImpl = ({
       }
     );
   }
+  const isFlatMediaField = field.kind === "image" || field.kind === "gallery";
+  if (isFlatMediaField) {
+    return /* @__PURE__ */ jsxs8("div", { className: "flex flex-col gap-1 px-1 py-1", "data-photon-density-row": true, children: [
+      /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-1.5", children: [
+        /* @__PURE__ */ jsx13(
+          "div",
+          {
+            className: clsx4(tokens.fieldLabelClass, "min-w-0 flex-1 truncate"),
+            style: { color: "var(--photon-builder-text)" },
+            title: labelText,
+            children: labelText
+          }
+        ),
+        bindingPill,
+        path && !hidePathLabel ? /* @__PURE__ */ jsx13(
+          "button",
+          {
+            type: "button",
+            onClick: () => onFocus(path),
+            className: "shrink-0 cursor-pointer font-mono text-[9px] uppercase tracking-[0.16em] transition",
+            style: { color: "var(--photon-builder-text-ghost)" },
+            title: path,
+            children: "\u2317"
+          }
+        ) : null
+      ] }),
+      description ? /* @__PURE__ */ jsx13("div", { children: description }) : null,
+      path && !fieldBinding ? /* @__PURE__ */ jsx13(
+        SiteDataBindingPicker,
+        {
+          mode: "field",
+          label: "Bind field",
+          onPick: (binding) => setFieldBinding(blockId, path, binding)
+        }
+      ) : null,
+      renderControl()
+    ] });
+  }
   return /* @__PURE__ */ jsxs8(
     NonInlineFieldShell,
     {

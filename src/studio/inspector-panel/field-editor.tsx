@@ -819,6 +819,49 @@ const FieldEditorImpl = ({
 		);
 	}
 
+	// Visual media kinds (image, gallery) are flat fields, not sub-sections.
+	// Rendering their own dark caret-header band creates a "Logo image"
+	// section inside an auto-section like "Brand" — visually splitting
+	// what should read as a single list of Brand fields.
+	const isFlatMediaField = field.kind === "image" || field.kind === "gallery";
+
+	if (isFlatMediaField) {
+		return (
+			<div className="flex flex-col gap-1 px-1 py-1" data-photon-density-row>
+				<div className="flex items-center gap-1.5">
+					<div
+						className={clsx(tokens.fieldLabelClass, "min-w-0 flex-1 truncate")}
+						style={{ color: "var(--photon-builder-text)" }}
+						title={labelText}
+					>
+						{labelText}
+					</div>
+					{bindingPill}
+					{path && !hidePathLabel ? (
+						<button
+							type="button"
+							onClick={() => onFocus(path)}
+							className="shrink-0 cursor-pointer font-mono text-[9px] uppercase tracking-[0.16em] transition"
+							style={{ color: "var(--photon-builder-text-ghost)" }}
+							title={path}
+						>
+							⌗
+						</button>
+					) : null}
+				</div>
+				{description ? <div>{description}</div> : null}
+				{path && !fieldBinding ? (
+					<SiteDataBindingPicker
+						mode="field"
+						label="Bind field"
+						onPick={(binding) => setFieldBinding(blockId, path, binding)}
+					/>
+				) : null}
+				{renderControl()}
+			</div>
+		);
+	}
+
 	return (
 		<NonInlineFieldShell
 			path={path}
