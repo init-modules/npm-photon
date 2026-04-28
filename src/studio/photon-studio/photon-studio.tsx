@@ -39,6 +39,7 @@ export const PhotonStudio = ({
 	linkComponent,
 	linkFactory,
 	siteFrameExtensions,
+	siteFrameContributionRegistry,
 	accountTabs,
 		interactionSurfaces,
 		interactionActions,
@@ -75,6 +76,7 @@ export const PhotonStudio = ({
 			linkComponent={linkComponent}
 			linkFactory={linkFactory}
 			siteFrameExtensions={siteFrameExtensions}
+			siteFrameContributionRegistry={siteFrameContributionRegistry}
 			accountTabs={accountTabs}
 				interactionSurfaces={interactionSurfaces}
 				interactionActions={interactionActions}

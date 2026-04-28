@@ -175,6 +175,13 @@ const collectPhotonFieldLocalization = (
 		return;
 	}
 
+	if (field.kind === "contribution-list") {
+		// Contribution-list fields bind to siteSettings.contributionOverrides,
+		// not to block.props, so they contribute nothing to the per-block
+		// localization schema.
+		return;
+	}
+
 	if (field.kind === "form-fields") {
 		if (!currentPath) {
 			throw new Error("Photon form fields require a concrete path.");

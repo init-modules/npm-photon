@@ -9,6 +9,7 @@ export * from "./helpers/route-context";
 export * from "./helpers/site";
 export * from "./helpers/site-design";
 export * from "./helpers/site-frame-extensions";
+export * from "./helpers/contributions";
 export * from "./helpers/studio-url-state";
 export * from "./helpers/tree";
 export * from "./helpers/workspace";
