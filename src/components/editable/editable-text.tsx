@@ -131,7 +131,7 @@ export const EditableText = ({
 			}
 			className={editableFrameClassName({ isActive, isEditable, className })}
 		>
-			{resolvedValue || value || placeholder}
+			{resolvedValue || value || (isEditable ? placeholder : "")}
 			{isEditable && hasBinding ? (
 				<span
 					data-testid="photon-binding-indicator"

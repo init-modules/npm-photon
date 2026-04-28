@@ -69,6 +69,10 @@ export const EditableTextarea = ({
 		);
 	}
 
+	if (!value && !canEdit) {
+		return null;
+	}
+
 	return (
 		<div
 			data-photon-search-target={buildPhotonSearchTargetId(blockId, path)}
