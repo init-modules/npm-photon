@@ -23,7 +23,8 @@ export type PhotonFieldKind =
 	| "object"
 	| "repeater"
 	| "image"
-	| "gallery";
+	| "gallery"
+	| "contribution-list";
 
 export type PhotonFieldOption = {
 	label: string;
@@ -60,6 +61,14 @@ export type PhotonNestedField = {
 	addLabelKey?: string;
 	defaultValue?: unknown;
 	defaultItem?: unknown;
+	/**
+	 * For `kind: "contribution-list"` fields — id of the site-frame slot
+	 * to display contributions for (e.g. "header.actions"). The field
+	 * renderer reads the contribution registry from photon context,
+	 * filters by this slot, and lists each contribution with its
+	 * configurable controls.
+	 */
+	slotId?: string;
 };
 
 export type PhotonDefaultable<T> =

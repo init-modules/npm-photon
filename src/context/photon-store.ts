@@ -56,6 +56,10 @@ import {
 	resolvePhotonInteractionToastTemplate,
 } from "../helpers/interaction-surfaces";
 import type {
+	PhotonContributionOverride,
+	PhotonSiteFrameContributionRegistry,
+} from "../helpers/contributions";
+import type {
 	PhotonAccountTabExtension,
 	PhotonActionPolicy,
 	PhotonBlock,
@@ -180,6 +184,8 @@ export type PhotonStoreState = {
 	linkFactory: PhotonLinkFactory;
 	navigation: PhotonNavigationConfig;
 	siteFrameExtensions: PhotonSiteFrameExtension[];
+	siteFrameContributionRegistry?: PhotonSiteFrameContributionRegistry;
+	contributionOverrides?: readonly PhotonContributionOverride[];
 	accountTabs: PhotonAccountTabExtension[];
 	interactionSurfaces: PhotonInteractionSurfaceDefinition[];
 	interactionActions: PhotonInteractionActionDefinition[];
@@ -346,6 +352,8 @@ export type PhotonStoreInit = {
 	linkFactory?: PhotonLinkFactory;
 	navigation?: PhotonNavigationConfig;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
+	siteFrameContributionRegistry?: PhotonSiteFrameContributionRegistry;
+	contributionOverrides?: readonly PhotonContributionOverride[];
 	accountTabs?: PhotonAccountTabExtension[];
 	i18n?: {
 		contentLocale?: string;
@@ -681,6 +689,8 @@ export const createPhotonStore = ({
 	linkFactory = (href) => href,
 	navigation = {},
 	siteFrameExtensions = [],
+	siteFrameContributionRegistry,
+	contributionOverrides,
 	accountTabs = [],
 	i18n,
 }: PhotonStoreInit): PhotonStore => {
@@ -758,6 +768,12 @@ export const createPhotonStore = ({
 		linkFactory,
 		navigation: clonePhotonValue(navigation),
 		siteFrameExtensions,
+		...(siteFrameContributionRegistry !== undefined
+			? { siteFrameContributionRegistry }
+			: {}),
+		...(contributionOverrides !== undefined
+			? { contributionOverrides }
+			: {}),
 		accountTabs: clonePhotonValue(accountTabs),
 		contentLocale,
 		defaultLocale,

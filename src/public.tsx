@@ -27,6 +27,7 @@ export {
 import { PhotonSearchHighlightEffect } from "./search/photon-search-highlight-effect";
 import { PhotonSiteSearchSurfaceRenderer } from "./search/photon-site-search";
 import { resolvePhotonSiteFrameMobileControls } from "./modules/system/site/site-mobile-frame";
+import type { PhotonSiteFrameContributionRegistry } from "./helpers/contributions";
 import type {
 	PhotonAccountTabExtension,
 	PhotonAuthPageRenderer,
@@ -227,6 +228,7 @@ type PhotonPublicPageProps = {
 	i18n?: PhotonI18nValue | null;
 	linkComponent?: PhotonLinkComponent;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
+	siteFrameContributionRegistry?: PhotonSiteFrameContributionRegistry;
 	accountTabs?: PhotonAccountTabExtension[];
 	interactionSurfaces?: PhotonInteractionSurfaceDefinition[];
 	interactionActions?: PhotonInteractionActionDefinition[];
@@ -252,6 +254,7 @@ export const PhotonPublicPage = ({
 	i18n,
 	linkComponent,
 	siteFrameExtensions,
+	siteFrameContributionRegistry,
 	accountTabs,
 	interactionSurfaces,
 	interactionActions,
@@ -309,6 +312,7 @@ export const PhotonPublicPage = ({
 			isAdmin={false}
 			linkComponent={linkComponent}
 				siteFrameExtensions={siteFrameExtensions}
+				siteFrameContributionRegistry={siteFrameContributionRegistry}
 				accountTabs={accountTabs}
 				interactionSurfaces={interactionSurfaces}
 				interactionActions={interactionActions}
@@ -459,6 +463,41 @@ export {
 	resolvePhotonPublicAccountTabs as resolvePhotonAccountTabs,
 	resolvePhotonPublicSiteFrameExtensions as resolvePhotonSiteFrameExtensions,
 } from "./helpers/public-site-frame-extensions";
+export {
+	createPhotonSiteFrameContributionRegistry,
+	createPhotonSlotRegistry,
+	definePhotonSiteFrameContribution,
+	definePhotonSlot,
+	footerLegalSlot,
+	footerNavigationSlot,
+	headerActionsSlot,
+	headerNavigationSlot,
+	headerProminentSlot,
+	headerUtilitySlot,
+	mobileBottomBarItemsSlot,
+	photonCoreSiteFrameSlots,
+	resolvePhotonSlot,
+} from "./helpers/contributions";
+export {
+	useResolvedSlot,
+	usePhotonResolvedSlot,
+} from "./helpers/contributions/client";
+export type {
+	PhotonAnySiteFrameContribution,
+	PhotonContributionOverride,
+	PhotonLocalizedRecord,
+	PhotonResolvedContribution,
+	PhotonSiteFrameContribution,
+	PhotonSiteFrameContributionConfigurable,
+	PhotonSiteFrameContributionConfigurableField,
+	PhotonSiteFrameContributionContext,
+	PhotonSiteFrameContributionDefaults,
+	PhotonSiteFrameContributionRegistry,
+	PhotonSiteFrameContributionRenderProps,
+	PhotonSlot,
+	PhotonSlotPlacement,
+	PhotonSlotRegistry,
+} from "./helpers/contributions";
 export { getPhotonPublicSurfaceModeStyle as getPhotonSurfaceModeStyle } from "./helpers/public-surface-layout";
 export { usePhotonI18n } from "./i18n/photon-i18n-context";
 export {
