@@ -72,10 +72,6 @@ export const EditableText = ({
 		);
 	}
 
-	if (!value && !canEdit) {
-		return null;
-	}
-
 	return (
 		<Tag
 			{...rest}

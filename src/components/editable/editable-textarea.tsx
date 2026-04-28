@@ -115,7 +115,7 @@ export const EditableTextarea = ({
 			data-photon-search-target={searchTargetId}
 			className={editableFrameClassName({ isActive, isEditable, className })}
 		>
-			{resolvedValue || value || (isEditable ? placeholder : "")}
+			{resolvedValue || value || placeholder}
 		</div>
 	);
 };
