@@ -40,10 +40,6 @@ import {
 	resolvePhotonBlockActiveState,
 	type PhotonBlockActiveStateResolution,
 } from "../helpers/block-active-state";
-import type {
-	PhotonContributionOverride,
-	PhotonSiteFrameContributionRegistry,
-} from "../helpers/contributions";
 import { PhotonI18nProvider } from "../i18n/photon-i18n-context";
 import { PhotonInteractionSurfaceHost } from "../interaction-surfaces/photon-interaction-surface-host";
 import type {
@@ -116,15 +112,6 @@ type PhotonPublicContextValue = {
 	linkFactory: PhotonLinkFactory;
 	navigation: PhotonNavigationConfig;
 	siteFrameExtensions: PhotonSiteFrameExtension[];
-	/**
-	 * Optional during Phase B migration. When provided, blocks may
-	 * resolve their site-frame contributions through this registry +
-	 * `contributionOverrides` instead of the legacy `siteFrameExtensions`
-	 * array. Phase B.6 finale removes the legacy field; until then both
-	 * are accepted side-by-side.
-	 */
-	siteFrameContributionRegistry?: PhotonSiteFrameContributionRegistry;
-	contributionOverrides?: readonly PhotonContributionOverride[];
 	accountTabs: PhotonAccountTabExtension[];
 	interactionSurfaces: PhotonInteractionSurfaceDefinition[];
 	interactionActions: PhotonInteractionActionDefinition[];
@@ -174,8 +161,6 @@ type PhotonPublicProviderProps = {
 	linkFactory?: PhotonLinkFactory;
 	navigation?: PhotonNavigationConfig;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
-	siteFrameContributionRegistry?: PhotonSiteFrameContributionRegistry;
-	contributionOverrides?: readonly PhotonContributionOverride[];
 	accountTabs?: PhotonAccountTabExtension[];
 };
 
@@ -318,8 +303,6 @@ export const PhotonProvider = ({
 	linkFactory = defaultPhotonLinkFactory,
 	navigation = {},
 	siteFrameExtensions = [],
-	siteFrameContributionRegistry,
-	contributionOverrides,
 	accountTabs = [],
 }: PhotonPublicProviderProps) => {
 	const [activeInteractionSurface, setActiveInteractionSurface] =
@@ -527,12 +510,6 @@ export const PhotonProvider = ({
 			linkFactory,
 			navigation,
 			siteFrameExtensions,
-				...(siteFrameContributionRegistry !== undefined
-					? { siteFrameContributionRegistry }
-					: {}),
-				...(contributionOverrides !== undefined
-					? { contributionOverrides }
-					: {}),
 				accountTabs,
 				interactionSurfaces,
 				interactionActions,
@@ -573,8 +550,6 @@ export const PhotonProvider = ({
 			searchSite,
 				showInteractionToast,
 				siteFrameExtensions,
-				siteFrameContributionRegistry,
-				contributionOverrides,
 				interactionSurfaces,
 				interactionActions,
 				interactionGuards,

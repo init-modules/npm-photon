@@ -27,10 +27,6 @@ import {
 	normalizePhotonWorkspaceCapabilities,
 	normalizePhotonWorkspaceDescriptor,
 } from "../helpers/workspace";
-import type {
-	PhotonContributionOverride,
-	PhotonSiteFrameContributionRegistry,
-} from "../helpers/contributions";
 import { PhotonI18nProvider } from "../i18n/photon-i18n-context";
 import type {
 	PhotonAccountTabExtension,
@@ -99,8 +95,6 @@ type PhotonProviderProps = {
 	linkFactory?: PhotonLinkFactory;
 	navigation?: PhotonNavigationConfig;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
-	siteFrameContributionRegistry?: PhotonSiteFrameContributionRegistry;
-	contributionOverrides?: readonly PhotonContributionOverride[];
 	accountTabs?: PhotonAccountTabExtension[];
 	routeContextFields?: PhotonRouteContextField[];
 	routeContextValues?: Record<string, unknown>;
@@ -155,8 +149,6 @@ export const PhotonProvider = ({
 	linkFactory = defaultPhotonLinkFactory,
 	navigation = {},
 	siteFrameExtensions = [],
-	siteFrameContributionRegistry,
-	contributionOverrides,
 	accountTabs = [],
 	routeContextFields = [],
 	routeContextValues = {},
@@ -231,12 +223,6 @@ export const PhotonProvider = ({
 			linkFactory,
 			navigation,
 			siteFrameExtensions,
-			...(siteFrameContributionRegistry !== undefined
-				? { siteFrameContributionRegistry }
-				: {}),
-			...(contributionOverrides !== undefined
-				? { contributionOverrides }
-				: {}),
 			accountTabs,
 			routeContextFields,
 			routeContextValues,

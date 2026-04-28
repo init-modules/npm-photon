@@ -27,7 +27,6 @@ export * from "./helpers/runtime";
 export * from "./helpers/site";
 export * from "./helpers/site-design";
 export * from "./helpers/site-frame-extensions";
-export * from "./helpers/contributions";
 export * from "./helpers/studio-url-state";
 export * from "./helpers/surface-layout";
 export * from "./helpers/tree";

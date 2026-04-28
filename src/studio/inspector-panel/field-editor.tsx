@@ -38,8 +38,6 @@ import type {
 	PhotonNestedField,
 } from "../../types";
 import { inputClassName } from "../shared";
-import type { PhotonContributionOverride } from "../../helpers/contributions";
-import { PhotonContributionListFieldEditor } from "./contribution-list-field-editor";
 import { FieldLabelLocalizationMenu } from "./field-label-localization-menu";
 import { GalleryFieldEditor } from "./gallery-field-editor";
 import { ImageFieldEditor } from "./image-field-editor";
@@ -112,7 +110,6 @@ const createDefaultFieldValue = (
 		case "tags":
 		case "gallery":
 		case "repeater":
-		case "contribution-list":
 			return [];
 		case "image":
 			return null;
@@ -735,16 +732,6 @@ const FieldEditorImpl = ({
 					onChange={onChange}
 					onFocus={(p) => onFocus(joinFieldPath(absolutePath ?? "", p))}
 					absolutePath={path}
-				/>
-			);
-		}
-
-		if (field.kind === "contribution-list") {
-			return (
-				<PhotonContributionListFieldEditor
-					field={field}
-					value={value as readonly PhotonContributionOverride[] | undefined}
-					onChange={onChange}
 				/>
 			);
 		}

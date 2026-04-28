@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import type { PhotonSiteFrameContributionRegistry } from "../helpers/contributions";
 import type {
 	PhotonAccountTabExtension,
 	PhotonBranchPolicyState,
@@ -123,7 +122,6 @@ export type PhotonStudioProps = {
 	linkComponent?: PhotonLinkComponent;
 	linkFactory?: PhotonLinkFactory;
 	siteFrameExtensions?: PhotonSiteFrameExtension[];
-	siteFrameContributionRegistry?: PhotonSiteFrameContributionRegistry;
 	accountTabs?: PhotonAccountTabExtension[];
 	interactionSurfaces?: PhotonInteractionSurfaceDefinition[];
 	interactionActions?: PhotonInteractionActionDefinition[];
