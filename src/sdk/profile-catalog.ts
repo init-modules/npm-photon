@@ -132,7 +132,12 @@ const fetchData = async <T>(
 	}
 
 	const body = (await response.json()) as { data?: unknown };
-	const rows = Array.isArray(body.data) ? body.data : [];
+	if (!Array.isArray(body.data)) {
+		throw new Error(
+			`fetchPhotonProfileCatalog: ${url} returned malformed envelope (missing data array)`,
+		);
+	}
+	const rows = body.data;
 
 	return rows
 		.filter((row): row is Record<string, unknown> =>
