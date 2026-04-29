@@ -1,4 +1,5 @@
 export * from "./helpers/action-policy";
+export * from "./helpers/locale";
 export * from "./helpers/override-resolution";
 export * from "./helpers/site-policy-overrides";
 export * from "./helpers/site-data";

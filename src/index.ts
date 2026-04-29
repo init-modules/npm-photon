@@ -17,6 +17,7 @@ export * from "./helpers/route-context";
 export * from "./helpers/binding";
 export * from "./helpers/document";
 export * from "./helpers/installable";
+export * from "./helpers/locale";
 export * from "./helpers/component-library";
 export * from "./helpers/interactions";
 export * from "./helpers/interaction-surfaces";

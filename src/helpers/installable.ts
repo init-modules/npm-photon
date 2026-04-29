@@ -19,11 +19,32 @@ import type {
 
 export const createPhotonKit = (
 	kit: PhotonInstallableKit,
-): PhotonInstallableKit => kit;
+): PhotonInstallableKit => ({
+	kind: kit.kind ?? "photon-installable-kit",
+	...kit,
+});
 
 export const isPhotonInstallableKit = (
 	entry: PhotonRegistryEntry,
-): entry is PhotonInstallableKit => "modules" in entry;
+): entry is PhotonInstallableKit => {
+	if (entry === null || typeof entry !== "object") {
+		return false;
+	}
+
+	const candidate = entry as { kind?: string };
+	if (
+		candidate.kind === "photon-installable-kit" ||
+		candidate.kind === "photon-system-kit"
+	) {
+		return true;
+	}
+
+	if (candidate.kind === "photon-module") {
+		return false;
+	}
+
+	return "modules" in entry;
+};
 
 export const resolvePhotonModules = (
 	entries: PhotonRegistryEntry[],
