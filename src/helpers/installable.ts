@@ -18,10 +18,12 @@ import type {
 } from "../types";
 
 export const createPhotonKit = (
-	kit: PhotonInstallableKit,
+	kit: Omit<PhotonInstallableKit, "kind"> & {
+		kind?: PhotonInstallableKit["kind"];
+	},
 ): PhotonInstallableKit => ({
-	kind: kit.kind ?? "photon-installable-kit",
 	...kit,
+	kind: kit.kind ?? "photon-installable-kit",
 });
 
 export const isPhotonInstallableKit = (
@@ -32,18 +34,10 @@ export const isPhotonInstallableKit = (
 	}
 
 	const candidate = entry as { kind?: string };
-	if (
+	return (
 		candidate.kind === "photon-installable-kit" ||
 		candidate.kind === "photon-system-kit"
-	) {
-		return true;
-	}
-
-	if (candidate.kind === "photon-module") {
-		return false;
-	}
-
-	return "modules" in entry;
+	);
 };
 
 export const resolvePhotonModules = (

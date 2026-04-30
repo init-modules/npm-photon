@@ -422,19 +422,17 @@ const followInteractionSurfaceFallback = (
 };
 
 /**
- * Continuation helper used by `completeInteractionSurface` (explicit
- * success). Re-evaluates the pending action plan and either advances
- * to the next prereq, executes the target action, or clears the
- * pending plan based on plan delta.
+ * Single FSM transition for the interaction-surface pending-action plan.
  *
- * `closeInteractionSurface` is now strict-clear (cancellation): foundation
- * surface renderers (auth/search) call `onComplete()` on success and
- * `onOpenChange(false)` only on dismissal. External renderers that have
- * not migrated should also wire `onComplete` for chain continuation.
+ * `cancel` (close): strict-clear — drops both the active surface and any
+ * pending plan. `success` (complete): clears the active surface, then
+ * re-evaluates the pending plan and either advances to the next prereq,
+ * executes the target action, or clears the plan based on plan delta.
  */
-const advancePendingActionPlanAfterSurfaceTransition = ({
+const transitionInteractionSurface = ({
 	get,
 	set,
+	reason,
 }: {
 	get: () => PhotonStoreState;
 	set: (
@@ -442,70 +440,83 @@ const advancePendingActionPlanAfterSurfaceTransition = ({
 			| Partial<PhotonStoreState>
 			| ((state: PhotonStoreState) => Partial<PhotonStoreState>),
 	) => void;
+	reason: 'cancel' | 'success';
 }) => {
-	const state = get();
-	const pending = state.pendingActionPlan;
-	set({ activeInteractionSurface: null });
-
-	if (!pending) {
-		return;
-	}
-
-	const catalog = resolvePhotonInteractionActionCatalog({
-		actions: state.interactionActions,
-		guards: state.interactionGuards,
-		surfaces: state.interactionSurfaces,
-		policies: state.interactionPolicies,
-		siteSettings: state.site.settings,
-	});
-
-	const refreshedPlan = pending.slot
-		? planPhotonInteractionTriggerSlot({
-				slot: pending.slot,
-				catalog,
-				conditionEvaluators: state.conditionEvaluators,
-				conditionContext: {
-					siteSettings: state.site.settings,
-					resources: state.resources,
-					routeContext: state.routeContextValues,
-				},
-			})
-		: null;
-
-	if (!refreshedPlan) {
-		set({ pendingActionPlan: null });
-		return;
-	}
-
-	if (refreshedPlan.steps.length === 0) {
-		set({ pendingActionPlan: null });
-		get().executeInteractionAction(pending.targetAction);
-		return;
-	}
-
-	const planShrunk = refreshedPlan.steps.length < pending.previousStepCount;
-
-	if (planShrunk) {
-		const nextStep = refreshedPlan.steps[0];
-		const nextPresentation =
-			catalog.actionInstances[nextStep.actionInstanceId]?.presentation;
-		if (nextPresentation) {
+	switch (reason) {
+		case 'cancel': {
 			set({
-				pendingActionPlan: {
-					...pending,
-					previousStepCount: refreshedPlan.steps.length,
-				},
+				activeInteractionSurface: null,
+				pendingActionPlan: null,
 			});
-			get().executeInteractionAction(nextPresentation);
 			return;
 		}
-		set({ pendingActionPlan: null });
-		return;
-	}
+		case 'success': {
+			const state = get();
+			const pending = state.pendingActionPlan;
+			set({ activeInteractionSurface: null });
 
-	// Plan unchanged ⇒ user did not progress. Both `close` and `complete`
-	// without progress mean the chain is over.
-	set({ pendingActionPlan: null });
+			if (!pending) {
+				return;
+			}
+
+			const catalog = resolvePhotonInteractionActionCatalog({
+				actions: state.interactionActions,
+				guards: state.interactionGuards,
+				surfaces: state.interactionSurfaces,
+				policies: state.interactionPolicies,
+				siteSettings: state.site.settings,
+			});
+
+			const refreshedPlan = pending.slot
+				? planPhotonInteractionTriggerSlot({
+						slot: pending.slot,
+						catalog,
+						conditionEvaluators: state.conditionEvaluators,
+						conditionContext: {
+							siteSettings: state.site.settings,
+							resources: state.resources,
+							routeContext: state.routeContextValues,
+						},
+					})
+				: null;
+
+			if (!refreshedPlan) {
+				set({ pendingActionPlan: null });
+				return;
+			}
+
+			if (refreshedPlan.steps.length === 0) {
+				set({ pendingActionPlan: null });
+				get().executeInteractionAction(pending.targetAction);
+				return;
+			}
+
+			const planShrunk = refreshedPlan.steps.length < pending.previousStepCount;
+
+			if (planShrunk) {
+				const nextStep = refreshedPlan.steps[0];
+				const nextPresentation =
+					catalog.actionInstances[nextStep.actionInstanceId]?.presentation;
+				if (nextPresentation) {
+					set({
+						pendingActionPlan: {
+							...pending,
+							previousStepCount: refreshedPlan.steps.length,
+						},
+					});
+					get().executeInteractionAction(nextPresentation);
+					return;
+				}
+				set({ pendingActionPlan: null });
+				return;
+			}
+
+			// Plan unchanged ⇒ user did not progress. `complete` without
+			// progress means the chain is over.
+			set({ pendingActionPlan: null });
+			return;
+		}
+	}
 };
 
 export const getPhotonSelectedBlock = (
@@ -908,13 +919,10 @@ export const createPhotonStore = ({
 				return true;
 			},
 		closeInteractionSurface: () => {
-			set({
-				activeInteractionSurface: null,
-				pendingActionPlan: null,
-			});
+			transitionInteractionSurface({ get, set, reason: 'cancel' });
 		},
 		completeInteractionSurface: () => {
-			advancePendingActionPlanAfterSurfaceTransition({ get, set });
+			transitionInteractionSurface({ get, set, reason: 'success' });
 		},
 		selectBlock: (blockId) => {
 			set((state) => ({

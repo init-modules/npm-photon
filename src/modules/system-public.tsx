@@ -377,6 +377,7 @@ export const photonPublicSystemModule: PhotonModule = {
 };
 
 export const photonPublicSystemKit: PhotonInstallableKit = createPhotonKit({
+	kind: "photon-system-kit",
 	key: "photon-system",
 	label: "Photon System",
 	modules: [photonPublicSystemModule],

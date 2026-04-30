@@ -1329,8 +1329,10 @@ export type PhotonModule = {
 	siteSettingsPanels?: PhotonSiteSettingsPanelDefinition[];
 };
 
+export type PhotonInstallableKitKind = "photon-installable-kit" | "photon-system-kit";
+
 export type PhotonInstallableKit = {
-	kind?: "photon-installable-kit" | "photon-system-kit";
+	kind: PhotonInstallableKitKind;
 	key: string;
 	label: string;
 	modules: PhotonModule[];
