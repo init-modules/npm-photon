@@ -1,8 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+	useCallback,
+	useEffect,
+	useMemo,
+	useReducer,
+	useRef,
+	useState,
+} from "react";
 import { toast } from "sonner";
 import { clonePhotonValue } from "../../helpers/path";
+import {
+	photonInitialSaveState,
+	photonSaveReducer,
+	toExternalSaveState,
+} from "./photon-save-reducer";
 import type {
 	PhotonDocument,
 	PhotonPageSettings,
@@ -145,10 +157,12 @@ export const useStudioPersistence = ({
 	const [autosaveEnabled, setAutosaveEnabled] = useState(
 		getDefaultPhotonAutosaveEnabled,
 	);
-	const [saveState, setSaveState] = useState<
-		"idle" | "saving" | "saved" | "error"
-	>("idle");
-	const [hasHydrated, setHasHydrated] = useState(false);
+	const [saveStateInternal, dispatchSaveState] = useReducer(
+		photonSaveReducer,
+		photonInitialSaveState,
+	);
+	const hasHydrated = saveStateInternal.kind !== "hydrating";
+	const saveState = toExternalSaveState(saveStateInternal);
 	const [lastSavedRevision, setLastSavedRevision] = useState(0);
 	const [lastSavedState, setLastSavedState] =
 		useState<PhotonStudioSavePayload>(() => ({
@@ -164,7 +178,6 @@ export const useStudioPersistence = ({
 		}));
 	const hasLoadedDraftRef = useRef<string | null>(null);
 	const contentRevisionRef = useRef(contentRevision);
-	const isSavingRef = useRef(false);
 	const lastSavedStateRef = useRef(lastSavedState);
 	const initialStateFingerprint = useMemo(
 		() =>
@@ -207,7 +220,7 @@ export const useStudioPersistence = ({
 		setLastSavedRevision(0);
 		lastSavedStateRef.current = nextLastSavedState;
 		setLastSavedState(nextLastSavedState);
-		setSaveState("idle");
+		dispatchSaveState({ type: "RESET" });
 	}, [
 		initialDocument,
 		initialPageSettings,
@@ -302,7 +315,7 @@ export const useStudioPersistence = ({
 				});
 			} finally {
 				if (!cancelled) {
-					setHasHydrated(true);
+					dispatchSaveState({ type: "HYDRATE_DONE" });
 				}
 			}
 		})();
@@ -373,21 +386,20 @@ export const useStudioPersistence = ({
 
 	const saveDocument = useCallback(
 		async (reason: PhotonStudioSaveReason) => {
-			if (!canSaveDocument || isSavingRef.current) {
+			const isAlreadySaving = saveStateInternal.kind === "saving";
+			if (!canSaveDocument || isAlreadySaving) {
 				if (reason !== "autosave" && isAdmin) {
 					toast.error("Save unavailable", {
-						description:
-							isSavingRef.current
-								? "A save is already in progress."
-								: "This workspace is readonly or direct commits are currently blocked.",
+						description: isAlreadySaving
+							? "A save is already in progress."
+							: "This workspace is readonly or direct commits are currently blocked.",
 					});
 				}
 
 				return;
 			}
 
-			isSavingRef.current = true;
-			setSaveState("saving");
+			dispatchSaveState({ type: "START_SAVE" });
 
 			try {
 				const baseSavedState = lastSavedStateRef.current;
@@ -450,7 +462,7 @@ export const useStudioPersistence = ({
 				lastSavedStateRef.current = nextLastSavedState;
 				setLastSavedState(nextLastSavedState);
 				setLastSavedRevision(0);
-				setSaveState("saved");
+				dispatchSaveState({ type: "SAVE_SUCCESS" });
 
 				if (reason !== "autosave") {
 					toast.success("Saved successfully", {
@@ -458,12 +470,13 @@ export const useStudioPersistence = ({
 					});
 				}
 			} catch (error) {
-				setSaveState("error");
+				dispatchSaveState({
+					type: "SAVE_FAILURE",
+					message: resolvePhotonStudioSaveFailureDescription(error),
+				});
 				toast.error("Save failed", {
 					description: resolvePhotonStudioSaveFailureDescription(error),
 				});
-			} finally {
-				isSavingRef.current = false;
 			}
 		},
 		[
@@ -475,6 +488,7 @@ export const useStudioPersistence = ({
 			pageSettings,
 			persistedDocument,
 			resources,
+			saveStateInternal,
 			site,
 			syncExternalState,
 		],
@@ -506,16 +520,19 @@ export const useStudioPersistence = ({
 	// it no longer triggers any HTTP traffic.
 
 	useEffect(() => {
-		if (saveState === "idle" || saveState === "saving") {
+		if (
+			saveStateInternal.kind !== "saved" &&
+			saveStateInternal.kind !== "error"
+		) {
 			return;
 		}
 
 		const timeoutId = window.setTimeout(() => {
-			setSaveState("idle");
+			dispatchSaveState({ type: "RESET" });
 		}, 2200);
 
 		return () => window.clearTimeout(timeoutId);
-	}, [saveState]);
+	}, [saveStateInternal]);
 
 	return {
 		autosaveEnabled,
